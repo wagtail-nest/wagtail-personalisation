@@ -5,6 +5,7 @@ from django.db import models
 from django.utils.encoding import python_2_unicode_compatible
 
 from modelcluster.models import ClusterableModel
+from wagtail.wagtailadmin.edit_handlers import FieldPanel
 
 
 """

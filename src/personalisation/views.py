@@ -6,5 +6,5 @@ from django.shortcuts import render
 """
 Segments overview
 """
-def overview():
-    return render(request, 'wagtailadmin/segment_overview.html')
+def overview(request):
+    return render(request, 'wagtailadmin/segment.html')
