@@ -4,5 +4,5 @@ from django.conf.urls import url
 from personalisation import views
 
 urlpatterns = [
-    url(r'^segment/$', views.overview, name='overview'),
+    url(r'^segment/(\d+)/$', views.overview, name='overview'),
 ]

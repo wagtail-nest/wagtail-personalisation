@@ -19,18 +19,10 @@ def register_admin_urls():
     ]
 
 
-class SegmentButtonHelper(ButtonHelper):
-    def get_buttons_for_obj(self, obj, exclude=[], classnames_add=[], classnames_exclude=[]):
-        return {
-            'url': reverse('personalisation:overview'),
-            'label': _('Segments'),
-            'title': _('Report for this %s') % self.verbose_name,
-        }
-
-
 class SegmentModelAdmin(ModelAdmin):
     model = Segment
+    menu_icon = 'group'
     add_to_settings_menu = False
-    button_helper_class = SegmentButtonHelper
+    search_fields = ('name')
 
 modeladmin_register(SegmentModelAdmin)
