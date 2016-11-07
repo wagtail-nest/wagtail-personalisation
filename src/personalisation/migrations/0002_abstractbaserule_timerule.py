@@ -14,7 +14,7 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.CreateModel(
-            name='AbstractRuleBase',
+            name='AbstractBaseRule',
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('name', models.CharField(max_length=255)),
@@ -23,10 +23,10 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='TimeRule',
             fields=[
-                ('abstractrulebase_ptr', models.OneToOneField(auto_created=True, on_delete=django.db.models.deletion.CASCADE, parent_link=True, primary_key=True, serialize=False, to='personalisation.AbstractRuleBase')),
+                ('abstractbaserule_ptr', models.OneToOneField(auto_created=True, on_delete=django.db.models.deletion.CASCADE, parent_link=True, primary_key=True, serialize=False, to='personalisation.AbstractBaseRule')),
                 ('start_time', models.TimeField(verbose_name='Starting time')),
                 ('end_time', models.TimeField(verbose_name='Ending time')),
             ],
-            bases=('personalisation.abstractrulebase',),
+            bases=('personalisation.abstractbaserule',),
         ),
     ]

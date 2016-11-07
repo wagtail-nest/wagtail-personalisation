@@ -9,12 +9,12 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('personalisation', '0002_abstractrulebase_timerule'),
+        ('personalisation', '0002_abstractbaserule_timerule'),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='abstractrulebase',
+            model_name='abstractbaserule',
             name='segment',
             field=models.ForeignKey(default='', on_delete=django.db.models.deletion.CASCADE, related_name='segment', to='personalisation.Segment'),
             preserve_default=False,

@@ -8,7 +8,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('personalisation', '0003_abstractrulebase_segment'),
+        ('personalisation', '0003_abstractbaserule_segment'),
     ]
 
     operations = [

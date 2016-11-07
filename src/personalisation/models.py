@@ -8,6 +8,7 @@ from django.utils.encoding import python_2_unicode_compatible
 from django.utils.translation import ugettext_lazy as _
 
 from modelcluster.models import ClusterableModel
+from model_utils.managers import InheritanceManager
 from wagtail.wagtailadmin.edit_handlers import FieldPanel
 
 
@@ -40,9 +41,10 @@ class Segment(ClusterableModel):
 Base for creating rules to segment users with
 """
 @python_2_unicode_compatible
-class AbstractRuleBase(models.Model):
+class AbstractBaseRule(models.Model):
     name = models.CharField(max_length=255)
     segment = models.ForeignKey(to=Segment, related_name="segment")
+    objects = InheritanceManager()
 
     def test_user(self, request=None):
         return True
@@ -58,7 +60,7 @@ class AbstractRuleBase(models.Model):
 Time rule to segment users with
 """
 @python_2_unicode_compatible
-class TimeRule(AbstractRuleBase):
+class TimeRule(AbstractBaseRule):
     start_time = models.TimeField(_("Starting time"))
     end_time = models.TimeField(_("Ending time"))
 
@@ -70,10 +72,4 @@ class TimeRule(AbstractRuleBase):
         starting_time = self.start_time
         ending_time = self.end_time
 
-        if starting_time <= current_time <= ending_time:
-            return True
-        else:
-            return False
-
-
-
+        return starting_time <= current_time <= ending_time
