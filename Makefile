@@ -1,11 +1,19 @@
-.PHONY: all clean test lint flake8 isort build
+.PHONY: all clean requirements develop test lint flake8 isort dist
 
-all: clean build
+all: clean requirements dist
+
+default: develop
 
 clean:
     find src -name '*.pyc' -delete
 	find tests -name '*.pyc' -delete
 	find . -name '*.egg-info' -delete
+
+requirements:
+	pip install --upgrade -e .
+
+develop: clean requirements
+    ./manage.py migrate
 
 test:
     py.test --nomigrations --reuse-db tests/
@@ -21,5 +29,5 @@ isort:
 	isort --recursive --check-only --diff src tests
 
 
-build:
-    ./setup.py sdist
+dist:
+    ./setup.py sdist bdist_wheel
