@@ -23,5 +23,7 @@ class SegmentModelAdmin(ModelAdmin):
     model = Segment
     menu_icon = 'group'
     add_to_settings_menu = False
+    list_display = ('name')
+    index_view_extra_css = ['personalisation/segment/index.css']
 
 modeladmin_register(SegmentModelAdmin)
