@@ -1,6 +1,7 @@
 from __future__ import absolute_import, unicode_literals
 
 from datetime import datetime, time
+import re
 
 from django.conf import settings
 from django.db import models
@@ -57,7 +58,7 @@ class AbstractBaseRule(models.Model):
 
 
 """
-Time rule to segment users with
+Time rule to segment users based on the
 """
 @python_2_unicode_compatible
 class TimeRule(AbstractBaseRule):
@@ -67,9 +68,23 @@ class TimeRule(AbstractBaseRule):
     def __init__(self, *args, **kwargs):
         super(TimeRule, self).__init__(*args, **kwargs)
 
-    def test_user(self, request=None):
+    def test_user(self):
         current_time = datetime.now().time()
         starting_time = self.start_time
         ending_time = self.end_time
 
         return starting_time <= current_time <= ending_time
+
+
+"""
+Referral rule to segment users based on a regex test
+"""
+class ReferralRule(AbstractBaseRule):
+    regex_string = models.TextField()
+
+    def __init__(self, *args, **kwargs):
+        super(ReferralRule, self).__init__(*args, **kwargs)
+
+    def test_user(self, request):
+        pattern = re.compile(re.escape(r'{0}').format(self.regex_string))
+        return pattern.match(request.META.HTTP_REFERER)
