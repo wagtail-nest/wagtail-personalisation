@@ -9,7 +9,7 @@ from wagtail.contrib.modeladmin.helpers import ButtonHelper
 from wagtail.contrib.modeladmin.options import ModelAdmin, modeladmin_register
 from wagtail.wagtailcore import hooks
 
-from .models import Segment
+from personalisation.models import Segment
 
 
 @hooks.register('register_admin_urls')
