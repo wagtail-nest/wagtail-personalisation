@@ -13,7 +13,6 @@ requirements:
 	pip install --upgrade -e .
 
 develop: clean requirements
-	./manage.py migrate
 
 test:
 	py.test --nomigrations --reuse-db tests/
