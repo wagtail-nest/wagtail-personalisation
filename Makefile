@@ -1,6 +1,6 @@
 .PHONY: all clean test lint flake8 isort build
 
-all: clean
+all: clean build
 
 clean:
     find src -name '*.pyc' -delete
