@@ -5,7 +5,7 @@ all: clean requirements dist
 default: develop
 
 clean:
-    find src -name '*.pyc' -delete
+	find src -name '*.pyc' -delete
 	find tests -name '*.pyc' -delete
 	find . -name '*.egg-info' -delete
 
@@ -13,10 +13,10 @@ requirements:
 	pip install --upgrade -e .
 
 develop: clean requirements
-    ./manage.py migrate
+	./manage.py migrate
 
 test:
-    py.test --nomigrations --reuse-db tests/
+	py.test --nomigrations --reuse-db tests/
 
 lint: flake8 isort
 
@@ -30,4 +30,4 @@ isort:
 
 
 dist:
-    ./setup.py sdist bdist_wheel
+	./setup.py sdist bdist_wheel
