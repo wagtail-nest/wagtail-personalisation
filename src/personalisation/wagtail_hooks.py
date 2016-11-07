@@ -23,6 +23,5 @@ class SegmentModelAdmin(ModelAdmin):
     model = Segment
     menu_icon = 'group'
     add_to_settings_menu = False
-    search_fields = ('name')
 
 modeladmin_register(SegmentModelAdmin)
