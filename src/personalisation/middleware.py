@@ -1,4 +1,4 @@
-from personalisation.models import TimeRule
+from personalisation.models import Segment, TimeRule
 
 class SegmentMiddleware(object):
     """Middleware for testing and putting a user in a segment"""
@@ -7,16 +7,21 @@ class SegmentMiddleware(object):
         self.get_response = get_response
 
     def __call__(self, request):
-        time_rules = TimeRule.objects.all()
+        segments = Segment.objects.all().filter(status="live")
 
-        result = False
+        chosen_segments = []
 
-        for rule in time_rules:
-            result = rule.test_user()
+        for segment in segments:
+            result = False
+            rules = TimeRule.objects.all().filter(segment=segment)
+            for rule in rules:
+                result = rule.test_user()
+            if result:
+                chosen_segments.append(segment.encoded_name())
 
-        request.session['segmented'] = result
+        request.session['segments'] = chosen_segments
         response = self.get_response(request)
 
-        print(request.session['segmented'])
+        print(request.session['segments'])
 
         return response

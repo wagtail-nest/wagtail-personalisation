@@ -17,6 +17,12 @@ Model for a new segment
 @python_2_unicode_compatible
 class Segment(ClusterableModel):
     name = models.CharField(max_length=255)
+    STATUS_CHOICES = (
+        ('disabled', 'Disabled'),
+        ('live', 'Live'),
+        ('completed', 'Completed'),
+    )
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default="disabled")
 
     panels = [
         FieldPanel('name'),
@@ -24,6 +30,10 @@ class Segment(ClusterableModel):
 
     def __str__(self):
         return self.name
+
+    def encoded_name(self):
+        return "".join(self.name.lower().split())
+
 
 
 """
