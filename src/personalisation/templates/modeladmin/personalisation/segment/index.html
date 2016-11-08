@@ -33,9 +33,9 @@
 
                                 {% if user_can_create %}
                                     {% blocktrans with url=view.create_url name=view.verbose_name %}
-                                        <a href="{{ url }}"><div class="block suggestion">
-                                            <span class="suggestive_text">Add a new {{name}}</span>
-                                        </div></a>
+                                        <div class="block suggestion">
+                                            <a href="{{ url }}"><span class="suggestive_text">Add a new {{name}}</span></a>
+                                        </div>
                                     {% endblocktrans %}
                                 {% endif %}
                             </div>

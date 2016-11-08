@@ -18,3 +18,4 @@ docs/_build
 
 coverage.xml
 db.sqlite3
+.vscode/settings.json

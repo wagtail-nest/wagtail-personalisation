@@ -24,6 +24,11 @@
     transition: box-shadow 0.3s cubic-bezier(.25,.8,.25,1), border 0.3s cubic-bezier(.25,.8,.25,1);
 }
 
+    .block_container .block h2 {
+        display: inline-block;
+        width: auto;
+    }
+
 .block_container .block:nth-child(odd) {
     margin-right: 20px;
 }
@@ -52,14 +57,7 @@
     box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
 }
 
-@media (min-width: 800px) and (max-width: 899px) {
-    .block_container .block {
-        width: 100%;
-        margin-right: 0;
-    }
-}
-
-@media (max-width: 649px) {
+@media (max-width: 699px) {
     .block_container .block {
         width: 100%;
         margin-right: 0;
