@@ -14,7 +14,7 @@ class SegmentMiddleware(object):
 
         for segment in segments:
             rules = AbstractBaseRule.objects.filter(segment=segment).select_subclasses()
-            result = self.test_rules(rules)
+            result = self.test_rules(rules, request)
 
             if result:
                 chosen_segments.append(segment.encoded_name())
@@ -27,9 +27,9 @@ class SegmentMiddleware(object):
         return response
 
 
-    def test_rules(self, rules):
+    def test_rules(self, rules, request):
         for rule in rules:
-            result = rule.test_user()
+            result = rule.test_user(request)
 
             if result is False:
                 return False

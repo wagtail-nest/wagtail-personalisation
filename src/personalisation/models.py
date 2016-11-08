@@ -65,7 +65,7 @@ class TimeRule(AbstractBaseRule):
     def __init__(self, *args, **kwargs):
         super(TimeRule, self).__init__(*args, **kwargs)
 
-    def test_user(self):
+    def test_user(self, request):
         current_time = self.get_current_time()
         starting_time = self.start_time
         ending_time = self.end_time
@@ -87,5 +87,10 @@ class ReferralRule(AbstractBaseRule):
         super(ReferralRule, self).__init__(*args, **kwargs)
 
     def test_user(self, request):
-        pattern = re.compile(re.escape(r'{0}').format(self.regex_string))
-        return pattern.match(request.META.HTTP_REFERER)
+        pattern = re.compile(self.regex_string)
+
+        if 'HTTP_REFERER' in request.META:
+            referer = request.META['HTTP_REFERER']
+            if pattern.search(referer):
+                return True
+        return False
