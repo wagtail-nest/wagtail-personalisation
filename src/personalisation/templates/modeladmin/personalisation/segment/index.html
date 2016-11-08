@@ -4,9 +4,13 @@
 
 {% block result_list %}
     <div class="nice-padding block_container">
-        {% if results %}
+        {% if all_count %}
             <!-- Replace this function with a class specific one to avoid useless requests. -->
-            {% result_list %}
+            {% for segment in object_list %}
+                <a href="edit/{{ segment.pk }}"><div class="block_container--block">
+                    <h2>{{ segment }}</h2>
+                </div></a>
+            {% endfor %}
         {% endif %}
 
         {% if user_can_create %}

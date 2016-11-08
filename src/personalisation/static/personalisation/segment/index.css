@@ -1,6 +1,6 @@
 .nice-padding {
-    padding-left: 50px;
-    padding-right: 50px;
+    padding-left: 40px;
+    padding-right: 40px;
 }
 
 .block_container {
@@ -10,9 +10,12 @@
 
 .block_container--block {
     display: inline-block;
+    box-sizing: border-box;
     position: relative;
-    width: calc(50% - 10px);
+    width: calc(50% - 20px);
     height: 126px;
+    margin: 9px;
+    padding: 10px 20px;
     border: 1px solid #d9d9d9;
     border-radius: 3px;
     background-color: #fff;
