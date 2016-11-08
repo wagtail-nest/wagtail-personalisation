@@ -1,9 +1,8 @@
 from __future__ import absolute_import, unicode_literals
 
-from datetime import datetime, time
+from datetime import datetime
 import re
 
-from django.conf import settings
 from django.db import models
 from django.utils.encoding import python_2_unicode_compatible
 from django.utils.translation import ugettext_lazy as _
@@ -37,7 +36,6 @@ class Segment(ClusterableModel):
         return "".join(self.name.lower().split())
 
 
-
 """
 Base for creating rules to segment users with
 """
@@ -58,7 +56,7 @@ class AbstractBaseRule(models.Model):
 
 
 """
-Time rule to segment users based on the
+Time rule to segment users based on a start and end time
 """
 @python_2_unicode_compatible
 class TimeRule(AbstractBaseRule):
