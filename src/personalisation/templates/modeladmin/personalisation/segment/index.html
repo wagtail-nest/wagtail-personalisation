@@ -9,6 +9,10 @@
             {% for segment in object_list %}
                 <a href="edit/{{ segment.pk }}"><div class="block_container--block">
                     <h2>{{ segment }}</h2>
+                    <ul class="block--actions">
+                        <li><a href="delete/{{ segment.pk }}">delete</a></li>
+                        <li><a href="edit/{{ segment.pk }}">configure this</a></li>
+                    </ul>
                 </div></a>
             {% endfor %}
         {% endif %}
