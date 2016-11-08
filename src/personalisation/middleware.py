@@ -17,15 +17,13 @@ class SegmentMiddleware(object):
             result = self.test_rules(rules, request)
 
             if result:
-                chosen_segments.append(segment.encoded_name())
+                self.add_segment_to_user(segment, request)
 
-        request.session['segments'] = chosen_segments
         response = self.get_response(request)
 
         print(request.session['segments'])
 
         return response
-
 
     def test_rules(self, rules, request):
         for rule in rules:
@@ -35,3 +33,10 @@ class SegmentMiddleware(object):
                 return False
 
         return True
+
+    def add_segment_to_user(self, segment, request):
+        if 'segments' not in request.session:
+            request.session['segments'] = []
+
+        if segment not in request.session['segments']:
+            request.session['segments'].append(segment.encoded_name())
