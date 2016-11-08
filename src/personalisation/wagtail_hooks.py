@@ -1,14 +1,13 @@
 from django.conf import settings
 from django.conf.urls import include, url
 from django.core.urlresolvers import reverse
-from wagtail.wagtailadmin import widgets
-from wagtail.wagtailadmin.menu import MenuItem
-
-from personalisation import admin_urls
 from wagtail.contrib.modeladmin.helpers import ButtonHelper
 from wagtail.contrib.modeladmin.options import ModelAdmin, modeladmin_register
+from wagtail.wagtailadmin import widgets
+from wagtail.wagtailadmin.menu import MenuItem
 from wagtail.wagtailcore import hooks
 
+from personalisation import admin_urls
 from personalisation.models import Segment
 
 

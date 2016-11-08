@@ -1,4 +1,5 @@
-from personalisation.models import Segment, AbstractBaseRule
+from personalisation.models import AbstractBaseRule, Segment
+
 
 class SegmentMiddleware(object):
     """Middleware for testing and putting a user in a segment"""

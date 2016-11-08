@@ -1,14 +1,13 @@
 from __future__ import absolute_import, unicode_literals
 
-from datetime import datetime
 import re
+from datetime import datetime
 
 from django.db import models
 from django.utils.encoding import python_2_unicode_compatible
 from django.utils.translation import ugettext_lazy as _
-
-from modelcluster.models import ClusterableModel
 from model_utils.managers import InheritanceManager
+from modelcluster.models import ClusterableModel
 from wagtail.wagtailadmin.edit_handlers import FieldPanel
 
 
@@ -67,11 +66,15 @@ class TimeRule(AbstractBaseRule):
         super(TimeRule, self).__init__(*args, **kwargs)
 
     def test_user(self):
-        current_time = datetime.now().time()
+        current_time = self.get_current_time()
         starting_time = self.start_time
         ending_time = self.end_time
 
         return starting_time <= current_time <= ending_time
+
+    def get_current_time(self):
+        """Mockable function for testing purposes"""
+        return datetime.now().time()
 
 
 """
