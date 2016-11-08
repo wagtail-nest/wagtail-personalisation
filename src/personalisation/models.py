@@ -94,3 +94,34 @@ class ReferralRule(AbstractBaseRule):
             if pattern.search(referer):
                 return True
         return False
+
+"""
+Visit count rule to segment users based on amount of visits
+"""
+class VisitCountRule(AbstractBaseRule):
+    OPERATOR_CHOICES = (
+        ('more_than', 'More than'),
+        ('less_than', 'Less than'),
+        ('equal_to', 'Equal to'),
+    )
+    operator = models.CharField(max_length=20, choices=OPERATOR_CHOICES, default="ht")
+    count = models.PositiveSmallIntegerField(default=0)
+    
+    def __init__(self, *args, **kwargs):
+        super(VisitCountRule, self).__init__(*args, **kwargs)
+
+    def test_user(self, request):
+        operator = self.operator
+        segment_count = self.count
+        visit_count = request.session.get('visit_count')
+
+        if operator is "more_than":
+            if visit_count > segment_count:
+                return True
+        elif operator is "less_than":
+            if visit_count < segment_count:
+                return True
+        elif operator is "equal_to":
+            if visit_count is segment_count:
+                return True
+        return False

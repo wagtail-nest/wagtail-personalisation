@@ -16,6 +16,9 @@ def register_admin_urls():
     ]
 
 
+"""
+The base model for the Segments administration interface
+"""
 class SegmentModelAdmin(ModelAdmin):
     model = Segment
     menu_icon = 'group'
@@ -25,3 +28,14 @@ class SegmentModelAdmin(ModelAdmin):
     form_view_extra_css = ['personalisation/segment/form.css']
 
 modeladmin_register(SegmentModelAdmin)
+
+
+"""
+Update the users visit count before each page visit
+"""
+@hooks.register('before_serve_page')
+def set_visit_count(page, request, serve_args, serve_kwargs):
+    if request.session.get('visit_count'):
+        request.session['visit_count'] = request.session.get('visit_count') + 1
+    else:
+        request.session['visit_count'] = 1
