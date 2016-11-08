@@ -40,3 +40,4 @@ class SegmentMiddleware(object):
 
         if segment not in request.session['segments']:
             request.session['segments'].append(segment.encoded_name())
+
