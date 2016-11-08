@@ -1,0 +1,77 @@
+{% extends "modeladmin/create.html" %}
+{% load i18n %}
+
+{% block content %}
+
+    {% block header %}
+        {% include "wagtailadmin/shared/header.html" with title=view.get_page_title subtitle=view.get_page_subtitle icon=view.header_icon tabbed=1 merged=1 %}
+    {% endblock %}
+
+
+    {{ modal_content }}
+
+    <form action="{% block form_action %}{{ view.create_url }}{% endblock %}" {% if is_multipart %} enctype="multipart/form-data"
+        {% endif %} method="POST" novalidate>
+        {% csrf_token %} {% block form %}{{ edit_handler.render_form_content }}{% endblock %}
+
+        <ul class="objects">
+            <li class="object">
+                <h2>
+                    <label for="id_rules">Rules</label>
+                </h2>
+                <fieldset class="">
+                    <legend>Rules</legend>
+                    <p>Create a set of rules to segment the users with</p>
+                    <ul class="block_container">
+                        <li class="block">
+                            <h2>Time</h2>
+                            <p>Choose a time segment in which the user visits the site.</p>
+                        </li>
+                        <li class="block disabled">
+                            <h2>Page visits</h2>
+                            <p>Choose a (set of) page(s) the user has to have seen to trigger this rule.</p>
+                        </li>
+                        <li class="block">
+                            <h2>Visit count</h2>
+                            <p>Choose the number of visits the user has to have made.</p>
+                        </li>
+                        <li class="block">
+                            <h2>Referrer</h2>
+                            <p>Define a referring page, domain or query the user has to come from.</p>
+                        </li>
+                        <li class="block disabled">
+                            <h2>Device</h2>
+                            <p>Choose a specific set of devices a user has to own before triggering this rule.</p>
+                        </li>
+                        <li class="block disabled">
+                            <h2>Geolocation</h2>
+                            <p>Pick an area the user has to be in to trigger this rule.</p>
+                        </li>
+                    </ul>
+
+                    <div class="clearfix"></div>
+
+                    <h2>Your chosen rules</h2>
+                </fieldset>
+
+            </li>
+        </ul>
+
+        {% block footer %}
+        <footer>
+            <ul>
+                <li class="actions">
+                    {% block form_actions %}
+                    <div class="dropdown dropup dropdown-button match-width">
+                        <button type="submit" class="button action-save button-longrunning" tabindex="3" data-clicked-text="{% trans 'Saving...' %}">
+                                        <span class="icon icon-spinner"></span><em>{% trans 'Save' %}</em>
+                                    </button>
+                    </div>
+                    {% endblock %}
+                </li>
+            </ul>
+        </footer>
+        {% endblock %}
+    </form>
+    
+{% endblock %}

@@ -1,0 +1,60 @@
+{% extends "modeladmin/index.html" %}
+{% load i18n staticfiles modeladmin_tags %}
+
+{% block content_main %}
+        <div>
+            <div class="row">
+                {% block content_cols %}
+
+                    {% block filters %}
+                        {% if view.has_filters and all_count %}
+                        <div class="changelist-filter col3">
+                            <h2>{% trans 'Filter' %}</h2>
+                            {% for spec in view.filter_specs %}{% admin_list_filter view spec %}{% endfor %}
+                        </div>
+                        {% endif %}
+                    {% endblock %}
+
+                    <div>
+                        {% block result_list %}
+                            <div class="nice-padding block_container">
+                                {% if all_count %}
+                                    <!-- Replace this function with a class specific one to avoid useless requests. -->
+                                    {% for segment in object_list %}
+                                        <div class="block">
+                                            <a href="edit/{{ segment.pk }}"><h2>{{ segment }}</h2></a>
+                                            <ul class="block_actions">
+                                                <li><a href="delete/{{ segment.pk }}">delete</a></li>
+                                                <li><a href="edit/{{ segment.pk }}">configure this</a></li>
+                                            </ul>
+                                        </div>
+                                    {% endfor %}
+                                {% endif %}
+
+                                {% if user_can_create %}
+                                    {% blocktrans with url=view.create_url name=view.verbose_name %}
+                                        <div class="block suggestion">
+                                            <a href="{{ url }}"><span class="suggestive_text">Add a new {{name}}</span></a>
+                                        </div>
+                                    {% endblocktrans %}
+                                {% endif %}
+                            </div>
+                        {% endblock %}
+                    </div>
+
+                    {% block pagination %}
+                        {% if paginator.num_pages > 1 %}
+                        <div class="pagination {% if view.has_filters and all_count %}col9{% else %}col12{% endif %}">
+                            <p>{% blocktrans with page_obj.number as current_page and paginator.num_pages as num_pages %}Page {{ current_page }} of {{ num_pages }}.{% endblocktrans %}</p>
+                            <ul>
+                                {% pagination_link_previous page_obj view %}
+                                {% pagination_link_next page_obj view %}
+                            </ul>
+                        </div>
+                        {% endif %}
+                    {% endblock %}
+
+                {% endblock %}
+            </div>
+        </div>
+    {% endblock %}
