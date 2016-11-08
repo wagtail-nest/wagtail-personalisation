@@ -23,7 +23,8 @@ class SegmentModelAdmin(ModelAdmin):
     model = Segment
     menu_icon = 'group'
     add_to_settings_menu = False
-    list_display = ('name')
+    list_display = ('status', 'name')
+    inspect_view_enabled = True
     index_view_extra_css = ['personalisation/segment/index.css']
     form_view_extra_css = ['personalisation/segment/form.css']
 

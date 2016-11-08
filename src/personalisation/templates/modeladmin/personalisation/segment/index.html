@@ -22,11 +22,18 @@
                                     <!-- Replace this function with a class specific one to avoid useless requests. -->
                                     {% for segment in object_list %}
                                         <div class="block">
-                                            <a href="edit/{{ segment.pk }}"><h2>{{ segment }}</h2></a>
+                                            <a href="inspect/{{ segment.pk }}"><h2>{{ segment }}</h2></a>
+                                            {% if user_can_create %}
                                             <ul class="block_actions">
-                                                <li><a href="delete/{{ segment.pk }}">delete</a></li>
+                                                {% if segment.status == "disabled" %}
+                                                    <li><a href="{% url 'segment:enable' segment.pk %}">enable</a></li>
+                                                {% elif segment.status == "enabled" %}
+                                                    <li><a href="{% url 'segment:disable' segment.pk %}">disable</a></li>
+                                                {% endif %}
                                                 <li><a href="edit/{{ segment.pk }}">configure this</a></li>
+                                                <li><a href="delete/{{ segment.pk }}">delete</a></li>
                                             </ul>
+                                            {% endif %}
                                         </div>
                                     {% endfor %}
                                 {% endif %}

@@ -19,13 +19,13 @@ class Segment(ClusterableModel):
     name = models.CharField(max_length=255)
     STATUS_CHOICES = (
         ('disabled', 'Disabled'),
-        ('live', 'Live'),
-        ('completed', 'Completed'),
+        ('enabled', 'Enabled'),
     )
-    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default="disabled")
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default="enabled")
 
     panels = [
         FieldPanel('name'),
+        FieldPanel('status'),
     ]
 
     def __str__(self):

@@ -8,7 +8,7 @@ class SegmentMiddleware(object):
         self.get_response = get_response
 
     def __call__(self, request):
-        segments = Segment.objects.all().filter(status="live")
+        segments = Segment.objects.all().filter(status="enabled")
 
         chosen_segments = []
 
