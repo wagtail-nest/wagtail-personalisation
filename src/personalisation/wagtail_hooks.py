@@ -3,6 +3,7 @@ from django.conf.urls import include, url
 from django.core.urlresolvers import reverse
 from wagtail.wagtailadmin import widgets
 from wagtail.wagtailadmin.menu import MenuItem
+from wagtail.wagtailadmin.modal_workflow import render_modal_workflow
 
 from personalisation import admin_urls
 from wagtail.contrib.modeladmin.helpers import ButtonHelper
@@ -25,5 +26,6 @@ class SegmentModelAdmin(ModelAdmin):
     add_to_settings_menu = False
     list_display = ('name')
     index_view_extra_css = ['personalisation/segment/index.css']
+    form_view_extra_css = ['personalisation/segment/form.css']
 
 modeladmin_register(SegmentModelAdmin)
