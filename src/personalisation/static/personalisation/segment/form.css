@@ -6,7 +6,6 @@
 
     .block_container .block {
         display: block;
-        float: left;
         box-sizing: border-box;
         position: relative;
         width: calc(100% / 3 - 13.33px);
