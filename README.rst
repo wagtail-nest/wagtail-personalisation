@@ -10,12 +10,13 @@ To install the package with pip::
 
     pip install wagtail-personalisation
 
-Next, include the ``personalisation`` app in your project's ``INSTALLED_APPS``:
+Next, include the ``personalisation`` and ``wagtail.contrib.modeladmin`` app in your project's ``INSTALLED_APPS``:
 
 .. code-block:: python
 
     INSTALLED_APPS = [
         # ...
+        'wagtail.contrib.modeladmin',
         'personalisation',
         # ...
     ]
