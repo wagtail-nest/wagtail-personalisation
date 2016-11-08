@@ -25,7 +25,7 @@ flake8:
 
 isort:
 	pip install isort
-	isort --recursive --check-only --diff src tests
+	isort --recursive src tests
 
 
 dist:

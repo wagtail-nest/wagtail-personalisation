@@ -1,14 +1,13 @@
 from __future__ import absolute_import, unicode_literals
 
-from datetime import datetime, time
+import re
+from datetime import datetime
 
-from django.conf import settings
 from django.db import models
 from django.utils.encoding import python_2_unicode_compatible
 from django.utils.translation import ugettext_lazy as _
-
-from modelcluster.models import ClusterableModel
 from model_utils.managers import InheritanceManager
+from modelcluster.models import ClusterableModel
 from wagtail.wagtailadmin.edit_handlers import FieldPanel
 
 
@@ -36,7 +35,6 @@ class Segment(ClusterableModel):
         return "".join(self.name.lower().split())
 
 
-
 """
 Base for creating rules to segment users with
 """
@@ -57,7 +55,7 @@ class AbstractBaseRule(models.Model):
 
 
 """
-Time rule to segment users with
+Time rule to segment users based on a start and end time
 """
 @python_2_unicode_compatible
 class TimeRule(AbstractBaseRule):
@@ -67,9 +65,32 @@ class TimeRule(AbstractBaseRule):
     def __init__(self, *args, **kwargs):
         super(TimeRule, self).__init__(*args, **kwargs)
 
-    def test_user(self, request=None):
-        current_time = datetime.now().time()
+    def test_user(self, request):
+        current_time = self.get_current_time()
         starting_time = self.start_time
         ending_time = self.end_time
 
         return starting_time <= current_time <= ending_time
+
+    def get_current_time(self):
+        """Mockable function for testing purposes"""
+        return datetime.now().time()
+
+
+"""
+Referral rule to segment users based on a regex test
+"""
+class ReferralRule(AbstractBaseRule):
+    regex_string = models.TextField()
+
+    def __init__(self, *args, **kwargs):
+        super(ReferralRule, self).__init__(*args, **kwargs)
+
+    def test_user(self, request):
+        pattern = re.compile(self.regex_string)
+
+        if 'HTTP_REFERER' in request.META:
+            referer = request.META['HTTP_REFERER']
+            if pattern.search(referer):
+                return True
+        return False

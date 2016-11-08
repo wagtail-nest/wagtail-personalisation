@@ -1,4 +1,5 @@
-from personalisation.models import Segment, AbstractBaseRule, TimeRule
+from personalisation.models import AbstractBaseRule, Segment
+
 
 class SegmentMiddleware(object):
     """Middleware for testing and putting a user in a segment"""
@@ -12,16 +13,31 @@ class SegmentMiddleware(object):
         chosen_segments = []
 
         for segment in segments:
-            result = False
             rules = AbstractBaseRule.objects.filter(segment=segment).select_subclasses()
-            for rule in rules:
-                result = rule.test_user()
-            if result:
-                chosen_segments.append(segment.encoded_name())
+            result = self.test_rules(rules, request)
 
-        request.session['segments'] = chosen_segments
+            if result:
+                self.add_segment_to_user(segment, request)
+
         response = self.get_response(request)
 
         print(request.session['segments'])
 
         return response
+
+    def test_rules(self, rules, request):
+        for rule in rules:
+            result = rule.test_user(request)
+
+            if result is False:
+                return False
+
+        return True
+
+    def add_segment_to_user(self, segment, request):
+        if 'segments' not in request.session:
+            request.session['segments'] = []
+
+        if segment not in request.session['segments']:
+            request.session['segments'].append(segment.encoded_name())
+
