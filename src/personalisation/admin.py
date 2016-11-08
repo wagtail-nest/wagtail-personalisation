@@ -12,9 +12,12 @@ class TimeRuleAdminInline(admin.TabularInline):
 class ReferralRuleAdminInline(admin.TabularInline):
     model = models.ReferralRule
 
+class VisitCountRuleAdminInline(admin.TabularInline):
+    model = models.VisitCountRule
+
 class SegmentAdmin(admin.ModelAdmin):
     list_display = ['name']
-    inlines = (TimeRuleAdminInline, ReferralRuleAdminInline)
+    inlines = (TimeRuleAdminInline, ReferralRuleAdminInline, VisitCountRuleAdminInline)
 
 
 admin.site.register(models.TimeRule, TimeRuleAdmin)
