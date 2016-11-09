@@ -18,8 +18,8 @@ Model for a new segment
 class Segment(ClusterableModel):
     name = models.CharField(max_length=255)
     STATUS_CHOICES = (
-        ('disabled', 'Disabled'),
         ('enabled', 'Enabled'),
+        ('disabled', 'Disabled'),
     )
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default="enabled")
 
@@ -125,7 +125,7 @@ class VisitCountRule(AbstractBaseRule):
             if visit_count < segment_count:
                 return True
         elif operator is "equal_to":
-            if visit_count is segment_count:
+            if visit_count == segment_count:
                 return True
         return False
 
