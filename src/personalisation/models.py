@@ -39,7 +39,6 @@ class Segment(ClusterableModel):
 @python_2_unicode_compatible
 class AbstractBaseRule(PolymorphicModel):
     """Base for creating rules to segment users with"""
-    name = models.CharField(max_length=255)
     segment = models.ForeignKey(to=Segment, related_name="segment")
 
     def test_user(self, request=None):
