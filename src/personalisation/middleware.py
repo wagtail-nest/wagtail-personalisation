@@ -21,6 +21,9 @@ class SegmentMiddleware(object):
 
         response = self.get_response(request)
 
+        if not request.session.get('segments'):
+            request.session['segments'] = []
+
         print(request.session['segments'])
 
         return response
