@@ -40,18 +40,14 @@ Base for creating rules to segment users with
 """
 @python_2_unicode_compatible
 class AbstractBaseRule(models.Model):
-    name = models.CharField(max_length=255)
     segment = models.ForeignKey(to=Segment, related_name="segment")
     objects = InheritanceManager()
 
     def test_user(self, request=None):
         return True
 
-    def return_segment_id(self):
-        return "".join(self.name.lower().split())
-
     def __str__(self):
-        return self.name
+        return "Segmentation rule"
 
 
 """
@@ -76,6 +72,9 @@ class TimeRule(AbstractBaseRule):
         """Mockable function for testing purposes"""
         return datetime.now().time()
 
+    def __str__(self):
+        return '{} - {}'.format(self.start_time, self.end_time)
+
 
 """
 Referral rule to segment users based on a regex test
@@ -94,6 +93,10 @@ class ReferralRule(AbstractBaseRule):
             if pattern.search(referer):
                 return True
         return False
+
+    def __str__(self):
+        return '{}'.format(self.regex_string)
+
 
 """
 Visit count rule to segment users based on amount of visits
@@ -125,3 +128,7 @@ class VisitCountRule(AbstractBaseRule):
             if visit_count is segment_count:
                 return True
         return False
+
+    def __str__(self):
+        operator_display = self.get_operator_display()
+        return '{} {}'.format(operator_display, self.count)
