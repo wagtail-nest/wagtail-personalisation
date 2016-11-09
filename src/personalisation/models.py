@@ -108,7 +108,7 @@ class VisitCountRule(AbstractBaseRule):
         ('equal_to', 'Equal to'),
     )
     operator = models.CharField(max_length=20, choices=OPERATOR_CHOICES, default="ht")
-    count = models.PositiveSmallIntegerField(default=0)
+    count = models.PositiveSmallIntegerField(default=0, null=True)
     
     def __init__(self, *args, **kwargs):
         super(VisitCountRule, self).__init__(*args, **kwargs)
