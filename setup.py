@@ -28,7 +28,7 @@ setup(
         'Topic :: Internet :: WWW/HTTP :: Site Management',
     ],
     install_requires=[
-        'django-model-utils==2.6',
+        'django-polymorphic==1.0.2',
         'wagtail>=1.7',
     ]
 )

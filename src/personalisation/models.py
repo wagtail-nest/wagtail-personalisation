@@ -2,11 +2,11 @@ from __future__ import absolute_import, unicode_literals
 
 import re
 from datetime import datetime
-
+from polymorphic.models import PolymorphicModel
 from django.db import models
 from django.utils.encoding import python_2_unicode_compatible
 from django.utils.translation import ugettext_lazy as _
-from model_utils.managers import InheritanceManager
+
 from modelcluster.models import ClusterableModel
 from wagtail.wagtailadmin.edit_handlers import FieldPanel
 
@@ -35,13 +35,12 @@ class Segment(ClusterableModel):
         return "".join(self.name.lower().split())
 
 
-"""
-Base for creating rules to segment users with
-"""
+
 @python_2_unicode_compatible
-class AbstractBaseRule(models.Model):
+class AbstractBaseRule(PolymorphicModel):
+    """Base for creating rules to segment users with"""
+    name = models.CharField(max_length=255)
     segment = models.ForeignKey(to=Segment, related_name="segment")
-    objects = InheritanceManager()
 
     def test_user(self, request=None):
         return True
@@ -50,11 +49,10 @@ class AbstractBaseRule(models.Model):
         return "Segmentation rule"
 
 
-"""
-Time rule to segment users based on a start and end time
-"""
+
 @python_2_unicode_compatible
 class TimeRule(AbstractBaseRule):
+    """Time rule to segment users based on a start and end time"""
     start_time = models.TimeField(_("Starting time"))
     end_time = models.TimeField(_("Ending time"))
 
@@ -76,10 +74,9 @@ class TimeRule(AbstractBaseRule):
         return '{} - {}'.format(self.start_time, self.end_time)
 
 
-"""
-Referral rule to segment users based on a regex test
-"""
+
 class ReferralRule(AbstractBaseRule):
+    """Referral rule to segment users based on a regex test"""
     regex_string = models.TextField()
 
     def __init__(self, *args, **kwargs):

@@ -8,13 +8,16 @@ class SegmentMiddleware(object):
         self.get_response = get_response
 
     def __call__(self, request):
-        segments = Segment.objects.all().filter(status="enabled")
+        if 'segments' not in request.session:
+            request.session['segments'] = []
 
         chosen_segments = []
 
         for segment in segments:
-            rules = AbstractBaseRule.objects.filter(segment=segment).select_subclasses()
+            rules = AbstractBaseRule.objects.filter(segment=segment)
             result = self.test_rules(rules, request)
+
+            print(result)
 
             if result:
                 self.add_segment_to_user(segment, request)
@@ -25,22 +28,20 @@ class SegmentMiddleware(object):
             request.session['segments'] = []
 
         print(request.session['segments'])
-
         return response
 
     def test_rules(self, rules, request):
-        for rule in rules:
-            result = rule.test_user(request)
+        if len(rules) > 0:
+            for rule in rules:
+                result = rule.test_user(request)
 
-            if result is False:
-                return False
+                if result is False:
+                    return False
 
-        return True
+            return True
+        return False
 
     def add_segment_to_user(self, segment, request):
-        if 'segments' not in request.session:
-            request.session['segments'] = []
-
         if segment not in request.session['segments']:
             request.session['segments'].append(segment.encoded_name())
 
