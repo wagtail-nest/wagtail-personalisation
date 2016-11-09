@@ -2,13 +2,16 @@ from __future__ import absolute_import, unicode_literals
 
 import re
 from datetime import datetime
-from polymorphic.models import PolymorphicModel
+
 from django.db import models
 from django.utils.encoding import python_2_unicode_compatible
 from django.utils.translation import ugettext_lazy as _
-
+from modelcluster.fields import ParentalKey
 from modelcluster.models import ClusterableModel
 from wagtail.wagtailadmin.edit_handlers import FieldPanel, InlinePanel
+from wagtail.wagtailcore.models import Orderable
+
+from polymorphic.models import PolymorphicModel
 
 
 @python_2_unicode_compatible
@@ -24,13 +27,13 @@ class Segment(ClusterableModel):
     panels = [
         FieldPanel('name'),
         FieldPanel('status'),
-        InlinePanel('rules'),
     ]
 
     def __str__(self):
         return self.name
 
     def encoded_name(self):
+        """Returns a string with a slug for the segment"""
         return "".join(self.name.lower().split())
 
 
@@ -40,7 +43,8 @@ class AbstractBaseRule(PolymorphicModel):
     """Base for creating rules to segment users with"""
     segment = models.ForeignKey(to=Segment, related_name="rules")
 
-    def test_user(self, request=None):
+    def test_user(self, request):
+        """Test if the user matches this rule"""
         return True
 
     def __str__(self):
@@ -117,7 +121,7 @@ class VisitCountRule(AbstractBaseRule):
         FieldPanel('operator'),
         FieldPanel('count'),
     ]
-    
+
     def __init__(self, *args, **kwargs):
         super(VisitCountRule, self).__init__(*args, **kwargs)
 

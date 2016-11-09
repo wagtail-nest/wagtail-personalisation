@@ -46,4 +46,3 @@ class SegmentMiddleware(object):
     def add_segment_to_user(self, segment, request):
         if segment not in request.session['segments']:
             request.session['segments'].append(segment.encoded_name())
-
