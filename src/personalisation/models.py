@@ -8,14 +8,12 @@ from django.utils.encoding import python_2_unicode_compatible
 from django.utils.translation import ugettext_lazy as _
 
 from modelcluster.models import ClusterableModel
-from wagtail.wagtailadmin.edit_handlers import FieldPanel
+from wagtail.wagtailadmin.edit_handlers import FieldPanel, InlinePanel
 
 
-"""
-Model for a new segment
-"""
 @python_2_unicode_compatible
 class Segment(ClusterableModel):
+    """Model for a new segment"""
     name = models.CharField(max_length=255)
     STATUS_CHOICES = (
         ('enabled', 'Enabled'),
@@ -26,6 +24,7 @@ class Segment(ClusterableModel):
     panels = [
         FieldPanel('name'),
         FieldPanel('status'),
+        InlinePanel('rules'),
     ]
 
     def __str__(self):
@@ -39,7 +38,7 @@ class Segment(ClusterableModel):
 @python_2_unicode_compatible
 class AbstractBaseRule(PolymorphicModel):
     """Base for creating rules to segment users with"""
-    segment = models.ForeignKey(to=Segment, related_name="segment")
+    segment = models.ForeignKey(to=Segment, related_name="rules")
 
     def test_user(self, request=None):
         return True
@@ -78,7 +77,7 @@ class TimeRule(AbstractBaseRule):
         return '{} - {}'.format(self.start_time, self.end_time)
 
 
-
+@python_2_unicode_compatible
 class ReferralRule(AbstractBaseRule):
     """Referral rule to segment users based on a regex test"""
     regex_string = models.TextField()
@@ -103,10 +102,9 @@ class ReferralRule(AbstractBaseRule):
         return '{}'.format(self.regex_string)
 
 
-"""
-Visit count rule to segment users based on amount of visits
-"""
+@python_2_unicode_compatible
 class VisitCountRule(AbstractBaseRule):
+    """Visit count rule to segment users based on amount of visits"""
     OPERATOR_CHOICES = (
         ('more_than', 'More than'),
         ('less_than', 'Less than'),
