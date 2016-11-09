@@ -64,6 +64,38 @@
     }
 }
 
+.block_container .block .segment_stats {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    margin-bottom: 10px;
+}
+
+    .block_container .block .segment_stats li {
+        display: inline-block;
+        font-size: 24px;
+        font-weight: bold;
+        margin-right: 50px;
+    }
+    .block_container .block .segment_stats li::last-child{
+        margin-right: 0;
+    }
+
+    .block_container .block .segment_stats li::before {
+        display: inline-block;
+        content: "";
+        width: 20px;
+        height: 20px;
+        margin-right: 5px;
+        background-size: 20px 20px;
+    }
+    .block_container .block .segment_stats .visit_stat::before {
+        background-image: url("./rocket_icon.png");
+    }
+    .block_container .block .segment_stats .days_stat::before {
+        background-image: url("./calendar_icon.png");
+    }
+
 .block_container .block.suggestion .suggestive_text {
     display: block;
     position: absolute;
@@ -75,3 +107,7 @@
     font-size: 20px;
     font-weight: 100;
 }
+
+    .block_container .block.suggestion .suggestive_text:hover {
+        text-decoration: underline;
+    }

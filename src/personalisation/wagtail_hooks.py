@@ -1,5 +1,6 @@
 from django.conf.urls import include, url
 from wagtail.contrib.modeladmin.options import ModelAdmin, modeladmin_register
+from wagtail.contrib.modeladmin.views import IndexView
 from wagtail.wagtailcore import hooks
 
 from personalisation import admin_urls
@@ -22,10 +23,10 @@ class SegmentModelAdmin(ModelAdmin):
     model = Segment
     menu_icon = 'group'
     add_to_settings_menu = False
-    list_display = ('status', 'name')
-    inspect_view_enabled = True
+    list_display = ('status', 'name', 'create_date', 'edit_date')
     index_view_extra_css = ['personalisation/segment/index.css']
     form_view_extra_css = ['personalisation/segment/form.css']
+    inspect_view_enabled = True
 
 modeladmin_register(SegmentModelAdmin)
 

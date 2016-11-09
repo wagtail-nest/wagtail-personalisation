@@ -6,18 +6,18 @@ from datetime import datetime
 from django.db import models
 from django.utils.encoding import python_2_unicode_compatible
 from django.utils.translation import ugettext_lazy as _
-from modelcluster.fields import ParentalKey
 from modelcluster.models import ClusterableModel
-from wagtail.wagtailadmin.edit_handlers import FieldPanel, InlinePanel
-from wagtail.wagtailcore.models import Orderable
+from wagtail.wagtailadmin.edit_handlers import FieldPanel
 
 from polymorphic.models import PolymorphicModel
-
 
 @python_2_unicode_compatible
 class Segment(ClusterableModel):
     """Model for a new segment"""
     name = models.CharField(max_length=255)
+    create_date = models.DateTimeField(auto_now_add=True)
+    edit_date = models.DateTimeField(auto_now=True)
+    visit_count = models.PositiveIntegerField(default=0)
     STATUS_CHOICES = (
         ('enabled', 'Enabled'),
         ('disabled', 'Disabled'),
