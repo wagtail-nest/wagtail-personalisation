@@ -11,6 +11,8 @@ class SegmentMiddleware(object):
         if 'segments' not in request.session:
             request.session['segments'] = []
 
+        segments = Segment.objects.all().filter(status='enabled')
+
         chosen_segments = []
 
         for segment in segments:
