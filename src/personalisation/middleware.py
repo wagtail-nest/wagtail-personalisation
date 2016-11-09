@@ -8,8 +8,12 @@ class SegmentMiddleware(object):
         self.get_response = get_response
 
     def __call__(self, request):
+        if request.path.startswith('/admin/') or request.path.startswith('/django-admin/'):
+            return self.get_response(request)
+
         if 'segments' not in request.session:
             request.session['segments'] = []
+            request.session['visit_count'] = 1
 
         segments = Segment.objects.all().filter(status='enabled')
 
@@ -26,9 +30,6 @@ class SegmentMiddleware(object):
 
         response = self.get_response(request)
 
-        if not request.session.get('segments'):
-            request.session['segments'] = []
-
         print(request.session['segments'])
         return response
 
@@ -44,5 +45,10 @@ class SegmentMiddleware(object):
         return False
 
     def add_segment_to_user(self, segment, request):
+        """Register the request to the Segment model as visit
+        and save the segment in the user session"""
+        segment.visit_count = segment.visit_count + 1
+        segment.save()
+
         if segment not in request.session['segments']:
             request.session['segments'].append(segment.encoded_name())

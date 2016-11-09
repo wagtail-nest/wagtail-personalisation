@@ -130,13 +130,13 @@ class VisitCountRule(AbstractBaseRule):
         segment_count = self.count
         visit_count = request.session.get('visit_count')
 
-        if operator is "more_than":
+        if operator == "more_than":
             if visit_count > segment_count:
                 return True
-        elif operator is "less_than":
+        elif operator == "less_than":
             if visit_count < segment_count:
                 return True
-        elif operator is "equal_to":
+        elif operator == "equal_to":
             if visit_count == segment_count:
                 return True
         return False
