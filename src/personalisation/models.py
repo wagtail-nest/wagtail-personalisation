@@ -4,6 +4,9 @@ import re
 from datetime import datetime
 
 from django.db import models
+from django.db.models.signals import pre_save
+from django.dispatch import receiver
+from django.template.defaultfilters import slugify
 from django.utils.encoding import python_2_unicode_compatible
 from django.utils.translation import ugettext_lazy as _
 from modelcluster.models import ClusterableModel
@@ -11,12 +14,15 @@ from wagtail.wagtailadmin.edit_handlers import FieldPanel
 
 from polymorphic.models import PolymorphicModel
 
+
 @python_2_unicode_compatible
 class Segment(ClusterableModel):
     """Model for a new segment"""
     name = models.CharField(max_length=255)
     create_date = models.DateTimeField(auto_now_add=True)
     edit_date = models.DateTimeField(auto_now=True)
+    enable_date = models.DateTimeField(null=True, editable=False)
+    disable_date = models.DateTimeField(null=True, editable=False)
     visit_count = models.PositiveIntegerField(default=0, editable=False)
     STATUS_CHOICES = (
         ('enabled', 'Enabled'),
@@ -34,8 +40,25 @@ class Segment(ClusterableModel):
 
     def encoded_name(self):
         """Returns a string with a slug for the segment"""
-        return "".join(self.name.lower().split())
+        return slugify(self.name.lower())
 
+
+def check_status_change(sender, instance, *args, **kwargs):
+    """Check if the status has changed. Alter dates accordingly."""
+    try:
+        original_status = sender.objects.get(pk=instance.id).status
+    except sender.DoesNotExist:
+        original_status = ""
+
+    if original_status != instance.status:
+        if instance.status == "enabled":
+            instance.enable_date = datetime.now()
+            instance.visit_count = 0
+            return instance
+        if instance.status == "disabled":
+            instance.disable_date = datetime.now()
+
+pre_save.connect(check_status_change, sender=Segment)
 
 
 @python_2_unicode_compatible

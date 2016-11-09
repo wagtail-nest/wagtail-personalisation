@@ -25,7 +25,7 @@
                                             <a href="inspect/{{ segment.pk }}"><h2>{{ segment }}</h2></a>
                                             <ul class="segment_stats">
                                                 <li class="visit_stat">{{ segment.visit_count|localize }}</li>
-                                                <li class="days_stat">{{ segment.create_date|days_since:segment.status }}</li>
+                                                <li class="days_stat">{{ segment.enable_date|days_since:segment.disable_date }}</li>
                                             </ul>
                                             {% if user_can_create %}
                                             <ul class="block_actions">
