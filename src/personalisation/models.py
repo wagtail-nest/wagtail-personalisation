@@ -56,6 +56,11 @@ class TimeRule(AbstractBaseRule):
     start_time = models.TimeField(_("Starting time"))
     end_time = models.TimeField(_("Ending time"))
 
+    panels = [
+        FieldPanel('start_time'),
+        FieldPanel('end_time'),
+    ]
+
     def __init__(self, *args, **kwargs):
         super(TimeRule, self).__init__(*args, **kwargs)
 
@@ -78,6 +83,10 @@ class TimeRule(AbstractBaseRule):
 class ReferralRule(AbstractBaseRule):
     """Referral rule to segment users based on a regex test"""
     regex_string = models.TextField()
+
+    panels = [
+        FieldPanel('regex_string'),
+    ]
 
     def __init__(self, *args, **kwargs):
         super(ReferralRule, self).__init__(*args, **kwargs)
@@ -106,6 +115,11 @@ class VisitCountRule(AbstractBaseRule):
     )
     operator = models.CharField(max_length=20, choices=OPERATOR_CHOICES, default="ht")
     count = models.PositiveSmallIntegerField(default=0, null=True)
+
+    panels = [
+        FieldPanel('operator'),
+        FieldPanel('count'),
+    ]
     
     def __init__(self, *args, **kwargs):
         super(VisitCountRule, self).__init__(*args, **kwargs)
