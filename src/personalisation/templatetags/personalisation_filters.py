@@ -1,6 +1,5 @@
-from django.utils import timezone
-
 from django.template import Library
+from django.utils import timezone
 
 register = Library()
 

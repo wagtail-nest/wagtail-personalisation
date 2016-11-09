@@ -17,7 +17,7 @@ class Segment(ClusterableModel):
     name = models.CharField(max_length=255)
     create_date = models.DateTimeField(auto_now_add=True)
     edit_date = models.DateTimeField(auto_now=True)
-    visit_count = models.PositiveIntegerField(default=0)
+    visit_count = models.PositiveIntegerField(default=0, editable=False)
     STATUS_CHOICES = (
         ('enabled', 'Enabled'),
         ('disabled', 'Disabled'),

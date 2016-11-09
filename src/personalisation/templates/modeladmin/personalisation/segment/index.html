@@ -1,5 +1,5 @@
 {% extends "modeladmin/index.html" %}
-{% load i18n staticfiles modeladmin_tags personalisation_filters %}
+{% load i18n l10n staticfiles modeladmin_tags personalisation_filters %}
 
 {% block content_main %}
         <div>
@@ -24,7 +24,7 @@
                                         <div class="block">
                                             <a href="inspect/{{ segment.pk }}"><h2>{{ segment }}</h2></a>
                                             <ul class="segment_stats">
-                                                <li class="visit_stat">{{ segment.visit_count }}</li>
+                                                <li class="visit_stat">{{ segment.visit_count|localize }}</li>
                                                 <li class="days_stat">{{ segment.create_date|days_since:segment.status }}</li>
                                             </ul>
                                             {% if user_can_create %}
