@@ -12,7 +12,11 @@
 
     <form action="{% block form_action %}{{ view.create_url }}{% endblock %}" {% if is_multipart %} enctype="multipart/form-data"
         {% endif %} method="POST" novalidate>
-        {% csrf_token %} {% block form %}{{ edit_handler.render_form_content }}{% endblock %}
+        {% csrf_token %}
+        
+        {% block form %}
+            {{ edit_handler.render_form_content }}
+        {% endblock %}
 
         <ul class="objects">
             <li class="object">

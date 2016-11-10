@@ -1,0 +1,17 @@
+{% extends "wagtailadmin/base.html" %}
+{% load i18n staticfiles %}
+{% block titletag %}{% trans "Referral Rule" %}{% endblock %}
+
+
+{% block content %}
+    <div class="nice-padding">
+        <h2>Referral</h2>
+        <p>Choose the number of visits the user has to have made.</p>
+    </div>
+
+    <div class="nice-padding">
+        <form>
+            {{ form_fields }}
+        </form>
+    </div>
+{% endblock %}

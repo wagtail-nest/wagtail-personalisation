@@ -1,0 +1,17 @@
+{% extends "wagtailadmin/base.html" %}
+{% load i18n staticfiles %}
+{% block titletag %}{% trans "Time Rule" %}{% endblock %}
+
+
+{% block content %}
+    <div class="nice-padding">
+        <h2>Time</h2>
+        <p>Choose a time segment in which the user visits the site.</p>
+    </div>
+
+    <div class="nice-padding">
+        <form>
+            {{ form_fields }}
+        </form>
+    </div>
+{% endblock %}

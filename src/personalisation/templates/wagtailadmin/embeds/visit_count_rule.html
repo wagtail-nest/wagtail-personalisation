@@ -1,0 +1,17 @@
+{% extends "wagtailadmin/base.html" %}
+{% load i18n staticfiles %}
+{% block titletag %}{% trans "Visit Coint Rule" %}{% endblock %}
+
+
+{% block content %}
+    <div class="nice-padding">
+        <h2>Visit count</h2>
+        <p>Define a referring page, domain or query the user has to come from.</p>
+    </div>
+
+    <div class="nice-padding">
+        <form>
+            {{ form_fields }}
+        </form>
+    </div>
+{% endblock %}
