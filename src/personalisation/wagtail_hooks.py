@@ -34,6 +34,11 @@ modeladmin_register(SegmentModelAdmin)
 @hooks.register('before_serve_page')
 def set_visit_count(page, request, serve_args, serve_kwargs):
     """Update the users visit count before each page visit."""
+    for seg in request.session['segments']:
+        segment = Segment.objects.get(pk=seg['id'])
+        segment.visit_count = segment.visit_count + 1
+        segment.save()
+
     if 'visit_count' not in request.session:
         request.session['visit_count'] = 1
     else:

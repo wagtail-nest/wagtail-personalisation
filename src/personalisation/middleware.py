@@ -1,5 +1,5 @@
 from personalisation.models import AbstractBaseRule, Segment
-
+import time
 
 class SegmentMiddleware(object):
     """Middleware for testing and putting a user in a segment"""
@@ -29,8 +29,6 @@ class SegmentMiddleware(object):
                 self.add_segment_to_user(segment, request)
 
         response = self.get_response(request)
-
-        print(request.session['segments'])
         return response
 
     def test_rules(self, rules, request):
@@ -46,10 +44,19 @@ class SegmentMiddleware(object):
         return False
 
     def add_segment_to_user(self, segment, request):
-        """Register the request to the Segment model as visit
-        and save the segment in the user session"""
-        segment.visit_count = segment.visit_count + 1
-        segment.save()
+        """Save the segment in the user session"""
+        def check_if_segmented(segment):
+            """Check if the user has been segmented"""
+            for seg in request.session['segments']:
+                if seg['encoded_name'] == segment.encoded_name():
+                    return True
+            return False
 
-        if segment.encoded_name() not in request.session['segments']:
-            request.session['segments'].append(segment.encoded_name())
+        if not check_if_segmented(segment):
+            # Clear segments session on browser close.
+            segdict = {
+                "encoded_name": segment.encoded_name(),
+                "id": segment.pk,
+                "timestamp": int(time.time()),
+            }
+            request.session['segments'].append(segdict)
