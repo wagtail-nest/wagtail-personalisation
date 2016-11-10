@@ -19,5 +19,3 @@ class SegmentForm(forms.ModelForm):
             'status',
         )
 
-    def __init__(self, *args, **kwargs):
-        super(SegmentForm, self).__init__(*args, **kwargs)
