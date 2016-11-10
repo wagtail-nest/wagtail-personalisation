@@ -2,7 +2,6 @@ import time
 
 from django.conf.urls import include, url
 from wagtail.contrib.modeladmin.options import ModelAdmin, modeladmin_register
-from wagtail.contrib.modeladmin.views import IndexView
 from wagtail.wagtailcore import hooks
 
 from personalisation import admin_urls
