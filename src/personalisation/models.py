@@ -10,7 +10,8 @@ from django.template.defaultfilters import slugify
 from django.utils.encoding import python_2_unicode_compatible
 from django.utils.translation import ugettext_lazy as _
 from modelcluster.models import ClusterableModel
-from wagtail.wagtailadmin.edit_handlers import FieldPanel
+from modelcluster.fields import ParentalKey
+from wagtail.wagtailadmin.edit_handlers import FieldPanel, MultiFieldPanel
 
 from polymorphic.models import PolymorphicModel
 
@@ -64,7 +65,7 @@ pre_save.connect(check_status_change, sender=Segment)
 @python_2_unicode_compatible
 class AbstractBaseRule(PolymorphicModel):
     """Base for creating rules to segment users with"""
-    segment = models.ForeignKey(to=Segment, related_name="rules")
+    segment = ParentalKey('Segment', related_name="rules")
 
     def test_user(self, request):
         """Test if the user matches this rule"""
@@ -107,7 +108,7 @@ class TimeRule(AbstractBaseRule):
 @python_2_unicode_compatible
 class ReferralRule(AbstractBaseRule):
     """Referral rule to segment users based on a regex test"""
-    regex_string = models.TextField()
+    regex_string = models.TextField(_("Regex string to match the referer with"))
 
     panels = [
         FieldPanel('regex_string'),

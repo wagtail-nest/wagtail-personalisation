@@ -4,9 +4,14 @@ from django.forms import ModelForm
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import get_object_or_404, render
 from django.urls import reverse
+from django.utils.translation import ugettext_lazy as _
+
+from wagtail.contrib.modeladmin.views import CreateView
 
 from personalisation.models import (
     ReferralRule, Segment, TimeRule, VisitCountRule)
+from personalisation.models import Segment
+from personalisation.forms import SegmentForm
 
 
 def overview(request):
@@ -29,6 +34,7 @@ def disable(request, segment_id):
 
     return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
 
+<<<<<<< HEAD
 # TODO: Make these requestable from an exsisting page (the create page.)
 # This code might become obselete.
 
@@ -67,3 +73,11 @@ def visit_c_rule_embed(request):
     return render(request, 'wagtailadmin/embeds/visit_count_rule.html', {
         'form_fields': VisitCountRule,
     })
+=======
+
+class CreateSegmentView(CreateView):
+    page_title = _("Add segment")
+    form_class = SegmentForm
+    template_name = 'modeladmin/personalisation/segment/create.html'
+    header_icon = 'folder-open-1'
+>>>>>>> origin/master
