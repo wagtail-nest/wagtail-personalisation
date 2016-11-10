@@ -4,7 +4,10 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import get_object_or_404, render
 from django.urls import reverse
 
+from wagtail.wagtailadmin.views import generic
+
 from personalisation.models import Segment
+from personalisation.forms import SegmentForm
 
 
 def overview(request):
@@ -26,3 +29,6 @@ def disable(request, segment_id):
     segment.save()
 
     return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
+
+
+

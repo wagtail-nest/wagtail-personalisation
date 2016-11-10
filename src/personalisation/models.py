@@ -107,7 +107,7 @@ class TimeRule(AbstractBaseRule):
 @python_2_unicode_compatible
 class ReferralRule(AbstractBaseRule):
     """Referral rule to segment users based on a regex test"""
-    regex_string = models.TextField()
+    regex_string = models.TextField(_("Regex string to match the referer with"))
 
     panels = [
         FieldPanel('regex_string'),
