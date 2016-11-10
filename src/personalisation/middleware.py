@@ -34,6 +34,7 @@ class SegmentMiddleware(object):
         return response
 
     def test_rules(self, rules, request):
+        """Test wether the user matches a segment's rules'"""
         if len(rules) > 0:
             for rule in rules:
                 result = rule.test_user(request)
@@ -50,5 +51,5 @@ class SegmentMiddleware(object):
         segment.visit_count = segment.visit_count + 1
         segment.save()
 
-        if segment not in request.session['segments']:
+        if segment.encoded_name() not in request.session['segments']:
             request.session['segments'].append(segment.encoded_name())
