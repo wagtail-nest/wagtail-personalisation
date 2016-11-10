@@ -34,7 +34,6 @@ def disable(request, segment_id):
 
     return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
 
-<<<<<<< HEAD
 # TODO: Make these requestable from an exsisting page (the create page.)
 # This code might become obselete.
 
@@ -73,11 +72,9 @@ def visit_c_rule_embed(request):
     return render(request, 'wagtailadmin/embeds/visit_count_rule.html', {
         'form_fields': VisitCountRule,
     })
-=======
 
 class CreateSegmentView(CreateView):
     page_title = _("Add segment")
     form_class = SegmentForm
     template_name = 'modeladmin/personalisation/segment/create.html'
     header_icon = 'folder-open-1'
->>>>>>> origin/master
