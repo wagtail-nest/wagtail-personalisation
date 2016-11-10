@@ -1,3 +1,5 @@
+import time
+
 from django.conf.urls import include, url
 from wagtail.contrib.modeladmin.options import ModelAdmin, modeladmin_register
 from wagtail.contrib.modeladmin.views import IndexView
@@ -34,12 +36,33 @@ modeladmin_register(SegmentModelAdmin)
 @hooks.register('before_serve_page')
 def set_visit_count(page, request, serve_args, serve_kwargs):
     """Update the users visit count before each page visit."""
+    # Update the segment visit count
     for seg in request.session['segments']:
         segment = Segment.objects.get(pk=seg['id'])
         segment.visit_count = segment.visit_count + 1
         segment.save()
 
-    if 'visit_count' not in request.session:
-        request.session['visit_count'] = 1
+    # Update the page visit count
+    def create_new_counter(page):
+        """Create a new counter dict and place it in session storage."""
+        countdict = {
+            "slug": page.slug,
+            "id": page.pk,
+            "path": page.url,
+            "count": 1,
+        }
+        request.session['visit_count'].append(countdict)
+
+    if len(request.session['visit_count']) > 0:
+        for index, counter in enumerate(request.session['visit_count']):
+            if counter['id'] == page.pk:
+                # Counter already exisits. Increase the count value by 1.
+                newcount = counter['count'] + 1
+                request.session['visit_count'][index]['count'] = newcount
+                request.session.modified = True
+            else:
+                # Counter doesn't exist. Create a new counter with count value 1.
+                create_new_counter(page)
     else:
-        request.session['visit_count'] = request.session.get('visit_count') + 1
+        # No counters exist. Create a new counter with count value 1.
+        create_new_counter(page)
