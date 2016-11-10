@@ -42,7 +42,4 @@ def set_visit_count(page, request, serve_args, serve_kwargs):
     if 'visit_count' not in request.session:
         request.session['visit_count'] = 1
     else:
-        print("User {} visited {} time(s).".format(
-            request.session.session_key,
-            request.session['visit_count']))
         request.session['visit_count'] = request.session.get('visit_count') + 1

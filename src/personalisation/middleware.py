@@ -23,8 +23,6 @@ class SegmentMiddleware(object):
             rules = AbstractBaseRule.objects.filter(segment=segment)
             result = self.test_rules(rules, request)
 
-            print(result)
-
             if result:
                 self.add_segment_to_user(segment, request)
 
