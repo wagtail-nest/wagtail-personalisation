@@ -4,6 +4,7 @@ import re
 from datetime import datetime
 
 from django.db import models
+from django.db.models import Q
 from django.db.models.signals import pre_save
 from django.dispatch import receiver
 from django.template.defaultfilters import slugify
@@ -12,6 +13,7 @@ from django.utils.translation import ugettext_lazy as _
 from modelcluster.models import ClusterableModel
 from modelcluster.fields import ParentalKey
 from wagtail.wagtailadmin.edit_handlers import FieldPanel, MultiFieldPanel, PageChooserPanel
+from wagtail.wagtailcore.models import Page 
 
 from polymorphic.models import PolymorphicModel
 
@@ -187,3 +189,61 @@ class VisitCountRule(AbstractBaseRule):
     def __str__(self):
         operator_display = self.get_operator_display()
         return '{} {}'.format(operator_display, self.count)
+
+
+class PersonalisablePage(Page):
+    canonical_page = models.ForeignKey(
+        'self', related_name='variations', blank=True,
+        null=True, on_delete=models.SET_NULL
+    )
+
+    segment = models.ForeignKey(
+        Segment, related_name='segments', on_delete=models.PROTECT
+    )
+
+    def __str__(self):
+        return "{} ({})".format(self.title, self.segment)
+
+    def get_variations(self, only_live=True):
+        canonical_page = self.canonical_page or self
+        variations = PersonalisablePage.objects.filter(
+            Q(canonical_page=canonical_page) |
+            Q(pk=canonical_page.pk)
+        ).exclude(pk=self.pk)
+
+        if only_live:
+            variations = variations.live()
+
+        return variations
+
+    def get_variation_parent(self, segment):
+        site = self.get_site()
+
+        variation_parent = (
+            PersonalisablePage.objects
+            .filter(
+                canonical_page=self.get_parent()
+                segment=segment,
+                path__startswith=site.root_page.path
+            ).first()
+        )
+        return variation_parent
+
+    def create_variation(self, segment, parent=None):
+        slug = "{}-{}".format(self.slug, segment.encoded_name())
+
+        if not parent:
+            parent = self.get_variation_parent(segment)
+
+        update_attrs = {
+            'title': self.title,
+            'slug': slug,
+            'segment': segment,
+            'live': False,
+            'canonical_page': self,
+        }
+
+        model_class = self.content_type.model_class()
+        new_page = model_class(**update_attrs)
+        parent.add_child()
+
