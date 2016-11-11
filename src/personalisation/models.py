@@ -11,7 +11,7 @@ from django.utils.encoding import python_2_unicode_compatible
 from django.utils.translation import ugettext_lazy as _
 from modelcluster.models import ClusterableModel
 from modelcluster.fields import ParentalKey
-from wagtail.wagtailadmin.edit_handlers import FieldPanel, MultiFieldPanel
+from wagtail.wagtailadmin.edit_handlers import FieldPanel, MultiFieldPanel, PageChooserPanel
 
 from polymorphic.models import PolymorphicModel
 
@@ -140,10 +140,18 @@ class VisitCountRule(AbstractBaseRule):
     )
     operator = models.CharField(max_length=20, choices=OPERATOR_CHOICES, default="ht")
     count = models.PositiveSmallIntegerField(default=0, null=True)
+    counted_page = models.ForeignKey(
+        'wagtailcore.Page',
+        null=False,
+        blank=False,
+        on_delete=models.CASCADE,
+        related_name='+',
+    )
 
     panels = [
         FieldPanel('operator'),
         FieldPanel('count'),
+        PageChooserPanel('counted_page'),
     ]
 
     def __init__(self, *args, **kwargs):
@@ -152,15 +160,26 @@ class VisitCountRule(AbstractBaseRule):
     def test_user(self, request):
         operator = self.operator
         segment_count = self.count
-        visit_count = request.session.get('visit_count')
 
-        if operator == "more_than":
+        # TODO: Figure out a way to have a correct count before the middleware
+        # initiates the test function
+
+        def get_visit_count(request):
+            """Search through the sessions to get the page visit count
+            corresponding to the request."""
+            for page in request.session['visit_count']:
+                if page['path'] == request.path:
+                    return page['count']
+
+        visit_count = get_visit_count(request)
+
+        if visit_count and operator == "more_than":
             if visit_count > segment_count:
                 return True
-        elif operator == "less_than":
+        elif visit_count and operator == "less_than":
             if visit_count < segment_count:
                 return True
-        elif operator == "equal_to":
+        elif visit_count and operator == "equal_to":
             if visit_count == segment_count:
                 return True
         return False
