@@ -13,10 +13,15 @@ from django.utils.functional import cached_property
 from django.utils.translation import ugettext_lazy as _
 from modelcluster.models import ClusterableModel
 from modelcluster.fields import ParentalKey
-from wagtail.wagtailadmin.edit_handlers import FieldPanel, MultiFieldPanel, PageChooserPanel
-from wagtail.wagtailcore.models import Page 
+from wagtail.wagtailadmin.edit_handlers import (
+    FieldPanel, MultiFieldPanel, ObjectList, PageChooserPanel, TabbedInterface)
+from wagtail.wagtailadmin.forms import WagtailAdminPageForm
+from wagtail.wagtailcore.models import Page
+from wagtail.utils.decorators import cached_classmethod
 
 from polymorphic.models import PolymorphicModel
+
+from personalisation.edit_handlers import ReadOnlyWidget
 
 
 @python_2_unicode_compatible
@@ -191,16 +196,42 @@ class VisitCountRule(AbstractBaseRule):
         operator_display = self.get_operator_display()
         return '{} {}'.format(operator_display, self.count)
 
+class AdminPersonalisablePageForm(WagtailAdminPageForm):
+    def __init__(self, *args, **kwargs):
+        super(AdminPersonalisablePageForm, self).__init__(*args, **kwargs)
+
+        canonical_page_text = _("None")
+        if self.instance.canonical_page:
+            canonical_page_text = self.instance.canonical_page.title
+        self.fields['canonical_page'].widget = ReadOnlyWidget(
+            text_display=canonical_page_text)
+
+        variation_display = Segment.objects.first()
+
+        if self.instance.is_canonical and variation_display:
+            variation_display = "{} - {}".format(variation_display, "canonical")
+
+        self.fields['variation'].widget = ReadOnlyWidget(
+            text_display=variation_display if variation_display else '')
+
 
 class PersonalisablePage(Page):
     canonical_page = models.ForeignKey(
         'self', related_name='variations', blank=True,
         null=True, on_delete=models.SET_NULL
     )
-
     segment = models.ForeignKey(
         Segment, related_name='segments', on_delete=models.PROTECT
     )
+
+    personalisation_panels = [
+        MultiFieldPanel([
+            FieldPanel('segment'),
+            PageChooserPanel('canonical_page'),
+        ])
+    ]
+
+    base_form_class = AdminPersonalisablePageForm
 
     def __str__(self):
         return "{} ({})".format(self.title, self.segment)
@@ -251,3 +282,20 @@ class PersonalisablePage(Page):
     @cached_property
     def has_variations(self):
         return self.variations.exists()
+
+
+def get_edit_handler(cls):
+    tabs = []
+    if cls.content_panels:
+        tabs.append(ObjectList(cls.content_panels, heading=_("Content")))
+    if cls.promote_panels:
+        tabs.append(ObjectList(cls.promote_panels, heading=_("Promote")))
+    if cls.variation_panels:
+        tabs.append(ObjectList(cls.variation_panels, heading=_("Variations")))
+    if cls.settings_panels:
+        tabs.append(ObjectList(cls.settings_panels, heading=_("Settings"), classname='settings'))
+
+    EditHandler = TabbedInterface(tabs, base_form_class=cls.base_form_class)
+    return EditHandler.bind_to_model(cls)
+
+PersonalisablePage.get_edit_handler = get_edit_handler
