@@ -5,13 +5,12 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import get_object_or_404, render
 from django.urls import reverse
 from django.utils.translation import ugettext_lazy as _
-
 from wagtail.contrib.modeladmin.views import CreateView
 
-from personalisation.models import (
-    ReferralRule, Segment, TimeRule, VisitCountRule)
-from personalisation.models import Segment
-from personalisation.forms import SegmentForm
+from personalisation.forms import (ReferralRuleForm, SegmentForm, TimeRuleForm,
+                                   VisitCountRuleForm)
+from personalisation.models import (ReferralRule, Segment, TimeRule,
+                                    VisitCountRule)
 
 
 def overview(request):
@@ -37,40 +36,22 @@ def disable(request, segment_id):
 # TODO: Make these requestable from an exsisting page (the create page.)
 # This code might become obselete.
 
-class TimeRuleForm(ModelForm):
-    """Create a form for the time rule model."""
-    class Meta:
-        model = TimeRule
-        fields = ['start_time', 'end_time']
-
 def time_rule_embed(request):
     """Show the content of the time rule modal."""
     return render(request, 'wagtailadmin/embeds/time_rule.html', {
-        'form_fields': TimeRuleForm(),
+        'form': TimeRuleForm,
     })
-
-class ReferralRuleForm(ModelForm):
-    """Create a form for the referral rule model."""
-    class Meta:
-        model = ReferralRule
-        fields = ['regex_string']
 
 def referral_rule_embed(request):
     """Show the content of the referral rule modal."""
     return render(request, 'wagtailadmin/embeds/referral_rule.html', {
-        'form_fields': ReferralRuleForm,
+        'form': ReferralRuleForm,
     })
-
-class VisitCountRuleForm(ModelForm):
-    """Create a form for the visit count rule model."""
-    class Meta:
-        model = VisitCountRule
-        fields = ['operator', 'count']
 
 def visit_c_rule_embed(request):
     """Show the content of the visit count rule modal."""
     return render(request, 'wagtailadmin/embeds/visit_count_rule.html', {
-        'form_fields': VisitCountRule,
+        'form': VisitCountRuleForm,
     })
 
 class CreateSegmentView(CreateView):

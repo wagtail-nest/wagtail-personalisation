@@ -7,18 +7,26 @@
         {% include "wagtailadmin/shared/header.html" with title=view.get_page_title subtitle=view.get_page_subtitle icon=view.header_icon tabbed=1 merged=1 %}
     {% endblock %}
 
-
-    {{ modal_content }}
-
     <form action="{% block form_action %}{{ view.create_url }}{% endblock %}" {% if is_multipart %} enctype="multipart/form-data"
         {% endif %} method="POST" novalidate>
         {% csrf_token %}
         
         {% block form %}
             {{ edit_handler.render_form_content }}
-        {% endblock %}
 
-        <ul class="objects">
+            {% for form in additional_forms %}
+            <li class="object">
+                <h2>
+                    <label for="{{ form.title }}">{{ form.title }}</label>
+                </h2>
+                <fieldset class="">
+                    <p>{{ form.description }}</p>
+                    <legend>{{ form.title }}</legend>
+                    {{ form }}
+                </fieldset>
+                </li>
+            {% endfor %}
+
             <li class="object">
                 <h2>
                     <label for="id_rules">Rules</label>
@@ -57,9 +65,8 @@
 
                     <h2>Your chosen rules</h2>
                 </fieldset>
-
             </li>
-        </ul>
+        {% endblock %}
 
         {% block footer %}
         <footer>

@@ -2,9 +2,12 @@ import time
 
 from django.conf.urls import include, url
 from wagtail.contrib.modeladmin.options import ModelAdmin, modeladmin_register
+from wagtail.contrib.modeladmin.views import CreateView
 from wagtail.wagtailcore import hooks
 
 from personalisation import admin_urls
+from personalisation.forms import (ReferralRuleForm, TimeRuleForm,
+                                   VisitCountRuleForm)
 from personalisation.models import Segment
 
 
@@ -18,6 +21,14 @@ def register_admin_urls():
             namespace='personalisation')),
     ]
 
+class SegmentCreateView(CreateView):
+    def get_context_data(self, **kwargs):
+        context = {
+            'additional_forms': (TimeRuleForm, ReferralRuleForm, VisitCountRuleForm),
+        }
+        context.update(kwargs)
+        return super(SegmentCreateView, self).get_context_data(**context)
+
 
 class SegmentModelAdmin(ModelAdmin):
     """The base model for the Segments administration interface."""
@@ -25,6 +36,7 @@ class SegmentModelAdmin(ModelAdmin):
     menu_icon = 'group'
     add_to_settings_menu = False
     list_display = ('status', 'name', 'create_date', 'edit_date')
+    create_view_class = SegmentCreateView
     index_view_extra_css = ['personalisation/segment/index.css']
     form_view_extra_css = ['personalisation/segment/form.css']
     inspect_view_enabled = True
