@@ -9,6 +9,7 @@ from django.db.models.signals import pre_save
 from django.dispatch import receiver
 from django.template.defaultfilters import slugify
 from django.utils.encoding import python_2_unicode_compatible
+from django.utils.functional import cached_property
 from django.utils.translation import ugettext_lazy as _
 from modelcluster.models import ClusterableModel
 from modelcluster.fields import ParentalKey
@@ -222,9 +223,9 @@ class PersonalisablePage(Page):
         variation_parent = (
             PersonalisablePage.objects
             .filter(
-                canonical_page=self.get_parent()
+                canonical_page=self.get_parent(),
                 segment=segment,
-                path__startswith=site.root_page.path
+                path__startswith=site.root_page.path,
             ).first()
         )
         return variation_parent
@@ -247,3 +248,6 @@ class PersonalisablePage(Page):
         new_page = model_class(**update_attrs)
         parent.add_child()
 
+    @cached_property
+    def has_variations(self):
+        return self.variations.exists()
