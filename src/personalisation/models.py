@@ -13,7 +13,6 @@ from django.utils.functional import cached_property
 from django.utils.translation import ugettext_lazy as _
 from modelcluster.fields import ParentalKey
 from modelcluster.models import ClusterableModel
-from polymorphic.models import PolymorphicModel
 from wagtail.utils.decorators import cached_classmethod
 from wagtail.wagtailadmin.edit_handlers import (
     FieldPanel, MultiFieldPanel, ObjectList, PageChooserPanel, TabbedInterface)
@@ -21,6 +20,7 @@ from wagtail.wagtailadmin.forms import WagtailAdminPageForm
 from wagtail.wagtailcore.models import Page
 
 from personalisation.edit_handlers import ReadOnlyWidget
+from polymorphic.models import PolymorphicModel
 
 
 @python_2_unicode_compatible
@@ -213,7 +213,6 @@ class AdminPersonalisablePageForm(WagtailAdminPageForm):
         self.fields['segment'].widget = ReadOnlyWidget(
             text_display=segment_display if segment_display else '')
 
-
 class PersonalisablePage(Page):
     canonical_page = models.ForeignKey(
         'self', related_name='variations', blank=True,
@@ -291,10 +290,10 @@ def get_edit_handler(cls):
     tabs = []
     if cls.content_panels:
         tabs.append(ObjectList(cls.content_panels, heading=_("Content")))
-    if cls.promote_panels:
-        tabs.append(ObjectList(cls.promote_panels, heading=_("Promote")))
     if cls.variation_panels:
         tabs.append(ObjectList(cls.variation_panels, heading=_("Variations")))
+    if cls.promote_panels:
+        tabs.append(ObjectList(cls.promote_panels, heading=_("Promote")))
     if cls.settings_panels:
         tabs.append(ObjectList(cls.settings_panels, heading=_("Settings"), classname='settings'))
 
