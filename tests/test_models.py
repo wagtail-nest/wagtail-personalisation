@@ -1,6 +1,7 @@
 import datetime
 
 import pytest
+
 from personalisation.models import TimeRule
 
 

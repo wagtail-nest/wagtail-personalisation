@@ -1,9 +1,10 @@
-import time
 import logging
+import time
+
+from personalisation.models import AbstractBaseRule, Segment
 
 logger = logging.getLogger()
 
-from personalisation.models import AbstractBaseRule, Segment
 
 
 class SegmentMiddleware(object):

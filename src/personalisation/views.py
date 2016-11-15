@@ -7,10 +7,10 @@ from django.urls import reverse
 from django.utils.translation import ugettext_lazy as _
 from wagtail.contrib.modeladmin.views import CreateView
 
-from personalisation.forms import (ReferralRuleForm, SegmentForm, TimeRuleForm,
-                                   VisitCountRuleForm)
-from personalisation.models import (ReferralRule, Segment, TimeRule,
-                                    VisitCountRule)
+from personalisation.forms import (
+    ReferralRuleForm, SegmentForm, TimeRuleForm, VisitCountRuleForm)
+from personalisation.models import (
+    ReferralRule, Segment, TimeRule, VisitCountRule)
 
 
 def overview(request):
@@ -34,7 +34,7 @@ def disable(request, segment_id):
     return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
 
 # TODO: Make these requestable from an existing page (the create page.)
-# This code might become obselete.
+# This code might become obsolete.
 
 def time_rule_embed(request):
     """Show the content of the time rule modal."""

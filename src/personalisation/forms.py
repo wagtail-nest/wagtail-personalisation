@@ -1,14 +1,12 @@
 from __future__ import absolute_import, unicode_literals
 
 from django import forms
-from django.conf import settings
 from django.utils.translation import ugettext as _
+from wagtail.wagtailadmin.forms import WagtailAdminModelForm
 from wagtail.wagtailcore.models import Page
 
-from wagtail.wagtailadmin.forms import WagtailAdminModelForm
-
 from personalisation.models import (
-    ReferralRule, Segment, TimeRule, VisitCountRule, PersonalisablePage)
+    PersonalisablePage, ReferralRule, Segment, TimeRule, VisitCountRule)
 
 
 class SegmentForm(forms.ModelForm):
@@ -47,6 +45,7 @@ class VisitCountRuleForm(WagtailAdminModelForm):
 
 
 class PersonalisationForm(forms.Form):
+    """Form to add new personalisation pages"""
     copy_from_canonical = forms.BooleanField(required=False)
     parent_page = forms.ModelChoiceField(
         queryset=PersonalisablePage.objects.all()

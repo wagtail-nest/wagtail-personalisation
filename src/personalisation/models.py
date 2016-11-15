@@ -11,15 +11,14 @@ from django.template.defaultfilters import slugify
 from django.utils.encoding import python_2_unicode_compatible
 from django.utils.functional import cached_property
 from django.utils.translation import ugettext_lazy as _
-from modelcluster.models import ClusterableModel
 from modelcluster.fields import ParentalKey
+from modelcluster.models import ClusterableModel
+from polymorphic.models import PolymorphicModel
+from wagtail.utils.decorators import cached_classmethod
 from wagtail.wagtailadmin.edit_handlers import (
     FieldPanel, MultiFieldPanel, ObjectList, PageChooserPanel, TabbedInterface)
 from wagtail.wagtailadmin.forms import WagtailAdminPageForm
 from wagtail.wagtailcore.models import Page
-from wagtail.utils.decorators import cached_classmethod
-
-from polymorphic.models import PolymorphicModel
 
 from personalisation.edit_handlers import ReadOnlyWidget
 

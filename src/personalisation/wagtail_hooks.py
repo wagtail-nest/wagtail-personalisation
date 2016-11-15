@@ -6,8 +6,8 @@ from wagtail.contrib.modeladmin.views import CreateView
 from wagtail.wagtailcore import hooks
 
 from personalisation import admin_urls
-from personalisation.forms import (ReferralRuleForm, TimeRuleForm,
-                                   VisitCountRuleForm)
+from personalisation.forms import (
+    ReferralRuleForm, TimeRuleForm, VisitCountRuleForm)
 from personalisation.models import Segment
 
 
