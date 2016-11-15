@@ -1,0 +1,71 @@
+{% extends "wagtailadmin/generic/index.html" %}
+{% load wagtailadmin_tags %}
+{% load i18n %}
+
+{% block titletag %}{% blocktrans with page_type=content_type.model_class.get_verbose_name %}New {{ page_type }}{% endblocktrans %}{% endblock %}
+{% block bodyclass %}page-editor create-model-{{ content_type.model }}{% endblock %}
+
+{% block content %}
+     <header class="merged tab-merged nice-padding">
+        {% include "wagtailadmin/shared/breadcrumb.html" with page=parent_page include_self=1 %}
+
+        <div class="row row-flush">
+            <div class="left col9">
+                <h1 class="icon icon-doc-empty-inverse">{% trans 'Add new variation for' %} <span>{{ content_type.model_class.get_verbose_name }}: {{ page.title }}</span> with segment <span>{{ segment }}</span></h1>
+            </div>
+        </div>
+    </header>
+
+    <form id="page-edit-form" action="{% url 'segment:add' page.pk segment.pk %}" method="POST"{% if form.is_multipart %} enctype="multipart/form-data" {% endif %}>
+        {% csrf_token %}
+        {{ edit_handler.render_form_content }}
+
+        {% page_permissions parent_page as parent_page_perms %}
+        <footer>
+            <ul>
+                <li class="actions">
+                    <div class="dropdown dropup dropdown-button match-width">
+                        <button type="submit" class="button action-save button-longrunning" tabindex="3" data-clicked-text="{% trans 'Saving...' %}"><span class="icon icon-spinner"></span><em>{% trans 'Save draft' %}</em></button>
+                        <div class="dropdown-toggle icon icon-arrow-up"></div>
+                        <ul role="menu">
+                            {% if parent_page_perms.can_publish_subpage %}
+                                <li>
+                                    <button type="submit" name="action-publish" value="action-publish" class="button button-longrunning" tabindex="3" data-clicked-text="{% trans 'Publishing...' %}" {% if page.locked %}disabled {% endif %}><span class="icon icon-spinner"></span><em>{% trans 'Publish' %}</em></button>
+                                </li>
+                            {% endif %}
+                            <li><input type="submit" name="action-submit" value="{% trans 'Submit for moderation' %}" class="button" /></li>
+                        </ul>
+                    </div>
+                </li>
+            </ul>
+        </footer>
+
+    </form>
+
+{% endblock %}
+{% block extra_css %}
+    {{ block.super }}
+    {% include "wagtailadmin/pages/_editor_css.html" %}
+{% endblock %}
+{% block extra_js %}
+    {{ block.super }}
+    {% include "wagtailadmin/pages/_editor_js.html" %}
+
+    <script>
+        $(function(){
+            $('#page-edit-form .tab-content section.active input').first().focus();
+            /* Make user confirm before leaving the editor if there are unsaved changes */
+            {% trans "This page has unsaved changes." as confirmation_message %}
+            enableDirtyFormCheck(
+                '#page-edit-form',
+                {
+                    confirmationMessage: '{{ confirmation_message|escapejs }}',
+                    {% if has_unsaved_changes %}
+                        alwaysDirty: true,
+                    {% endif %}
+                }
+            );
+        });
+    </script>
+{% endblock %}
+

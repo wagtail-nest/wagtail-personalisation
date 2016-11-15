@@ -73,6 +73,7 @@ class CreateSegmentView(CreateView):
 
 class AddVariation(FormView):
     form_class = PersonalisationForm
+    template_name = "wagtailadmin/add.html"
 
     add_variation_panels = [
         FieldPanel('copy_from_canonical'),
@@ -84,9 +85,9 @@ class AddVariation(FormView):
                    base_form_class=PersonalisationForm)
     ])
 
-    def dispatch(self, request, page_pk, segment_name, *args, **kwargs):
+    def dispatch(self, request, page_pk, segment_pk, *args, **kwargs):
         self.page = get_object_or_404(PersonalisablePage, pk=page_pk)
-        self.segment = get_object_or_404(Segment, name=segment_name)
+        self.segment = get_object_or_404(Segment, pk=segment_pk)
 
         return super(AddVariation, self).dispatch(request, *args, **kwargs)
 

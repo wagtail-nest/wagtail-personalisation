@@ -6,7 +6,6 @@ from datetime import datetime
 from django.db import models
 from django.db.models import Q
 from django.db.models.signals import pre_save
-from django.dispatch import receiver
 from django.template.defaultfilters import slugify
 from django.utils.encoding import python_2_unicode_compatible
 from django.utils.functional import cached_property
@@ -212,7 +211,7 @@ class AdminPersonalisablePageForm(WagtailAdminPageForm):
             segment_display = "{} - {}".format(segment_display, "canonical")
 
         self.fields['segment'].widget = ReadOnlyWidget(
-            text_display=segment_display if segment_display else '')
+            text_display=segment_display if segment_display else _("No segment"))
 
 
 class PersonalisablePage(Page):
@@ -262,7 +261,7 @@ class PersonalisablePage(Page):
         )
         return variation_parent
 
-    def create_variation(self, segment, parent=None):
+    def create_variation(self, segment, copy_fields=False, parent=None):
         slug = "{}-{}".format(self.slug, segment.encoded_name())
 
         if not parent:
@@ -276,9 +275,18 @@ class PersonalisablePage(Page):
             'canonical_page': self,
         }
 
-        model_class = self.content_type.model_class()
-        new_page = model_class(**update_attrs)
-        parent.add_child()
+        if copy_fields:
+            kwargs = {'update_attrs': update_attrs}
+            if parent != self.get_parent():
+                kwargs['to'] = parent
+
+            new_page = self.copy(**kwargs)
+        else:
+            model_class = self.content_type.model_class()
+            new_page = model_class(**update_attrs)
+            parent.add_child(instance=new_page)
+
+        return new_page
 
     @cached_property
     def has_variations(self):
@@ -287,6 +295,7 @@ class PersonalisablePage(Page):
     @cached_property
     def is_canonical(self):
         return not self.canonical_page and self.has_variations
+
 
 @cached_classmethod
 def get_edit_handler(cls):
