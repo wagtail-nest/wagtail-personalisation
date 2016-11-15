@@ -21,6 +21,7 @@ def register_admin_urls():
             namespace='personalisation')),
     ]
 
+
 class SegmentCreateView(CreateView):
     def get_context_data(self, **kwargs):
         context = {

@@ -12,33 +12,42 @@ from personalisation.models import (
 class SegmentForm(forms.ModelForm):
     """Custom Segment form for the create view."""
     class Meta:
-        """Why does this need a docstring? I do not know."""
         model = Segment
         fields = (
             'name',
             'status',
         )
 
+
 class TimeRuleForm(WagtailAdminModelForm):
     """Create a form for the time rule model."""
     title = "Time"
-    description = "Choose a time segment in which the user visits the site."
+    description = """
+    Choose a time segment in which the user visits the site.
+    """
+
     class Meta:
         model = TimeRule
         fields = ['start_time', 'end_time']
 
+
 class ReferralRuleForm(WagtailAdminModelForm):
     """Create a form for the referral rule model."""
     title = "Referrer"
-    description = "Define a referring page, domain or query the user has to come from."
+    description = """
+    Define a referring page, domain or query the user has to come from.
+    """
+
     class Meta:
         model = ReferralRule
         fields = ['regex_string']
+
 
 class VisitCountRuleForm(WagtailAdminModelForm):
     """Create a form for the visit count rule model."""
     title = "Visit count"
     description = "Choose the number of visits the user has to have made."
+
     class Meta:
         model = VisitCountRule
         fields = ['operator', 'count']
@@ -75,7 +84,6 @@ class PersonalisationForm(forms.Form):
         if not qs:
             return Page.objects.filter(pk=self.site.root_page.pk)
         return qs
-
 
     def _page_has_required(self, page):
         common_fields = set(PersonalisablePage._meta.fields)

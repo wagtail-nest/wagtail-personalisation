@@ -1,5 +1,17 @@
 from setuptools import find_packages, setup
 
+
+install_requires = [
+    'django-polymorphic==1.0.2',
+    'wagtail>=1.7',
+]
+
+tests_require = [
+    'pytest==3.0.4',
+    'pytest-django==3.0.0',
+    'pytest-sugar==0.7.1',
+]
+
 setup(
     name='wagtail-personalisation',
     version='0.1.0',
@@ -7,6 +19,11 @@ setup(
     author='Lab Digital BV',
     author_email='b.besemer@labdigital.nl',
     url='http://labdigital.nl',
+    install_requires=install_requires,
+    tests_require=tests_require,
+    extras_require={
+        'test': tests_require,
+    },
     packages=find_packages('src'),
     package_dir={'': 'src'},
     include_package_data=True,
@@ -27,8 +44,4 @@ setup(
         'Framework :: Django :: 1.10',
         'Topic :: Internet :: WWW/HTTP :: Site Management',
     ],
-    install_requires=[
-        'django-polymorphic==1.0.2',
-        'wagtail>=1.7',
-    ]
 )

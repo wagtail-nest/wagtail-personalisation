@@ -82,7 +82,6 @@ class AbstractBaseRule(PolymorphicModel):
         return "Segmentation rule"
 
 
-
 @python_2_unicode_compatible
 class TimeRule(AbstractBaseRule):
     """Time rule to segment users based on a start and end time"""
@@ -195,6 +194,7 @@ class VisitCountRule(AbstractBaseRule):
         operator_display = self.get_operator_display()
         return '{} {}'.format(operator_display, self.count)
 
+
 class AdminPersonalisablePageForm(WagtailAdminPageForm):
     def __init__(self, *args, **kwargs):
         super(AdminPersonalisablePageForm, self).__init__(*args, **kwargs)
@@ -297,7 +297,8 @@ def get_edit_handler(cls):
     if cls.settings_panels:
         tabs.append(ObjectList(cls.settings_panels, heading=_("Settings"), classname='settings'))
 
-    EditHandler = TabbedInterface(tabs, base_form_class=cls.base_form_class)
-    return EditHandler.bind_to_model(cls)
+    edit_handler = TabbedInterface(tabs, base_form_class=cls.base_form_class)
+    return edit_handler.bind_to_model(cls)
+
 
 PersonalisablePage.get_edit_handler = get_edit_handler
