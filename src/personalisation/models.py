@@ -205,7 +205,8 @@ class AdminPersonalisablePageForm(WagtailAdminPageForm):
         self.fields['canonical_page'].widget = ReadOnlyWidget(
             text_display=canonical_page_text)
 
-        segment_display = Segment.objects.first()
+        segment_display = Segment.objects.filter(
+            pk=self.initial['segment']).first()
 
         if self.instance.is_canonical and segment_display:
             segment_display = "{} - {}".format(segment_display, "canonical")
@@ -213,13 +214,15 @@ class AdminPersonalisablePageForm(WagtailAdminPageForm):
         self.fields['segment'].widget = ReadOnlyWidget(
             text_display=segment_display if segment_display else '')
 
+
 class PersonalisablePage(Page):
     canonical_page = models.ForeignKey(
         'self', related_name='variations', blank=True,
         null=True, on_delete=models.SET_NULL
     )
     segment = models.ForeignKey(
-        Segment, related_name='segments', on_delete=models.PROTECT
+        Segment, related_name='segments', on_delete=models.PROTECT,
+        blank=True, null=True
     )
 
     variation_panels = [

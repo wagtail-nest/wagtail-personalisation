@@ -19,6 +19,6 @@ urlpatterns = [
         name="refferal_rule_embed"),
     url(r'^segment/visit-count-rule/$', views.visit_count_rule_embed,
         name="visit_count_rule_embed"),
-    url(r'^(?P<page_pk>\d+)/add/(?P<segment_name>[^/]+)/$',
+    url(r'^variations/(?P<page_pk>\d+)/add/(?P<segment_name>[^/]+)/$',
         views.AddVariation.as_view(), name='add')
 ]

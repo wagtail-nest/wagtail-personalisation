@@ -88,9 +88,9 @@ class AddVariation(FormView):
         self.page = get_object_or_404(PersonalisablePage, pk=page_pk)
         self.segment = get_object_or_404(Segment, name=segment_name)
 
-        super(AddVariation, self).dispatch(request, *args, **kwargs)
+        return super(AddVariation, self).dispatch(request, *args, **kwargs)
 
-    def get_form_kwargs(self):
+    def get_form_kwargs(self, *args, **kwargs):
         form_kwargs = super(AddVariation, self).get_form_kwargs(*args, **kwargs)
         form_kwargs.update({
             'page': self.page,
