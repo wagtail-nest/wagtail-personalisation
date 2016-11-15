@@ -206,13 +206,13 @@ class AdminPersonalisablePageForm(WagtailAdminPageForm):
         self.fields['canonical_page'].widget = ReadOnlyWidget(
             text_display=canonical_page_text)
 
-        variation_display = Segment.objects.first()
+        segment_display = Segment.objects.first()
 
-        if self.instance.is_canonical and variation_display:
-            variation_display = "{} - {}".format(variation_display, "canonical")
+        if self.instance.is_canonical and segment_display:
+            segment_display = "{} - {}".format(segment_display, "canonical")
 
-        self.fields['variation'].widget = ReadOnlyWidget(
-            text_display=variation_display if variation_display else '')
+        self.fields['segment'].widget = ReadOnlyWidget(
+            text_display=segment_display if segment_display else '')
 
 
 class PersonalisablePage(Page):
@@ -282,6 +282,10 @@ class PersonalisablePage(Page):
     @cached_property
     def has_variations(self):
         return self.variations.exists()
+
+    @cached_property
+    def is_canonical(self):
+        return not self.canonical_page and self.has_variations
 
 @cached_classmethod
 def get_edit_handler(cls):
