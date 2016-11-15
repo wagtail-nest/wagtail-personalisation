@@ -58,7 +58,6 @@ class PersonalisationForm(forms.Form):
         self.segment = kwargs.pop('segment')
         self.base_fields['parent_page'].queryset = self.get_queryset()
 
-
         if self._page_has_required(self.page):
             self.base_fields['copy_from_canonical'].initial = True
             self.base_fields['copy_from_canonical'].disabled = True
