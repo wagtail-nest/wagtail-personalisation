@@ -224,7 +224,7 @@ class PersonalisablePage(Page):
         Segment, related_name='segments', on_delete=models.PROTECT
     )
 
-    personalisation_panels = [
+    variation_panels = [
         MultiFieldPanel([
             FieldPanel('segment'),
             PageChooserPanel('canonical_page'),
@@ -283,7 +283,7 @@ class PersonalisablePage(Page):
     def has_variations(self):
         return self.variations.exists()
 
-
+@cached_classmethod
 def get_edit_handler(cls):
     tabs = []
     if cls.content_panels:
