@@ -33,7 +33,7 @@ def disable(request, segment_id):
 
     return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
 
-# TODO: Make these requestable from an exsisting page (the create page.)
+# TODO: Make these requestable from an existing page (the create page.)
 # This code might become obselete.
 
 def time_rule_embed(request):
