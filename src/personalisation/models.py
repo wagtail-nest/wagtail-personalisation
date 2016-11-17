@@ -10,6 +10,7 @@ from django.template.defaultfilters import slugify
 from django.utils.encoding import python_2_unicode_compatible
 from django.utils.functional import cached_property
 from django.utils.translation import ugettext_lazy as _
+from django.shortcuts import redirect
 from modelcluster.fields import ParentalKey
 from modelcluster.models import ClusterableModel
 from polymorphic.models import PolymorphicModel
@@ -208,20 +209,24 @@ class AdminPersonalisablePageForm(WagtailAdminPageForm):
     def __init__(self, *args, **kwargs):
         super(AdminPersonalisablePageForm, self).__init__(*args, **kwargs)
 
-        canonical_page_text = _("None")
-        if self.instance.canonical_page:
-            canonical_page_text = self.instance.canonical_page.title
-        self.fields['canonical_page'].widget = ReadOnlyWidget(
-            text_display=canonical_page_text)
+    def save(self, commit=True):
+        page = super(AdminPersonalisablePageForm, self).save(commit=False)
 
-        segment_display = Segment.objects.filter(
-            pk=self.initial['segment']).first()
+        segment = page.segment
+        slug = "{}-{}".format(page.slug, segment.encoded_name())
+        title = "{} ({})".format(page.title, segment.name)
+        update_attrs = {
+            'title': title,
+            'slug': slug,
+            'segment': segment,
+            'live': False,
+            'canonical_page': page,
+        }
 
-        if self.instance.is_canonical and segment_display:
-            segment_display = "{} - {}".format(segment_display, "canonical")
+        # TODO: Implement logic to change segment when there's already one set instead of copying
+        new_page = page.copy(update_attrs=update_attrs, copy_revisions=False)
 
-        self.fields['segment'].widget = ReadOnlyWidget(
-            text_display=segment_display if segment_display else _("No segment"))
+        return new_page
 
 
 class PersonalisablePage(Page):
