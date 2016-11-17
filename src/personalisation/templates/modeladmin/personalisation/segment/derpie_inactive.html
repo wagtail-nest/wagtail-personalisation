@@ -14,19 +14,6 @@
         {% block form %}
             {{ edit_handler.render_form_content }}
 
-            {% for form in additional_forms %}
-            <li class="object">
-                <h2>
-                    <label for="{{ form.title }}">{{ form.title }}</label>
-                </h2>
-                <fieldset class="">
-                    <p>{{ form.description }}</p>
-                    <legend>{{ form.title }}</legend>
-                    {{ form }}
-                </fieldset>
-                </li>
-            {% endfor %}
-
             <li class="object">
                 <h2>
                     <label for="id_rules">Rules</label>

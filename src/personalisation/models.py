@@ -12,67 +12,21 @@ from django.utils.functional import cached_property
 from django.utils.translation import ugettext_lazy as _
 from modelcluster.fields import ParentalKey
 from modelcluster.models import ClusterableModel
+from polymorphic.models import PolymorphicModel
 from wagtail.utils.decorators import cached_classmethod
-from wagtail.wagtailadmin.edit_handlers import (
-    FieldPanel, MultiFieldPanel, ObjectList, PageChooserPanel, TabbedInterface)
+from wagtail.wagtailadmin.edit_handlers import (FieldPanel, FieldRowPanel,
+                                                InlinePanel, MultiFieldPanel,
+                                                ObjectList, PageChooserPanel,
+                                                TabbedInterface)
 from wagtail.wagtailadmin.forms import WagtailAdminPageForm
 from wagtail.wagtailcore.models import Page
 
 from personalisation.edit_handlers import ReadOnlyWidget
-from polymorphic.models import PolymorphicModel
-
-
-@python_2_unicode_compatible
-class Segment(ClusterableModel):
-    """Model for a new segment"""
-    name = models.CharField(max_length=255)
-    create_date = models.DateTimeField(auto_now_add=True)
-    edit_date = models.DateTimeField(auto_now=True)
-    enable_date = models.DateTimeField(null=True, editable=False)
-    disable_date = models.DateTimeField(null=True, editable=False)
-    visit_count = models.PositiveIntegerField(default=0, editable=False)
-    STATUS_CHOICES = (
-        ('enabled', 'Enabled'),
-        ('disabled', 'Disabled'),
-    )
-    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default="enabled")
-
-    panels = [
-        FieldPanel('name'),
-        FieldPanel('status'),
-    ]
-
-    def __str__(self):
-        return self.name
-
-    def encoded_name(self):
-        """Returns a string with a slug for the segment"""
-        return slugify(self.name.lower())
-
-
-def check_status_change(sender, instance, *args, **kwargs):
-    """Check if the status has changed. Alter dates accordingly."""
-    try:
-        original_status = sender.objects.get(pk=instance.id).status
-    except sender.DoesNotExist:
-        original_status = ""
-
-    if original_status != instance.status:
-        if instance.status == "enabled":
-            instance.enable_date = datetime.now()
-            instance.visit_count = 0
-            return instance
-        if instance.status == "disabled":
-            instance.disable_date = datetime.now()
-
-pre_save.connect(check_status_change, sender=Segment)
 
 
 @python_2_unicode_compatible
 class AbstractBaseRule(PolymorphicModel):
     """Base for creating rules to segment users with"""
-    segment = ParentalKey('Segment', related_name="rules")
-
     def test_user(self, request):
         """Test if the user matches this rule"""
         return True
@@ -84,12 +38,15 @@ class AbstractBaseRule(PolymorphicModel):
 @python_2_unicode_compatible
 class TimeRule(AbstractBaseRule):
     """Time rule to segment users based on a start and end time"""
+    segment = ParentalKey('Segment', related_name="time_rules")
     start_time = models.TimeField(_("Starting time"))
     end_time = models.TimeField(_("Ending time"))
 
     panels = [
-        FieldPanel('start_time'),
-        FieldPanel('end_time'),
+        FieldRowPanel([
+            FieldPanel('start_time'),
+            FieldPanel('end_time'),
+        ]),
     ]
 
     def __init__(self, *args, **kwargs):
@@ -113,6 +70,7 @@ class TimeRule(AbstractBaseRule):
 @python_2_unicode_compatible
 class ReferralRule(AbstractBaseRule):
     """Referral rule to segment users based on a regex test"""
+    segment = ParentalKey('Segment', related_name="referral_rules")
     regex_string = models.TextField(_("Regex string to match the referer with"))
 
     panels = [
@@ -138,6 +96,7 @@ class ReferralRule(AbstractBaseRule):
 @python_2_unicode_compatible
 class VisitCountRule(AbstractBaseRule):
     """Visit count rule to segment users based on amount of visits"""
+    segment = ParentalKey('Segment', related_name="visit_count_rules")
     OPERATOR_CHOICES = (
         ('more_than', 'More than'),
         ('less_than', 'Less than'),
@@ -154,9 +113,11 @@ class VisitCountRule(AbstractBaseRule):
     )
 
     panels = [
-        FieldPanel('operator'),
-        FieldPanel('count'),
         PageChooserPanel('counted_page'),
+        FieldRowPanel([
+            FieldPanel('operator'),
+            FieldPanel('count'),
+        ]),
     ]
 
     def __init__(self, *args, **kwargs):
@@ -192,6 +153,55 @@ class VisitCountRule(AbstractBaseRule):
     def __str__(self):
         operator_display = self.get_operator_display()
         return '{} {}'.format(operator_display, self.count)
+
+
+@python_2_unicode_compatible
+class Segment(ClusterableModel):
+    """Model for a new segment"""
+    name = models.CharField(max_length=255)
+    create_date = models.DateTimeField(auto_now_add=True)
+    edit_date = models.DateTimeField(auto_now=True)
+    enable_date = models.DateTimeField(null=True, editable=False)
+    disable_date = models.DateTimeField(null=True, editable=False)
+    visit_count = models.PositiveIntegerField(default=0, editable=False)
+    STATUS_CHOICES = (
+        ('enabled', 'Enabled'),
+        ('disabled', 'Disabled'),
+    )
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default="enabled")
+
+    panels = [
+        FieldPanel('name'),
+        FieldPanel('status'),
+        InlinePanel('time_rules', label="Time rule", min_num=None, max_num=1),
+        InlinePanel('referral_rules', label="Referral rule", min_num=None, max_num=1),
+        InlinePanel('visit_count_rules', label="Visit count rule", min_num=None, max_num=1),
+    ]
+
+    def __str__(self):
+        return self.name
+
+    def encoded_name(self):
+        """Returns a string with a slug for the segment"""
+        return slugify(self.name.lower())
+
+
+def check_status_change(sender, instance, *args, **kwargs):
+    """Check if the status has changed. Alter dates accordingly."""
+    try:
+        original_status = sender.objects.get(pk=instance.id).status
+    except sender.DoesNotExist:
+        original_status = ""
+
+    if original_status != instance.status:
+        if instance.status == "enabled":
+            instance.enable_date = datetime.now()
+            instance.visit_count = 0
+            return instance
+        if instance.status == "disabled":
+            instance.disable_date = datetime.now()
+
+pre_save.connect(check_status_change, sender=Segment)
 
 
 class AdminPersonalisablePageForm(WagtailAdminPageForm):
