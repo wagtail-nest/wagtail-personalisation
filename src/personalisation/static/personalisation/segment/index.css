@@ -64,37 +64,92 @@
     }
 }
 
-.block_container .block .segment_stats {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-    margin-bottom: 10px;
+.block_container .block h2 {
+    display: block;
 }
 
-    .block_container .block .segment_stats li {
+.block_container .block .inspect_container {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    justify-content: space-between;
+    align-items: stretch;
+    margin-bottom: 5px;
+}
+
+.block_container .block .inspect_container .inspect {
+    display: block;
+    float: left;
+    width: calc(50% - 10px);
+    padding: 0;
+    margin: 0;
+    list-style: none;
+}
+
+    .block_container .block .inspect_container .inspect li {
         display: inline-block;
-        font-size: 24px;
-        font-weight: bold;
-        margin-right: 50px;
-    }
-    .block_container .block .segment_stats li::last-child{
-        margin-right: 0;
+        margin-bottom: 5px;
     }
 
-    .block_container .block .segment_stats li::before {
-        display: inline-block;
-        content: "";
-        width: 20px;
-        height: 20px;
-        margin-right: 5px;
-        background-size: 20px 20px;
+    .block_container .block .inspect_container .inspect li span {
+        display: block;
+        font-size: 20px;
+        font-weight: bold;
+        margin: 5px 0;
+        overflow-wrap: break-word;
     }
-    .block_container .block .segment_stats .visit_stat::before {
-        background-image: url("./rocket_icon.png");
+
+        .block_container .block .inspect_container .inspect li span::before {
+            display: inline-block;
+            content: "";
+            width: 16px;
+            height: 16px;
+            margin-right: 5px;
+            background-size: contain;
+        }
+
+            .block_container .block .inspect_container .segment_stats .visit_stat span::before {
+                background-image: url("./rocket_icon.png");
+            }
+            .block_container .block .inspect_container .segment_stats .days_stat span::before {
+                background-image: url("./calendar_icon.png");
+            }
+
+            .block_container .block .inspect_container .segment_rules .time_rule span::before {
+                background-image: url("./time_icon.png");
+            }
+            .block_container .block .inspect_container .segment_rules .visit_count_rule span::before {
+                background-image: url("./visit_count_icon.png");
+            }
+
+    .block_container .block .inspect_container .inspect li pre {
+        position: relative;
+        box-sizing: border-box;
+        width: auto;
+        background-color: #eee;
+        border: 1px solid #ccc;
+        margin: 5px 0 5px 21px;
+        padding: 2px 5px;
+        word-wrap: break-word;
+        word-break: break-all;
+        border-radius: 3px;
     }
-    .block_container .block .segment_stats .days_stat::before {
-        background-image: url("./calendar_icon.png");
-    }
+
+        .block_container .block .inspect_container .inspect li pre::before {
+            display: inline-block;
+            position: absolute;
+            content: "";
+            left: -21px;
+            top: 6px;
+            width: 16px;
+            height: 16px;
+            margin-right: 5px;
+            background-size: contain;
+        }
+
+            .block_container .block .inspect_container .segment_rules .referral_rule pre::before {
+                background-image: url("./referral_icon.png");
+            }
 
 .block_container .block.suggestion .suggestive_text {
     display: block;

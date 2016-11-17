@@ -2,7 +2,7 @@ import time
 
 from django.conf.urls import include, url
 from wagtail.contrib.modeladmin.options import ModelAdmin, modeladmin_register
-from wagtail.contrib.modeladmin.views import CreateView
+from wagtail.contrib.modeladmin.views import IndexView
 from wagtail.wagtailcore import hooks
 
 from personalisation import admin_urls
@@ -20,6 +20,15 @@ def register_admin_urls():
             app_name='personalisation',
             namespace='personalisation')),
     ]
+
+
+class SegmentIndexView(IndexView):
+    def get_context_data(self, **kwargs):
+        context = {
+            'additional_forms': (TimeRuleForm, ReferralRuleForm, VisitCountRuleForm),
+        }
+        context.update(kwargs)
+        return super(SegmentIndexView, self).get_context_data(**context)
 
 
 class SegmentModelAdmin(ModelAdmin):

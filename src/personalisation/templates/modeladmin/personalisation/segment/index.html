@@ -23,10 +23,42 @@
                                     {% for segment in object_list %}
                                         <div class="block">
                                             <a href="inspect/{{ segment.pk }}"><h2>{{ segment }}</h2></a>
-                                            <ul class="segment_stats">
-                                                <li class="visit_stat">{{ segment.visit_count|localize }} {% trans "visits" %}</li>
-                                                <li class="days_stat">{{ segment.enable_date|days_since:segment.disable_date }} {% trans "days" %}</li>
-                                            </ul>
+                                            <div class="inspect_container">
+                                                <ul class="inspect segment_stats">
+                                                    <li class="visit_stat">
+                                                        <span>{{ segment.visit_count|localize }}</span>
+                                                        {% trans "Visitors are part of this segment" %}
+                                                    </li>
+                                                    <li class="days_stat">
+                                                        <span>{{ segment.enable_date|days_since:segment.disable_date }}</span>
+                                                        {% trans "Days since matching visitors are appointed to this segment" %}
+                                                    </li>
+                                                </ul>
+
+                                                <ul class="inspect segment_rules">
+                                                    {% for rule in segment.time_rules.all %}
+                                                        <li class="time_rule">   
+                                                            These users visit between
+                                                            <span>{{ rule.start_time }} and {{ rule.end_time }}</span>
+                                                        </li>
+                                                    {% endfor %}
+
+                                                    {% for rule in segment.referral_rules.all %}
+                                                        <li class="referral_rule">   
+                                                            These visits originate from
+                                                            <pre>{{ rule.regex_string }}</pre>
+                                                        </li>
+                                                    {% endfor %}
+
+                                                    {% for rule in segment.visit_count_rules.all %}
+                                                        <li class="visit_count_rule">   
+                                                            These users visited {{ rule.counted_page }}
+                                                            <span>{{ rule.get_operator_display }} {{ rule.count }} times</span>
+                                                        </li>
+                                                    {% endfor %}
+                                                </ul>
+                                            </div>
+
                                             {% if user_can_create %}
                                             <ul class="block_actions">
                                                 {% if segment.status == "disabled" %}
