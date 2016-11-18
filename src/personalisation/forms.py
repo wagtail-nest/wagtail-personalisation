@@ -10,6 +10,7 @@ from personalisation.models import (
 
 
 class SegmentForm(forms.ModelForm):
+    # TODO: Remove this if no longer needed.
     """Custom Segment form for the create view."""
     class Meta:
         model = Segment
@@ -20,6 +21,7 @@ class SegmentForm(forms.ModelForm):
 
 
 class TimeRuleForm(WagtailAdminModelForm):
+    # TODO: Remove this if no longer needed.
     """Create a form for the time rule model."""
     title = "Time"
     description = """
@@ -32,6 +34,7 @@ class TimeRuleForm(WagtailAdminModelForm):
 
 
 class ReferralRuleForm(WagtailAdminModelForm):
+    # TODO: Remove this if no longer needed.
     """Create a form for the referral rule model."""
     title = "Referrer"
     description = """
@@ -44,6 +47,7 @@ class ReferralRuleForm(WagtailAdminModelForm):
 
 
 class VisitCountRuleForm(WagtailAdminModelForm):
+    # TODO: Remove this if no longer needed.
     """Create a form for the visit count rule model."""
     title = "Visit count"
     description = "Choose the number of visits the user has to have made."

@@ -40,6 +40,7 @@ def disable(request, segment_id):
 
 
 class CreateSegmentView(CreateView):
+    # TODO: Remove this if no longer needed.
     page_title = _("Add segment")
     form_class = SegmentForm
     template_name = 'modeladmin/personalisation/segment/create.html'
