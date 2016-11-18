@@ -38,14 +38,10 @@ class AbstractBaseRule(PolymorphicModel):
     def __str__(self):
         return "Segmentation rule"
 
-    class Meta:
-        abstract = True
-
 
 @python_2_unicode_compatible
 class TimeRule(AbstractBaseRule):
     """Time rule to segment users based on a start and end time"""
-    time_rule_id = models.AutoField(primary_key=True, default=0)
     start_time = models.TimeField(_("Starting time"))
     end_time = models.TimeField(_("Ending time"))
 
@@ -77,7 +73,6 @@ class TimeRule(AbstractBaseRule):
 @python_2_unicode_compatible
 class ReferralRule(AbstractBaseRule):
     """Referral rule to segment users based on a regex test"""
-    referral_rule_id = models.AutoField(primary_key=True, default=0)
     regex_string = models.TextField(_("Regex string to match the referer with"))
 
     panels = [
@@ -103,7 +98,6 @@ class ReferralRule(AbstractBaseRule):
 @python_2_unicode_compatible
 class VisitCountRule(AbstractBaseRule):
     """Visit count rule to segment users based on amount of visits"""
-    visit_count_rule_id = models.AutoField(primary_key=True, default=0)
     OPERATOR_CHOICES = (
         ('more_than', 'More than'),
         ('less_than', 'Less than'),
