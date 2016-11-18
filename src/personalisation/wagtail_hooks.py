@@ -22,15 +22,6 @@ def register_admin_urls():
     ]
 
 
-class SegmentIndexView(IndexView):
-    def get_context_data(self, **kwargs):
-        context = {
-            'additional_forms': (TimeRuleForm, ReferralRuleForm, VisitCountRuleForm),
-        }
-        context.update(kwargs)
-        return super(SegmentIndexView, self).get_context_data(**context)
-
-
 class SegmentModelAdmin(ModelAdmin):
     """The base model for the Segments administration interface."""
     model = Segment

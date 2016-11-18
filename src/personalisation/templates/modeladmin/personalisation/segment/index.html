@@ -36,21 +36,21 @@
                                                 </ul>
 
                                                 <ul class="inspect segment_rules">
-                                                    {% for rule in segment.time_rules.all %}
+                                                    {% for rule in segment.personalisation_timerule_related.all %}
                                                         <li class="time_rule">   
                                                             These users visit between
                                                             <span>{{ rule.start_time }} and {{ rule.end_time }}</span>
                                                         </li>
                                                     {% endfor %}
 
-                                                    {% for rule in segment.referral_rules.all %}
+                                                    {% for rule in segment.personalisation_referralrule_related.all %}
                                                         <li class="referral_rule">   
                                                             These visits originate from
                                                             <pre>{{ rule.regex_string }}</pre>
                                                         </li>
                                                     {% endfor %}
 
-                                                    {% for rule in segment.visit_count_rules.all %}
+                                                    {% for rule in segment.personalisation_visitcountrule_related.all %}
                                                         <li class="visit_count_rule">   
                                                             These users visited {{ rule.counted_page }}
                                                             <span>{{ rule.get_operator_display }} {{ rule.count }} times</span>
