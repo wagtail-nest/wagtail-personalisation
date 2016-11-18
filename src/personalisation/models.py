@@ -6,19 +6,18 @@ from datetime import datetime
 from django.db import models
 from django.db.models import Q
 from django.db.models.signals import pre_save
+from django.shortcuts import redirect
 from django.template.defaultfilters import slugify
 from django.utils.encoding import python_2_unicode_compatible
 from django.utils.functional import cached_property
 from django.utils.translation import ugettext_lazy as _
-from django.shortcuts import redirect
 from modelcluster.fields import ParentalKey
 from modelcluster.models import ClusterableModel
 from polymorphic.models import PolymorphicModel
 from wagtail.utils.decorators import cached_classmethod
-from wagtail.wagtailadmin.edit_handlers import (FieldPanel, FieldRowPanel,
-                                                InlinePanel, MultiFieldPanel,
-                                                ObjectList, PageChooserPanel,
-                                                TabbedInterface)
+from wagtail.wagtailadmin.edit_handlers import (
+    FieldPanel, FieldRowPanel, InlinePanel, MultiFieldPanel, ObjectList,
+    PageChooserPanel, TabbedInterface)
 from wagtail.wagtailadmin.forms import WagtailAdminPageForm
 from wagtail.wagtailcore.models import Page
 
@@ -28,6 +27,12 @@ from personalisation.edit_handlers import ReadOnlyWidget
 @python_2_unicode_compatible
 class AbstractBaseRule(PolymorphicModel):
     """Base for creating rules to segment users with"""
+    segment = ParentalKey(
+        'Segment',
+        related_name="%(app_label)s_%(class)s_related",
+        related_query_name="%(app_label)s_%(class)ss"
+    )
+
     def test_user(self, request):
         """Test if the user matches this rule"""
         return True
@@ -35,11 +40,13 @@ class AbstractBaseRule(PolymorphicModel):
     def __str__(self):
         return "Segmentation rule"
 
+    class Meta:
+        abstract = True
+
 
 @python_2_unicode_compatible
 class TimeRule(AbstractBaseRule):
     """Time rule to segment users based on a start and end time"""
-    segment = ParentalKey('Segment', related_name="time_rules")
     start_time = models.TimeField(_("Starting time"))
     end_time = models.TimeField(_("Ending time"))
 
@@ -71,7 +78,6 @@ class TimeRule(AbstractBaseRule):
 @python_2_unicode_compatible
 class ReferralRule(AbstractBaseRule):
     """Referral rule to segment users based on a regex test"""
-    segment = ParentalKey('Segment', related_name="referral_rules")
     regex_string = models.TextField(_("Regex string to match the referer with"))
 
     panels = [
@@ -97,7 +103,6 @@ class ReferralRule(AbstractBaseRule):
 @python_2_unicode_compatible
 class VisitCountRule(AbstractBaseRule):
     """Visit count rule to segment users based on amount of visits"""
-    segment = ParentalKey('Segment', related_name="visit_count_rules")
     OPERATOR_CHOICES = (
         ('more_than', 'More than'),
         ('less_than', 'Less than'),
@@ -174,9 +179,9 @@ class Segment(ClusterableModel):
     panels = [
         FieldPanel('name'),
         FieldPanel('status'),
-        InlinePanel('time_rules', label="Time rule", min_num=None, max_num=1),
-        InlinePanel('referral_rules', label="Referral rule", min_num=None, max_num=1),
-        InlinePanel('visit_count_rules', label="Visit count rule", min_num=None, max_num=1),
+        InlinePanel('personalisation_timerule_related', label="Time rule", min_num=0, max_num=1),
+        InlinePanel('personalisation_referralrule_related', label="Referral rule", min_num=0, max_num=1),
+        InlinePanel('personalisation_visitcountrule_related', label="Visit count rule", min_num=0, max_num=1),
     ]
 
     def __str__(self):

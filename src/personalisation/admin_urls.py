@@ -12,13 +12,6 @@ urlpatterns = [
         name='enable'),
     url(r'^segment/(?P<segment_id>[0-9]+)/disable/$', views.disable,
         name='disable'),
-    # TODO: These might no longer be needed when using a modal
-    url(r'^segment/time-rule/$', views.time_rule_embed,
-        name="time_rule_embed"),
-    url(r'^segment/referral-rule/$', views.referral_rule_embed,
-        name="refferal_rule_embed"),
-    url(r'^segment/visit-count-rule/$', views.visit_count_rule_embed,
-        name="visit_count_rule_embed"),
     url(r'^variations/(?P<page_pk>\d+)/add/(?P<segment_pk>[^/]+)/$',
         views.AddVariation.as_view(), name='add')
 ]

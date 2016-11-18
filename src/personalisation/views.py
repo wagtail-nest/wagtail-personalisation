@@ -39,31 +39,6 @@ def disable(request, segment_id):
     return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
 
 
-# TODO: Make these requestable from an existing page (the create page)
-# This code might become obsolete.
-
-
-def time_rule_embed(request):
-    """Show the content of the time rule modal."""
-    return render(request, 'wagtailadmin/embeds/time_rule.html', {
-        'form': TimeRuleForm,
-    })
-
-
-def referral_rule_embed(request):
-    """Show the content of the referral rule modal."""
-    return render(request, 'wagtailadmin/embeds/referral_rule.html', {
-        'form': ReferralRuleForm,
-    })
-
-
-def visit_count_rule_embed(request):
-    """Show the content of the visit count rule modal."""
-    return render(request, 'wagtailadmin/embeds/visit_count_rule.html', {
-        'form': VisitCountRuleForm,
-    })
-
-
 class CreateSegmentView(CreateView):
     page_title = _("Add segment")
     form_class = SegmentForm
