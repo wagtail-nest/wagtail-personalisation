@@ -210,6 +210,8 @@ pre_save.connect(check_status_change, sender=Segment)
 class AdminPersonalisablePageForm(WagtailAdminPageForm):
     def __init__(self, *args, **kwargs):
         super(AdminPersonalisablePageForm, self).__init__(*args, **kwargs)
+        import pdb
+        pdb.set_trace()
         self.current_segment = Segment.objects.first() # TODO: Filter for the current segment
 
     def save(self, commit=True):
@@ -246,6 +248,7 @@ class PersonalisablePage(Page):
         Segment, related_name='segments', on_delete=models.PROTECT,
         blank=True, null=True
     )
+    is_segmented = models.BooleanField(default=False)
 
     variation_panels = [
         MultiFieldPanel([
