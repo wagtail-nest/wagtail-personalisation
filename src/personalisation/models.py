@@ -100,9 +100,9 @@ class ReferralRule(AbstractBaseRule):
 class VisitCountRule(AbstractBaseRule):
     """Visit count rule to segment users based on amount of visits"""
     OPERATOR_CHOICES = (
-        ('more_than', 'More than'),
-        ('less_than', 'Less than'),
-        ('equal_to', 'Equal to'),
+        ('more_than', _("More than")),
+        ('less_than', _("Less than")),
+        ('equal_to', _("Equal to")),
     )
     operator = models.CharField(max_length=20, choices=OPERATOR_CHOICES, default="ht")
     count = models.PositiveSmallIntegerField(default=0, null=True)
@@ -177,21 +177,7 @@ class Segment(ClusterableModel):
         FieldPanel('status'),
         InlinePanel(
             'personalisation_timerule_related',
-            label="Time rule",
-            min_num=0,
-            max_num=1
-        ),
-        InlinePanel(
-            'personalisation_referralrule_related',
-            label="Referral rule",
-            min_num=0,
-            max_num=1
-        ),
-        InlinePanel(
-            'personalisation_visitcountrule_related',
-            label="Visit count rule",
-            min_num=0,
-            max_num=1
+            label=_("Time rule"), min_num=0, max_num=1
         ),
     ]
 
