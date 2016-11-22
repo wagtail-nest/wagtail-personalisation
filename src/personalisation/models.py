@@ -27,6 +27,8 @@ class AbstractBaseRule(PolymorphicModel):
     """Base for creating rules to segment users with"""
     segment = ParentalKey(
         'Segment',
+        # TODO: Make the related names accesible to wagtail admin
+        # for inlining them.
         related_name="%(app_label)s_%(class)s_related",
         related_query_name="%(app_label)s_%(class)ss"
     )
@@ -252,8 +254,8 @@ class AdminPersonalisablePageForm(WagtailAdminPageForm):
 
 class PersonalisablePage(Page):
     canonical_page = models.ForeignKey(
-        'self', related_name='variations', blank=True,
-        null=True, on_delete=models.SET_NULL
+        'self', related_name='variations', on_delete=models.SET_NULL,
+        blank=True, null=True
     )
     segment = models.ForeignKey(
         Segment, related_name='segments', on_delete=models.PROTECT,
@@ -263,7 +265,9 @@ class PersonalisablePage(Page):
     variation_panels = [
         MultiFieldPanel([
             FieldPanel('segment'),
-            PageChooserPanel('canonical_page'),
+            # TOOD: Currently the user can only select pages of the 'PersonalisablePage' type.
+            # This is no longer acceptable as soon as a page inherits the 'PersonalisablePage'.
+            PageChooserPanel('canonical_page', page_type=None),
         ])
     ]
 
