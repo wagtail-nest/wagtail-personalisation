@@ -14,10 +14,9 @@ from modelcluster.fields import ParentalKey
 from modelcluster.models import ClusterableModel
 from polymorphic.models import PolymorphicModel
 from wagtail.utils.decorators import cached_classmethod
-from wagtail.wagtailadmin.edit_handlers import (FieldPanel, FieldRowPanel,
-                                                InlinePanel, MultiFieldPanel,
-                                                ObjectList, PageChooserPanel,
-                                                TabbedInterface)
+from wagtail.wagtailadmin.edit_handlers import (
+    FieldPanel, FieldRowPanel, InlinePanel, MultiFieldPanel, ObjectList,
+    PageChooserPanel, TabbedInterface)
 from wagtail.wagtailadmin.forms import WagtailAdminPageForm
 from wagtail.wagtailcore.models import Page
 
@@ -26,7 +25,7 @@ from wagtail.wagtailcore.models import Page
 class AbstractBaseRule(PolymorphicModel):
     """Base for creating rules to segment users with"""
     segment = ParentalKey(
-        'Segment',
+        'personalisation.Segment',
         # TODO: Make the related names accesible to wagtail admin
         # for inlining them.
         related_name="%(app_label)s_%(class)s_related",
