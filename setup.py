@@ -8,6 +8,7 @@ install_requires = [
 
 tests_require = [
     'pytest==3.0.4',
+    'pytest-cov==2.4.0',
     'pytest-django==3.0.0',
     'pytest-sugar==0.7.1',
     'freezegun==0.3.8',

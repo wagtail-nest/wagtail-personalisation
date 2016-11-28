@@ -17,6 +17,9 @@ develop: clean requirements
 test:
 	py.test --nomigrations --reuse-db tests/
 
+coverage:
+	py.test --cov=personalisation --cov-report=term-missing --cov-report=html
+
 lint: flake8 isort
 
 flake8:
