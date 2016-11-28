@@ -22,3 +22,16 @@ def test_time_rule_false():
     time_rule = models.TimeRule(start_time=datetime.time(11, 0, 0), end_time=datetime.time(23, 0, 0))
 
     assert time_rule.test_user() is False
+
+@freeze_time("10:00:00")
+def test_time_rule_reverse():
+    time_rule = models.TimeRule(start_time=datetime.time(13, 0, 0), end_time=datetime.time(9, 0, 0))
+
+    assert time_rule.test_user() is False
+
+@freeze_time("10:00:00")
+def test_time_rule_reverse_next_day():
+    time_rule = models.TimeRule(start_time=datetime.time(11, 0, 0), end_time=datetime.time(11, 0, 0))
+
+    assert time_rule.test_user() is False
+
