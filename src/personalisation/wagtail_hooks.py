@@ -8,7 +8,7 @@ from wagtail.wagtailcore import hooks
 from personalisation import admin_urls
 from personalisation.forms import (
     ReferralRuleForm, TimeRuleForm, VisitCountRuleForm)
-from personalisation.models import Segment
+from personalisation.models import Segment, PersonalisablePage
 
 
 @hooks.register('register_admin_urls')
@@ -58,7 +58,7 @@ def set_visit_count(page, request, serve_args, serve_kwargs):
     if len(request.session['visit_count']) > 0:
         for index, counter in enumerate(request.session['visit_count']):
             if counter['id'] == page.pk:
-                # Counter already exisits. Increase the count value by 1.
+                # Counter already exists. Increase the count value by 1.
                 newcount = counter['count'] + 1
                 request.session['visit_count'][index]['count'] = newcount
                 request.session.modified = True
@@ -68,3 +68,32 @@ def set_visit_count(page, request, serve_args, serve_kwargs):
     else:
         # No counters exist. Create a new counter with count value 1.
         create_new_counter(page)
+
+@hooks.register('before_serve_page')
+def serve_variation(page, request, serve_args, serve_kwargs):
+    user_segments = []
+
+    for segment in request.session['segments']:
+        try:
+            user_segment = Segment.objects.get(pk=segment['id'], status='enabled')
+        except Segment.DoesNotExist:
+            user_segment = None
+        if user_segment:
+            user_segments.append(user_segment)
+
+    if len(user_segments) > 0:
+        variations = _check_for_variations(user_segments, page)
+
+        if variations:
+            variation = variations[0]
+
+            return variation.serve(request, *serve_args, **serve_kwargs)
+
+def _check_for_variations(segments, page):
+    for segment in segments:
+        variation = PersonalisablePage.objects.filter(canonical_page=page, segment=segment)
+
+        if variation:
+            return variation
+
+    return None
