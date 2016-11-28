@@ -26,13 +26,13 @@ class AbstractBaseRule(PolymorphicModel):
     """Base for creating rules to segment users with"""
     segment = ParentalKey(
         'personalisation.Segment',
-        # TODO: Make the related names accesible to wagtail admin
+        # TODO: Make the related names accessible to wagtail admin
         # for inlining them.
         related_name="%(app_label)s_%(class)s_related",
         related_query_name="%(app_label)s_%(class)ss"
     )
 
-    def test_user(self, request):
+    def test_user(self):
         """Test if the user matches this rule"""
         return True
 
@@ -56,16 +56,12 @@ class TimeRule(AbstractBaseRule):
     def __init__(self, *args, **kwargs):
         super(TimeRule, self).__init__(*args, **kwargs)
 
-    def test_user(self, request):
-        current_time = self.get_current_time()
+    def test_user(self, request=None):
+        current_time = datetime.now().time()
         starting_time = self.start_time
         ending_time = self.end_time
 
         return starting_time <= current_time <= ending_time
-
-    def get_current_time(self):
-        """Mockable function for testing purposes"""
-        return datetime.now().time()
 
     def __str__(self):
         return '{} - {}'.format(self.start_time, self.end_time)

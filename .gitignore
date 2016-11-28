@@ -12,7 +12,7 @@
 
 build/
 dist/
-tests/_sandbox/assets
+tests/sandbox/assets
 htmlcov/
 docs/_build
 
