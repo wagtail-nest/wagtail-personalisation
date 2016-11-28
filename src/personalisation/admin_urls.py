@@ -12,6 +12,4 @@ urlpatterns = [
         name='enable'),
     url(r'^segment/(?P<segment_id>[0-9]+)/disable/$', views.disable,
         name='disable'),
-    url(r'^variations/(?P<page_pk>\d+)/add/(?P<segment_pk>[^/]+)/$',
-        views.AddVariation.as_view(), name='add')
 ]

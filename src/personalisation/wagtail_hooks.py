@@ -6,9 +6,8 @@ from wagtail.contrib.modeladmin.views import IndexView
 from wagtail.wagtailcore import hooks
 
 from personalisation import admin_urls
-from personalisation.forms import (
-    ReferralRuleForm, TimeRuleForm, VisitCountRuleForm)
 from personalisation.models import Segment, PersonalisablePage
+from personalisation.utils import impersonate_other_page
 
 
 @hooks.register('register_admin_urls')
@@ -87,6 +86,8 @@ def serve_variation(page, request, serve_args, serve_kwargs):
         if variations:
             variation = variations[0]
 
+            impersonate_other_page(variation, page)
+
             return variation.serve(request, *serve_args, **serve_kwargs)
 
 def _check_for_variations(segments, page):
@@ -94,6 +95,7 @@ def _check_for_variations(segments, page):
         variation = PersonalisablePage.objects.filter(canonical_page=page, segment=segment)
 
         if variation:
+
             return variation
 
     return None

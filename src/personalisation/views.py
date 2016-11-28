@@ -1,19 +1,13 @@
 from __future__ import absolute_import, unicode_literals
 
-from django.forms import ModelForm
-from django.http import HttpResponse, HttpResponseRedirect
-from django.shortcuts import get_object_or_404, render, redirect
-from django.urls import reverse
+from django.http import HttpResponseRedirect
+from django.shortcuts import get_object_or_404, render
 from django.utils.translation import ugettext_lazy as _
-from django.views.generic.edit import FormView
 from wagtail.contrib.modeladmin.views import CreateView
-from wagtail.wagtailadmin.edit_handlers import (
-    FieldPanel, ObjectList, PageChooserPanel, TabbedInterface)
 
-from personalisation.forms import (
-    PersonalisationForm, ReferralRuleForm, SegmentForm, TimeRuleForm,
-    VisitCountRuleForm)
-from personalisation.models import PersonalisablePage, Segment
+
+from personalisation.forms import SegmentForm
+from personalisation.models import Segment
 
 
 def overview(request):
@@ -47,55 +41,3 @@ class CreateSegmentView(CreateView):
     header_icon = 'folder-open-1'
 
 
-class AddVariation(FormView):
-    form_class = PersonalisationForm
-    template_name = "wagtailadmin/add.html"
-
-    add_variation_panels = [
-        FieldPanel('copy_from_canonical'),
-        PageChooserPanel('parent_page'),
-    ]
-
-    edit_handler = TabbedInterface([
-        ObjectList(add_variation_panels, heading='Variation',
-                   base_form_class=PersonalisationForm)
-    ])
-
-    def dispatch(self, request, page_pk, segment_pk, *args, **kwargs):
-        self.page = get_object_or_404(PersonalisablePage, pk=page_pk)
-        self.segment = get_object_or_404(Segment, pk=segment_pk)
-
-        return super(AddVariation, self).dispatch(request, *args, **kwargs)
-
-    def get_form_kwargs(self, *args, **kwargs):
-        form_kwargs = super(AddVariation, self).get_form_kwargs(*args, **kwargs)
-        form_kwargs.update({
-            'page': self.page,
-            'segment': self.segment,
-        })
-        return form_kwargs
-
-    def form_valid(self, form):
-        parent = form.cleaned_data['parent_page']
-        copy_from_canonical = form.cleaned_data['copy_from_canonical']
-
-        new_page = self.page.create_variation(
-            self.segment, copy_fields=copy_from_canonical, parent=parent)
-
-        return redirect(
-            'wagtailadmin_pages:edit', new_page.id
-        )
-
-    def get_context_data(self, *args, **kwargs):
-        context = super(AddVariation, self).get_context_data(*args, **kwargs)
-        edit_handler = self.edit_handler.bind_to_model(self.page)
-
-        context.update({
-            'page': self.page,
-            'segment': self.segment,
-            'content_type': self.page.content_type,
-            'parent_page': self.page.get_parent(),
-            'edit_handler': edit_handler(self.page, context['form']),
-        })
-
-        return context
