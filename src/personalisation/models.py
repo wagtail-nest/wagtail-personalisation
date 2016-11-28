@@ -210,9 +210,6 @@ pre_save.connect(check_status_change, sender=Segment)
 class AdminPersonalisablePageForm(WagtailAdminPageForm):
     def __init__(self, *args, **kwargs):
         super(AdminPersonalisablePageForm, self).__init__(*args, **kwargs)
-        import pdb
-        pdb.set_trace()
-        self.current_segment = Segment.objects.first() # TODO: Filter for the current segment
 
     def save(self, commit=True):
         page = super(AdminPersonalisablePageForm, self).save(commit=False)
@@ -227,14 +224,19 @@ class AdminPersonalisablePageForm(WagtailAdminPageForm):
                 'segment': segment,
                 'live': False,
                 'canonical_page': page,
+                'is_segmented': True,
             }
 
-            # TODO: Implement logic to change segment when there's already one set instead of copying
-
-            new_page = page.copy(update_attrs=update_attrs, copy_revisions=False)
-
-            return new_page
-        page.save()
+            if page.is_segmented:
+                slug = "{}-{}".format(page.canonical_page.slug, segment.encoded_name())
+                title = "{} ({})".format(page.canonical_page.title, segment.name)
+                page.slug = slug
+                page.title = title
+                page.save()
+                return page
+            else:
+                new_page = page.copy(update_attrs=update_attrs, copy_revisions=False)
+                return new_page
 
         return page
 
