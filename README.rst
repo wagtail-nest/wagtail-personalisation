@@ -1,7 +1,7 @@
 Wagtail personalisation module
 ==============================
 
-Personalisation module for Wagtail. This project is still work in progresss.
+Personalisation module for Wagtail. This project is still work in progress.
 
 
 Instructions
