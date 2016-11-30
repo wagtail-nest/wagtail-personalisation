@@ -9,12 +9,6 @@ from personalisation import models
 from tests.factories.site import SiteFactory
 
 
-"""Base Rule tests"""
-def test_create_base_rule():
-    base_rule = models.AbstractBaseRule()
-
-    assert base_rule.test_user() is True
-
 """Time Rule tests"""
 @freeze_time("10:00:00")
 def test_create_time_rule():

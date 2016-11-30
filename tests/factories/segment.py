@@ -14,8 +14,6 @@ class SegmentFactory(factory.DjangoModelFactory):
     def create_rules(self, create, extracted, **kwargs):
         if not create:
             return
-        self.time_rule = TimeRuleFactory(segment=self)
-        self.referral_rule = ReferralRuleFactory(segment=self)
 
 
 class TimeRuleFactory(factory.DjangoModelFactory):

@@ -13,7 +13,7 @@ DATABASES = {
 
 SECRET_KEY = 'not needed'
 
-ROOT_URLCONF = 'tests.urls'
+ROOT_URLCONF = 'tests.sandbox.urls'
 
 STATIC_URL = '/static/'
 
