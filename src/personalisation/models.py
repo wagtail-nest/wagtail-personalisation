@@ -22,12 +22,10 @@ from wagtail.wagtailcore.models import Page
 
 
 @python_2_unicode_compatible
-class AbstractBaseRule(PolymorphicModel):
+class AbstractBaseRule(models.Model):
     """Base for creating rules to segment users with"""
     segment = ParentalKey(
         'personalisation.Segment',
-        # TODO: Make the related names accessible to wagtail admin
-        # for inlining them.
         related_name="%(app_label)s_%(class)s_related",
         related_query_name="%(app_label)s_%(class)ss"
     )
@@ -38,6 +36,9 @@ class AbstractBaseRule(PolymorphicModel):
 
     def __str__(self):
         return "Segmentation rule"
+
+    class Meta:
+        abstract = True
 
 
 @python_2_unicode_compatible
@@ -174,6 +175,14 @@ class Segment(ClusterableModel):
         InlinePanel(
             'personalisation_timerule_related',
             label=_("Time rule"), min_num=0, max_num=1
+        ),
+        InlinePanel(
+            'personalisation_referralrule_related',
+            label=_("Referral rule"), min_num=0, max_num=1
+        ),
+        InlinePanel(
+            'personalisation_visitcountrule_related',
+            label=_("Visit count rule"), min_num=0, max_num=1
         ),
     ]
 

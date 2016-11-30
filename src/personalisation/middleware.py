@@ -25,8 +25,15 @@ class SegmentMiddleware(object):
         segments = Segment.objects.all().filter(status='enabled')
 
         for segment in segments:
-            rules = AbstractBaseRule.objects.filter(segment=segment)
-            result = self.test_rules(rules, request)
+            rules = AbstractBaseRule.__subclasses__()
+            segment_rules = []
+            for rule in rules:
+                queried_rules = rule.objects.filter(segment=segment)
+                for result in queried_rules:
+                    segment_rules.append(result)
+            result = self.test_rules(segment_rules, request)
+
+            print(result)
 
             if result:
                 self.add_segment_to_user(segment, request)
