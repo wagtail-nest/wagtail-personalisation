@@ -1,11 +1,13 @@
 import datetime
 
 import pytest
+from django.test.client import Client
 from freezegun import freeze_time
 
-from django.test.client import Client
+from tests.factories.segment import (
+    ReferralRuleFactory, SegmentFactory, TimeRuleFactory)
 from tests.factories.site import SiteFactory
-from tests.factories.segment import SegmentFactory, TimeRuleFactory, ReferralRuleFactory
+
 
 @pytest.mark.django_db
 class TestUserSegmenting(object):

@@ -3,7 +3,8 @@ import datetime
 import pytest
 
 from personalisation.models import Segment, TimeRule
-from tests.factories.segment import SegmentFactory, TimeRuleFactory, ReferralRuleFactory
+from tests.factories.segment import (
+    ReferralRuleFactory, SegmentFactory, TimeRuleFactory)
 
 """Factory tests"""
 @pytest.mark.django_db
@@ -38,4 +39,3 @@ def test_create_segment_with_new_referral_rule():
     segment.referral_rule = ReferralRuleFactory(regex_string='test.notest', segment=segment)
 
     assert segment.referral_rule.regex_string == 'test.notest'
-

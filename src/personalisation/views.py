@@ -5,7 +5,6 @@ from django.shortcuts import get_object_or_404, render
 from django.utils.translation import ugettext_lazy as _
 from wagtail.contrib.modeladmin.views import CreateView
 
-
 from personalisation.forms import SegmentForm
 from personalisation.models import Segment
 
@@ -39,5 +38,3 @@ class CreateSegmentView(CreateView):
     form_class = SegmentForm
     template_name = 'modeladmin/personalisation/segment/create.html'
     header_icon = 'folder-open-1'
-
-

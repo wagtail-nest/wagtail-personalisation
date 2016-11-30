@@ -3,6 +3,7 @@ from wagtail.wagtailcore.models import Site
 
 from tests.factories.page import SiteRootFactory
 
+
 class SiteFactory(factory.DjangoModelFactory):
     hostname = 'localhost'
     port = 8000

@@ -1,8 +1,9 @@
 import factory
 from wagtail.wagtailcore.models import Page
-from personalisation.models import PersonalisablePage
 
+from personalisation.models import PersonalisablePage
 from tests.sandbox.pages.models import HomePage
+
 
 class PersonalisablePageFactory(factory.DjangoModelFactory):
     class Meta:

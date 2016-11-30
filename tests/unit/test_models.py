@@ -1,13 +1,12 @@
 import datetime
 
 import pytest
-from freezegun import freeze_time
 from django.http import HttpRequest
+from freezegun import freeze_time
 from wagtail.wagtailcore.models import Site
 
 from personalisation import models
 from tests.factories.site import SiteFactory
-
 
 """Time Rule tests"""
 @freeze_time("10:00:00")
@@ -51,4 +50,3 @@ def test_test(rf):
     request.META['SERVER_PORT'] = 8000
 
     assert Site.find_for_request(request) == site
-

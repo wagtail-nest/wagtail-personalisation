@@ -6,7 +6,7 @@ from wagtail.contrib.modeladmin.views import IndexView
 from wagtail.wagtailcore import hooks
 
 from personalisation import admin_urls
-from personalisation.models import Segment, PersonalisablePage
+from personalisation.models import PersonalisablePage, Segment
 from personalisation.utils import impersonate_other_page
 
 

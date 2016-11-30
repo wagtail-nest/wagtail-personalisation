@@ -1,7 +1,9 @@
 import datetime
 
 import factory
+
 from personalisation import models
+
 
 class SegmentFactory(factory.DjangoModelFactory):
     name = 'TestSegment'

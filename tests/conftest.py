@@ -11,4 +11,3 @@ def django_db_setup(django_db_setup, django_db_blocker):
         # Remove some initial data that is brought by the sandbox module
         Site.objects.all().delete()
         Page.objects.all().exclude(depth=1).delete()
-
