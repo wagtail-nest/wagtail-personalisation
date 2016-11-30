@@ -21,7 +21,7 @@ STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
 )
 
-USE_TZ = True
+USE_TZ = False
 
 TEMPLATES = [
     {

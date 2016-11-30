@@ -17,6 +17,9 @@ develop: clean requirements
 test:
 	py.test --nomigrations --reuse-db tests/
 
+retest:
+	py.test --nomigrations --reuse-db tests/ -vvv
+
 coverage:
 	py.test --cov=personalisation --cov-report=term-missing --cov-report=html
 

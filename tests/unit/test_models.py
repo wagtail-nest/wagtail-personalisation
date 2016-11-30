@@ -2,10 +2,12 @@ import datetime
 
 import pytest
 from freezegun import freeze_time
+from django.http import HttpRequest
+from wagtail.wagtailcore.models import Site
 
 from personalisation import models
+from tests.factories.site import SiteFactory
 
-def
 
 """Base Rule tests"""
 def test_create_base_rule():
@@ -42,4 +44,17 @@ def test_time_rule_reverse_next_day():
 """Visit Count Rule tests"""
 def test_visit_count_rule():
     visit_count_rule = models.VisitCountRule()
+
+
+"""Test test"""
+@pytest.mark.django_db
+def test_test(rf):
+    site = SiteFactory()
+
+    request = HttpRequest()
+    request.path = '/'
+    request.META['HTTP_HOST'] = 'localhost'
+    request.META['SERVER_PORT'] = 8000
+
+    assert Site.find_for_request(request) == site
 
