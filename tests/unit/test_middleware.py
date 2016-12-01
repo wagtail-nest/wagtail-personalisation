@@ -45,3 +45,54 @@ class TestUserSegmenting(object):
         client.get('/', **{ 'HTTP_REFERER': 'test.test'})
 
         assert client.session['segments'][0]['encoded_name'] == 'referral'
+
+    @freeze_time("10:00:00")
+    def test_time_and_referral_segment(self, client):
+        segment = SegmentFactory(name='Both')
+        time_rule = TimeRuleFactory(
+            start_time=datetime.time(8, 0, 0),
+            end_time=datetime.time(23, 0, 0),
+            segment=segment
+        )
+        referral_rule = ReferralRuleFactory(
+            regex_string="test.test",
+            segment=segment
+        )
+
+        client.get('/', **{ 'HTTP_REFERER': 'test.test'})
+
+        assert client.session['segments'][0]['encoded_name'] == 'both'
+
+    @freeze_time("7:00:00")
+    def test_no_time_but_referral_segment(self, client):
+        segment = SegmentFactory(name='Not both')
+        time_rule = TimeRuleFactory(
+            start_time=datetime.time(8, 0, 0),
+            end_time=datetime.time(23, 0, 0),
+            segment=segment
+        )
+        referral_rule = ReferralRuleFactory(
+            regex_string="test.test",
+            segment=segment
+        )
+
+        client.get('/', **{ 'HTTP_REFERER': 'test.test'})
+
+        assert len(client.session['segments']) == 0
+
+    @freeze_time("9:00:00")
+    def test_time_but_no_referral_segment(self, client):
+        segment = SegmentFactory(name='Not both')
+        time_rule = TimeRuleFactory(
+            start_time=datetime.time(8, 0, 0),
+            end_time=datetime.time(23, 0, 0),
+            segment=segment
+        )
+        referral_rule = ReferralRuleFactory(
+            regex_string="test.test",
+            segment=segment
+        )
+
+        client.get('/')
+
+        assert len(client.session['segments']) == 0
