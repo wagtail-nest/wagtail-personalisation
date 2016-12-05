@@ -101,7 +101,7 @@ class VisitCountRule(AbstractBaseRule):
         ('less_than', _("Less than")),
         ('equal_to', _("Equal to")),
     )
-    operator = models.CharField(max_length=20, choices=OPERATOR_CHOICES, default="ht")
+    operator = models.CharField(max_length=20, choices=OPERATOR_CHOICES, default="more_than")
     count = models.PositiveSmallIntegerField(default=0, null=True)
     counted_page = models.ForeignKey(
         'wagtailcore.Page',

@@ -3,9 +3,10 @@ import datetime
 import pytest
 from django.test.client import Client
 from freezegun import freeze_time
+from wagtail.wagtailcore.models import Page
 
 from tests.factories.segment import (
-    ReferralRuleFactory, SegmentFactory, TimeRuleFactory)
+    ReferralRuleFactory, SegmentFactory, TimeRuleFactory, VisitCountRuleFactory)
 from tests.factories.site import SiteFactory
 
 
@@ -121,6 +122,21 @@ class TestUserSegmenting(object):
         second_segment_referral_rule = ReferralRuleFactory
 
 
+    def test_visit_count_rule(self, client):
+        segment = SegmentFactory(name='Visit Count')
+
+        visit_count_rule = VisitCountRuleFactory(
+            counted_page=Page.objects.filter(slug="root").first(),
+            segment=segment
+        )
+
+        client.get("/root")
+
+        import pdb
+        pdb.set_trace()
+
+        assert any(item['encoded_name'] == 'visit-count' for item in client.session['segments'])
+
 
 @pytest.mark.django_db
 class TestUserVisitCount(object):
@@ -141,3 +157,13 @@ class TestUserVisitCount(object):
         assert not any(item['path'] == '/doesntexist' for item in client.session['visit_count'])
 
 
+    def test_ignores_admin_visits(self, client):
+        client.get('/admin/')
+
+        assert not any(item['path'] == '/admin/' for item in client.session['visit_count'])
+
+        client.get('/django-admin/')
+
+        assert not any(item['path'] == '/django-admin/' for item in client.session['visit_count'])
+
+        assert client.session['visit_count'] == []

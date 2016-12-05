@@ -93,10 +93,12 @@ def serve_variation(page, request, serve_args, serve_kwargs):
 def _check_for_variations(segments, page):
     for segment in segments:
         page_class = page.__class__
+        if not any(item == PersonalisablePage for item in page_class.__bases__):
+            page_class = PersonalisablePage
+
         variation = page_class.objects.filter(canonical_page=page, segment=segment)
 
         if variation:
-
             return variation
 
     return None

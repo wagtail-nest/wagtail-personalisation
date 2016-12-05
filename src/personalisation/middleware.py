@@ -16,16 +16,16 @@ class SegmentMiddleware(object):
         self.get_response = get_response
 
     def __call__(self, request):
-        django_admin = reverse('admin:index')
-
-        if request.path.startswith('/admin/') or request.path.startswith('/django-admin/'):
-            return self.get_response(request)
+        reverse_urls = [reverse('admin:index'), reverse('wagtailadmin_home')]
 
         if 'visit_count' not in request.session:
             request.session['visit_count'] = []
 
         if 'segments' not in request.session:
             request.session['segments'] = []
+
+        if any(request.path.startswith(item) for item in reverse_urls):
+            return self.get_response(request)
 
         segments = Segment.objects.all().filter(status='enabled')
 

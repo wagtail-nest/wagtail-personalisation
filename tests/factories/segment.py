@@ -12,11 +12,6 @@ class SegmentFactory(factory.DjangoModelFactory):
     class Meta:
         model = models.Segment
 
-    @factory.post_generation
-    def create_rules(self, create, extracted, **kwargs):
-        if not create:
-            return
-
 
 class TimeRuleFactory(factory.DjangoModelFactory):
     start_time = datetime.time(8,0,0)
@@ -30,3 +25,10 @@ class ReferralRuleFactory(factory.DjangoModelFactory):
 
     class Meta:
         model = models.ReferralRule
+
+class VisitCountRuleFactory(factory.DjangoModelFactory):
+    operator = "more_than"
+    count = 0
+
+    class Meta:
+        model = models.VisitCountRule
