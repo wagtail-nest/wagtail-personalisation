@@ -40,8 +40,10 @@ class SegmentMiddleware(object):
                 self.add_segment_to_user(segment, request)
 
         response = self.get_response(request)
+        
+        if request.session['segments']:
+            logger.info("User has been added to the following segments: {}".format(request.session['segments']))
 
-        logger.info("User has been added to the following segments: {}".format(request.session['segments']))
         return response
 
     def test_rules(self, rules, request):

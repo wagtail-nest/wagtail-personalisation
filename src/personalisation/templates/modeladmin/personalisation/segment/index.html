@@ -56,6 +56,13 @@
                                                             <span>{{ rule.get_operator_display }} {{ rule.count }} times</span>
                                                         </li>
                                                     {% endfor %}
+
+                                                    {% for rule in segment.personalisation_queryrule_related.all %}
+                                                        <li class="query_rule">   
+                                                            These users used a url with the query
+                                                            <pre>?{{ rule.query_parameter }}={{ rule.query_value }}</pre>
+                                                        </li>
+                                                    {% endfor %}
                                                 </ul>
                                             </div>
 
