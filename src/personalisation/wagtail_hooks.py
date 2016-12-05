@@ -44,12 +44,12 @@ def set_visit_count(page, request, serve_args, serve_kwargs):
         segment.save()
 
     # Update the page visit count
-    def create_new_counter(page):
+    def create_new_counter(page, request):
         """Create a new counter dict and place it in session storage."""
         countdict = {
             "slug": page.slug,
             "id": page.pk,
-            "path": page.url,
+            "path": request.path,
             "count": 1,
         }
         request.session['visit_count'].append(countdict)
@@ -63,10 +63,10 @@ def set_visit_count(page, request, serve_args, serve_kwargs):
                 request.session.modified = True
             else:
                 # Counter doesn't exist. Create a new counter with count value 1.
-                create_new_counter(page)
+                create_new_counter(page, request)
     else:
         # No counters exist. Create a new counter with count value 1.
-        create_new_counter(page)
+        create_new_counter(page, request)
 
 @hooks.register('before_serve_page')
 def serve_variation(page, request, serve_args, serve_kwargs):
