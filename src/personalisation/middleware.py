@@ -24,8 +24,7 @@ class SegmentMiddleware(object):
         if 'visit_count' not in request.session:
             request.session['visit_count'] = []
 
-        if 'segments' not in request.session:
-            request.session['segments'] = []
+        request.session['segments'] = []
 
         segments = Segment.objects.all().filter(status='enabled')
 
