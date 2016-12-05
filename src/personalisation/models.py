@@ -1,10 +1,10 @@
 from __future__ import absolute_import, unicode_literals
 
 import re
-from datetime import datetime
 
 from django.db import models
 from django.db.models import Q
+from django.utils import timezone
 from django.db.models.signals import pre_save
 from django.template.defaultfilters import slugify
 from django.utils.encoding import python_2_unicode_compatible
@@ -203,11 +203,11 @@ def check_status_change(sender, instance, *args, **kwargs):
 
     if original_status != instance.status:
         if instance.status == "enabled":
-            instance.enable_date = datetime.now()
+            instance.enable_date = timezone.now()
             instance.visit_count = 0
             return instance
         if instance.status == "disabled":
-            instance.disable_date = datetime.now()
+            instance.disable_date = timezone.now()
 
 pre_save.connect(check_status_change, sender=Segment)
 
