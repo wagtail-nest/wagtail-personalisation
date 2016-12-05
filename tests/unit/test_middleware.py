@@ -96,3 +96,48 @@ class TestUserSegmenting(object):
         client.get('/')
 
         assert len(client.session['segments']) == 0
+
+    @freeze_time("9:00:00")
+    def test_multiple_segments_exist(self, client):
+        first_segment = SegmentFactory(name='First')
+        second_segment = SegmentFactory(name='Second')
+
+        first_segment_time_rule = TimeRuleFactory(
+            start_time=datetime.time(8, 0, 0),
+            end_time=datetime.time(23, 0, 0),
+            segment=first_segment
+        )
+        first_segment_referral_rule = ReferralRuleFactory(
+            regex_string="test.test",
+            segment=first_segment
+        )
+
+        second_segment_time_rule = TimeRuleFactory(
+            start_time=datetime.time(8, 0, 0),
+            end_time=datetime.time(23, 0, 0),
+            segment=second_segment
+        )
+
+        second_segment_referral_rule = ReferralRuleFactory
+
+
+
+@pytest.mark.django_db
+class TestUserVisitCount(object):
+
+    def setup(self):
+        self.site = SiteFactory()
+
+        # TODO: Set up a bunch of pages for testing the visit count
+
+    def test_visit_count(self, client):
+        client.get('/')
+
+        assert any(item['path'] == '/' for item in client.session['visit_count'])
+
+    def test_no_visit_count(self, client):
+        client.get('/')
+
+        assert not any(item['path'] == '/doesntexist' for item in client.session['visit_count'])
+
+
