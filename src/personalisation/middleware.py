@@ -1,6 +1,9 @@
 import logging
 import time
 
+from django.urls import reverse
+from wagtail.wagtailadmin import urls as wagtailadmin_urls
+
 from personalisation.models import AbstractBaseRule, Segment
 
 logger = logging.getLogger()
@@ -13,6 +16,8 @@ class SegmentMiddleware(object):
         self.get_response = get_response
 
     def __call__(self, request):
+        django_admin = reverse('admin:index')
+
         if request.path.startswith('/admin/') or request.path.startswith('/django-admin/'):
             return self.get_response(request)
 
@@ -32,8 +37,6 @@ class SegmentMiddleware(object):
                 for result in queried_rules:
                     segment_rules.append(result)
             result = self.test_rules(segment_rules, request)
-
-            print(result)
 
             if result:
                 self.add_segment_to_user(segment, request)
