@@ -21,8 +21,7 @@ class SegmentMiddleware(object):
         if 'visit_count' not in request.session:
             request.session['visit_count'] = []
 
-        if 'segments' not in request.session:
-            request.session['segments'] = []
+        request.session['segments'] = []
 
         if any(request.path.startswith(item) for item in reverse_urls):
             return self.get_response(request)
