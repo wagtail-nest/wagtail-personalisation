@@ -4,16 +4,17 @@ import time
 from django.conf.urls import include, url
 from django.core.urlresolvers import reverse
 from django.shortcuts import reverse
+from django.utils.safestring import mark_safe
 from django.utils.translation import ugettext_lazy as _
 from wagtail.contrib.modeladmin.options import ModelAdmin, modeladmin_register
 from wagtail.contrib.modeladmin.views import IndexView
-from wagtail.wagtailadmin.widgets import (
-    Button, ButtonWithDropdownFromHook, PageListingButton)
+from wagtail.wagtailadmin.widgets import (Button, ButtonWithDropdownFromHook,
+                                          PageListingButton)
 from wagtail.wagtailcore import hooks
 
 from personalisation import admin_urls
-from personalisation.models import (
-    AbstractBaseRule, PersonalisablePage, Segment)
+from personalisation.models import (AbstractBaseRule, PersonalisablePage,
+                                    Segment)
 from personalisation.utils import impersonate_other_page
 
 logger = logging.getLogger()
@@ -202,3 +203,17 @@ def page_listing_more_buttons(page, page_perms, is_parent=False):
     for segment in available_segments:
         yield Button(segment.name, reverse('segment:copy_page', args=[page.id, segment.id]),
                      attrs={"title": _('Create this variant')})
+
+
+class SegmentSummaryPanel(object):
+    order = 50
+
+    def render(self):
+        segment_count = Segment.objects.count()
+        target_url = reverse('personalisation_segment_modeladmin_index')
+        title = _("Segments")
+        return mark_safe('<li class="icon icon-group"><a href="{}"><span>{}</span>{}</a></li>'.format(target_url, segment_count, title))
+
+@hooks.register('construct_homepage_summary_items')
+def add_segment_summary_panel(request, summary_items):
+    return summary_items.append(SegmentSummaryPanel())
