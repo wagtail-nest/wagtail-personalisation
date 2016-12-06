@@ -21,14 +21,4 @@ Next, include the ``personalisation`` and ``wagtail.contrib.modeladmin`` app in 
         # ...
     ]
 
-Last but not least, add ``personalisation.middleware.SegmentMiddleware`` to your project's ``MIDDLEWARE``:
-
-.. code-block:: python
-
-    MIDDLEWARE = [
-        # ...
-        'personalisation.middleware.SegmentMiddleware',
-        # ...
-    ]
-
 Make sure that ``django.contrib.sessions.middleware.SessionMiddleware`` has been added in first, this is a prerequisite for this project.

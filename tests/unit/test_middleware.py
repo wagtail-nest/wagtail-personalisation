@@ -195,15 +195,3 @@ class TestUserVisitCount(object):
         client.get('/')
 
         assert not any(item['path'] == '/doesntexist' for item in client.session['visit_count'])
-
-
-    def test_ignores_admin_visits(self, client):
-        client.get('/admin/')
-
-        assert not any(item['path'] == '/admin/' for item in client.session['visit_count'])
-
-        client.get('/django-admin/')
-
-        assert not any(item['path'] == '/django-admin/' for item in client.session['visit_count'])
-
-        assert client.session['visit_count'] == []

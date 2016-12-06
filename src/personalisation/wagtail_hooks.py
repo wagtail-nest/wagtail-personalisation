@@ -1,14 +1,18 @@
 import time
+import logging
 
+
+from django.shortcuts import reverse
 from django.conf.urls import include, url
 from wagtail.contrib.modeladmin.options import ModelAdmin, modeladmin_register
 from wagtail.contrib.modeladmin.views import IndexView
 from wagtail.wagtailcore import hooks
 
 from personalisation import admin_urls
-from personalisation.models import PersonalisablePage, Segment
+from personalisation.models import AbstractBaseRule, PersonalisablePage, Segment
 from personalisation.utils import impersonate_other_page
 
+logger = logging.getLogger()
 
 @hooks.register('register_admin_urls')
 def register_admin_urls():
@@ -31,17 +35,13 @@ class SegmentModelAdmin(ModelAdmin):
     form_view_extra_css = ['personalisation/segment/form.css']
     inspect_view_enabled = True
 
-modeladmin_register(SegmentModelAdmin)
 
+modeladmin_register(SegmentModelAdmin)
 
 @hooks.register('before_serve_page')
 def set_visit_count(page, request, serve_args, serve_kwargs):
-    """Update the users visit count before each page visit."""
-    # Update the segment visit count
-    for seg in request.session['segments']:
-        segment = Segment.objects.get(pk=seg['id'])
-        segment.visit_count = segment.visit_count + 1
-        segment.save()
+    if 'visit_count' not in request.session:
+        request.session['visit_count'] = []
 
     # Update the page visit count
     def create_new_counter(page, request):
@@ -67,6 +67,76 @@ def set_visit_count(page, request, serve_args, serve_kwargs):
     else:
         # No counters exist. Create a new counter with count value 1.
         create_new_counter(page, request)
+
+@hooks.register('before_serve_page')
+def segment_user(page, request, serve_args, serve_kwargs):
+    request.session['segments'] = []
+    segments = Segment.objects.all().filter(status='enabled')
+
+    for segment in segments:
+        rules = AbstractBaseRule.__subclasses__()
+        segment_rules = []
+        for rule in rules:
+            queried_rules = rule.objects.filter(segment=segment)
+            for result in queried_rules:
+                segment_rules.append(result)
+        result = _test_rules(segment_rules, request)
+
+        if result:
+           _add_segment_to_user(segment, request)
+
+    if request.session['segments']:
+        logger.info("User has been added to the following segments: {}".format(request.session['segments']))
+
+        for seg in request.session['segments']:
+            segment = Segment.objects.get(pk=seg['id'])
+            segment.visit_count = segment.visit_count + 1
+            segment.save()
+
+
+def _test_rules(rules, request):
+    """Test wether the user matches a segment's rules'"""
+    if len(rules) > 0:
+        for rule in rules:
+            result = rule.test_user(request)
+
+            # Debug
+            if result and rule.__class__.__name__ == "TimeRule":
+                print("User segmented. Time between {} and {}.".format(
+                    rule.start_time,
+                    rule.end_time))
+            if result and rule.__class__.__name__ == "ReferralRule":
+                print("User segmented. Referral matches {}.".format(rule.regex_string))
+            if result and rule.__class__.__name__ == "VisitCountRule":
+                print("User segmented. Visited {} {} {} times.".format(
+                    rule.counted_page,
+                    rule.operator,
+                    rule.count))
+
+            if result is False:
+                return False
+
+        return True
+    return False
+
+
+def _add_segment_to_user(segment, request):
+    """Save the segment in the user session"""
+
+    def check_if_segmented(segment):
+        """Check if the user has been segmented"""
+        for seg in request.session['segments']:
+            if seg['encoded_name'] == segment.encoded_name():
+                return True
+        return False
+
+    if not check_if_segmented(segment):
+        segdict = {
+            "encoded_name": segment.encoded_name(),
+            "id": segment.pk,
+            "timestamp": int(time.time()),
+        }
+        request.session['segments'].append(segdict)
 
 @hooks.register('before_serve_page')
 def serve_variation(page, request, serve_args, serve_kwargs):
