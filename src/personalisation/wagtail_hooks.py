@@ -178,21 +178,27 @@ def _check_for_variations(segments, page):
 
     return None
 
-
 @hooks.register('register_page_listing_buttons')
 def page_listing_variant_buttons(page, page_perms, is_parent=False):
-    yield ButtonWithDropdownFromHook(
-        _('Variants'),
-        hook_name='register_page_listing_variant_buttons',
-        page=page,
-        page_perms=page_perms,
-        is_parent=is_parent,
-        attrs={'target': '_blank', 'title': _('Create a new variant')}, priority=100)
+    personalisable_page = PersonalisablePage.objects.filter(pk=page.pk)
+    segments = Segment.objects.all()
+
+    if personalisable_page and len(segments) > 0 and not any(item.segment for item in personalisable_page):
+        yield ButtonWithDropdownFromHook(
+            _('Variants'),
+            hook_name='register_page_listing_variant_buttons',
+            page=page,
+            page_perms=page_perms,
+            is_parent=is_parent,
+            attrs={'target': '_blank', 'title': _('Create a new variant')}, priority=100)
 
 
 @hooks.register('register_page_listing_variant_buttons')
 def page_listing_more_buttons(page, page_perms, is_parent=False):
     segments = Segment.objects.all()
-    for segment in segments:
-        yield Button(segment.name, reverse('wagtailadmin_pages:copy', args=[page.id]),
+    current_page = PersonalisablePage.objects.filter(pk=page.pk)
+    available_segments = [item for item in segments if not PersonalisablePage.objects.filter(segment=item)]
+    
+    for segment in available_segments:
+        yield Button(segment.name, reverse('segment:copy_page', args=[page.id, segment.id]),
                      attrs={"title": _('Create this variant')})

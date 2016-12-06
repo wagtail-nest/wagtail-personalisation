@@ -380,3 +380,4 @@ def get_edit_handler(cls):
 
 
 PersonalisablePage.get_edit_handler = get_edit_handler
+
