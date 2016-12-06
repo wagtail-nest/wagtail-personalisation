@@ -10,4 +10,5 @@ urlpatterns = [
         name='enable'),
     url(r'^segment/(?P<segment_id>[0-9]+)/disable/$', views.disable,
         name='disable'),
+    url(r'^personalisation/(?P<page_id>[0-9]+)/copy/(?P<segment_id>[0-9]+)$', views.copy_page_view, name='copy_page')
 ]

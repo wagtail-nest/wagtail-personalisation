@@ -1,12 +1,12 @@
 from __future__ import absolute_import, unicode_literals
 
 from django.http import HttpResponseRedirect
-from django.shortcuts import get_object_or_404, render
+from django.shortcuts import get_object_or_404, render, reverse
 from django.utils.translation import ugettext_lazy as _
 from wagtail.contrib.modeladmin.views import CreateView
 
 from personalisation.forms import SegmentForm
-from personalisation.models import Segment
+from personalisation.models import Segment, PersonalisablePage
 
 
 def enable(request, segment_id):
@@ -33,3 +33,27 @@ class CreateSegmentView(CreateView):
     form_class = SegmentForm
     template_name = 'modeladmin/personalisation/segment/create.html'
     header_icon = 'folder-open-1'
+
+
+def copy_page_view(request, page_id, segment_id):
+    """Copy page with selected segment"""
+    segment = get_object_or_404(Segment, pk=segment_id)
+    page = get_object_or_404(PersonalisablePage, pk=page_id)
+
+    slug = "{}-{}".format(page.slug, segment.encoded_name())
+    title = "{} ({})".format(page.title, segment.name)
+    update_attrs = {
+        'title': title,
+        'slug': slug,
+        'segment': segment,
+        'live': False,
+        'canonical_page': page,
+        'is_segmented': True,
+    }
+
+    new_page = page.copy(update_attrs=update_attrs, copy_revisions=False)
+
+    edit_url = reverse('wagtailadmin_pages:edit', args=[new_page.id])
+
+    return HttpResponseRedirect(edit_url)
+
