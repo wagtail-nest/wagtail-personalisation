@@ -1,5 +1,6 @@
 from __future__ import absolute_import, unicode_literals
 
+from datetime import datetime
 import re
 
 from django.db import models
@@ -154,6 +155,33 @@ class VisitCountRule(AbstractBaseRule):
 
 
 @python_2_unicode_compatible
+class QueryRule(AbstractBaseRule):
+    """Query rule to segment users based on matching queries"""
+    parameter = models.SlugField(_("The query parameter to search for"), max_length=20)
+    value = models.SlugField(_("The value of the parameter to match"), max_length=20)
+
+    panels = [
+        FieldPanel('parameter'),
+        FieldPanel('value'),
+    ]
+
+    def __init__(self, *args, **kwargs):
+        super(QueryRule, self).__init__(*args, **kwargs)
+
+    def test_user(self, request):
+        parameter = self.parameter
+        value = self.value
+
+        req_value = request.GET.get(parameter, '')
+        if req_value == value:
+            return True
+        return False
+
+    def __str__(self):
+        return '?{}={}'.format(self.parameter, self.value)
+
+
+@python_2_unicode_compatible
 class Segment(ClusterableModel):
     """Model for a new segment"""
     name = models.CharField(max_length=255)
@@ -182,6 +210,10 @@ class Segment(ClusterableModel):
         InlinePanel(
             'personalisation_visitcountrule_related',
             label=_("Visit count rule"), min_num=0, max_num=1
+        ),
+        InlinePanel(
+            'personalisation_queryrule_related',
+            label=_("Query rule"), min_num=0, max_num=1
         ),
     ]
 

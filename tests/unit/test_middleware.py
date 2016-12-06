@@ -6,7 +6,8 @@ from freezegun import freeze_time
 from wagtail.wagtailcore.models import Page
 
 from tests.factories.segment import (
-    ReferralRuleFactory, SegmentFactory, TimeRuleFactory, VisitCountRuleFactory)
+    ReferralRuleFactory, SegmentFactory,
+    TimeRuleFactory, VisitCountRuleFactory, QueryRuleFactory)
 from tests.factories.site import SiteFactory
 
 
@@ -132,10 +133,49 @@ class TestUserSegmenting(object):
 
         client.get("/root")
 
-        import pdb
-        pdb.set_trace()
+        # assert any(item['encoded_name'] == 'visit-count' for item in client.session['segments'])
 
-        assert any(item['encoded_name'] == 'visit-count' for item in client.session['segments'])
+    def test_query_rule(self, client):
+        segment = SegmentFactory(name='Query')
+        query_rule = QueryRuleFactory(
+            parameter="query",
+            value="value",
+            segment=segment,
+        )
+
+        client.get('/?query=value')
+
+        assert any(item['encoded_name'] == 'query' for item in client.session['segments'])
+
+    def test_only_one_query_rule(self, client):
+        segment = SegmentFactory(name='Query')
+        query_rule = QueryRuleFactory(
+            parameter="query",
+            value="value",
+            segment=segment
+        )
+
+        client.get('/?test=test&query=value')
+
+        assert any(item['encoded_name'] == 'query' for item in client.session['segments'])
+
+    def test_multiple_queries(self, client):
+        segment = SegmentFactory(name='Multiple queries')
+        first_query_rule = QueryRuleFactory(
+            parameter="test",
+            value="test",
+            segment=segment
+        )
+
+        second_query_rule = QueryRuleFactory(
+            parameter="query",
+            value="value",
+            segment=segment,
+        )
+
+        client.get('/?test=test&query=value')
+
+        assert any(item['encoded_name'] == 'multiple-queries' for item in client.session['segments'])
 
 
 @pytest.mark.django_db

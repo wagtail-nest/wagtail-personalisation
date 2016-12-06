@@ -32,3 +32,9 @@ class VisitCountRuleFactory(factory.DjangoModelFactory):
 
     class Meta:
         model = models.VisitCountRule
+
+
+class QueryRuleFactory(factory.DjangoModelFactory):
+
+    class Meta:
+        model = models.QueryRule

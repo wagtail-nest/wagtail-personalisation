@@ -150,6 +150,9 @@
             .block_container .block .inspect_container .segment_rules .referral_rule pre::before {
                 background-image: url("./referral_icon.png");
             }
+            .block_container .block .inspect_container .segment_rules .query_rule pre::before {
+                background-image: url("./referral_icon.png");
+            }
 
 .block_container .block.suggestion .suggestive_text {
     display: block;
