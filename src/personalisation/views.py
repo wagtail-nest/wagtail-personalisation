@@ -6,7 +6,7 @@ from django.utils.translation import ugettext_lazy as _
 from wagtail.contrib.modeladmin.views import CreateView
 
 from personalisation.forms import SegmentForm
-from personalisation.models import Segment, PersonalisablePage
+from personalisation.models import PersonalisablePage, Segment
 
 
 def enable(request, segment_id):
@@ -56,4 +56,3 @@ def copy_page_view(request, page_id, segment_id):
     edit_url = reverse('wagtailadmin_pages:edit', args=[new_page.id])
 
     return HttpResponseRedirect(edit_url)
-

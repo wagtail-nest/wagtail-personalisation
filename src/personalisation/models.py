@@ -1,13 +1,13 @@
 from __future__ import absolute_import, unicode_literals
 
-from datetime import datetime
 import re
+from datetime import datetime
 
 from django.db import models
 from django.db.models import Q
-from django.utils import timezone
 from django.db.models.signals import pre_save
 from django.template.defaultfilters import slugify
+from django.utils import timezone
 from django.utils.encoding import python_2_unicode_compatible
 from django.utils.functional import cached_property
 from django.utils.translation import ugettext_lazy as _
@@ -380,4 +380,3 @@ def get_edit_handler(cls):
 
 
 PersonalisablePage.get_edit_handler = get_edit_handler
-

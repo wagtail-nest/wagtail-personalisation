@@ -1,10 +1,9 @@
-import time
 import logging
+import time
 
-
-from django.shortcuts import reverse
 from django.conf.urls import include, url
 from django.core.urlresolvers import reverse
+from django.shortcuts import reverse
 from django.utils.translation import ugettext_lazy as _
 from wagtail.contrib.modeladmin.options import ModelAdmin, modeladmin_register
 from wagtail.contrib.modeladmin.views import IndexView
@@ -13,7 +12,8 @@ from wagtail.wagtailadmin.widgets import (
 from wagtail.wagtailcore import hooks
 
 from personalisation import admin_urls
-from personalisation.models import AbstractBaseRule, PersonalisablePage, Segment
+from personalisation.models import (
+    AbstractBaseRule, PersonalisablePage, Segment)
 from personalisation.utils import impersonate_other_page
 
 logger = logging.getLogger()
@@ -198,7 +198,7 @@ def page_listing_more_buttons(page, page_perms, is_parent=False):
     segments = Segment.objects.all()
     current_page = PersonalisablePage.objects.filter(pk=page.pk)
     available_segments = [item for item in segments if not PersonalisablePage.objects.filter(segment=item)]
-    
+
     for segment in available_segments:
         yield Button(segment.name, reverse('segment:copy_page', args=[page.id, segment.id]),
                      attrs={"title": _('Create this variant')})

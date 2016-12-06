@@ -6,8 +6,8 @@ from freezegun import freeze_time
 from wagtail.wagtailcore.models import Page
 
 from tests.factories.segment import (
-    ReferralRuleFactory, SegmentFactory,
-    TimeRuleFactory, VisitCountRuleFactory, QueryRuleFactory)
+    QueryRuleFactory, ReferralRuleFactory, SegmentFactory, TimeRuleFactory,
+    VisitCountRuleFactory)
 from tests.factories.site import SiteFactory
 
 
