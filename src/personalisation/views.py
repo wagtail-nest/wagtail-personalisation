@@ -9,11 +9,6 @@ from personalisation.forms import SegmentForm
 from personalisation.models import Segment
 
 
-def overview(request):
-    """Display segments overview. Dummy function"""
-    return render(request, 'wagtailadmin/segment.html')
-
-
 def enable(request, segment_id):
     """Enable the selected segment"""
     segment = get_object_or_404(Segment, pk=segment_id)
