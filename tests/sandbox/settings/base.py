@@ -52,7 +52,6 @@ MIDDLEWARE = (
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 
     'wagtail.wagtailcore.middleware.SiteMiddleware',
-    'personalisation.middleware.SegmentMiddleware',
 )
 
 INSTALLED_APPS = (
