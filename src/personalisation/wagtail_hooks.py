@@ -206,7 +206,7 @@ def page_listing_more_buttons(page, page_perms, is_parent=False):
 
 
 class SegmentSummaryPanel(object):
-    order = 50
+    order = 500
 
     def render(self):
         segment_count = Segment.objects.count()
