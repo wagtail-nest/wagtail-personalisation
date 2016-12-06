@@ -2,14 +2,12 @@ import logging
 import time
 
 from django.conf.urls import include, url
-from django.core.urlresolvers import reverse
 from django.shortcuts import reverse
 from django.utils.safestring import mark_safe
 from django.utils.translation import ugettext_lazy as _
 from wagtail.contrib.modeladmin.options import ModelAdmin, modeladmin_register
-from wagtail.contrib.modeladmin.views import IndexView
-from wagtail.wagtailadmin.widgets import (Button, ButtonWithDropdownFromHook,
-                                          PageListingButton)
+from wagtail.wagtailadmin.widgets import (
+    Button, ButtonWithDropdownFromHook)
 from wagtail.wagtailcore import hooks
 
 from personalisation import admin_urls
@@ -18,6 +16,7 @@ from personalisation.models import (AbstractBaseRule, PersonalisablePage,
 from personalisation.utils import impersonate_other_page
 
 logger = logging.getLogger()
+
 
 @hooks.register('register_admin_urls')
 def register_admin_urls():
@@ -43,6 +42,7 @@ class SegmentModelAdmin(ModelAdmin):
 
 modeladmin_register(SegmentModelAdmin)
 
+
 @hooks.register('before_serve_page')
 def set_visit_count(page, request, serve_args, serve_kwargs):
     if 'visit_count' not in request.session:
@@ -67,7 +67,8 @@ def set_visit_count(page, request, serve_args, serve_kwargs):
                 request.session['visit_count'][index]['count'] = newcount
                 request.session.modified = True
             else:
-                # Counter doesn't exist. Create a new counter with count value 1.
+                # Counter doesn't exist.
+                # Create a new counter with count value 1.
                 create_new_counter(page, request)
     else:
         # No counters exist. Create a new counter with count value 1.
@@ -89,10 +90,11 @@ def segment_user(page, request, serve_args, serve_kwargs):
         result = _test_rules(segment_rules, request)
 
         if result:
-           _add_segment_to_user(segment, request)
+            _add_segment_to_user(segment, request)
 
     if request.session['segments']:
-        logger.info("User has been added to the following segments: {}".format(request.session['segments']))
+        logger.info("User has been added to the following segments: {}"
+                    .format(request.session['segments']))
 
         for seg in request.session['segments']:
             segment = Segment.objects.get(pk=seg['id'])
@@ -112,7 +114,8 @@ def _test_rules(rules, request):
                     rule.start_time,
                     rule.end_time))
             if result and rule.__class__.__name__ == "ReferralRule":
-                print("User segmented. Referral matches {}.".format(rule.regex_string))
+                print("User segmented. Referral matches {}.".format(
+                    rule.regex_string))
             if result and rule.__class__.__name__ == "VisitCountRule":
                 print("User segmented. Visited {} {} {} times.".format(
                     rule.counted_page,
@@ -144,13 +147,15 @@ def _add_segment_to_user(segment, request):
         }
         request.session['segments'].append(segdict)
 
+
 @hooks.register('before_serve_page')
 def serve_variation(page, request, serve_args, serve_kwargs):
     user_segments = []
 
     for segment in request.session['segments']:
         try:
-            user_segment = Segment.objects.get(pk=segment['id'], status='enabled')
+            user_segment = Segment.objects.get(pk=segment['id'],
+                                               status='enabled')
         except Segment.DoesNotExist:
             user_segment = None
         if user_segment:
@@ -166,25 +171,28 @@ def serve_variation(page, request, serve_args, serve_kwargs):
 
             return variation.serve(request, *serve_args, **serve_kwargs)
 
+
 def _check_for_variations(segments, page):
     for segment in segments:
         page_class = page.__class__
         if not any(item == PersonalisablePage for item in page_class.__bases__):
             page_class = PersonalisablePage
 
-        variation = page_class.objects.filter(canonical_page=page, segment=segment)
+        variation = page_class.objects.filter(
+            canonical_page=page, segment=segment)
 
         if variation:
             return variation
 
     return None
 
+
 @hooks.register('register_page_listing_buttons')
 def page_listing_variant_buttons(page, page_perms, is_parent=False):
     personalisable_page = PersonalisablePage.objects.filter(pk=page.pk)
     segments = Segment.objects.all()
 
-    if personalisable_page and len(segments) > 0 and not any(item.segment for item in personalisable_page):
+    if personalisable_page and len(segments) > 0 and not (any(item.segment for item in personalisable_page)):
         yield ButtonWithDropdownFromHook(
             _('Variants'),
             hook_name='register_page_listing_variant_buttons',
@@ -197,11 +205,11 @@ def page_listing_variant_buttons(page, page_perms, is_parent=False):
 @hooks.register('register_page_listing_variant_buttons')
 def page_listing_more_buttons(page, page_perms, is_parent=False):
     segments = Segment.objects.all()
-    current_page = PersonalisablePage.objects.filter(pk=page.pk)
-    available_segments = [item for item in segments if not PersonalisablePage.objects.filter(segment=item)]
+    available_segments = [item for item in segments if not PersonalisablePage.objects.filter(segment=item, pk=page.pk)]
 
     for segment in available_segments:
-        yield Button(segment.name, reverse('segment:copy_page', args=[page.id, segment.id]),
+        yield Button(segment.name,
+                     reverse('segment:copy_page', args=[page.id, segment.id]),
                      attrs={"title": _('Create this variant')})
 
 
@@ -213,6 +221,7 @@ class SegmentSummaryPanel(object):
         target_url = reverse('personalisation_segment_modeladmin_index')
         title = _("Segments")
         return mark_safe('<li class="icon icon-group"><a href="{}"><span>{}</span>{}</a></li>'.format(target_url, segment_count, title))
+
 
 @hooks.register('construct_homepage_summary_items')
 def add_segment_summary_panel(request, summary_items):

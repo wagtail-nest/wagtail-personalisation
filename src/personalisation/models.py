@@ -71,7 +71,8 @@ class TimeRule(AbstractBaseRule):
 @python_2_unicode_compatible
 class ReferralRule(AbstractBaseRule):
     """Referral rule to segment users based on a regex test"""
-    regex_string = models.TextField(_("Regex string to match the referer with"))
+    regex_string = models.TextField(
+        _("Regex string to match the referer with"))
 
     panels = [
         FieldPanel('regex_string'),
@@ -101,7 +102,8 @@ class VisitCountRule(AbstractBaseRule):
         ('less_than', _("Less than")),
         ('equal_to', _("Equal to")),
     )
-    operator = models.CharField(max_length=20, choices=OPERATOR_CHOICES, default="more_than")
+    operator = models.CharField(max_length=20,
+                                choices=OPERATOR_CHOICES, default="more_than")
     count = models.PositiveSmallIntegerField(default=0, null=True)
     counted_page = models.ForeignKey(
         'wagtailcore.Page',
@@ -157,8 +159,10 @@ class VisitCountRule(AbstractBaseRule):
 @python_2_unicode_compatible
 class QueryRule(AbstractBaseRule):
     """Query rule to segment users based on matching queries"""
-    parameter = models.SlugField(_("The query parameter to search for"), max_length=20)
-    value = models.SlugField(_("The value of the parameter to match"), max_length=20)
+    parameter = models.SlugField(_("The query parameter to search for"),
+                                 max_length=20)
+    value = models.SlugField(_("The value of the parameter to match"),
+                             max_length=20)
 
     panels = [
         FieldPanel('parameter'),
@@ -194,7 +198,8 @@ class Segment(ClusterableModel):
         ('enabled', 'Enabled'),
         ('disabled', 'Disabled'),
     )
-    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default="enabled")
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES,
+                              default="enabled")
 
     panels = [
         FieldPanel('name'),
@@ -240,6 +245,7 @@ def check_status_change(sender, instance, *args, **kwargs):
         if instance.status == "disabled":
             instance.disable_date = timezone.now()
 
+
 pre_save.connect(check_status_change, sender=Segment)
 
 
@@ -264,14 +270,17 @@ class AdminPersonalisablePageForm(WagtailAdminPageForm):
             }
 
             if page.is_segmented:
-                slug = "{}-{}".format(page.canonical_page.slug, segment.encoded_name())
-                title = "{} ({})".format(page.canonical_page.title, segment.name)
+                slug = "{}-{}".format(
+                    page.canonical_page.slug, segment.encoded_name())
+                title = "{} ({})".format(
+                    page.canonical_page.title, segment.name)
                 page.slug = slug
                 page.title = title
                 page.save()
                 return page
             else:
-                new_page = page.copy(update_attrs=update_attrs, copy_revisions=False)
+                new_page = page.copy(
+                    update_attrs=update_attrs, copy_revisions=False)
                 return new_page
 
         return page
@@ -291,8 +300,6 @@ class PersonalisablePage(Page):
     variation_panels = [
         MultiFieldPanel([
             FieldPanel('segment'),
-            # TOOD: Currently the user can only select pages of the 'PersonalisablePage' type.
-            # This is no longer acceptable as soon as a page inherits the 'PersonalisablePage'.
             PageChooserPanel('canonical_page', page_type=None),
         ])
     ]
@@ -300,7 +307,7 @@ class PersonalisablePage(Page):
     base_form_class = AdminPersonalisablePageForm
 
     def __str__(self):
-        return "{} ({})".format(self.title, self.segment)
+        return "{}".format(self.title)
 
     def get_variations(self, only_live=True):
         canonical_page = self.canonical_page or self
@@ -327,33 +334,6 @@ class PersonalisablePage(Page):
         )
         return variation_parent
 
-    def create_variation(self, segment, copy_fields=False, parent=None):
-        slug = "{}-{}".format(self.slug, segment.encoded_name())
-
-        if not parent:
-            parent = self.get_variation_parent(segment)
-
-        update_attrs = {
-            'title': self.title,
-            'slug': slug,
-            'segment': segment,
-            'live': False,
-            'canonical_page': self,
-        }
-
-        if copy_fields:
-            kwargs = {'update_attrs': update_attrs}
-            if parent != self.get_parent():
-                kwargs['to'] = parent
-
-            new_page = self.copy(**kwargs)
-        else:
-            model_class = self.content_type.model_class()
-            new_page = model_class(**update_attrs)
-            parent.add_child(instance=new_page)
-
-        return new_page
-
     @cached_property
     def has_variations(self):
         return self.variations.exists()
@@ -373,7 +353,8 @@ def get_edit_handler(cls):
     if cls.promote_panels:
         tabs.append(ObjectList(cls.promote_panels, heading=_("Promote")))
     if cls.settings_panels:
-        tabs.append(ObjectList(cls.settings_panels, heading=_("Settings"), classname='settings'))
+        tabs.append(ObjectList(cls.settings_panels, heading=_("Settings"),
+                               classname='settings'))
 
     edit_handler = TabbedInterface(tabs, base_form_class=cls.base_form_class)
     return edit_handler.bind_to_model(cls)

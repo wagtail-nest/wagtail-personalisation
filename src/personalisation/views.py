@@ -1,7 +1,7 @@
 from __future__ import absolute_import, unicode_literals
 
 from django.http import HttpResponseRedirect
-from django.shortcuts import get_object_or_404, render, reverse
+from django.shortcuts import get_object_or_404, reverse
 from django.utils.translation import ugettext_lazy as _
 from wagtail.contrib.modeladmin.views import CreateView
 
