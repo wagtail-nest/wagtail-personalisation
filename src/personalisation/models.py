@@ -12,7 +12,6 @@ from django.utils.functional import cached_property
 from django.utils.translation import ugettext_lazy as _
 from modelcluster.fields import ParentalKey
 from modelcluster.models import ClusterableModel
-from polymorphic.models import PolymorphicModel
 from wagtail.utils.decorators import cached_classmethod
 from wagtail.wagtailadmin.edit_handlers import (
     FieldPanel, FieldRowPanel, InlinePanel, MultiFieldPanel, ObjectList,

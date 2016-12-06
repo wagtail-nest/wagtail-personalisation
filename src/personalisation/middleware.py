@@ -2,7 +2,6 @@ import logging
 import time
 
 from django.urls import reverse
-from wagtail.wagtailadmin import urls as wagtailadmin_urls
 
 from personalisation.models import AbstractBaseRule, Segment
 
