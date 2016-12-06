@@ -1,5 +1,6 @@
 from __future__ import absolute_import, unicode_literals
 
+from datetime import datetime
 import re
 
 from django.db import models
@@ -156,20 +157,20 @@ class VisitCountRule(AbstractBaseRule):
 @python_2_unicode_compatible
 class QueryRule(AbstractBaseRule):
     """Query rule to segment users based on matching queries"""
-    query_parameter = models.SlugField(_("The query parameter to search for"), max_length=1)
-    query_value = models.SlugField(_("The value of the parameter to match"), max_length=20, unique=True)
+    parameter = models.SlugField(_("The query parameter to search for"), max_length=20)
+    value = models.SlugField(_("The value of the parameter to match"), max_length=20)
 
     panels = [
-        FieldPanel('query_parameter'),
-        FieldPanel('query_value'),
+        FieldPanel('parameter'),
+        FieldPanel('value'),
     ]
 
     def __init__(self, *args, **kwargs):
         super(QueryRule, self).__init__(*args, **kwargs)
 
     def test_user(self, request):
-        parameter = self.query_parameter
-        value = self.query_value
+        parameter = self.parameter
+        value = self.value
 
         req_value = request.GET.get(parameter, '')
         if req_value == value:
@@ -177,7 +178,7 @@ class QueryRule(AbstractBaseRule):
         return False
 
     def __str__(self):
-        return '?{}={}'.format(self.query_parameter, self.query_value)
+        return '?{}={}'.format(self.parameter, self.value)
 
 
 @python_2_unicode_compatible
