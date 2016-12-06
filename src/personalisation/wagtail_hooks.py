@@ -220,7 +220,10 @@ class SegmentSummaryPanel(object):
         segment_count = Segment.objects.count()
         target_url = reverse('personalisation_segment_modeladmin_index')
         title = _("Segments")
-        return mark_safe('<li class="icon icon-group"><a href="{}"><span>{}</span>{}</a></li>'.format(target_url, segment_count, title))
+        return mark_safe("""
+            <li class="icon icon-group">
+                <a href="{}"><span>{}</span>{}</a>
+            </li>""".format(target_url, segment_count, title))
 
 
 @hooks.register('construct_homepage_summary_items')
