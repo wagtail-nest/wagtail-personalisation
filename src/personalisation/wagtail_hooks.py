@@ -4,8 +4,12 @@ import logging
 
 from django.shortcuts import reverse
 from django.conf.urls import include, url
+from django.core.urlresolvers import reverse
+from django.utils.translation import ugettext_lazy as _
 from wagtail.contrib.modeladmin.options import ModelAdmin, modeladmin_register
 from wagtail.contrib.modeladmin.views import IndexView
+from wagtail.wagtailadmin.widgets import (
+    Button, ButtonWithDropdownFromHook, PageListingButton)
 from wagtail.wagtailcore import hooks
 
 from personalisation import admin_urls
@@ -67,6 +71,7 @@ def set_visit_count(page, request, serve_args, serve_kwargs):
     else:
         # No counters exist. Create a new counter with count value 1.
         create_new_counter(page, request)
+
 
 @hooks.register('before_serve_page')
 def segment_user(page, request, serve_args, serve_kwargs):
@@ -172,3 +177,22 @@ def _check_for_variations(segments, page):
             return variation
 
     return None
+
+
+@hooks.register('register_page_listing_buttons')
+def page_listing_variant_buttons(page, page_perms, is_parent=False):
+    yield ButtonWithDropdownFromHook(
+        _('Variants'),
+        hook_name='register_page_listing_variant_buttons',
+        page=page,
+        page_perms=page_perms,
+        is_parent=is_parent,
+        attrs={'target': '_blank', 'title': _('Create a new variant')}, priority=100)
+
+
+@hooks.register('register_page_listing_variant_buttons')
+def page_listing_more_buttons(page, page_perms, is_parent=False):
+    segments = Segment.objects.all()
+    for segment in segments:
+        yield Button(segment.name, reverse('wagtailadmin_pages:copy', args=[page.id]),
+                     attrs={"title": _('Create this variant')})
