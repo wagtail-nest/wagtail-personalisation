@@ -33,15 +33,6 @@
                                                         <span>{{ segment.enable_date|days_since:segment.disable_date }}</span>
                                                         {% trans "Days since matching visitors are appointed to this segment" %}
                                                     </li>
-                                                    <li class="persistent_state">
-                                                        {% if segment.persistent %}
-                                                            <span>{% trans "Persistent" %}</span>
-                                                            {% trans "This segment persists in between visits" %}
-                                                        {% else %}
-                                                            <span>{% trans "Fleeting" %}</span>
-                                                            {% trans "This segment is reevaluated on every visit" %}
-                                                        {% endif %}
-                                                    </li>
                                                 </ul>
 
                                                 <ul class="inspect segment_rules">
@@ -72,6 +63,15 @@
                                                             <pre>?{{ rule.parameter }}={{ rule.value }}</pre>
                                                         </li>
                                                     {% endfor %}
+
+                                                    <li class="persistent_state {{ segment.persistent|yesno:"persistent,fleeting" }}">
+                                                        {% trans "The persistence of this segment is" %}
+                                                        {% if segment.persistent %}
+                                                            <span>{% trans "Persistent" %}</span>
+                                                        {% else %}
+                                                            <span>{% trans "Fleeting" %}</span>
+                                                        {% endif %}
+                                                    </li>
                                                 </ul>
                                             </div>
 

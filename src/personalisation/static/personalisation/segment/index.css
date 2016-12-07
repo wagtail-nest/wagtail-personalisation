@@ -14,7 +14,7 @@
     box-sizing: border-box;
     position: relative;
     width: calc(50% - 10px);
-    min-height: 126px;
+    min-height: 216px;
     padding: 10px 20px;
     margin-bottom: 20px;
     border: 1px solid #d9d9d9;
@@ -114,10 +114,13 @@
             .block_container .block .inspect_container .segment_stats .days_stat span::before {
                 background-image: url("./calendar_icon.png");
             }
-            .block_container .block .inspect_container .segment_stats .persistent_state span::before {
+
+            .block_container .block .inspect_container .segment_rules .persistent_state span::before {
                 background-image: url("./persistent_icon.png");
             }
-
+            .block_container .block .inspect_container .segment_rules .persistent_state.fleeting span::before {
+                transform: rotate(45deg) translateY(-2px);
+            }
             .block_container .block .inspect_container .segment_rules .time_rule span::before {
                 background-image: url("./time_icon.png");
             }
