@@ -128,9 +128,6 @@ class VisitCountRule(AbstractBaseRule):
         operator = self.operator
         segment_count = self.count
 
-        # TODO: Figure out a way to have a correct count before the middleware
-        # initiates the test function
-
         def get_visit_count(request):
             """Search through the sessions to get the page visit count
             corresponding to the request."""
@@ -317,31 +314,6 @@ class PersonalisablePage(Page):
 
     def __str__(self):
         return "{}".format(self.title)
-
-    def get_variations(self, only_live=True):
-        canonical_page = self.canonical_page or self
-        variations = PersonalisablePage.objects.filter(
-            Q(canonical_page=canonical_page) |
-            Q(pk=canonical_page.pk)
-        ).exclude(pk=self.pk)
-
-        if only_live:
-            variations = variations.live()
-
-        return variations
-
-    def get_variation_parent(self, segment):
-        site = self.get_site()
-
-        variation_parent = (
-            PersonalisablePage.objects
-            .filter(
-                canonical_page=self.get_parent(),
-                segment=segment,
-                path__startswith=site.root_page.path,
-            ).first()
-        )
-        return variation_parent
 
     @cached_property
     def has_variations(self):
