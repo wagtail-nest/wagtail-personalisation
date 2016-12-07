@@ -2,10 +2,6 @@ from __future__ import absolute_import, unicode_literals
 
 from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404, reverse
-from django.utils.translation import ugettext_lazy as _
-from wagtail.contrib.modeladmin.views import CreateView
-
-from personalisation.forms import SegmentForm
 from personalisation.models import PersonalisablePage, Segment
 
 
@@ -25,14 +21,6 @@ def disable(request, segment_id):
     segment.save()
 
     return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
-
-
-class CreateSegmentView(CreateView):
-    # TODO: Remove this if no longer needed.
-    page_title = _("Add segment")
-    form_class = SegmentForm
-    template_name = 'modeladmin/personalisation/segment/create.html'
-    header_icon = 'folder-open-1'
 
 
 def copy_page_view(request, page_id, segment_id):
