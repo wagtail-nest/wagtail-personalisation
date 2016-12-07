@@ -71,7 +71,7 @@
     flex-wrap: nowrap;
     justify-content: space-between;
     align-items: stretch;
-    margin-bottom: 5px;
+    margin-bottom: 10px;
 }
 
 .block_container .block .inspect_container .inspect {

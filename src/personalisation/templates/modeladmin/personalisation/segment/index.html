@@ -25,12 +25,12 @@
                                             <div class="inspect_container">
                                                 <ul class="inspect segment_stats">
                                                     <li class="visit_stat">
-                                                        <span>{{ segment.visit_count|localize }}</span>
-                                                        {% trans "Visits are part of this segment" %}
+                                                        {% trans "This segmented has been visited" %}
+                                                        <span>{{ segment.visit_count|localize }} {% trans "time" %}{{ segment.visit_count|pluralize }}</span>
                                                     </li>
                                                     <li class="days_stat">
-                                                        <span>{{ segment.enable_date|days_since:segment.disable_date }}</span>
-                                                        {% trans "Days since matching visitors are appointed to this segment" %}
+                                                        {% trans "This segment has been active for" %}
+                                                        <span>{{ segment.enable_date|days_since:segment.disable_date }} {% trans "day" %}{{ segment.enable_date|days_since:segment.disable_date|pluralize }}</span>
                                                     </li>
                                                 </ul>
 
