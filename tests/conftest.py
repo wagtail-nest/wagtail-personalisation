@@ -1,8 +1,7 @@
-import pytest
-from django.apps import apps
-from wagtail.wagtailcore.models import Page, Site
+from __future__ import absolute_import, unicode_literals
 
-from tests.sandbox.pages.models import HomePage
+import pytest
+from wagtail.wagtailcore.models import Page, Site
 
 
 @pytest.fixture(scope='session')
