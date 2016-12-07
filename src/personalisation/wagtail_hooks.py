@@ -116,20 +116,6 @@ def _test_rules(rules, request):
         for rule in rules:
             result = rule.test_user(request)
 
-            """ Debug
-            if result and rule.__class__.__name__ == "TimeRule":
-                print("User segmented. Time between {} and {}.".format(
-                    rule.start_time,
-                    rule.end_time))
-            if result and rule.__class__.__name__ == "ReferralRule":
-                print("User segmented. Referral matches {}.".format(
-                    rule.regex_string))
-            if result and rule.__class__.__name__ == "VisitCountRule":
-                print("User segmented. Visited {} {} {} times.".format(
-                    rule.counted_page,
-                    rule.operator,
-                    rule.count))"""
-
             if result is False:
                 return False
 
