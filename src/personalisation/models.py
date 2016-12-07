@@ -200,26 +200,35 @@ class Segment(ClusterableModel):
     )
     status = models.CharField(max_length=20, choices=STATUS_CHOICES,
                               default="enabled")
+    persistent = models.BooleanField(
+        default=False, help_text=_("Should the segment persist between visits?"))
 
     panels = [
-        FieldPanel('name'),
-        FieldPanel('status'),
-        InlinePanel(
-            'personalisation_timerule_related',
-            label=_("Time rule"), min_num=0, max_num=1
-        ),
-        InlinePanel(
-            'personalisation_referralrule_related',
-            label=_("Referral rule"), min_num=0, max_num=1
-        ),
-        InlinePanel(
-            'personalisation_visitcountrule_related',
-            label=_("Visit count rule"), min_num=0, max_num=1
-        ),
-        InlinePanel(
-            'personalisation_queryrule_related',
-            label=_("Query rule"), min_num=0, max_num=1
-        ),
+        MultiFieldPanel([
+            FieldPanel('name', classname="title"),
+            FieldRowPanel([
+                FieldPanel('status'),
+                FieldPanel('persistent'),
+            ]),
+        ], heading="Segment"),
+        MultiFieldPanel([
+            InlinePanel(
+                'personalisation_timerule_related',
+                label=_("Time rule"), min_num=0, max_num=1
+            ),
+            InlinePanel(
+                'personalisation_referralrule_related',
+                label=_("Referral rule"), min_num=0, max_num=1
+            ),
+            InlinePanel(
+                'personalisation_visitcountrule_related',
+                label=_("Visit count rule"), min_num=0, max_num=1
+            ),
+            InlinePanel(
+                'personalisation_queryrule_related',
+                label=_("Query rule"), min_num=0, max_num=1
+            ),
+        ], heading="Rules"),
     ]
 
     def __str__(self):
