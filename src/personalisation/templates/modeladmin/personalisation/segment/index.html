@@ -19,10 +19,9 @@
                         {% block result_list %}
                             <div class="nice-padding block_container">
                                 {% if all_count %}
-                                    <!-- Replace this function with a class specific one to avoid useless requests. -->
                                     {% for segment in object_list %}
-                                        <div class="block">
-                                            <a href="inspect/{{ segment.pk }}"><h2>{{ segment }}</h2></a>
+                                        <div class="block" onclick="location.href = 'edit/{{ segment.pk }}'">
+                                            <h2>{{ segment }}</h2>
                                             <div class="inspect_container">
                                                 <ul class="inspect segment_stats">
                                                     <li class="visit_stat">
@@ -67,9 +66,9 @@
                                                     <li class="persistent_state {{ segment.persistent|yesno:"persistent,fleeting" }}">
                                                         {% trans "The persistence of this segment is" %}
                                                         {% if segment.persistent %}
-                                                            <span>{% trans "Persistent" %}</span>
+                                                            <span title="{% trans "This segment persists in between visits" %}">{% trans "Persistent" %}</span>
                                                         {% else %}
-                                                            <span>{% trans "Fleeting" %}</span>
+                                                            <span title="{% trans "This segment is reevaluated on every visit" %}">{% trans "Fleeting" %}</span>
                                                         {% endif %}
                                                     </li>
                                                 </ul>
@@ -78,11 +77,11 @@
                                             {% if user_can_create %}
                                             <ul class="block_actions">
                                                 {% if segment.status == "disabled" %}
-                                                    <li><a href="{% url 'segment:enable' segment.pk %}">enable</a></li>
+                                                    <li><a href="{% url 'segment:enable' segment.pk %}" title="{% trans "Enable this segment" %}">enable</a></li>
                                                 {% elif segment.status == "enabled" %}
-                                                    <li><a href="{% url 'segment:disable' segment.pk %}">disable</a></li>
+                                                    <li><a href="{% url 'segment:disable' segment.pk %}" title="{% trans "Disable this segment" %}">disable</a></li>
                                                 {% endif %}
-                                                <li><a href="edit/{{ segment.pk }}">configure this</a></li>
+                                                <li><a href="edit/{{ segment.pk }}" title="{% trans "Configure this segment" %}">configure this</a></li>
                                             </ul>
                                             {% endif %}
                                         </div>
@@ -91,9 +90,9 @@
 
                                 {% if user_can_create %}
                                     {% blocktrans with url=view.create_url name=view.verbose_name %}
-                                        <div class="block suggestion">
-                                            <a href="{{ url }}"><span class="suggestive_text">Add a new {{name}}</span></a>
-                                        </div>
+                                        <a class="block suggestion" href="{{ url }}">
+                                            <span class="suggestive_text">Add a new {{name}}</span>
+                                        </a>
                                     {% endblocktrans %}
                                 {% endif %}
                             </div>

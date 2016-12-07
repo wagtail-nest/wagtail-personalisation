@@ -37,7 +37,6 @@ class SegmentModelAdmin(ModelAdmin):
     list_display = ('status', 'name', 'create_date', 'edit_date')
     index_view_extra_css = ['personalisation/segment/index.css']
     form_view_extra_css = ['personalisation/segment/form.css']
-    inspect_view_enabled = True
 
 
 modeladmin_register(SegmentModelAdmin)
