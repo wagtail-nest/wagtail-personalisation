@@ -14,7 +14,7 @@
     box-sizing: border-box;
     position: relative;
     width: calc(50% - 10px);
-    min-height: 126px;
+    min-height: 216px;
     padding: 10px 20px;
     margin-bottom: 20px;
     border: 1px solid #d9d9d9;
@@ -22,6 +22,7 @@
     background-color: #fff;
     box-shadow: 0 1px 3px rgba(0,0,0,0.00), 0 1px 2px rgba(0,0,0,0.00);
     transition: box-shadow 0.3s cubic-bezier(.25,.8,.25,1), border 0.3s cubic-bezier(.25,.8,.25,1);
+    cursor: pointer;
 }
 
     .block_container .block h2 {
@@ -64,17 +65,13 @@
     }
 }
 
-.block_container .block h2 {
-    display: block;
-}
-
 .block_container .block .inspect_container {
     display: flex;
     flex-direction: row;
     flex-wrap: nowrap;
     justify-content: space-between;
     align-items: stretch;
-    margin-bottom: 5px;
+    margin-bottom: 10px;
 }
 
 .block_container .block .inspect_container .inspect {
@@ -115,6 +112,12 @@
                 background-image: url("./calendar_icon.png");
             }
 
+            .block_container .block .inspect_container .segment_rules .persistent_state span::before {
+                background-image: url("./persistent_icon.png");
+            }
+            .block_container .block .inspect_container .segment_rules .persistent_state.fleeting span::before {
+                transform: rotate(45deg) translateY(-2px);
+            }
             .block_container .block .inspect_container .segment_rules .time_rule span::before {
                 background-image: url("./time_icon.png");
             }
@@ -165,7 +168,3 @@
     font-size: 20px;
     font-weight: 100;
 }
-
-    .block_container .block.suggestion .suggestive_text:hover {
-        text-decoration: underline;
-    }

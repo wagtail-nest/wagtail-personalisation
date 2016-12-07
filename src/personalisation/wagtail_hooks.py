@@ -37,7 +37,6 @@ class SegmentModelAdmin(ModelAdmin):
     list_display = ('status', 'name', 'create_date', 'edit_date')
     index_view_extra_css = ['personalisation/segment/index.css']
     form_view_extra_css = ['personalisation/segment/form.css']
-    inspect_view_enabled = True
 
 
 modeladmin_register(SegmentModelAdmin)
@@ -77,7 +76,16 @@ def set_visit_count(page, request, serve_args, serve_kwargs):
 
 @hooks.register('before_serve_page')
 def segment_user(page, request, serve_args, serve_kwargs):
-    request.session['segments'] = []
+    if 'segments' not in request.session:
+        request.session['segments'] = []
+
+    current_segments = request.session['segments']
+    persistent_segments = Segment.objects.filter(persistent=True)
+
+    current_segments = [item for item in current_segments if any(seg.pk for seg in persistent_segments) == item['id']]
+
+    request.session['segments'] = current_segments
+
     segments = Segment.objects.all().filter(status='enabled')
 
     for segment in segments:
@@ -103,12 +111,12 @@ def segment_user(page, request, serve_args, serve_kwargs):
 
 
 def _test_rules(rules, request):
-    """Test wether the user matches a segment's rules'"""
+    """Test whether the user matches a segment's rules'"""
     if len(rules) > 0:
         for rule in rules:
             result = rule.test_user(request)
 
-            # Debug
+            """ Debug
             if result and rule.__class__.__name__ == "TimeRule":
                 print("User segmented. Time between {} and {}.".format(
                     rule.start_time,
@@ -120,7 +128,7 @@ def _test_rules(rules, request):
                 print("User segmented. Visited {} {} {} times.".format(
                     rule.counted_page,
                     rule.operator,
-                    rule.count))
+                    rule.count))"""
 
             if result is False:
                 return False
@@ -144,6 +152,7 @@ def _add_segment_to_user(segment, request):
             "encoded_name": segment.encoded_name(),
             "id": segment.pk,
             "timestamp": int(time.time()),
+            "persistent": segment.persistent,
         }
         request.session['segments'].append(segdict)
 

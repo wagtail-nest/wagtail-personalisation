@@ -178,6 +178,40 @@ class TestUserSegmenting(object):
         assert any(item['encoded_name'] == 'multiple-queries' for item in client.session['segments'])
 
 
+    def test_persistent_segmenting(self, client):
+        segment = SegmentFactory(name='Persistent', persistent=True)
+        query_rule = QueryRuleFactory(
+            parameter="test",
+            value="test",
+            segment=segment
+        )
+
+        client.get('/?test=test')
+
+        assert any(item['encoded_name'] == 'persistent' for item in client.session['segments'])
+
+        client.get('/')
+
+        assert any(item['encoded_name'] == 'persistent' for item in client.session['segments'])
+
+    def test_non_persistent_segmenting(self, client):
+        segment = SegmentFactory(name='Non Persistent')
+        query_rule = QueryRuleFactory(
+            parameter="test",
+            value="test",
+            segment=segment
+        )
+
+        client.get('/?test=test')
+
+        assert any(item['encoded_name'] == 'non-persistent' for item in client.session['segments'])
+
+        client.get('/')
+
+        assert not any(item['encoded_name'] == 'non-persistent' for item in client.session['segments'])
+
+
+
 @pytest.mark.django_db
 class TestUserVisitCount(object):
 
