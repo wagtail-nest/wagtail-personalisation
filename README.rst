@@ -1,7 +1,8 @@
-Wagtail personalisation module
-==============================
+.. image:: logo.png
 
-Personalisation module for Wagtail. This project is still work in progress.
+Wagtail personalisation
+=======================
+Wagtail personalisation enables simple content personalisation through segmenting for Wagtail.
 
 
 Instructions
