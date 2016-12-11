@@ -6,7 +6,7 @@ from personalisation import models
 
 
 class UserIsLoggedInRuleAdminInline(admin.TabularInline):
-    """Inline the Time Rule into the administration interface for segments"""
+    """Inline the UserIsLoggedIn Rule into the administration interface for segments"""
     model = models.UserIsLoggedInRule
     extra = 0
 
