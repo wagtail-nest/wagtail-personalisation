@@ -5,6 +5,12 @@ from django.contrib import admin
 from personalisation import models
 
 
+class UserIsLoggedInRuleAdminInline(admin.TabularInline):
+    """Inline the Time Rule into the administration interface for segments"""
+    model = models.UserIsLoggedInRule
+    extra = 0
+
+
 class TimeRuleAdminInline(admin.TabularInline):
     """Inline the Time Rule into the administration interface for segments"""
     model = models.TimeRule
@@ -27,7 +33,7 @@ class VisitCountRuleAdminInline(admin.TabularInline):
 
 class SegmentAdmin(admin.ModelAdmin):
     """Add the inlines to the Segment admin interface"""
-    inlines = (TimeRuleAdminInline,
+    inlines = (UserIsLoggedInRuleAdminInline, TimeRuleAdminInline,
                ReferralRuleAdminInline, VisitCountRuleAdminInline)
 
 
