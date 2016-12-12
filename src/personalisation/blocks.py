@@ -13,6 +13,7 @@ class PersonalisedStructBlock(blocks.StructBlock):
     def render(self, value, context=None):
         """Only render this content block for users in this segment"""
 
+        # TODO: move logic to its own class instead of getting it from the session
         user_segments = context['request'].session['segments']
 
         if value['segment']:
