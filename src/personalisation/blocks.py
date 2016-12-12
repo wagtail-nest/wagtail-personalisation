@@ -11,8 +11,7 @@ class PersonalisedStructBlock(blocks.StructBlock):
 
 
     def render(self, value, context=None):
-        """Only render block when the user is in the segment the block is
-        meant for"""
+        """Only render this content block for users in this segment"""
 
         user_segments = context['request'].session['segments']
 
