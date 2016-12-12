@@ -24,10 +24,16 @@ class VisitCountRuleAdminInline(admin.TabularInline):
     model = models.VisitCountRule
     extra = 0
 
+class CloudfrontDeviceTypeRuleAdminInline(admin.TabularInline):
+    """Inline the Cloudfront DeviceType rule into the
+    administration interface for segments"""
+    model = models.CloudfrontDeviceTypeRule
+    extra = 0
+
 
 class SegmentAdmin(admin.ModelAdmin):
     """Add the inlines to the Segment admin interface"""
-    inlines = (TimeRuleAdminInline,
+    inlines = (TimeRuleAdminInline, CloudfrontDeviceTypeRuleAdminInline,
                ReferralRuleAdminInline, VisitCountRuleAdminInline)
 
 

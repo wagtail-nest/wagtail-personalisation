@@ -94,6 +94,54 @@ class ReferralRule(AbstractBaseRule):
 
 
 @python_2_unicode_compatible
+class CloudfrontDeviceTypeRule(AbstractBaseRule):
+    """Referral rule to segment users based on a their device type as it was 
+    detected by Cloudfront"""
+    
+    is_tablet = models.BooleanField(default=False)
+    is_smartphone = models.BooleanField(default=False)
+    is_desktop = models.BooleanField(default=False)
+    is_smarttv = models.BooleanField(default=False)
+
+    panels = [
+        FieldPanel('is_tablet'),
+        FieldPanel('is_smartphone'),
+        FieldPanel('is_desktop'),
+        FieldPanel('is_smarttv'),
+    ]
+
+    def __init__(self, *args, **kwargs):
+        super(CloudfrontDeviceTypeRule, self).__init__(*args, **kwargs)
+
+    def test_user(self, request):
+        """test different cloudfront headers. If those are not available, 
+        False will be returned"""
+
+        return ( 
+            self.is_smartphone == self._header_value(request, 
+                'HTTP_CLOUDFRONT_IS_MOBILE_VIEWER')
+            or self.is_tablet == self._header_value(request, 
+                'HTTP_CLOUDFRONT_IS_TABLET_VIEWER')
+            or self.is_desktop == self._header_value(request, 
+                'HTTP_CLOUDFRONT_IS_DESKTOP_VIEWER')
+            or self.is_smarttv == self._header_value(request, 
+                'HTTP_CLOUDFRONT_IS_SMARTTV_VIEWER') 
+        )
+
+
+    def _header_value(self, request, header):
+        header_value = request.META.get(header, None),
+        
+        if None not in header_value:
+            return True if 'true' in header_value else False
+        return None
+
+
+    def __str__(self):
+        return 'Cloudfront Device Type Rule'
+
+
+@python_2_unicode_compatible
 class VisitCountRule(AbstractBaseRule):
     """Visit count rule to segment users based on amount of visits"""
     OPERATOR_CHOICES = (
