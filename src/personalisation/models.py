@@ -128,14 +128,12 @@ class CloudfrontDeviceTypeRule(AbstractBaseRule):
                 'HTTP_CLOUDFRONT_IS_SMARTTV_VIEWER') 
         )
 
-
     def _header_value(self, request, header):
         header_value = request.META.get(header, None),
         
         if None not in header_value:
             return True if 'true' in header_value else False
         return None
-
 
     def __str__(self):
         return 'Cloudfront Device Type Rule'
