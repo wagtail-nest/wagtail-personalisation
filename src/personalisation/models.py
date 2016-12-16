@@ -181,6 +181,26 @@ class QueryRule(AbstractBaseRule):
 
 
 @python_2_unicode_compatible
+class UserIsLoggedInRule(AbstractBaseRule):
+    """User should be logged in"""
+
+    is_logged_in = models.BooleanField(default=False)
+
+    panels = [
+        FieldPanel('is_logged_in'),
+    ]
+
+    def __init__(self, *args, **kwargs):
+        super(UserIsLoggedInRule, self).__init__(*args, **kwargs)
+
+    def test_user(self, request=None):
+        return request.user.is_authenticated() == self.is_logged_in
+
+    def __str__(self):
+        return '{}'.format(self.is_logged_in)
+
+
+@python_2_unicode_compatible
 class Segment(ClusterableModel):
     """Model for a new segment"""
     name = models.CharField(max_length=255)
@@ -206,7 +226,6 @@ class Segment(ClusterableModel):
                 FieldPanel('persistent'),
             ]),
         ], heading="Segment"),
-
         MultiFieldPanel([
             InlinePanel(
                 "{}_related".format(rule._meta.db_table), 
