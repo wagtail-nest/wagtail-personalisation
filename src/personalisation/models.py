@@ -34,7 +34,7 @@ class AbstractBaseRule(models.Model):
         return True
 
     def __str__(self):
-        return "Segmentation rule"
+        return "Abstract segmentation rule"
 
     class Meta:
         abstract = True
@@ -64,7 +64,7 @@ class TimeRule(AbstractBaseRule):
         return starting_time <= current_time <= ending_time
 
     def __str__(self):
-        return '{} - {}'.format(self.start_time, self.end_time)
+        return 'Time Rule'
 
 
 @python_2_unicode_compatible
@@ -90,7 +90,7 @@ class ReferralRule(AbstractBaseRule):
         return False
 
     def __str__(self):
-        return '{}'.format(self.regex_string)
+        return 'Referral Rule'
 
 
 @python_2_unicode_compatible
@@ -148,8 +148,7 @@ class VisitCountRule(AbstractBaseRule):
         return False
 
     def __str__(self):
-        operator_display = self.get_operator_display()
-        return '{} {}'.format(operator_display, self.count)
+        return 'Visit count Rule'
 
 
 @python_2_unicode_compatible
@@ -178,7 +177,7 @@ class QueryRule(AbstractBaseRule):
         return False
 
     def __str__(self):
-        return '?{}={}'.format(self.parameter, self.value)
+        return 'Query Rule'
 
 
 @python_2_unicode_compatible
@@ -229,25 +228,11 @@ class Segment(ClusterableModel):
         ], heading="Segment"),
         MultiFieldPanel([
             InlinePanel(
-                'personalisation_userisloggedinrule_related',
-                label=_("User is logged in rule"), min_num=0, max_num=1
-            ),
-            InlinePanel(
-                'personalisation_timerule_related',
-                label=_("Time rule"), min_num=0, max_num=1
-            ),
-            InlinePanel(
-                'personalisation_referralrule_related',
-                label=_("Referral rule"), min_num=0, max_num=1
-            ),
-            InlinePanel(
-                'personalisation_visitcountrule_related',
-                label=_("Visit count rule"), min_num=0, max_num=1
-            ),
-            InlinePanel(
-                'personalisation_queryrule_related',
-                label=_("Query rule"), min_num=0, max_num=1
-            ),
+                "{}_related".format(rule._meta.db_table), 
+                label=rule.__str__,
+                min_num=0,
+                max_num=1,
+            ) for rule in AbstractBaseRule.__subclasses__()
         ], heading="Rules"),
     ]
 
