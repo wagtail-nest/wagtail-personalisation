@@ -13,11 +13,13 @@ from wagtail.wagtailadmin.widgets import (
 from wagtail.wagtailcore import hooks
 
 from personalisation import admin_urls
+from personalisation.app_settings import segments_adapter
 from personalisation.models import (AbstractBaseRule, PersonalisablePage,
                                     Segment)
 from personalisation.utils import impersonate_other_page
 
 logger = logging.getLogger()
+adapter = segments_adapter()
 
 
 @hooks.register('register_admin_urls')
@@ -78,71 +80,9 @@ def set_visit_count(page, request, serve_args, serve_kwargs):
 
 @hooks.register('before_serve_page')
 def segment_user(page, request, serve_args, serve_kwargs):
-    if 'segments' not in request.session:
-        request.session['segments'] = []
-
-    current_segments = request.session['segments']
-    persistent_segments = Segment.objects.filter(persistent=True)
-
-    current_segments = [item for item in current_segments if any(seg.pk for seg in persistent_segments) == item['id']]
-
-    request.session['segments'] = current_segments
-
-    segments = Segment.objects.all().filter(status='enabled')
-
-    for segment in segments:
-        rules = AbstractBaseRule.__subclasses__()
-        segment_rules = []
-        for rule in rules:
-            queried_rules = rule.objects.filter(segment=segment)
-            for result in queried_rules:
-                segment_rules.append(result)
-        result = _test_rules(segment_rules, request)
-
-        if result:
-            _add_segment_to_user(segment, request)
-
-    if request.session['segments']:
-        logger.info("User has been added to the following segments: {}"
-                    .format(request.session['segments']))
-
-        for seg in request.session['segments']:
-            segment = Segment.objects.get(pk=seg['id'])
-            segment.visit_count = segment.visit_count + 1
-            segment.save()
-
-
-def _test_rules(rules, request):
-    """Test whether the user matches a segment's rules'"""
-    if len(rules) > 0:
-        for rule in rules:
-            result = rule.test_user(request)
-
-            if result is False:
-                return False
-
-        return True
-    return False
-
-
-def _add_segment_to_user(segment, request):
-    """Save the segment in the user session"""
-
-    def check_if_segmented(segment):
-        """Check if the user has been segmented"""
-        for seg in request.session['segments']:
-            if seg['encoded_name'] == segment.encoded_name():
-                return True
-        return False
-
-    if not check_if_segmented(segment):
-        segdict = {
-            "encoded_name": segment.encoded_name(),
-            "id": segment.pk,
-            "timestamp": int(time.time()),
-            "persistent": segment.persistent,
-        }
-        request.session['segments'].append(segdict)
+    # Always run setup first on each segment, should have logic to not overwrite
+    adapter.setup(request)
+    adapter.refresh()
 
 
 @hooks.register('before_serve_page')
