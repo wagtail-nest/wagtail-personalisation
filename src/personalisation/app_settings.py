@@ -1,6 +1,7 @@
 from django.conf import settings
 
-from personalisation.adapters import SessionSegmentsAdapter
+from personalisation.utils import import_class
 
-segments_adapter = getattr(settings, 'PERSONALISATION_SEGMENTS_ADAPTER', SessionSegmentsAdapter)
+
+segments_adapter = import_class(getattr(settings, 'PERSONALISATION_SEGMENTS_ADAPTER', 'personalisation.adapters.SessionSegmentsAdapter'))
 

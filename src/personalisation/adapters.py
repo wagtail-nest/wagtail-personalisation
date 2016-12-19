@@ -2,30 +2,24 @@ import time
 
 from personalisation.models import AbstractBaseRule, Segment
 
+
 class BaseSegmentsAdapter(object):
-    """Base adapter with required functions predefined"""
-    def setup(self):
-        return
+    def _test_rules(self, rules, request):
+        if len(rules) > 0:
+            for rule in rules:
+                result = rule.test_user(request)
 
-    def get(self):
-        return
+                if result is False:
+                    return False
 
-    def add(self):
-        return
-
-    def refresh(self):
-        return
-
-    def check_segment_exists(self):
-        return
+            return True
+        return False
 
     class Meta:
         abstract = True
 
 
 class SessionSegmentsAdapter(BaseSegmentsAdapter):
-    """Segments adapter that uses Django's SessionMiddleware to store segments"""
-    # Setup
     def setup(self, request):
         self.request = request
 
@@ -33,11 +27,9 @@ class SessionSegmentsAdapter(BaseSegmentsAdapter):
         if 'segments' not in self.request.session:
             self.request.session['segments'] = []
 
-    # Get segments
     def get(self):
         return self.request.session['segments']
 
-    # Add segments
     def add(self, segment):
         def check_if_segmented(item):
             """Check if the user has been segmented"""
@@ -73,7 +65,7 @@ class SessionSegmentsAdapter(BaseSegmentsAdapter):
                 queried_rules = rule.objects.filter(segment=segment)
                 for result in queried_rules:
                     segment_rules.append(result)
-            result = _test_rules(segment_rules, self.request)
+            result = self._test_rules(segment_rules, self.request)
 
             if result:
                 self.add(segment)
@@ -84,21 +76,8 @@ class SessionSegmentsAdapter(BaseSegmentsAdapter):
             segment.visit_count = segment.visit_count + 1
             segment.save()
 
-    # Quick checking logic to see if a segment exists
     def check_segment_exists(self, segment):
         segments = self.request.session['segments']
 
         return any(item for item in self.request.session['segments'] if segment.pk == item.id)
 
-
-def _test_rules(rules, request):
-    """Test whether the user matches a segment's rules'"""
-    if len(rules) > 0:
-        for rule in rules:
-            result = rule.test_user(request)
-
-            if result is False:
-                return False
-
-        return True
-    return False
