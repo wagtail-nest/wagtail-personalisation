@@ -1,9 +1,14 @@
 import time
 
+from django.db.models import F
+
 from personalisation.models import AbstractBaseRule, Segment
 
 
 class BaseSegmentsAdapter(object):
+    def setup(self):
+        return None
+
     def _test_rules(self, rules, request):
         if len(rules) > 0:
             for rule in rules:
@@ -23,20 +28,18 @@ class SessionSegmentsAdapter(BaseSegmentsAdapter):
     def setup(self, request):
         self.request = request
 
-        # Set up segments dictionary object in the session
-        if 'segments' not in self.request.session:
-            self.request.session['segments'] = []
+        self.request.session.setdefault('segments', [])
 
-    def get(self):
+    def get_all_segments(self):
         return self.request.session['segments']
+
+    def get_segment(self, segment_id):
+        return next(item for item in self.request.session['segments'] if item.id == segment_id)
 
     def add(self, segment):
         def check_if_segmented(item):
             """Check if the user has been segmented"""
-            for seg in self.request.session['segments']:
-                if seg['encoded_name'] == item.encoded_name():
-                    return True
-            return False
+            return any(seg['encoded_name'] == item.encoded_name for seg in self.request.session['segments'])
 
         if not check_if_segmented(segment):
             segdict = {
@@ -56,15 +59,13 @@ class SessionSegmentsAdapter(BaseSegmentsAdapter):
 
         self.request.session['segments'] = current_segments
 
-        segments = Segment.objects.all().filter(status='enabled')
+        segments = Segment.objects.filter(status='enabled').prefetch_related('rules')
 
         for segment in segments:
             rules = AbstractBaseRule.__subclasses__()
             segment_rules = []
             for rule in rules:
-                queried_rules = rule.objects.filter(segment=segment)
-                for result in queried_rules:
-                    segment_rules.append(result)
+                segment_rules += rule.objects.filter(segment=segment)
             result = self._test_rules(segment_rules, self.request)
 
             if result:
@@ -73,11 +74,11 @@ class SessionSegmentsAdapter(BaseSegmentsAdapter):
 
         for seg in self.request.session['segments']:
             segment = Segment.objects.get(pk=seg['id'])
-            segment.visit_count = segment.visit_count + 1
+            segment.visit_count = F('visit_count') + 1
             segment.save()
 
     def check_segment_exists(self, segment):
         segments = self.request.session['segments']
 
-        return any(item for item in self.request.session['segments'] if segment.pk == item.id)
+        return any(item for item in segments if segment.pk == item.id)
 

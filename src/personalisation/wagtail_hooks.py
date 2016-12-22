@@ -88,7 +88,7 @@ def segment_user(page, request, serve_args, serve_kwargs):
 def serve_variation(page, request, serve_args, serve_kwargs):
     user_segments = []
 
-    for segment in segments_adapter.get():
+    for segment in segments_adapter.get_all_segments():
         try:
             user_segment = Segment.objects.get(pk=segment['id'],
                                                status='enabled')
