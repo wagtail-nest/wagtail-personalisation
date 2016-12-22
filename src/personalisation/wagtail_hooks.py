@@ -19,7 +19,6 @@ from personalisation.models import (AbstractBaseRule, PersonalisablePage,
 from personalisation.utils import impersonate_other_page
 
 logger = logging.getLogger()
-adapter = segments_adapter()
 
 
 @hooks.register('register_admin_urls')
@@ -81,8 +80,8 @@ def set_visit_count(page, request, serve_args, serve_kwargs):
 @hooks.register('before_serve_page')
 def segment_user(page, request, serve_args, serve_kwargs):
     # Always run setup first on each segment, should have logic to not overwrite
-    adapter.setup(request)
-    adapter.refresh()
+    segments_adapter.setup(request)
+    segments_adapter.refresh()
 
 
 @hooks.register('before_serve_page')
