@@ -9,6 +9,21 @@ class BaseSegmentsAdapter(object):
     def setup(self):
         return None
 
+    def get_all_segments(self):
+        return None
+
+    def get_segment(self):
+        return None
+
+    def add(self):
+        return None
+
+    def refresh(self):
+        return None
+
+    def check_segment_exists(self):
+        return None
+
     def _test_rules(self, rules, request):
         if len(rules) > 0:
             for rule in rules:
@@ -65,7 +80,7 @@ class SessionSegmentsAdapter(BaseSegmentsAdapter):
             rules = AbstractBaseRule.__subclasses__()
             segment_rules = []
             for rule in rules:
-                segment_rules += rule.objects.filter(segment=segment)
+                segment_rules += segments.rules.filter(segment=segment, pk=rule.pk)
             result = self._test_rules(segment_rules, self.request)
 
             if result:
