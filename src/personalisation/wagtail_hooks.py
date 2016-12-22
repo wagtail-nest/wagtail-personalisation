@@ -79,9 +79,9 @@ def set_visit_count(page, request, serve_args, serve_kwargs):
 
 @hooks.register('before_serve_page')
 def segment_user(page, request, serve_args, serve_kwargs):
-    # Always run setup first on each segment, should have logic to not overwrite
     segments_adapter.setup(request)
     segments_adapter.refresh()
+
 
 
 @hooks.register('before_serve_page')

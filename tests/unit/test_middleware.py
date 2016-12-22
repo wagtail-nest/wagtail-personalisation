@@ -213,6 +213,22 @@ class TestUserSegmenting(object):
         assert not any(item['encoded_name'] == 'non-persistent' for item in client.session['segments'])
 
 
+    def test_match_any_segmenting(self, client):
+        segment = SegmentFactory(name='Match any', match_any=True)
+        query_rule = QueryRuleFactory(
+            parameter='test',
+            value='test',
+            segment=segment,
+        )
+        second_query_rule = QueryRuleFactory(
+            parameter='test2',
+            value='test2',
+            segment=segment
+        )
+
+        client.get('/?test=test')
+
+        assert any(item['encoded_name'] == 'match-any' for item in client.session['segments'])
 
 @pytest.mark.django_db
 class TestUserVisitCount(object):
