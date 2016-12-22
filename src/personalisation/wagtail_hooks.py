@@ -97,7 +97,7 @@ def segment_user(page, request, serve_args, serve_kwargs):
             queried_rules = rule.objects.filter(segment=segment)
             for result in queried_rules:
                 segment_rules.append(result)
-        result = _test_rules(segment_rules, request)
+        result = _test_rules(segment_rules, request, segment.match_any)
 
         if result:
             _add_segment_to_user(segment, request)
@@ -112,16 +112,19 @@ def segment_user(page, request, serve_args, serve_kwargs):
             segment.save()
 
 
-def _test_rules(rules, request):
+def _test_rules(rules, request, match_any=False):
     """Test whether the user matches a segment's rules'"""
     if len(rules) > 0:
         for rule in rules:
             result = rule.test_user(request)
+            if match_any:
+                if result is True:
+                    return result
 
-            if result is False:
+            elif result is False:
                 return False
-
-        return True
+        if not match_any:
+            return True
     return False
 
 

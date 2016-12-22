@@ -217,6 +217,10 @@ class Segment(ClusterableModel):
                               default="enabled")
     persistent = models.BooleanField(
         default=False, help_text=_("Should the segment persist between visits?"))
+    match_any = models.BooleanField(
+        default=False,
+        help_text=_("Should the segment match all the rules or just one of them?")
+    )
 
     panels = [
         MultiFieldPanel([
@@ -225,6 +229,7 @@ class Segment(ClusterableModel):
                 FieldPanel('status'),
                 FieldPanel('persistent'),
             ]),
+            FieldPanel('match_any'),
         ], heading="Segment"),
         MultiFieldPanel([
             InlinePanel(
