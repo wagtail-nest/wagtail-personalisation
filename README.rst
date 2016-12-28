@@ -23,3 +23,14 @@ Next, include the ``personalisation`` and ``wagtail.contrib.modeladmin`` app in 
     ]
 
 Make sure that ``django.contrib.sessions.middleware.SessionMiddleware`` has been added in first, this is a prerequisite for this project.
+
+Changing segments adapter
+-------------------------
+To change the segments adapter, first make a new one based on the ``BaseSegmentsAdapter``
+
+.. code-block:: python
+
+    class YourSegmentsAdapter(BaseSegmentsAdapter):
+        # Add your own logic here
+
+Add the ``PERSONALISATION_SEGMENTS_ADAPTER`` setting to your settings.py and choose your own adapter.
