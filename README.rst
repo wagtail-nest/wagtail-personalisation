@@ -34,3 +34,7 @@ To change the segments adapter, first make a new one based on the ``BaseSegments
         # Add your own logic here
 
 Add the ``PERSONALISATION_SEGMENTS_ADAPTER`` setting to your settings.py and choose your own adapter.
+
+Roadmap
+-------------------------
+.. image:: roadmap.png
