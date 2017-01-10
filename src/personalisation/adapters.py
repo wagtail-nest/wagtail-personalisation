@@ -74,13 +74,13 @@ class SessionSegmentsAdapter(BaseSegmentsAdapter):
 
         self.request.session['segments'] = current_segments
 
-        segments = Segment.objects.filter(status='enabled').prefetch_related('rules')
+        segments = Segment.objects.filter(status='enabled')
 
         for segment in segments:
             rules = AbstractBaseRule.__subclasses__()
             segment_rules = []
             for rule in rules:
-                segment_rules += segments.rules.filter(segment=segment, pk=rule.pk)
+                segment_rules += rule.objects.filter(segment=segment)
             result = self._test_rules(segment_rules, self.request)
 
             if result:

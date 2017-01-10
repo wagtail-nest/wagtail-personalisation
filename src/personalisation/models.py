@@ -183,7 +183,6 @@ class QueryRule(AbstractBaseRule):
 @python_2_unicode_compatible
 class UserIsLoggedInRule(AbstractBaseRule):
     """User should be logged in"""
-
     is_logged_in = models.BooleanField(default=False)
 
     panels = [
@@ -337,7 +336,7 @@ class PersonalisablePage(Page):
         return not self.canonical_page and self.has_variations
 
 
-@cached_classmethod
+@cached_classmethodx
 def get_edit_handler(cls):
     tabs = []
     if cls.content_panels:
