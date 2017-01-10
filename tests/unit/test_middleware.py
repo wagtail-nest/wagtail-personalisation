@@ -227,9 +227,7 @@ class TestUserSegmenting(object):
         )
 
         client.get('/?test=test')
-        import pdb
-        pdb.set_trace()
-
+        
         assert any(item['encoded_name'] == 'match-any' for item in client.session['segments'])
 
 @pytest.mark.django_db

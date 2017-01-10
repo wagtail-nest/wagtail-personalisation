@@ -336,7 +336,7 @@ class PersonalisablePage(Page):
         return not self.canonical_page and self.has_variations
 
 
-@cached_classmethodx
+@cached_classmethod
 def get_edit_handler(cls):
     tabs = []
     if cls.content_panels:

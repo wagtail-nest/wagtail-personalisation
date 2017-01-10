@@ -24,15 +24,18 @@ class BaseSegmentsAdapter(object):
     def check_segment_exists(self):
         return None
 
-    def _test_rules(self, rules, request):
+    def _test_rules(self, rules, request, match_any=False):
         if len(rules) > 0:
             for rule in rules:
                 result = rule.test_user(request)
+                if match_any:
+                    if result is True:
+                        return result
 
-                if result is False:
+                elif result is False:
                     return False
-
-            return True
+            if not match_any:
+                return True
         return False
 
     class Meta:
@@ -81,7 +84,7 @@ class SessionSegmentsAdapter(BaseSegmentsAdapter):
             segment_rules = []
             for rule in rules:
                 segment_rules += rule.objects.filter(segment=segment)
-            result = self._test_rules(segment_rules, self.request)
+            result = self._test_rules(segment_rules, self.request, match_any=segment.match_any)
 
             if result:
                 self.add(segment)
