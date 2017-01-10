@@ -64,7 +64,7 @@ class TimeRule(AbstractBaseRule):
         return starting_time <= current_time <= ending_time
 
     def __str__(self):
-        return 'Time Rule'
+        return _('Time Rule')
 
 
 @python_2_unicode_compatible
@@ -90,7 +90,7 @@ class ReferralRule(AbstractBaseRule):
         return False
 
     def __str__(self):
-        return 'Referral Rule'
+        return _('Referral Rule')
 
 
 @python_2_unicode_compatible
@@ -148,7 +148,7 @@ class VisitCountRule(AbstractBaseRule):
         return False
 
     def __str__(self):
-        return 'Visit count Rule'
+        return _('Visit count Rule')
 
 
 @python_2_unicode_compatible
@@ -177,7 +177,7 @@ class QueryRule(AbstractBaseRule):
         return False
 
     def __str__(self):
-        return 'Query Rule'
+        return _('Query Rule')
 
 
 @python_2_unicode_compatible
@@ -196,7 +196,7 @@ class UserIsLoggedInRule(AbstractBaseRule):
         return request.user.is_authenticated() == self.is_logged_in
 
     def __str__(self):
-        return '{}'.format(self.is_logged_in)
+        return _('Logged In Rule')
 
 
 @python_2_unicode_compatible

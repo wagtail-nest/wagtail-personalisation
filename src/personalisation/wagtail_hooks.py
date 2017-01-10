@@ -41,7 +41,6 @@ class SegmentModelAdmin(ModelAdmin):
     index_view_extra_css = ['personalisation/segment/index.css']
     form_view_extra_css = ['personalisation/segment/form.css']
 
-
 modeladmin_register(SegmentModelAdmin)
 
 
@@ -81,7 +80,6 @@ def set_visit_count(page, request, serve_args, serve_kwargs):
 def segment_user(page, request, serve_args, serve_kwargs):
     segments_adapter.setup(request)
     segments_adapter.refresh()
-
 
 
 @hooks.register('before_serve_page')
