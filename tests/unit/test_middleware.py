@@ -9,7 +9,7 @@ from wagtail.wagtailcore.models import Page
 
 from tests.factories.segment import (
     QueryRuleFactory, ReferralRuleFactory, SegmentFactory, TimeRuleFactory,
-    VisitCountRuleFactory)
+    DayRuleFactory, VisitCountRuleFactory)
 from tests.factories.site import SiteFactory
 
 
@@ -38,6 +38,19 @@ class TestUserSegmenting(object):
         request = client.get('/')
 
         assert client.session['segments'][0]['encoded_name'] == 'time-only'
+
+
+    @freeze_time("2017-01-01")
+    def test_day_segment(self, client):
+        day_only_segment = SegmentFactory(name='Day only')
+        day_rule = DayRuleFactory(
+            sun=True,
+            segment=day_only_segment)
+
+        request = client.get('/')
+
+        assert client.session['segments'][0]['encoded_name'] == 'day-only'
+
 
     def test_referral_segment(self, client):
         referral_segment = SegmentFactory(name='Referral')

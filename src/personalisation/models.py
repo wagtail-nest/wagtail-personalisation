@@ -68,6 +68,54 @@ class TimeRule(AbstractBaseRule):
 
 
 @python_2_unicode_compatible
+class DayRule(AbstractBaseRule):
+    """Day rule to segment users based on day(s) of visit"""
+    mon = models.BooleanField(_("Monday"), default=False)
+    tue = models.BooleanField(_("Tuesday"), default=False)
+    wed = models.BooleanField(_("Wednesday"), default=False)
+    thu = models.BooleanField(_("Thursday"), default=False)
+    fri = models.BooleanField(_("Friday"), default=False)
+    sat = models.BooleanField(_("Saturday"), default=False)
+    sun = models.BooleanField(_("Sunday"), default=False)
+
+    panels = [
+        FieldPanel('mon'),
+        FieldPanel('tue'),
+        FieldPanel('wed'),
+        FieldPanel('thu'),
+        FieldPanel('fri'),
+        FieldPanel('sat'),
+        FieldPanel('sun'),
+    ]
+
+    def __init__(self, *args, **kwargs):
+        super(DayRule, self).__init__(*args, **kwargs)
+
+    def test_user(self, request=None):
+        current_day = datetime.today().weekday()
+
+        if current_day == 0:
+            return self.mon
+        elif current_day == 1:
+            return self.tue
+        elif current_day == 2:
+            return self.wed
+        elif current_day == 3:
+            return self.thu
+        elif current_day == 4:
+            return self.fri
+        elif current_day == 5:
+            return self.sat
+        elif current_day == 6:
+            return self.sun
+        else:
+            return False
+
+    def __str__(self):
+        return _('Day Rule')
+
+
+@python_2_unicode_compatible
 class ReferralRule(AbstractBaseRule):
     """Referral rule to segment users based on a regex test"""
     regex_string = models.TextField(

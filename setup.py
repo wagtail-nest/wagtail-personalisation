@@ -12,7 +12,7 @@ tests_require = [
     'pytest-django==3.0.0',
     'pytest-sugar==0.7.1',
     'freezegun==0.3.8',
-    'factory_boy==2.7.0',
+    'factory_boy==2.8.1',
 ]
 
 setup(
