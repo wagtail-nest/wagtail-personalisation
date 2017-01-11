@@ -34,14 +34,37 @@
                                                     </li>
                                                 </ul>
 
+                                                <hr />
+
                                                 <ul class="inspect segment_rules">
+                                                    <li class="match_state {{ segment.match_any|yesno:"any,all" }}">
+                                                        {% trans "The visitor must match" %}
+                                                        {% if segment.match_any %}
+                                                            <span>{% trans "Any rule" %}</span>
+                                                        {% else %}
+                                                            <span>{% trans "All rules" %}</span>
+                                                        {% endif %}
+                                                    </li>
+
+                                                    <li class="persistent_state {{ segment.persistent|yesno:"persistent,fleeting" }}">
+                                                        {% trans "The persistence of this segment is" %}
+                                                        {% if segment.persistent %}
+                                                            <span title="{% trans "This segment persists in between visits" %}">{% trans "Persistent" %}</span>
+                                                        {% else %}
+                                                            <span title="{% trans "This segment is reevaluated on every visit" %}">{% trans "Fleeting" %}</span>
+                                                        {% endif %}
+                                                    </li>
+
                                                     {% for rule in segment.get_rules %}
-                                                        <li class="{{ rule.encoded_name }}">   
+                                                        <li class="{{ rule.encoded_name }}">
                                                             {{ rule.description.title }}
-                                                            <span>{{ rule.description.value }}</span>
+                                                            {% if rule.description.code %}
+                                                                <pre>{{ rule.description.value }}</pre>
+                                                            {% else %}
+                                                                <span>{{ rule.description.value }}</span>
+                                                            {% endif %}
                                                         </li>
                                                     {% endfor %}
-          
                                                 </ul>
                                             </div>
 

@@ -77,12 +77,11 @@ class TimeRule(AbstractBaseRule):
     def description(self):
         description = {
             'title': _('These users visit between'),
-            'value': _('{} and {}'),
+            'value': _('{} and {}').format(
+                self.start_time.strftime("%H:%M"),
+                self.end_time.strftime("%H:%M")
+            ),
         }
-
-        description['value'] = description['value'].format(
-            self.start_time,
-            self.end_time)
 
         return description
 
@@ -135,16 +134,18 @@ class DayRule(AbstractBaseRule):
         return _('Day Rule')
 
     def description(self):
-        description = {
-            'title': _('These users visit on'),
-            'value': _('{}'),
+        days = {
+            'mon': self.mon, 'tue': self.tue, 'wed': self.wed,
+            'thu': self.thu, 'fri': self.fri, 'sat': self.sat,
+            'sun': self.sun
         }
 
-        days = [self.mon]
+        chosen_days = [days[item] for item in days if days[item] is True]
 
-        description['value'] = description['value'].format(
-            self.start_time,
-            self.end_time)
+        description = {
+            'title': _('These users visit on'),
+            'value': _('{}').format(", ".join(str(chosen_days))),
+        }
 
         return description
 
@@ -173,6 +174,17 @@ class ReferralRule(AbstractBaseRule):
 
     def __str__(self):
         return _('Referral Rule')
+
+    def description(self):
+        description = {
+            'title': _('These visits originate from'),
+            'value': _('{}').format(
+                self.regex_string
+            ),
+            'code': True
+        }
+
+        return description
 
 
 @python_2_unicode_compatible
@@ -232,6 +244,19 @@ class VisitCountRule(AbstractBaseRule):
     def __str__(self):
         return _('Visit count Rule')
 
+    def description(self):
+        description = {
+            'title': _('These users visited {}').format(
+                self.counted_page
+            ),
+            'value': _('{} {} times').format(
+                self.get_operator_display(),
+                self.count
+            ),
+        }
+
+        return description
+
 
 @python_2_unicode_compatible
 class QueryRule(AbstractBaseRule):
@@ -260,6 +285,18 @@ class QueryRule(AbstractBaseRule):
 
     def __str__(self):
         return _('Query Rule')
+
+    def description(self):
+        description = {
+            'title': _('These users used a url with the query'),
+            'value': _('?{}={}').format(
+                self.parameter,
+                self.value
+            ),
+            'code': True
+        }
+
+        return description
 
 
 @python_2_unicode_compatible
@@ -311,6 +348,20 @@ class UserIsLoggedInRule(AbstractBaseRule):
 
     def __str__(self):
         return _('Logged In Rule')
+
+    def description(self):
+        status = _('Logged in')
+        if self.is_logged_in is False:
+            status = _('Not logged in')
+
+        description = {
+            'title': _('These visitors are'),
+            'value': _('{}').format(
+                status
+            ),
+        }
+
+        return description
 
 
 @python_2_unicode_compatible
