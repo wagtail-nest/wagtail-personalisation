@@ -37,6 +37,13 @@ class AbstractBaseRule(models.Model):
     def __str__(self):
         return "Abstract segmentation rule"
 
+    def encoded_name(self):
+        """Returns a string with a slug for the rule"""
+        return slugify(self.__str__().lower())
+
+    def description(self):
+        return "Abstract segmentation rule"
+
     class Meta:
         abstract = True
 
@@ -66,6 +73,18 @@ class TimeRule(AbstractBaseRule):
 
     def __str__(self):
         return _('Time Rule')
+
+    def description(self):
+        description = {
+            'title': _('These users visit between'),
+            'value': _('{} and {}'),
+        }
+
+        description['value'] = description['value'].format(
+            self.start_time,
+            self.end_time)
+
+        return description
 
 
 @python_2_unicode_compatible
@@ -114,6 +133,20 @@ class DayRule(AbstractBaseRule):
 
     def __str__(self):
         return _('Day Rule')
+
+    def description(self):
+        description = {
+            'title': _('These users visit on'),
+            'value': _('{}'),
+        }
+
+        days = [self.mon]
+
+        description['value'] = description['value'].format(
+            self.start_time,
+            self.end_time)
+
+        return description
 
 
 @python_2_unicode_compatible
@@ -325,6 +358,13 @@ class Segment(ClusterableModel):
     def encoded_name(self):
         """Returns a string with a slug for the segment"""
         return slugify(self.name.lower())
+
+    def get_rules(self):
+        rules = AbstractBaseRule.__subclasses__()
+        segment_rules = []
+        for rule in rules:
+            segment_rules += rule.objects.filter(segment=self)
+        return segment_rules
 
 
 def check_status_change(sender, instance, *args, **kwargs):
