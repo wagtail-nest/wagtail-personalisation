@@ -6,15 +6,17 @@ from django.conf.urls import include, url
 from django.shortcuts import reverse
 from django.utils.safestring import mark_safe
 from django.utils.translation import ugettext_lazy as _
+from wagtail.contrib.modeladmin.options import ModelAdmin, modeladmin_register
+from wagtail.contrib.modeladmin.views import IndexView
+from wagtail.wagtailadmin.widgets import Button, ButtonWithDropdownFromHook
+from wagtail.wagtailcore import hooks
+
 from personalisation import admin_urls
 from personalisation.app_settings import segments_adapter
 from personalisation.models import PersonalisablePage, Segment
 from personalisation.utils import impersonate_other_page
-from wagtail.contrib.modeladmin.options import ModelAdmin, modeladmin_register
-from wagtail.wagtailadmin.widgets import Button, ButtonWithDropdownFromHook
-from wagtail.wagtailcore import hooks
 
-logger = logging.getLogger()
+logger = logging.getLogger(__name__)
 
 
 @hooks.register('register_admin_urls')
@@ -28,9 +30,14 @@ def register_admin_urls():
     ]
 
 
+class SegmentModelIndexView(IndexView):
+    pass
+
+
 class SegmentModelAdmin(ModelAdmin):
     """The base model for the Segments administration interface."""
     model = Segment
+    index_view_class = SegmentModelIndexView
     menu_icon = 'group'
     add_to_settings_menu = False
     list_display = ('status', 'name', 'create_date', 'edit_date')
