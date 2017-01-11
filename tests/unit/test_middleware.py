@@ -9,7 +9,7 @@ from wagtail.wagtailcore.models import Page
 
 from tests.factories.segment import (
     QueryRuleFactory, ReferralRuleFactory, SegmentFactory, TimeRuleFactory,
-    DayRuleFactory, VisitCountRuleFactory)
+    DayRuleFactory, VisitCountRuleFactory, DeviceRuleFactory)
 from tests.factories.site import SiteFactory
 
 
@@ -52,6 +52,28 @@ class TestUserSegmenting(object):
         assert client.session['segments'][0]['encoded_name'] == 'day-only'
 
 
+    def test_device_segment(self, client):
+        device_only_segment = SegmentFactory(name='Device only')
+        device_rule = DeviceRuleFactory(
+            tablet=True,
+            segment=device_only_segment)
+
+        client.get('/', **{'HTTP_USER_AGENT': 'Mozilla/5.0(iPad; U; CPU iPhone OS 3_2 like Mac OS X)'})
+
+        assert client.session['segments'][0]['encoded_name'] == 'device-only'
+
+
+    def test_device_segment_no_match(self, client):
+        no_device_segment = SegmentFactory(name='No device')
+        device_rule = DeviceRuleFactory(
+            mobile=True,
+            segment=no_device_segment)
+
+        client.get('/', **{'HTTP_USER_AGENT': 'Mozilla/5.0(iPad; U; CPU iPhone OS 3_2 like Mac OS X)'})
+
+        assert not client.session['segments']
+
+
     def test_referral_segment(self, client):
         referral_segment = SegmentFactory(name='Referral')
         referral_rule = ReferralRuleFactory(
@@ -59,7 +81,7 @@ class TestUserSegmenting(object):
             segment=referral_segment
         )
 
-        client.get('/', **{ 'HTTP_REFERER': 'test.test'})
+        client.get('/', **{'HTTP_REFERER': 'test.test'})
 
         assert client.session['segments'][0]['encoded_name'] == 'referral'
 
