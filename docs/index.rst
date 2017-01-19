@@ -9,7 +9,9 @@ Welcome to wagtail-personalisation's documentation!
 .. toctree::
    :maxdepth: 2
    :caption: Contents:
-
+   
+   getting_started
+   usage_guide
 
 
 Indices and tables
