@@ -11,6 +11,7 @@ Welcome to wagtail-personalisation's documentation!
    :caption: Contents:
    
    getting_started
+   implementation
    usage_guide
 
 
