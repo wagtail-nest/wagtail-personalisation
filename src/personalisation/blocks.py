@@ -1,12 +1,18 @@
 from wagtail.wagtailcore import blocks
 from personalisation.models import Segment
 
+def list_segment_choices():
+     
+    for s in Segment.objects.all():
+        yield (s.pk, s.name)
+
+
+
 class PersonalisedStructBlock(blocks.StructBlock):
 
-    segment = blocks.ChoiceBlock(choices=[
-        (segment.pk, "{} ({})".format(segment.name, segment.status) ) \
-            for segment in Segment.objects.all()
-        ], required=False, label="Personalisation segment",
+    segment = blocks.ChoiceBlock(
+        choices=list_segment_choices, 
+        required=False, label="Personalisation segment",
         help_text="Only show this content block for users in this segment")
 
 
