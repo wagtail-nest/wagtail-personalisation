@@ -83,3 +83,5 @@ Below is the "Time rule" model included with the module, which offers more compl
 
         def __str__(self):
             return 'Time Rule'
+
+Continue reading: :doc:`usage_guide`
