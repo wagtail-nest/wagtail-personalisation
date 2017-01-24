@@ -29,15 +29,3 @@ The Wagxperience app runs in the Wagtail CMS. You can find out more here_.
 
     python manage.py migrate
 
-Including the middleware prerequisite
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-Make sure that ``django.contrib.sessions.middleware.SessionMiddleware`` is included in your ``MIDDLEWARE``::
-    
-    MIDDLEWARE = [
-        # ...
-        'django.contrib.sessions.middleware.SessionMiddleware',
-        # ...
-    ]
-
-This is a prerequisite for this project.

@@ -3,11 +3,27 @@ Implementation
 
 Extending a page to be personalisable
 -------------------------------------
-
+Wagxperience offers a ``PersonalisablePage`` base class to extend from.
+This is a standard ``Page`` class with personalisation options added.
 
 Creating a new personalisable page
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Import and extend the ``personalisation.models.PersonalisablePage`` class to create a personalisable page.
 
+A very simple example for a personalisable homepage::
+
+    from personalisation.models import PersonalisablePage
+
+    class HomePage(PersonalisablePage):
+        subtitle = models.CharField(max_length=255)
+        body = RichTextField(blank=True, default='')
+
+        content_panels = PersonalisablePage.content_panels + [
+            FieldPanel('subtitle'),
+            FieldPanel('body'),
+        ]
+
+It's just as simple as extending a standard ``Page`` class.
 
 Migrating an existing page to be personalisable
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -16,7 +32,7 @@ Migrating an existing page to be personalisable
 Creating custom rules
 ---------------------
 
-Rules consist of two important elements. Namely the model's fields and a ``test_user`` function.
+Rules consist of two important elements, the model's fields and the ``test_user`` function.
 
 A very simple example of a rule would look something like this::
 
