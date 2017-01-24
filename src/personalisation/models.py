@@ -282,8 +282,6 @@ class Segment(ClusterableModel):
             InlinePanel(
                 "{}_related".format(rule._meta.db_table), 
                 label=rule.__str__,
-                min_num=0,
-                max_num=1,
             ) for rule in AbstractBaseRule.__subclasses__()
         ], heading="Rules"),
     ]

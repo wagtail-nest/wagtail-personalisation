@@ -8,27 +8,23 @@ from personalisation import models
 class UserIsLoggedInRuleAdminInline(admin.TabularInline):
     """Inline the UserIsLoggedIn Rule into the administration interface for segments"""
     model = models.UserIsLoggedInRule
-    extra = 0
 
 
 class TimeRuleAdminInline(admin.TabularInline):
     """Inline the Time Rule into the administration interface for segments"""
     model = models.TimeRule
-    extra = 0
 
 
 class ReferralRuleAdminInline(admin.TabularInline):
     """Inline the Referral Rule into the
     administration interface for segments"""
     model = models.ReferralRule
-    extra = 0
 
 
 class VisitCountRuleAdminInline(admin.TabularInline):
     """Inline the Visit Count Rule into the
     administration interface for segments"""
     model = models.VisitCountRule
-    extra = 0
 
 
 class SegmentAdmin(admin.ModelAdmin):
