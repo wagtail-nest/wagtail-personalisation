@@ -5,6 +5,9 @@ Getting started
 Installing Wagxperience
 -----------------------
 
+Installing the module
+^^^^^^^^^^^^^^^^^^^^^
+
 The Wagxperience app runs in the Wagtail CMS. You can find out more here_.
 
 .. _here: http://docs.wagtail.io/en/latest/getting_started/tutorial.html
@@ -25,6 +28,9 @@ The Wagxperience app runs in the Wagtail CMS. You can find out more here_.
 3. Update your database::
 
     python manage.py migrate
+
+Including the middleware prerequisite
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Make sure that ``django.contrib.sessions.middleware.SessionMiddleware`` is included in your ``MIDDLEWARE``::
     
