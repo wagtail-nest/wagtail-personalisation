@@ -29,3 +29,4 @@ The Wagxperience app runs in the Wagtail CMS. You can find out more here_.
 
     python manage.py migrate
 
+Continue reading: :doc:`implementation`
