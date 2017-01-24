@@ -8,7 +8,7 @@ register = Library()
 @register.inclusion_tag('personalisation/tags/datalayer.html')
 def render_datalayer():
     segments = segments_adapter.get_all_segments()
-    segment_names = [item.name for item in segments]
+    segment_names = [item['encoded_name'] for item in segments]
 
     return {
         'segments': segment_names
