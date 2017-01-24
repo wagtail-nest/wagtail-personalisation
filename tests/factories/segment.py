@@ -48,3 +48,8 @@ class QueryRuleFactory(factory.DjangoModelFactory):
 
     class Meta:
         model = models.QueryRule
+
+class DeviceRuleFactory(factory.DjangoModelFactory):
+
+    class Meta:
+        model = models.DeviceRule

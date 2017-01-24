@@ -2,6 +2,7 @@ from __future__ import absolute_import, unicode_literals
 
 import re
 from datetime import datetime
+from user_agents import parse
 
 from django.db import models
 from django.db.models.signals import pre_save
@@ -227,6 +228,38 @@ class QueryRule(AbstractBaseRule):
     def __str__(self):
         return _('Query Rule')
 
+
+@python_2_unicode_compatible
+class DeviceRule(AbstractBaseRule):
+    """Device rule to segment users based on matching devices"""
+    mobile = models.BooleanField(_("Mobile phone"), default=False)
+    tablet = models.BooleanField(_("Tablet"), default=False)
+    desktop = models.BooleanField(_("Desktop"), default=False)
+
+    panels = [
+        FieldPanel('mobile'),
+        FieldPanel('tablet'),
+        FieldPanel('desktop'),
+    ]
+
+    def __init__(self, *args, **kwargs):
+        super(DeviceRule, self).__init__(*args, **kwargs)
+
+    def test_user(self, request=None):
+        ua_header = request.META['HTTP_USER_AGENT']
+        user_agent = parse(ua_header)
+
+        if user_agent.is_mobile:
+            return self.mobile
+        elif user_agent.is_tablet:
+            return self.tablet
+        elif user_agent.is_pc:
+            return self.desktop
+        else:
+            return False
+
+    def __str__(self):
+        return _('Device Rule')
 
 @python_2_unicode_compatible
 class UserIsLoggedInRule(AbstractBaseRule):

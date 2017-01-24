@@ -2,8 +2,8 @@ from setuptools import find_packages, setup
 
 
 install_requires = [
-    'django-polymorphic==1.0.2',
     'wagtail>=1.7',
+    'user-agents>=1.0.1',
 ]
 
 tests_require = [

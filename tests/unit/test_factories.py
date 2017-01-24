@@ -6,7 +6,7 @@ import pytest
 
 from personalisation.models import Segment, TimeRule
 from tests.factories.segment import (
-    ReferralRuleFactory, SegmentFactory, TimeRuleFactory, DayRuleFactory)
+    ReferralRuleFactory, SegmentFactory, TimeRuleFactory, DayRuleFactory, DeviceRuleFactory)
 
 """Factory tests"""
 @pytest.mark.django_db
@@ -37,6 +37,17 @@ def test_create_segment_with_day_rule():
     assert day_rule.mon is True
     assert day_rule.thu is True
     assert day_rule.sun is False
+
+
+"""DeviceRuleFactory tests"""
+@pytest.mark.django_db
+def test_create_segment_with_device_rule():
+    segment = SegmentFactory(name='DeviceSegment')
+    device_rule = DeviceRuleFactory(mobile=True, segment=segment)
+
+    assert device_rule.mobile is True
+    assert device_rule.tablet is False
+    assert device_rule.desktop is False
 
 
 """ReferralRuleFactory tests"""
