@@ -21,6 +21,7 @@ Rules consist of two important elements. Namely the model's fields and a ``test_
 A very simple example of a rule would look something like this::
 
     from django.db import models
+    from wagtail.wagtailadmin.edit_handlers import FieldPanel
     from personalisation import AbstractBaseRule
     
     class MyNewRule(AbstractBaseRule):
@@ -39,7 +40,7 @@ A very simple example of a rule would look something like this::
 As you can see, the only real requirement is the ``test_user`` function that will either return
 ``True`` or ``False`` based on the model's fields and optionally the request object.
 
-Below is the "Time rule" included with the module, which offers more complex functionality::
+Below is the "Time rule" model included with the module, which offers more complex functionality::
     
     @python_2_unicode_compatible
     class TimeRule(AbstractBaseRule):
