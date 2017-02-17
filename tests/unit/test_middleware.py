@@ -6,11 +6,11 @@ import pytest
 from django.test.client import Client
 from freezegun import freeze_time
 from wagtail.wagtailcore.models import Page
+from wagtail_factories import SiteFactory
 
 from tests.factories.segment import (
     QueryRuleFactory, ReferralRuleFactory, SegmentFactory, TimeRuleFactory,
     DayRuleFactory, VisitCountRuleFactory, DeviceRuleFactory)
-from tests.factories.site import SiteFactory
 
 
 @pytest.mark.django_db
@@ -20,7 +20,7 @@ class TestUserSegmenting(object):
         """
         Sets up a site root to test segmenting
         """
-        self.site = SiteFactory()
+        self.site = SiteFactory(is_default_site=True)
 
     def test_no_segments(self, client):
         request = client.get('/')
@@ -164,7 +164,7 @@ class TestUserSegmenting(object):
         segment = SegmentFactory(name='Visit Count')
 
         visit_count_rule = VisitCountRuleFactory(
-            counted_page=Page.objects.filter(slug="root").first(),
+            counted_page=self.site.root_page,
             segment=segment
         )
 
@@ -262,14 +262,14 @@ class TestUserSegmenting(object):
         )
 
         client.get('/?test=test')
-        
+
         assert any(item['encoded_name'] == 'match-any' for item in client.session['segments'])
 
 @pytest.mark.django_db
 class TestUserVisitCount(object):
 
     def setup(self):
-        self.site = SiteFactory()
+        self.site = SiteFactory(is_default_site=True)
 
         # TODO: Set up a bunch of pages for testing the visit count
 

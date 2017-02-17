@@ -10,7 +10,9 @@ clean:
 	find . -name '*.egg-info' -delete
 
 requirements:
-	pip install --upgrade -e .
+	pip install --upgrade -e .[test]
+
+install: develop
 
 develop: clean requirements
 

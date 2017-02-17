@@ -6,9 +6,9 @@ import pytest
 from django.http import HttpRequest
 from freezegun import freeze_time
 from wagtail.wagtailcore.models import Site
+from wagtail_factories import SiteFactory
 
 from personalisation import models
-from tests.factories.site import SiteFactory
 
 """Time Rule tests"""
 @freeze_time("10:00:00")

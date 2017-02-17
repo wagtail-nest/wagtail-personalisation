@@ -13,6 +13,7 @@ tests_require = [
     'pytest-sugar==0.7.1',
     'freezegun==0.3.8',
     'factory_boy==2.8.1',
+    'wagtail_factories==0.2.0',
 ]
 
 setup(
