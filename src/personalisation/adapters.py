@@ -73,10 +73,14 @@ class SessionSegmentsAdapter(BaseSegmentsAdapter):
         current_segments = self.request.session['segments']
         persistent_segments = Segment.objects.filter(persistent=True)
 
-        current_segments = [item for item in current_segments if
-                            any(seg.pk for seg in persistent_segments) == item['id']]
+        new_segments = []
 
-        self.request.session['segments'] = current_segments
+        for cseg in current_segments:
+            for pseg in persistent_segments:
+                if pseg.pk == cseg['id']:
+                    new_segments.append(cseg)
+
+        self.request.session['segments'] = new_segments
 
         segments = Segment.objects.filter(status='enabled')
 
@@ -89,7 +93,6 @@ class SessionSegmentsAdapter(BaseSegmentsAdapter):
 
             if result:
                 self.add(segment)
-
 
         for seg in self.request.session['segments']:
             segment = Segment.objects.get(pk=seg['id'])
