@@ -4,7 +4,8 @@ import datetime
 
 import pytest
 
-from personalisation.models import Segment, TimeRule
+from personalisation.models import Segment
+from personalisation.rules import TimeRule
 from tests.factories.segment import (
     ReferralRuleFactory, SegmentFactory, TimeRuleFactory, DayRuleFactory, DeviceRuleFactory)
 

@@ -4,7 +4,7 @@ import datetime
 
 import factory
 
-from personalisation import models
+from personalisation import models, rules
 
 
 class SegmentFactory(factory.DjangoModelFactory):
@@ -20,20 +20,20 @@ class TimeRuleFactory(factory.DjangoModelFactory):
     end_time = datetime.time(23, 0, 0)
 
     class Meta:
-        model = models.TimeRule
+        model = rules.TimeRule
 
 
 class DayRuleFactory(factory.DjangoModelFactory):
 
     class Meta:
-        model = models.DayRule
+        model = rules.DayRule
 
 
 class ReferralRuleFactory(factory.DjangoModelFactory):
     regex_string = "test.test"
 
     class Meta:
-        model = models.ReferralRule
+        model = rules.ReferralRule
 
 
 class VisitCountRuleFactory(factory.DjangoModelFactory):
@@ -41,15 +41,15 @@ class VisitCountRuleFactory(factory.DjangoModelFactory):
     count = 0
 
     class Meta:
-        model = models.VisitCountRule
+        model = rules.VisitCountRule
 
 
 class QueryRuleFactory(factory.DjangoModelFactory):
 
     class Meta:
-        model = models.QueryRule
+        model = rules.QueryRule
 
 class DeviceRuleFactory(factory.DjangoModelFactory):
 
     class Meta:
-        model = models.DeviceRule
+        model = rules.DeviceRule
