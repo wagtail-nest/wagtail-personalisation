@@ -13,6 +13,7 @@ Welcome to the Wagxperience documentation!
    getting_started
    implementation
    usage_guide
+   default_rules
 
 
 Indices and tables

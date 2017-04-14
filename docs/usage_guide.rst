@@ -1,5 +1,5 @@
 Usage guide
-===================================================
+===========
 
 Creating a segment
 ------------------
@@ -12,7 +12,7 @@ On this page you will be presented with a form. Follow the steps to create a seg
 
 1. Enter a name for your segment.
 
-2. (Optional) Select wether to match any or all defined rules.
+2. (Optional) Select whether to match any or all defined rules.
 
     ``match any`` will result in a segment that is applied as soon as one of your rules matches the visitor.
     When ``match all`` is selected, all rules must match before the segment is applied.
@@ -23,7 +23,7 @@ On this page you will be presented with a form. Follow the steps to create a seg
 
 4. Define your segment rules.
 
-    Wagxperience comes with a basic set of rules that allow you to get started quickly. The rules you define will be evaluated once a visitor makes a request to your application.
+    Wagxperience comes with a basic set of rules :doc:`default_rules` that allow you to get started quickly. The rules you define will be evaluated once a visitor makes a request to your application.
 
 5. Save your segment.
 
