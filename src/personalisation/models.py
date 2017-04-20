@@ -40,22 +40,25 @@ class Segment(ClusterableModel):
         help_text=_("Should the segment match all the rules or just one of them?")
     )
 
-    panels = [
-        MultiFieldPanel([
-            FieldPanel('name', classname="title"),
-            FieldRowPanel([
-                FieldPanel('status'),
-                FieldPanel('persistent'),
-            ]),
-            FieldPanel('match_any'),
-        ], heading="Segment"),
-        MultiFieldPanel([
-            InlinePanel(
-                "{}_related".format(rule._meta.db_table), 
-                label=rule.__str__,
-            ) for rule in AbstractBaseRule.__subclasses__()
-        ], heading="Rules"),
-    ]
+    def __init__(self, *args, **kwargs):
+        Segment.panels = [
+            MultiFieldPanel([
+                FieldPanel('name', classname="title"),
+                FieldRowPanel([
+                    FieldPanel('status'),
+                    FieldPanel('persistent'),
+                ]),
+                FieldPanel('match_any'),
+            ], heading="Segment"),
+            MultiFieldPanel([
+                InlinePanel(
+                    "{}_related".format(rule._meta.db_table),
+                    label=rule.__str__,
+                ) for rule in AbstractBaseRule.__subclasses__()
+            ], heading="Rules"),
+        ]
+
+        super(Segment, self).__init__(*args, **kwargs)
 
     def __str__(self):
         return self.name
