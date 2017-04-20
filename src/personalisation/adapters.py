@@ -58,7 +58,7 @@ class SessionSegmentsAdapter(BaseSegmentsAdapter):
     def add(self, segment):
         def check_if_segmented(item):
             """Check if the user has been segmented"""
-            return any(seg['encoded_name'] == item.encoded_name for seg in self.request.session['segments'])
+            return any(seg['encoded_name'] == item.encoded_name() for seg in self.request.session['segments'])
 
         if not check_if_segmented(segment):
             segdict = {
