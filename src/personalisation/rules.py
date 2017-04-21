@@ -105,22 +105,10 @@ class DayRule(AbstractBaseRule):
     def test_user(self, request=None):
         current_day = datetime.today().weekday()
 
-        if current_day == 0:
-            return self.mon
-        elif current_day == 1:
-            return self.tue
-        elif current_day == 2:
-            return self.wed
-        elif current_day == 3:
-            return self.thu
-        elif current_day == 4:
-            return self.fri
-        elif current_day == 5:
-            return self.sat
-        elif current_day == 6:
-            return self.sun
-        else:
-            return False
+        days = [self.mon, self.tue, self.wed, self.thu,
+                self.fri, self.sat, self.sun]
+
+        return days[current_day]
 
     def __str__(self):
         return _('Day Rule')
