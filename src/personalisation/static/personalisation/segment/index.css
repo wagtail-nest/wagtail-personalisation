@@ -25,6 +25,11 @@
     cursor: pointer;
 }
 
+.block_container .block--disabled h2,
+.block_container .block--disabled .inspect_container {
+    opacity: 0.5;
+}
+
     .block_container .block h2 {
         display: inline-block;
         width: auto;

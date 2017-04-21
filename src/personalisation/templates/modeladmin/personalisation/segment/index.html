@@ -20,7 +20,7 @@
                             <div class="nice-padding block_container">
                                 {% if all_count %}
                                     {% for segment in object_list %}
-                                        <div class="block" onclick="location.href = 'edit/{{ segment.pk }}'">
+                                        <div class="block block--{{ segment.status }}" onclick="location.href = 'edit/{{ segment.pk }}'">
                                             <h2>{{ segment }}</h2>
                                             <div class="inspect_container">
                                                 <ul class="inspect segment_stats">
