@@ -120,11 +120,15 @@ class DayRule(AbstractBaseRule):
             'sun': self.sun
         }
 
-        chosen_days = [days[item] for item in days if days[item] is True]
+        chosen_days = []
+
+        for key, value in days.items():
+            if days[key]:
+                chosen_days.append(key)
 
         description = {
             'title': _('These users visit on'),
-            'value': _('{}').format(", ".join(str(chosen_days))),
+            'value': _('{}').format(", ".join([f"{day}" for day in chosen_days]).title()),
         }
 
         return description
