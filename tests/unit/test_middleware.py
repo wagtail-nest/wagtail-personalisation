@@ -8,8 +8,9 @@ from freezegun import freeze_time
 from wagtail.wagtailcore.models import Page
 from wagtail_factories import SiteFactory
 
-from tests.factories.segment import (
-    QueryRuleFactory, ReferralRuleFactory, SegmentFactory, TimeRuleFactory,
+from tests.factories.segment import SegmentFactory
+from tests.factories.rule import (
+    QueryRuleFactory, ReferralRuleFactory, TimeRuleFactory,
     DayRuleFactory, VisitCountRuleFactory, DeviceRuleFactory)
 
 
@@ -22,10 +23,12 @@ class TestUserSegmenting(object):
         """
         self.site = SiteFactory(is_default_site=True)
 
+
     def test_no_segments(self, client):
         request = client.get('/')
 
         assert client.session['segments'] == []
+
 
     @freeze_time("10:00:00")
     def test_time_segment(self, client):

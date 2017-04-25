@@ -2,7 +2,9 @@
 
 Wagtail personalisation
 =======================
-Wagtail personalisation enables simple content personalisation through segmenting for Wagtail.
+Wagtail personalisation enables simple content personalisation through segmentation for the `Wagtail CMS`_.
+
+.. _Wagtail CMS: http://wagtail.io/
 
 
 Instructions
@@ -24,6 +26,7 @@ Next, include the ``personalisation`` and ``wagtail.contrib.modeladmin`` app in 
 
 Make sure that ``django.contrib.sessions.middleware.SessionMiddleware`` has been added in first, this is a prerequisite for this project.
 
+
 Changing segments adapter
 -------------------------
 To change the segments adapter, first make a new one based on the ``BaseSegmentsAdapter``
@@ -34,6 +37,7 @@ To change the segments adapter, first make a new one based on the ``BaseSegments
         # Add your own logic here
 
 Add the ``PERSONALISATION_SEGMENTS_ADAPTER`` setting to your settings.py and choose your own adapter.
+
 
 Roadmap
 -------------------------
