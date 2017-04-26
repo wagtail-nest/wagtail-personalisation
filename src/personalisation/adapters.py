@@ -56,49 +56,57 @@ class SessionSegmentsAdapter(BaseSegmentsAdapter):
     def get_segment(self, segment_id):
         return next(item for item in self.request.session['segments'] if item.id == segment_id)
 
+    def create_seg_dict(self, segment):
+        return {
+            "encoded_name": segment.encoded_name(),
+            "id": segment.pk,
+            "timestamp": int(time.time()),
+            "persistent": segment.persistent
+        }
+
     def add(self, segment):
         def check_if_segmented(item):
             """Check if the user has been segmented"""
             return any(seg['encoded_name'] == item.encoded_name() for seg in self.request.session['segments'])
 
         if not check_if_segmented(segment):
-            segdict = {
-                "encoded_name": segment.encoded_name(),
-                "id": segment.pk,
-                "timestamp": int(time.time()),
-                "persistent": segment.persistent,
-            }
+            segdict = self.create_seg_dict(segment)
             self.request.session['segments'].append(segdict)
 
     def refresh(self):
-        current_segments = self.request.session['segments']
-        persistent_segments = Segment.objects.filter(persistent=True)
+        def update_visit_count(self):
+            for seg in self.request.session['segments']:
+                segment = Segment.objects.get(pk=seg['id'])
+                segment.visit_count = F('visit_count') + 1
+                segment.save()
+
+        segments = Segment.objects.filter(status='enabled')
+        persistent_segments = segments.filter(persistent=True)
+        session_segments = self.request.session['segments']
+        rules = AbstractBaseRule.__subclasses__()
 
         new_segments = []
 
-        for cseg in current_segments:
+        for sseg in session_segments:
             for pseg in persistent_segments:
-                if pseg.pk == cseg['id']:
-                    new_segments.append(cseg)
-
-        self.request.session['segments'] = new_segments
-
-        segments = Segment.objects.filter(status='enabled')
+                if pseg.pk == sseg['id']:
+                    new_segments.append(sseg)
 
         for segment in segments:
-            rules = AbstractBaseRule.__subclasses__()
             segment_rules = []
             for rule in rules:
                 segment_rules += rule.objects.filter(segment=segment)
             result = self._test_rules(segment_rules, self.request, match_any=segment.match_any)
 
             if result:
-                self.add(segment)
+                segdict = self.create_seg_dict(segment)
+                if not any(seg['id'] == segdict['id'] for seg in new_segments):
+                    new_segments.append(segdict)
 
-        for seg in self.request.session['segments']:
-            segment = Segment.objects.get(pk=seg['id'])
-            segment.visit_count = F('visit_count') + 1
-            segment.save()
+        self.request.session['segments'] = new_segments
+
+        update_visit_count(self)
+
 
     def check_segment_exists(self, segment):
         segments = self.request.session['segments']
