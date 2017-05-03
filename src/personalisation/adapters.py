@@ -5,6 +5,7 @@ from django.db.models import F
 
 from personalisation.models import Segment
 from personalisation.rules import AbstractBaseRule
+from personalisation.utils import create_segment_dictionary
 
 
 class BaseSegmentsAdapter(object):
@@ -21,9 +22,6 @@ class BaseSegmentsAdapter(object):
         return None
 
     def refresh(self):
-        return None
-
-    def check_segment_exists(self):
         return None
 
     def _test_rules(self, rules, request, match_any=False):
@@ -56,21 +54,13 @@ class SessionSegmentsAdapter(BaseSegmentsAdapter):
     def get_segment(self, segment_id):
         return next(item for item in self.request.session['segments'] if item.id == segment_id)
 
-    def create_seg_dict(self, segment):
-        return {
-            "encoded_name": segment.encoded_name(),
-            "id": segment.pk,
-            "timestamp": int(time.time()),
-            "persistent": segment.persistent
-        }
-
     def add(self, segment):
         def check_if_segmented(item):
             """Check if the user has been segmented"""
             return any(seg['encoded_name'] == item.encoded_name() for seg in self.request.session['segments'])
 
         if not check_if_segmented(segment):
-            segdict = self.create_seg_dict(segment)
+            segdict = create_segment_dictionary(segment)
             self.request.session['segments'].append(segdict)
 
     def refresh(self):
@@ -99,17 +89,11 @@ class SessionSegmentsAdapter(BaseSegmentsAdapter):
             result = self._test_rules(segment_rules, self.request, match_any=segment.match_any)
 
             if result:
-                segdict = self.create_seg_dict(segment)
+                segdict = create_segment_dictionary(segment)
                 if not any(seg['id'] == segdict['id'] for seg in new_segments):
                     new_segments.append(segdict)
 
         self.request.session['segments'] = new_segments
 
         update_visit_count(self)
-
-
-    def check_segment_exists(self, segment):
-        segments = self.request.session['segments']
-
-        return any(item for item in segments if segment.pk == item.id)
 
