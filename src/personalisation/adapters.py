@@ -86,10 +86,10 @@ class SessionSegmentsAdapter(BaseSegmentsAdapter):
 
         new_segments = []
 
-        for sseg in session_segments:
-            for pseg in persistent_segments:
-                if pseg.pk == sseg['id']:
-                    new_segments.append(sseg)
+        for session_segment in session_segments:
+            for persistent_segment in persistent_segments:
+                if persistent_segment.pk == session_segment['id']:
+                    new_segments.append(session_segment)
 
         for segment in segments:
             segment_rules = []
