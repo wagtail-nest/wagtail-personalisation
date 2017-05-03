@@ -96,9 +96,13 @@ class SessionSegmentsAdapter(BaseSegmentsAdapter):
                 self.add(segment)
 
         for seg in self.request.session['segments']:
-            segment = Segment.objects.get(pk=seg['id'])
-            segment.visit_count = F('visit_count') + 1
-            segment.save()
+            try:
+                segment = Segment.objects.get(pk=seg['id'])
+                segment.visit_count = F('visit_count') + 1
+                segment.save()
+            except DoesNotExist:
+                segments = self.request.session['segments']
+                self.request.session['segments'][:] = [item for item in segments if item.get('id') != seg['id']]
 
     def check_segment_exists(self, segment):
         segments = self.request.session['segments']
