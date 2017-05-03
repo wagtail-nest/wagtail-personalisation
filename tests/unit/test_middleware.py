@@ -8,10 +8,10 @@ from freezegun import freeze_time
 from wagtail.wagtailcore.models import Page
 from wagtail_factories import SiteFactory
 
-from tests.factories.segment import SegmentFactory
 from tests.factories.rule import (
-    QueryRuleFactory, ReferralRuleFactory, TimeRuleFactory,
-    DayRuleFactory, VisitCountRuleFactory, DeviceRuleFactory)
+    DayRuleFactory, DeviceRuleFactory, QueryRuleFactory, ReferralRuleFactory,
+    TimeRuleFactory, VisitCountRuleFactory)
+from tests.factories.segment import SegmentFactory
 
 
 @pytest.mark.django_db

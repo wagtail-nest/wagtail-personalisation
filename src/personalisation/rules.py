@@ -2,13 +2,13 @@ from __future__ import absolute_import, unicode_literals
 
 import re
 from datetime import datetime
-from user_agents import parse
 
 from django.db import models
 from django.template.defaultfilters import slugify
 from django.utils.encoding import python_2_unicode_compatible
 from django.utils.translation import ugettext_lazy as _
 from modelcluster.fields import ParentalKey
+from user_agents import parse
 from wagtail.wagtailadmin.edit_handlers import (
     FieldPanel, FieldRowPanel, PageChooserPanel)
 

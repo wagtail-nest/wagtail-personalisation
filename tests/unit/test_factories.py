@@ -6,12 +6,10 @@ import pytest
 
 from personalisation.models import Segment
 from personalisation.rules import TimeRule
-
-from tests.factories.segment import SegmentFactory
 from tests.factories.rule import (
-    QueryRuleFactory, ReferralRuleFactory, TimeRuleFactory,
-    DayRuleFactory, VisitCountRuleFactory, DeviceRuleFactory)
-
+    DayRuleFactory, DeviceRuleFactory, QueryRuleFactory, ReferralRuleFactory,
+    TimeRuleFactory, VisitCountRuleFactory)
+from tests.factories.segment import SegmentFactory
 
 """Factory tests"""
 @pytest.mark.django_db

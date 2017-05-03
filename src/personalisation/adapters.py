@@ -1,4 +1,5 @@
 from __future__ import absolute_import, unicode_literals
+
 import time
 
 from django.db.models import F
@@ -43,6 +44,9 @@ class BaseSegmentsAdapter(object):
 
 
 class SessionSegmentsAdapter(BaseSegmentsAdapter):
+    """
+    Segment adapter that uses Django's session backend.
+    """
     def setup(self, request):
         self.request = request
 
@@ -96,4 +100,3 @@ class SessionSegmentsAdapter(BaseSegmentsAdapter):
         self.request.session['segments'] = new_segments
 
         update_visit_count(self)
-

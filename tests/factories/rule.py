@@ -1,6 +1,7 @@
 from __future__ import absolute_import, unicode_literals
 
 import datetime
+
 import factory
 
 from personalisation import rules
@@ -45,4 +46,3 @@ class VisitCountRuleFactory(factory.DjangoModelFactory):
 
     class Meta:
         model = rules.VisitCountRule
-
