@@ -3,20 +3,22 @@
 *.swo
 *.python-version
 *.coverage
+.coverage.*
 
 *.egg-info/
 
 .cache/
 .idea/
 .tox/
+.vscode/
 
 build/
 dist/
-tests/sandbox/assets
 htmlcov/
 docs/_build
-
 coverage.xml
 db.sqlite3
-.vscode/settings.json
+
+tests/sandbox/assets
+
 .DS_Store

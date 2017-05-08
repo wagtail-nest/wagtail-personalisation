@@ -1,0 +1,19 @@
+[
+{
+    "fields": {
+        "first_name": "",
+        "last_name": "",
+        "is_active": true,
+        "is_superuser": true,
+        "is_staff": true,
+        "last_login": "2015-10-17T11:33:04.669Z",
+        "groups": [],
+        "user_permissions": [],
+        "password": "pbkdf2_sha256$20000$7rEmYScTVHtk$Gg6BFdspojO1PZb2NQDQQeeVdP0yHhA9UjZ8rNkWOHk=",
+        "email": "admin@labdigital.nl",
+        "date_joined": "2015-10-17T11:32:57.969Z"
+    },
+    "model": "user.user",
+    "pk": 1
+}
+]

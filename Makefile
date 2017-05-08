@@ -1,4 +1,4 @@
-.PHONY: all clean requirements develop test lint flake8 isort dist
+.PHONY: all clean requirements develop test lint flake8 isort dist sandbox
 
 all: clean requirements dist
 
@@ -38,3 +38,10 @@ isort:
 
 dist:
 	./setup.py sdist bdist_wheel
+
+
+sandbox:
+	pip install -r sandbox/requirements.txt
+	sandbox/manage.py migrate
+	sandbox/manage.py loaddata sandbox/exampledata/users.json 
+	sandbox/manage.py runserver
