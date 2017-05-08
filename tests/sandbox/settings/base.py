@@ -7,7 +7,7 @@ import django
 DATABASES = {
     'default': {
         'ENGINE': os.environ.get('DATABASE_ENGINE', 'django.db.backends.sqlite3'),
-        'NAME': os.environ.get('DATABASE_NAME', 'db.sqlite'),
+        'NAME': os.environ.get('DATABASE_NAME', 'db.sqlite3'),
     }
 }
 

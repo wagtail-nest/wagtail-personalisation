@@ -8,6 +8,7 @@ from django.utils.safestring import mark_safe
 from django.utils.translation import ugettext_lazy as _
 from wagtail.contrib.modeladmin.options import ModelAdmin, modeladmin_register
 from wagtail.contrib.modeladmin.views import IndexView
+from wagtail.wagtailadmin.site_summary import SummaryItem
 from wagtail.wagtailadmin.widgets import Button, ButtonWithDropdownFromHook
 from wagtail.wagtailcore import hooks
 
@@ -150,7 +151,7 @@ def page_listing_more_buttons(page, page_perms, is_parent=False):
                      attrs={"title": _('Create this variant')})
 
 
-class SegmentSummaryPanel(object):
+class SegmentSummaryPanel(SummaryItem):
     order = 500
 
     def render(self):
@@ -163,6 +164,7 @@ class SegmentSummaryPanel(object):
             </li>""".format(target_url, segment_count, title))
 
 
+
 @hooks.register('construct_homepage_summary_items')
-def add_segment_summary_panel(request, summary_items):
-    return summary_items.append(SegmentSummaryPanel())
+def add_segment_summary_panel(request, items):
+    return items.append(SegmentSummaryPanel(request))
