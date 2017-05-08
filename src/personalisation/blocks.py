@@ -1,5 +1,6 @@
 from __future__ import absolute_import, unicode_literals
 
+from django.utils.translation import ugettext_lazy as _
 from wagtail.wagtailcore import blocks
 
 from personalisation.models import Segment
@@ -12,7 +13,7 @@ def list_segment_choices():
 
 class PersonalisedStructBlock(blocks.StructBlock):
     segment = blocks.ChoiceBlock(
-        choices=list_segment_choices, 
+        choices=list_segment_choices,
         required=False, label=_("Personalisation segment"),
         help_text=_("Only show this content block for users in this segment"))
 
@@ -24,7 +25,7 @@ class PersonalisedStructBlock(blocks.StructBlock):
         if value['segment']:
             for segment in user_segments:
                 if segment['id'] == int(value['segment']):
-                    return super(PersonalisedStructBlock, self).render(value,
-                        context)
+                    return super(PersonalisedStructBlock, self).render(
+                        value, context)
 
         return ""

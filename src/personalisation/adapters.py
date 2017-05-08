@@ -1,7 +1,5 @@
 from __future__ import absolute_import, unicode_literals
 
-import time
-
 from django.db.models import F
 
 from personalisation.models import Segment
