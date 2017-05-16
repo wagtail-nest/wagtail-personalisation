@@ -65,13 +65,17 @@ class SessionSegmentsAdapter(BaseSegmentsAdapter):
             segdict = create_segment_dictionary(segment)
             self.request.session['segments'].append(segdict)
 
-    def refresh(self):
-        def update_visit_count(self):
-            for seg in self.request.session['segments']:
+    def update_visit_count(self):
+        for seg in self.request.session['segments']:
+            try:
                 segment = Segment.objects.get(pk=seg['id'])
                 segment.visit_count = F('visit_count') + 1
                 segment.save()
+            except Segment.DoesNotExist:
+                segments = self.request.sessions['segments']
+                self.request.session['segments'][:] = [item for item in segments if item.get('id') != seg['id']]
 
+    def refresh(self):
         segments = Segment.objects.filter(status='enabled')
         persistent_segments = segments.filter(persistent=True)
         session_segments = self.request.session['segments']
@@ -97,4 +101,4 @@ class SessionSegmentsAdapter(BaseSegmentsAdapter):
 
         self.request.session['segments'] = new_segments
 
-        update_visit_count(self)
+        self.update_visit_count()
