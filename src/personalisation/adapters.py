@@ -10,21 +10,39 @@ class BaseSegmentsAdapter(object):
     """Base segments adapter."""
 
     def setup(self):
+        """Prepare the adapter for segment storage."""
         return None
 
     def get_all_segments(self):
+        """Return the segments stored in the adapter storage."""
         return None
 
     def get_segment(self):
+        """Return a single segment stored in the adapter storage."""
         return None
 
     def add(self):
+        """Add a new segment to the adapter storage."""
         return None
 
     def refresh(self):
+        """Refresh the segments stored in the adapter storage."""
         return None
 
     def _test_rules(self, rules, request, match_any=False):
+        """Tests the provided rules to see if the request still belongs
+        to a segment.
+
+        :param rules: The rules to test for
+        :type rules: list of personalisation.rules
+        :param request: The http request
+        :type request: django.http.HttpRequest
+        :param match_any: Whether all rules need to match, or any
+        :type match_any: bool
+        :returns: A boolean indicating the segment matches the request
+        :rtype: bool
+
+        """
         if len(rules) > 0:
             for rule in rules:
                 result = rule.test_user(request)
