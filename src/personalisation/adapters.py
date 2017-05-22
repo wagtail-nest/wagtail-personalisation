@@ -102,7 +102,7 @@ class SessionSegmentsAdapter(BaseSegmentsAdapter):
 
     def update_visit_count(self):
         """Update the visit count for all segments in the request session."""
-        segments = self.request.sessions['segments']
+        segments = self.request.session['segments']
         for seg in segments:
             try:
                 segment = Segment.objects.get(pk=seg['id'])
