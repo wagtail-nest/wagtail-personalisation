@@ -6,6 +6,8 @@ Wagtail personalisation enables simple content personalisation through segmentat
 
 .. _Wagtail CMS: http://wagtail.io/
 
+.. image:: screenshot.png
+
 
 Instructions
 ------------
@@ -42,10 +44,4 @@ Add the ``PERSONALISATION_SEGMENTS_ADAPTER`` setting to your settings.py and cho
 Sandbox
 -------
 
-To quickly experiment with the package you can use the sandbox provided in the git repository.  To install this you will need to create and activate a virtualenv and then run ``make sandbox``.  This will start a fresh wagtail install with the personaliton module enabled on http://localhost:8000.  The superuser credentials are ``superuser@example.com`` with the password ``testing``.  
-
-
-
-Roadmap
--------
-.. image:: roadmap.png
+To quickly experiment with the package you can use the sandbox provided in the git repository.  To install this you will need to create and activate a virtualenv and then run ``make sandbox``.  This will start a fresh wagtail install with the personaliton module enabled on http://localhost:8000.  The superuser credentials are ``superuser@example.com`` with the password ``testing``.
