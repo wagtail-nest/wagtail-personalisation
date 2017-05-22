@@ -12,14 +12,26 @@ def list_segment_choices():
 
 
 class PersonalisedStructBlock(blocks.StructBlock):
+    """Struct block that allows personalisation per block."""
+
     segment = blocks.ChoiceBlock(
         choices=list_segment_choices,
         required=False, label=_("Personalisation segment"),
         help_text=_("Only show this content block for users in this segment"))
 
     def render(self, value, context=None):
-        """Only render this content block for users in this segment"""
-        # TODO: move logic to its own class instead of getting it from the session
+        """Only render this content block for users in this segment.
+        
+        :param value: The value from the block
+        :type value: dict
+        :param context: The context containing the request
+        :type context: dict
+        :returns: The provided block if matched, otherwise an empty string
+        :rtype: blocks.StructBlock or empty str
+        
+        """
+        # TODO: move logic to its own class instead of getting it from the
+        # session.
         user_segments = context['request'].session['segments']
 
         if value['segment']:
