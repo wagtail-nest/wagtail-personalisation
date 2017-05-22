@@ -1,4 +1,7 @@
 .. image:: logo.png
+    :scale: 50 %
+    :alt: Wagxperience
+    :align: center
 
 Wagtail personalisation
 =======================
