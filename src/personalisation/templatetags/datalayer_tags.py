@@ -7,7 +7,7 @@ register = Library()
 
 @register.inclusion_tag('personalisation/tags/datalayer.html')
 def render_datalayer():
-    """Render the sessions activate segments in a datalayer script tag."""
+    """Render the sessions active segments in a data layer script tag."""
     segments = segments_adapter.get_all_segments()
     segment_names = [item['encoded_name'] for item in segments]
 
