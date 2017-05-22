@@ -126,13 +126,10 @@ class SessionSegmentsAdapter(BaseSegmentsAdapter):
         session_segments = self.request.session['segments']
         rules = AbstractBaseRule.__subclasses__()
 
-        new_segments = []
-
-        # Re-apply all persistent segments, as long as they are still enabled.
-        for session_segment in session_segments:
-            for persistent_segment in persistent_segments:
-                if persistent_segment.pk == session_segment['id']:
-                    new_segments.append(session_segment)
+        # Create a list to store the new requet session segments and
+        # re-apply all persistent segments.
+        new_segments = [segment for segment in session_segments
+                        if segment in persistent_segments]
 
         # Run tests on all remaining enabled segments to verify applicability.
         for segment in enabled_segments:
