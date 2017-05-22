@@ -1,7 +1,7 @@
 .. image:: logo.png
-    :scale: 50 %
-    :alt: Wagxperience
-    :align: center
+   :scale: 50 %
+   :alt: Wagxperience
+   :align: center
 
 Wagtail personalisation
 =======================
@@ -47,4 +47,4 @@ Add the ``PERSONALISATION_SEGMENTS_ADAPTER`` setting to your settings.py and cho
 Sandbox
 -------
 
-To quickly experiment with the package you can use the sandbox provided in the git repository.  To install this you will need to create and activate a virtualenv and then run ``make sandbox``.  This will start a fresh wagtail install with the personaliton module enabled on http://localhost:8000.  The superuser credentials are ``superuser@example.com`` with the password ``testing``.
+To quickly experiment with the package you can use the sandbox provided in the git repository.  To install this you will need to create and activate a virtualenv and then run ``make sandbox``.  This will start a fresh wagtail install with the personalisation module enabled on http://localhost:8000.  The superuser credentials are ``superuser@example.com`` with the password ``testing``.
