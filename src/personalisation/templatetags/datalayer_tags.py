@@ -1,5 +1,4 @@
 from django.template import Library
-
 from personalisation.app_settings import segments_adapter
 
 register = Library()

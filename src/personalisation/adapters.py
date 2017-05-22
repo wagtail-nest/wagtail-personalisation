@@ -1,7 +1,6 @@
 from __future__ import absolute_import, unicode_literals
 
 from django.db.models import F
-
 from personalisation.models import Segment
 from personalisation.rules import AbstractBaseRule
 from personalisation.utils import create_segment_dictionary
@@ -48,10 +47,10 @@ class SessionSegmentsAdapter(BaseSegmentsAdapter):
 
     def setup(self, request):
         """Prepare the request session for segment storage.
-        
+
         :param request: The http request
         :type request: django.http.HttpRequest
-        
+
         """
         self.request = request
 
@@ -59,40 +58,40 @@ class SessionSegmentsAdapter(BaseSegmentsAdapter):
 
     def get_all_segments(self):
         """Return the segments stored in the request session.
-        
+
         :returns: The segments in the request session
         :rtype: list of personalisation.models.Segment or empty list
-        
+
         """
         return self.request.session['segments']
 
     def get_segment(self, segment_id):
         """Find and return a single segment from the request session.
-        
+
         :param segment_id: The primary key of the segment
         :type segment_id: int
         :returns: The matching segment
         :rtype: personalisation.models.Segment or None
-        
+
         """
         return next(item for item in self.request.session['segments'] if item.id == segment_id)
 
     def add(self, segment):
         """Add a segment to the request session.
-        
+
         :param segment: The segment to add to the request session
         :type segment: personalisation.models.Segment
-        
+
         """
 
         def check_if_segmented(item):
             """Check if the user has been segmented.
-            
+
             :param item: The segment to check for
             :type item: personalisation.models.Segment
             :returns: Whether the segment is in the request session
             :rtype: bool
-            
+
             """
             return any(seg['encoded_name'] == item.encoded_name() for seg in self.request.session['segments'])
 
@@ -117,7 +116,7 @@ class SessionSegmentsAdapter(BaseSegmentsAdapter):
     def refresh(self):
         """Retrieve the request session segments and verify whether or not they
         still apply to the requesting visitor.
-        
+
         """
         enabled_segments = Segment.objects.filter(status='enabled')
         persistent_segments = enabled_segments.filter(persistent=True)

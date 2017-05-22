@@ -1,14 +1,13 @@
 from __future__ import absolute_import, unicode_literals
 
 from django.contrib import admin
-
 from personalisation import models, rules
 
 
 class UserIsLoggedInRuleAdminInline(admin.TabularInline):
     """Inline the UserIsLoggedIn Rule into the
     administration interface for segments.
-    
+
     """
     model = rules.UserIsLoggedInRule
 
@@ -16,7 +15,7 @@ class UserIsLoggedInRuleAdminInline(admin.TabularInline):
 class TimeRuleAdminInline(admin.TabularInline):
     """Inline the Time Rule into the
     administration interface for segments.
-    
+
     """
     model = rules.TimeRule
 
@@ -24,7 +23,7 @@ class TimeRuleAdminInline(admin.TabularInline):
 class ReferralRuleAdminInline(admin.TabularInline):
     """Inline the Referral Rule into the
     administration interface for segments.
-    
+
     """
     model = rules.ReferralRule
 
@@ -32,7 +31,7 @@ class ReferralRuleAdminInline(admin.TabularInline):
 class VisitCountRuleAdminInline(admin.TabularInline):
     """Inline the Visit Count Rule into the
     administration interface for segments.
-    
+
     """
     model = rules.VisitCountRule
 
