@@ -8,6 +8,8 @@ from personalisation.utils import create_segment_dictionary
 
 
 class BaseSegmentsAdapter(object):
+    """Base segments adapter."""
+
     def setup(self):
         return None
 
@@ -42,23 +44,56 @@ class BaseSegmentsAdapter(object):
 
 
 class SessionSegmentsAdapter(BaseSegmentsAdapter):
-    """
-    Segment adapter that uses Django's session backend.
-    """
+    """Segment adapter that uses Django's session backend."""
+
     def setup(self, request):
+        """Prepare the request session for segment storage.
+        
+        :param request: The http request
+        :type request: django.http.HttpRequest
+        
+        """
         self.request = request
 
         self.request.session.setdefault('segments', [])
 
     def get_all_segments(self):
+        """Return the segments stored in the request session.
+        
+        :returns: The segments in the request session
+        :rtype: list of personalisation.models.Segment or empty list
+        
+        """
         return self.request.session['segments']
 
     def get_segment(self, segment_id):
+        """Find and return a single segment from the request session.
+        
+        :param segment_id: The primary key of the segment
+        :type segment_id: int
+        :returns: The matching segment
+        :rtype: personalisation.models.Segment or None
+        
+        """
         return next(item for item in self.request.session['segments'] if item.id == segment_id)
 
     def add(self, segment):
+        """Add a segment to the request session.
+        
+        :param segment: The segment to add to the request session
+        :type segment: personalisation.models.Segment
+        
+        """
+
         def check_if_segmented(item):
-            """Check if the user has been segmented"""
+            """Check if the user has been segmented.
+            
+            :param item: The segment to check for
+            :type item: personalisation.models.Segment
+            :returns: Whether the segment is in the request session
+            :rtype: bool
+            
+            """
             return any(seg['encoded_name'] == item.encoded_name() for seg in self.request.session['segments'])
 
         if not check_if_segmented(segment):
@@ -66,29 +101,39 @@ class SessionSegmentsAdapter(BaseSegmentsAdapter):
             self.request.session['segments'].append(segdict)
 
     def update_visit_count(self):
-        for seg in self.request.session['segments']:
+        """Update the visit count for all segments in the request session."""
+        segments = self.request.sessions['segments']
+        for seg in segments:
             try:
                 segment = Segment.objects.get(pk=seg['id'])
                 segment.visit_count = F('visit_count') + 1
                 segment.save()
+
             except Segment.DoesNotExist:
-                segments = self.request.sessions['segments']
+                # The segment no longer exists.
+                # Remove it from the request session.
                 self.request.session['segments'][:] = [item for item in segments if item.get('id') != seg['id']]
 
     def refresh(self):
-        segments = Segment.objects.filter(status='enabled')
-        persistent_segments = segments.filter(persistent=True)
+        """Retrieve the request session segments and verify whether or not they
+        still apply to the requesting visitor.
+        
+        """
+        enabled_segments = Segment.objects.filter(status='enabled')
+        persistent_segments = enabled_segments.filter(persistent=True)
         session_segments = self.request.session['segments']
         rules = AbstractBaseRule.__subclasses__()
 
         new_segments = []
 
+        # Re-apply all persistent segments, as long as they are still enabled.
         for session_segment in session_segments:
             for persistent_segment in persistent_segments:
                 if persistent_segment.pk == session_segment['id']:
                     new_segments.append(session_segment)
 
-        for segment in segments:
+        # Run tests on all remaining enabled segments to verify applicability.
+        for segment in enabled_segments:
             segment_rules = []
             for rule in rules:
                 segment_rules += rule.objects.filter(segment=segment)
