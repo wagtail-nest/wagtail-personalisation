@@ -6,7 +6,16 @@ from personalisation.models import PersonalisablePage, Segment
 
 
 def enable(request, segment_id):
-    """Enable the selected segment"""
+    """Enable the selected segment.
+    
+    :param request: The http request
+    :type request: django.http.HttpRequest
+    :param segment_id: The primary key of the segment
+    :type segment_id: int
+    :returns: A redirect to the original page
+    :rtype: django.http.HttpResponseRedirect
+    
+    """
     segment = get_object_or_404(Segment, pk=segment_id)
     segment.status = 'enabled'
     segment.save()
@@ -15,7 +24,16 @@ def enable(request, segment_id):
 
 
 def disable(request, segment_id):
-    """Disable the selected segment"""
+    """Disable the selected segment.
+    
+    :param request: The http request
+    :type request: django.http.HttpRequest
+    :param segment_id: The primary key of the segment
+    :type segment_id: int
+    :returns: A redirect to the original page
+    :rtype: django.http.HttpResponseRedirect
+    
+    """
     segment = get_object_or_404(Segment, pk=segment_id)
     segment.status = 'disabled'
     segment.save()
@@ -24,7 +42,18 @@ def disable(request, segment_id):
 
 
 def copy_page_view(request, page_id, segment_id):
-    """Copy page with selected segment"""
+    """Copy page with selected segment.
+    
+    :param request: The http request
+    :type request: django.http.HttpRequest
+    :param page_id: The primary key of the page
+    :type segment_id: int
+    :param segment_id: The primary key of the segment
+    :type segment_id: int
+    :returns: A redirect to the new page
+    :rtype: django.http.HttpResponseRedirect
+    
+    """
     segment = get_object_or_404(Segment, pk=segment_id)
     page = get_object_or_404(PersonalisablePage, pk=page_id)
 
