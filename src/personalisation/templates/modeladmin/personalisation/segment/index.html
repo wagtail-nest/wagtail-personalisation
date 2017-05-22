@@ -71,9 +71,9 @@
                                             {% if user_can_create %}
                                             <ul class="block_actions">
                                                 {% if segment.status == "disabled" %}
-                                                    <li><a href="{% url 'segment:enable' segment.pk %}" title="{% trans "Enable this segment" %}">enable</a></li>
+                                                    <li><a href="{% url 'segment:toggle' segment.pk %}" title="{% trans "Enable this segment" %}">enable</a></li>
                                                 {% elif segment.status == "enabled" %}
-                                                    <li><a href="{% url 'segment:disable' segment.pk %}" title="{% trans "Disable this segment" %}">disable</a></li>
+                                                    <li><a href="{% url 'segment:toggle' segment.pk %}" title="{% trans "Disable this segment" %}">disable</a></li>
                                                 {% endif %}
                                                 <li><a href="edit/{{ segment.pk }}" title="{% trans "Configure this segment" %}">configure this</a></li>
                                             </ul>
