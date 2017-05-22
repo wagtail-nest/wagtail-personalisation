@@ -74,7 +74,8 @@ class SessionSegmentsAdapter(BaseSegmentsAdapter):
         :rtype: personalisation.models.Segment or None
 
         """
-        return next(item for item in self.request.session['segments'] if item.id == segment_id)
+        return next(item for item in self.request.session['segments']
+                    if item.id == segment_id)
 
     def add(self, segment):
         """Add a segment to the request session.
@@ -93,7 +94,8 @@ class SessionSegmentsAdapter(BaseSegmentsAdapter):
             :rtype: bool
 
             """
-            return any(seg['encoded_name'] == item.encoded_name() for seg in self.request.session['segments'])
+            return any(seg['encoded_name'] == item.encoded_name()
+                       for seg in self.request.session['segments'])
 
         if not check_if_segmented(segment):
             segdict = create_segment_dictionary(segment)
@@ -111,7 +113,8 @@ class SessionSegmentsAdapter(BaseSegmentsAdapter):
             except Segment.DoesNotExist:
                 # The segment no longer exists.
                 # Remove it from the request session.
-                self.request.session['segments'][:] = [item for item in segments if item.get('id') != seg['id']]
+                self.request.session['segments'][:] = [
+                    item for item in segments if item.get('id') != seg['id']]
 
     def refresh(self):
         """Retrieve the request session segments and verify whether or not they
@@ -136,7 +139,8 @@ class SessionSegmentsAdapter(BaseSegmentsAdapter):
             segment_rules = []
             for rule in rules:
                 segment_rules += rule.objects.filter(segment=segment)
-            result = self._test_rules(segment_rules, self.request, match_any=segment.match_any)
+            result = self._test_rules(segment_rules, self.request,
+                                      match_any=segment.match_any)
 
             if result:
                 segdict = create_segment_dictionary(segment)
