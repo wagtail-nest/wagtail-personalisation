@@ -15,7 +15,7 @@ from wagtail.wagtailadmin.edit_handlers import (
 
 @python_2_unicode_compatible
 class AbstractBaseRule(models.Model):
-    """Base for creating rules to segment users with"""
+    """Base for creating rules to segment users with."""
     segment = ParentalKey(
         'personalisation.Segment',
         related_name="%(app_label)s_%(class)s_related",
@@ -23,18 +23,30 @@ class AbstractBaseRule(models.Model):
     )
 
     def test_user(self):
-        """Test if the user matches this rule"""
+        """Test if the user matches this rule."""
         return True
 
     def __str__(self):
-        return "Abstract segmentation rule"
+        return _('Abstract segmentation rule')
 
     def encoded_name(self):
-        """Returns a string with a slug for the rule"""
+        """Return a string with a slug for the rule."""
         return slugify(self.__str__().lower())
 
     def description(self):
-        return "Abstract segmentation rule"
+        """Return a description explaining the functionality of the rule.
+        Used in the segmentation dashboard.
+        
+        :returns: A dict containing a title and a value
+        :rtype: dict
+        
+        """
+        description = {
+            'title': _('Abstract segmentation rule'),
+            'value': _(''),
+        }
+
+        return description
 
     class Meta:
         abstract = True
@@ -42,7 +54,11 @@ class AbstractBaseRule(models.Model):
 
 @python_2_unicode_compatible
 class TimeRule(AbstractBaseRule):
-    """Time rule to segment users based on a start and end time"""
+    """Time rule to segment users based on a start and end time.
+    Matches when the time a request is made falls between the
+    set start time and end time.
+    
+    """
     start_time = models.TimeField(_("Starting time"))
     end_time = models.TimeField(_("Ending time"))
 
@@ -80,7 +96,11 @@ class TimeRule(AbstractBaseRule):
 
 @python_2_unicode_compatible
 class DayRule(AbstractBaseRule):
-    """Day rule to segment users based on day(s) of visit"""
+    """Day rule to segment users based on the day(s) of a visit.
+    Matches when the day a request is made matches with the days
+    set in the rule.
+    
+    """
     mon = models.BooleanField(_("Monday"), default=False)
     tue = models.BooleanField(_("Tuesday"), default=False)
     wed = models.BooleanField(_("Wednesday"), default=False)
@@ -136,7 +156,11 @@ class DayRule(AbstractBaseRule):
 
 @python_2_unicode_compatible
 class ReferralRule(AbstractBaseRule):
-    """Referral rule to segment users based on a regex test"""
+    """Referral rule to segment users based on a regex test.
+    Matches when the referral header in a request matches with
+    the set regex test.
+    
+    """
     regex_string = models.TextField(
         _("Regex string to match the referer with"))
 
@@ -173,7 +197,11 @@ class ReferralRule(AbstractBaseRule):
 
 @python_2_unicode_compatible
 class VisitCountRule(AbstractBaseRule):
-    """Visit count rule to segment users based on amount of visits"""
+    """Visit count rule to segment users based on amount of visits to a
+    specified page. Matches when the operator and count validate True
+    when visiting the set page.
+    
+    """
     OPERATOR_CHOICES = (
         ('more_than', _("More than")),
         ('less_than', _("Less than")),
@@ -206,8 +234,16 @@ class VisitCountRule(AbstractBaseRule):
         segment_count = self.count
 
         def get_visit_count(request):
-            """Search through the sessions to get the page visit count
-            corresponding to the request."""
+            """Search through the request sessions to get the page visit count
+            corresponding to the request.
+            
+            :param request: The http request
+            :type request: django.http.HttpRequest
+            :returns: A number indicating the amount of visits
+                      to the requested page
+            :rtype: int
+            
+            """
             for page in request.session['visit_count']:
                 if page['path'] == request.path:
                     return page['count']
@@ -244,7 +280,11 @@ class VisitCountRule(AbstractBaseRule):
 
 @python_2_unicode_compatible
 class QueryRule(AbstractBaseRule):
-    """Query rule to segment users based on matching queries"""
+    """Query rule to segment users based on matching queries.
+    Matches when both the set parameter and value match with one
+    present in the request query.
+    
+    """
     parameter = models.SlugField(_("The query parameter to search for"),
                                  max_length=20)
     value = models.SlugField(_("The value of the parameter to match"),
@@ -285,7 +325,11 @@ class QueryRule(AbstractBaseRule):
 
 @python_2_unicode_compatible
 class DeviceRule(AbstractBaseRule):
-    """Device rule to segment users based on matching devices"""
+    """Device rule to segment users based on matching devices.
+    Matches when the set device type matches with the one present
+    in the request user agent headers.
+    
+    """
     mobile = models.BooleanField(_("Mobile phone"), default=False)
     tablet = models.BooleanField(_("Tablet"), default=False)
     desktop = models.BooleanField(_("Desktop"), default=False)
@@ -315,9 +359,13 @@ class DeviceRule(AbstractBaseRule):
     def __str__(self):
         return _('Device Rule')
 
+
 @python_2_unicode_compatible
 class UserIsLoggedInRule(AbstractBaseRule):
-    """User should be logged in"""
+    """User is logged in rule to segment users based on their authentication
+    status. Matches when the user is authenticated.
+    
+    """
     is_logged_in = models.BooleanField(default=False)
 
     panels = [
