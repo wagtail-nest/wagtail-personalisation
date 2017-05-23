@@ -43,8 +43,10 @@ class SegmentModelAdmin(ModelAdmin):
     menu_icon = 'group'
     add_to_settings_menu = False
     list_display = ('status', 'name', 'create_date', 'edit_date')
-    index_view_extra_css = ['personalisation/segment/index.css']
-    form_view_extra_css = ['personalisation/segment/form.css']
+    index_view_extra_js = ['js/commons.js', 'js/index.js']
+    index_view_extra_css = ['css/index.css']
+    form_view_extra_js = ['js/commons.js', 'js/form.js']
+    form_view_extra_css = ['css/form.css']
 
 modeladmin_register(SegmentModelAdmin)
 

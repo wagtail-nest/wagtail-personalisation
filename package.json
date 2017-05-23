@@ -1,0 +1,53 @@
+{
+  "devDependencies": {
+    "autoprefixer": "^7.1.1",
+    "babel-core": "^6.24.1",
+    "babel-loader": "^7.0.0",
+    "babel-preset-es2015": "^6.24.1",
+    "babel-preset-react": "^6.24.1",
+    "babel-preset-stage-0": "^6.24.1",
+    "copy-webpack-plugin": "^4.0.1",
+    "css-loader": "^0.28.2",
+    "eslint": "^3.19.0",
+    "eslint-config-airbnb": "^15.0.1",
+    "eslint-plugin-import": "^2.2.0",
+    "eslint-plugin-jsx-a11y": "^5.0.3",
+    "eslint-plugin-react": "^7.0.1",
+    "extract-text-webpack-plugin": "^2.1.0",
+    "file-loader": "^0.11.1",
+    "imagemin-webpack-plugin": "^1.4.4",
+    "jshint": "^2.9.4",
+    "mocha": "^3.4.1",
+    "node-sass": "^4.5.3",
+    "postcss-loader": "^2.0.5",
+    "sass-loader": "^6.0.5",
+    "style-loader": "^0.18.0",
+    "uglify-js": "^3.0.10",
+    "uglifyjs-webpack-plugin": "^0.4.3",
+    "webpack": "^2.6.0"
+  },
+  "name": "wagtail-personalisation",
+  "description": "Wagxperience personalisation module for Wagtail.",
+  "version": "1.0.0",
+  "main": "webpack.config.js",
+  "directories": {
+    "doc": "docs",
+    "test": "tests"
+  },
+  "scripts": {
+    "start": "yarn compile && yarn watch",
+    "compile": "webpack --bail",
+    "watch": "webpack --watch",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/LabD/wagtail-personalisation.git"
+  },
+  "author": "Lab Digital",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/LabD/wagtail-personalisation/issues"
+  },
+  "homepage": "https://github.com/LabD/wagtail-personalisation#readme"
+}
