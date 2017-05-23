@@ -8,7 +8,6 @@ from django.utils.encoding import python_2_unicode_compatible
 from django.utils.functional import cached_property
 from django.utils.translation import ugettext_lazy as _
 from modelcluster.models import ClusterableModel
-from personalisation.rules import AbstractBaseRule
 from wagtail.utils.decorators import cached_classmethod
 from wagtail.wagtailadmin.edit_handlers import (
     FieldPanel, FieldRowPanel, InlinePanel, MultiFieldPanel, ObjectList,
@@ -16,10 +15,12 @@ from wagtail.wagtailadmin.edit_handlers import (
 from wagtail.wagtailadmin.forms import WagtailAdminPageForm
 from wagtail.wagtailcore.models import Page
 
+from personalisation.rules import AbstractBaseRule
+
 
 @python_2_unicode_compatible
 class Segment(ClusterableModel):
-    """Model for a new segment"""
+    """The segment model."""
     name = models.CharField(max_length=255)
     create_date = models.DateTimeField(auto_now_add=True)
     edit_date = models.DateTimeField(auto_now=True)
@@ -63,10 +64,11 @@ class Segment(ClusterableModel):
         return self.name
 
     def encoded_name(self):
-        """Returns a string with a slug for the segment"""
+        """Return a string with a slug for the segment."""
         return slugify(self.name.lower())
 
     def get_rules(self):
+        """Retrieve all rules in the segment."""
         rules = AbstractBaseRule.__subclasses__()
         segment_rules = []
         for rule in rules:
@@ -94,10 +96,17 @@ pre_save.connect(check_status_change, sender=Segment)
 
 
 class AdminPersonalisablePageForm(WagtailAdminPageForm):
+    """The personalisable page form that allows creation of variants."""
     def __init__(self, *args, **kwargs):
         super(AdminPersonalisablePageForm, self).__init__(*args, **kwargs)
 
     def save(self, commit=True):
+        """Save a copy of the original page, linked to a segment.
+
+        :returns: The original page, or a new page.
+        :rtype: personalisation.models.PersonalisablePage
+
+        """
         page = super(AdminPersonalisablePageForm, self).save(commit=False)
 
         if page.segment:
@@ -131,6 +140,10 @@ class AdminPersonalisablePageForm(WagtailAdminPageForm):
 
 
 class PersonalisablePage(Page):
+    """The personalisable page model. Allows creation of variants with linked
+    segments.
+    
+    """
     canonical_page = models.ForeignKey(
         'self', related_name='variations', on_delete=models.SET_NULL,
         blank=True, null=True
@@ -155,15 +168,35 @@ class PersonalisablePage(Page):
 
     @cached_property
     def has_variations(self):
+        """Return a boolean indicating whether or not the personalisable page
+        has variations.
+
+        :returns: A boolean indicating whether or not the personalisable page
+                  has variations.
+        :rtype: bool
+
+        """
         return self.variations.exists()
 
     @cached_property
     def is_canonical(self):
+        """Return a boolean indicating whether or not the personalisable page
+        is a canonical page.
+
+        :returns: A boolean indicating whether or not the personalisable page
+                  is a canonical page.
+        :rtype: bool
+
+        """
         return not self.canonical_page and self.has_variations
 
 
 @cached_classmethod
 def get_edit_handler(cls):
+    """Add additional edit handlers to pages that are allowed to have
+    variations.
+    
+    """
     tabs = []
     if cls.content_panels:
         tabs.append(ObjectList(cls.content_panels, heading=_("Content")))
