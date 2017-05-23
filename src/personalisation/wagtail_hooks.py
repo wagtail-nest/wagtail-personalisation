@@ -6,15 +6,16 @@ from django.conf.urls import include, url
 from django.shortcuts import reverse
 from django.utils.safestring import mark_safe
 from django.utils.translation import ugettext_lazy as _
-from personalisation import admin_urls
-from personalisation.app_settings import segments_adapter
-from personalisation.models import PersonalisablePage, Segment
-from personalisation.utils import impersonate_other_page
 from wagtail.contrib.modeladmin.options import ModelAdmin, modeladmin_register
 from wagtail.contrib.modeladmin.views import IndexView
 from wagtail.wagtailadmin.site_summary import SummaryItem
 from wagtail.wagtailadmin.widgets import Button, ButtonWithDropdownFromHook
 from wagtail.wagtailcore import hooks
+
+from personalisation import admin_urls
+from personalisation.app_settings import segments_adapter
+from personalisation.models import PersonalisablePage, Segment
+from personalisation.utils import impersonate_other_page
 
 logger = logging.getLogger(__name__)
 
@@ -31,11 +32,12 @@ def register_admin_urls():
 
 
 class SegmentModelIndexView(IndexView):
+    """Placeholder for additional dashboard functionality."""
     pass
 
 
 class SegmentModelAdmin(ModelAdmin):
-    """The base model for the Segments administration interface."""
+    """The model admin for the Segments administration interface."""
     model = Segment
     index_view_class = SegmentModelIndexView
     menu_icon = 'group'
@@ -49,12 +51,28 @@ modeladmin_register(SegmentModelAdmin)
 
 @hooks.register('before_serve_page')
 def set_visit_count(page, request, serve_args, serve_kwargs):
+    """Tests the provided rules to see if the request still belongs
+    to a segment.
+
+    :param page: The page being served
+    :type page: wagtail.wagtailcore.models.Page
+    :param request: The http request
+    :type request: django.http.HttpRequest
+
+    """
+    # Create a new dict in the session if it's empty.
     if 'visit_count' not in request.session:
         request.session['visit_count'] = []
 
-    # Update the page visit count
     def create_new_counter(page, request):
-        """Create a new counter dict and place it in session storage."""
+        """Create a new counter dict and place it in session storage.
+
+        :param page: The page being served
+        :type page: wagtail.wagtailcore.models.Page
+        :param request: The http request
+        :type request: django.http.HttpRequest
+        
+        """
         countdict = {
             "slug": page.slug,
             "id": page.pk,
@@ -81,12 +99,31 @@ def set_visit_count(page, request, serve_args, serve_kwargs):
 
 @hooks.register('before_serve_page')
 def segment_user(page, request, serve_args, serve_kwargs):
+    """Apply a segment to a visitor before serving the page.
+
+    :param page: The page being served
+    :type page: wagtail.wagtailcore.models.Page
+    :param request: The http request
+    :type request: django.http.HttpRequest
+
+    """
     segments_adapter.setup(request)
     segments_adapter.refresh()
 
 
 @hooks.register('before_serve_page')
 def serve_variation(page, request, serve_args, serve_kwargs):
+    """Apply a segment to a visitor before serving the page.
+
+    :param page: The page being served
+    :type page: wagtail.wagtailcore.models.Page
+    :param request: The http request
+    :type request: django.http.HttpRequest
+    :returns: A variation if one is available for the visitor's segment,
+              otherwise the original page
+    :rtype: wagtail.wagtailcore.models.Page
+
+    """
     user_segments = []
 
     for segment in segments_adapter.get_all_segments():
@@ -110,6 +147,18 @@ def serve_variation(page, request, serve_args, serve_kwargs):
 
 
 def _check_for_variations(segments, page):
+    """Check whether there are variations available for the provided segments
+    on the page being served.
+    
+    :param segments: The segments applicable to the request.
+    :type segments: list of personalisation.models.Segment
+    :param page: The page being served
+    :type page: personalisation.models.PersonalisablePage or
+                wagtail.wagtailcore.models.Page
+    :returns: A variant of the requested page matching the segments or None
+    :rtype: personalisation.models.PersonalisablePage or None
+
+    """
     for segment in segments:
         page_class = page.__class__
         if not any(item == PersonalisablePage for item in page_class.__bases__):
@@ -126,23 +175,35 @@ def _check_for_variations(segments, page):
 
 @hooks.register('register_page_listing_buttons')
 def page_listing_variant_buttons(page, page_perms, is_parent=False):
+    """Adds page listing buttons to personalisable pages. Shows variants for
+    the page (if any) and a 'Create a new variant' button.
+    
+    """
     personalisable_page = PersonalisablePage.objects.filter(pk=page.pk)
     segments = Segment.objects.all()
 
-    if personalisable_page and len(segments) > 0 and not (any(item.segment for item in personalisable_page)):
+    if personalisable_page and len(segments) > 0 and not (
+            any(item.segment for item in personalisable_page)):
         yield ButtonWithDropdownFromHook(
             _('Variants'),
             hook_name='register_page_listing_variant_buttons',
             page=page,
             page_perms=page_perms,
             is_parent=is_parent,
-            attrs={'target': '_blank', 'title': _('Create a new variant')}, priority=100)
+            attrs={'target': '_blank', 'title': _('Create a new variant')},
+            priority=100)
 
 
 @hooks.register('register_page_listing_variant_buttons')
 def page_listing_more_buttons(page, page_perms, is_parent=False):
+    """Adds a 'more' button to personalisable pages allowing users to quickly
+    create a new variant for the selected segment.
+
+    """
     segments = Segment.objects.all()
-    available_segments = [item for item in segments if not PersonalisablePage.objects.filter(segment=item, pk=page.pk)]
+    available_segments = [item for item in segments
+                          if not PersonalisablePage.objects.filter(
+                            segment=item, pk=page.pk)]
 
     for segment in available_segments:
         yield Button(segment.name,
@@ -151,6 +212,10 @@ def page_listing_more_buttons(page, page_perms, is_parent=False):
 
 
 class SegmentSummaryPanel(SummaryItem):
+    """The segment summary panel showing the total amount of segments on the
+    site and allowing quick access to the Segment dashboard.
+    
+    """
     order = 500
 
     def render(self):
@@ -163,7 +228,10 @@ class SegmentSummaryPanel(SummaryItem):
             </li>""".format(target_url, segment_count, title))
 
 
-
 @hooks.register('construct_homepage_summary_items')
 def add_segment_summary_panel(request, items):
+    """Adds a summary panel to the Wagtail dashboard showing the total amount
+    of segments on the site and allowing quick access to the Segment dashboard.
+
+    """
     return items.append(SegmentSummaryPanel(request))
