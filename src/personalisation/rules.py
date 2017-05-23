@@ -55,6 +55,7 @@ class AbstractBaseRule(models.Model):
 @python_2_unicode_compatible
 class TimeRule(AbstractBaseRule):
     """Time rule to segment users based on a start and end time.
+    
     Matches when the time a request is made falls between the
     set start time and end time.
     
@@ -97,6 +98,7 @@ class TimeRule(AbstractBaseRule):
 @python_2_unicode_compatible
 class DayRule(AbstractBaseRule):
     """Day rule to segment users based on the day(s) of a visit.
+    
     Matches when the day a request is made matches with the days
     set in the rule.
     
@@ -157,6 +159,7 @@ class DayRule(AbstractBaseRule):
 @python_2_unicode_compatible
 class ReferralRule(AbstractBaseRule):
     """Referral rule to segment users based on a regex test.
+    
     Matches when the referral header in a request matches with
     the set regex test.
     
@@ -198,7 +201,9 @@ class ReferralRule(AbstractBaseRule):
 @python_2_unicode_compatible
 class VisitCountRule(AbstractBaseRule):
     """Visit count rule to segment users based on amount of visits to a
-    specified page. Matches when the operator and count validate True
+    specified page.
+    
+    Matches when the operator and count validate True
     when visiting the set page.
     
     """
@@ -281,6 +286,7 @@ class VisitCountRule(AbstractBaseRule):
 @python_2_unicode_compatible
 class QueryRule(AbstractBaseRule):
     """Query rule to segment users based on matching queries.
+    
     Matches when both the set parameter and value match with one
     present in the request query.
     
@@ -326,6 +332,7 @@ class QueryRule(AbstractBaseRule):
 @python_2_unicode_compatible
 class DeviceRule(AbstractBaseRule):
     """Device rule to segment users based on matching devices.
+    
     Matches when the set device type matches with the one present
     in the request user agent headers.
     
@@ -363,7 +370,9 @@ class DeviceRule(AbstractBaseRule):
 @python_2_unicode_compatible
 class UserIsLoggedInRule(AbstractBaseRule):
     """User is logged in rule to segment users based on their authentication
-    status. Matches when the user is authenticated.
+    status.
+    
+    Matches when the user is authenticated.
     
     """
     is_logged_in = models.BooleanField(default=False)
