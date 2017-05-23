@@ -6,8 +6,6 @@ from django.conf.urls import include, url
 from django.shortcuts import reverse
 from django.utils.safestring import mark_safe
 from django.utils.translation import ugettext_lazy as _
-from wagtail.contrib.modeladmin.options import ModelAdmin, modeladmin_register
-from wagtail.contrib.modeladmin.views import IndexView
 from wagtail.wagtailadmin.site_summary import SummaryItem
 from wagtail.wagtailadmin.widgets import Button, ButtonWithDropdownFromHook
 from wagtail.wagtailcore import hooks
@@ -29,26 +27,6 @@ def register_admin_urls():
             app_name='personalisation',
             namespace='personalisation')),
     ]
-
-
-class SegmentModelIndexView(IndexView):
-    """Placeholder for additional dashboard functionality."""
-    pass
-
-
-class SegmentModelAdmin(ModelAdmin):
-    """The model admin for the Segments administration interface."""
-    model = Segment
-    index_view_class = SegmentModelIndexView
-    menu_icon = 'group'
-    add_to_settings_menu = False
-    list_display = ('status', 'name', 'create_date', 'edit_date')
-    index_view_extra_js = ['js/commons.js', 'js/index.js']
-    index_view_extra_css = ['css/index.css']
-    form_view_extra_js = ['js/commons.js', 'js/form.js']
-    form_view_extra_css = ['css/form.css']
-
-modeladmin_register(SegmentModelAdmin)
 
 
 @hooks.register('before_serve_page')
