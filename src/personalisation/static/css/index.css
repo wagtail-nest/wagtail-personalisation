@@ -108,33 +108,33 @@
             height: 16px;
             margin-right: 5px;
             background-size: contain;
-            background-image: url("./ruler_icon.png");
+            background-image: url("../img/ruler_icon.png");
         }
 
             .block_container .block .inspect_container .segment_stats .visit_stat span::before {
-                background-image: url("./rocket_icon.png");
+                background-image: url("../img/rocket_icon.png");
             }
             .block_container .block .inspect_container .segment_stats .days_stat span::before {
-                background-image: url("./calendar_icon.png");
+                background-image: url("../img/calendar_icon.png");
             }
 
             .block_container .block .inspect_container .segment_rules .persistent_state span::before {
-                background-image: url("./persistent_icon.png");
+                background-image: url("../img/persistent_icon.png");
             }
             .block_container .block .inspect_container .segment_rules .persistent_state.fleeting span::before {
                 transform: rotate(45deg) translateY(-2px);
             }
             .block_container .block .inspect_container .segment_rules .time-rule span::before {
-                background-image: url("./time_icon.png");
+                background-image: url("../img/time_icon.png");
             }
             .block_container .block .inspect_container .segment_rules .visit-count-rule span::before {
-                background-image: url("./visit_count_icon.png");
+                background-image: url("../img/visit_count_icon.png");
             }
             .block_container .block .inspect_container .segment_rules .logged-in-rule span::before {
-                background-image: url("./key_icon.png");
+                background-image: url("../img/key_icon.png");
             }
             .block_container .block .inspect_container .segment_rules .day-rule span::before {
-                background-image: url("./calendar_icon.png");
+                background-image: url("../img/calendar_icon.png");
             }
 
     .block_container .block .inspect_container .inspect li pre {
@@ -160,14 +160,14 @@
             height: 16px;
             margin-right: 5px;
             background-size: contain;
-            background-image: url("./ruler_icon.png");
+            background-image: url("../img/ruler_icon.png");
         }
 
             .block_container .block .inspect_container .segment_rules .referral-rule pre::before {
-                background-image: url("./referral_icon.png");
+                background-image: url("../img/referral_icon.png");
             }
             .block_container .block .inspect_container .segment_rules .query-rule pre::before {
-                background-image: url("./referral_icon.png");
+                background-image: url("../img/referral_icon.png");
             }
 
 .block_container .block.suggestion .suggestive_text {
