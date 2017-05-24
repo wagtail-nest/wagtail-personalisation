@@ -218,6 +218,7 @@ class TestUserSegmenting(object):
         assert any(item['encoded_name'] == 'multiple-queries' for item in client.session['segments'])
 
 
+    @pytest.mark.skip
     def test_persistent_segmenting(self, client):
         segment = SegmentFactory(name='Persistent', persistent=True)
         query_rule = QueryRuleFactory(

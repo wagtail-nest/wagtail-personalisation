@@ -11,8 +11,17 @@ DATABASES = {
     }
 }
 
+ALLOWED_HOSTS = ['localhost']
+
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+        'LOCATION': 'unique-snowflake',
+    }
+}
 
 SECRET_KEY = 'not needed'
+SESSION_ENGINE = 'django.contrib.sessions.backends.cached_db'
 
 ROOT_URLCONF = 'tests.sandbox.urls'
 

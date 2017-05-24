@@ -7,13 +7,13 @@ install_requires = [
 ]
 
 tests_require = [
-    'pytest==3.0.4',
+    'pytest==3.1.0',
     'pytest-cov==2.4.0',
-    'pytest-django==3.0.0',
+    'pytest-django==3.1.2',
     'pytest-sugar==0.7.1',
     'freezegun==0.3.8',
     'factory_boy==2.8.1',
-    'wagtail_factories==0.2.0',
+    'wagtail_factories==0.3.0',
 ]
 
 docs_require = [
