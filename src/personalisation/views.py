@@ -2,7 +2,30 @@ from __future__ import absolute_import, unicode_literals
 
 from django.http import HttpResponseRedirect, HttpResponseForbidden
 from django.shortcuts import get_object_or_404, reverse
+from wagtail.contrib.modeladmin.options import ModelAdmin, modeladmin_register
+from wagtail.contrib.modeladmin.views import IndexView
+
 from personalisation.models import PersonalisablePage, Segment
+
+
+class SegmentModelIndexView(IndexView):
+    """Placeholder for additional dashboard functionality."""
+    pass
+
+
+class SegmentModelAdmin(ModelAdmin):
+    """The model admin for the Segments administration interface."""
+    model = Segment
+    index_view_class = SegmentModelIndexView
+    menu_icon = 'group'
+    add_to_settings_menu = False
+    list_display = ('status', 'name', 'create_date', 'edit_date')
+    index_view_extra_js = ['js/commons.js', 'js/index.js']
+    index_view_extra_css = ['css/index.css']
+    form_view_extra_js = ['js/commons.js', 'js/form.js']
+    form_view_extra_css = ['css/form.css']
+
+modeladmin_register(SegmentModelAdmin)
 
 
 def toggle(request, segment_id):
