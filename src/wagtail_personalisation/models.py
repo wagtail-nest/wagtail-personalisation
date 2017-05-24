@@ -1,9 +1,7 @@
 from __future__ import absolute_import, unicode_literals
 
 from django.db import models
-from django.db.models.signals import pre_save
 from django.template.defaultfilters import slugify
-from django.utils import timezone
 from django.utils.encoding import python_2_unicode_compatible
 from django.utils.functional import cached_property
 from django.utils.translation import ugettext_lazy as _
@@ -74,25 +72,6 @@ class Segment(ClusterableModel):
         for rule in rules:
             segment_rules += rule.objects.filter(segment=self)
         return segment_rules
-
-
-def check_status_change(sender, instance, *args, **kwargs):
-    """Check if the status has changed. Alter dates accordingly."""
-    try:
-        original_status = sender.objects.get(pk=instance.id).status
-    except sender.DoesNotExist:
-        original_status = ""
-
-    if original_status != instance.status:
-        if instance.status == "enabled":
-            instance.enable_date = timezone.now()
-            instance.visit_count = 0
-            return instance
-        if instance.status == "disabled":
-            instance.disable_date = timezone.now()
-
-
-pre_save.connect(check_status_change, sender=Segment)
 
 
 class PersonalisablePage(Page):
