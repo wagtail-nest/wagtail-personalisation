@@ -4,8 +4,8 @@ import datetime
 
 import pytest
 
-from personalisation.models import Segment
-from personalisation.rules import TimeRule
+from wagtail_personalisation.models import Segment
+from wagtail_personalisation.rules import TimeRule
 from tests.factories.rule import (
     DayRuleFactory, DeviceRuleFactory, QueryRuleFactory, ReferralRuleFactory,
     TimeRuleFactory, VisitCountRuleFactory)

@@ -10,7 +10,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('personalisation', '0004_segment_persistent'),
+        ('wagtail_personalisation', '0004_segment_persistent'),
     ]
 
     operations = [
@@ -19,7 +19,7 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('is_logged_in', models.BooleanField(default=False)),
-                ('segment', modelcluster.fields.ParentalKey(on_delete=django.db.models.deletion.CASCADE, related_name='personalisation_userisloggedinrule_related', related_query_name='personalisation_userisloggedinrules', to='personalisation.Segment')),
+                ('segment', modelcluster.fields.ParentalKey(on_delete=django.db.models.deletion.CASCADE, related_name='wagtail_personalisation_userisloggedinrule_related', related_query_name='wagtail_personalisation_userisloggedinrules', to='wagtail_personalisation.Segment')),
             ],
             options={
                 'abstract': False,

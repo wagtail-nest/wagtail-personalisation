@@ -1,6 +1,6 @@
 import pytest
 
-from personalisation.utils import impersonate_other_page
+from wagtail_personalisation.utils import impersonate_other_page
 
 
 class Page(object):

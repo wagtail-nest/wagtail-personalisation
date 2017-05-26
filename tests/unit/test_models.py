@@ -8,7 +8,7 @@ from freezegun import freeze_time
 from wagtail.wagtailcore.models import Site
 from wagtail_factories import SiteFactory
 
-from personalisation import rules
+from wagtail_personalisation import rules
 
 """Time Rule tests"""
 @freeze_time("10:00:00")

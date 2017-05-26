@@ -14,8 +14,8 @@ from wagtail.wagtailadmin.edit_handlers import (
     PageChooserPanel, TabbedInterface)
 from wagtail.wagtailcore.models import Page
 
-from personalisation.forms import AdminPersonalisablePageForm
-from personalisation.rules import AbstractBaseRule
+from wagtail_personalisation.forms import AdminPersonalisablePageForm
+from wagtail_personalisation.rules import AbstractBaseRule
 
 
 @python_2_unicode_compatible

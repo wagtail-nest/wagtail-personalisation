@@ -21,7 +21,7 @@ class Migration(migrations.Migration):
             fields=[
                 ('page_ptr', models.OneToOneField(auto_created=True, on_delete=django.db.models.deletion.CASCADE, parent_link=True, primary_key=True, serialize=False, to='wagtailcore.Page')),
                 ('is_segmented', models.BooleanField(default=False)),
-                ('canonical_page', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='variations', to='personalisation.PersonalisablePage')),
+                ('canonical_page', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='variations', to='wagtail_personalisation.PersonalisablePage')),
             ],
             options={
                 'abstract': False,
@@ -60,7 +60,7 @@ class Migration(migrations.Migration):
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('start_time', models.TimeField(verbose_name='Starting time')),
                 ('end_time', models.TimeField(verbose_name='Ending time')),
-                ('segment', modelcluster.fields.ParentalKey(on_delete=django.db.models.deletion.CASCADE, related_name='personalisation_timerule_related', related_query_name='personalisation_timerules', to='personalisation.Segment')),
+                ('segment', modelcluster.fields.ParentalKey(on_delete=django.db.models.deletion.CASCADE, related_name='wagtail_personalisation_timerule_related', related_query_name='wagtail_personalisation_timerules', to='wagtail_personalisation.Segment')),
             ],
             options={
                 'abstract': False,
@@ -73,7 +73,7 @@ class Migration(migrations.Migration):
                 ('operator', models.CharField(choices=[('more_than', 'More than'), ('less_than', 'Less than'), ('equal_to', 'Equal to')], default='ht', max_length=20)),
                 ('count', models.PositiveSmallIntegerField(default=0, null=True)),
                 ('counted_page', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='+', to='wagtailcore.Page')),
-                ('segment', modelcluster.fields.ParentalKey(on_delete=django.db.models.deletion.CASCADE, related_name='personalisation_visitcountrule_related', related_query_name='personalisation_visitcountrules', to='personalisation.Segment')),
+                ('segment', modelcluster.fields.ParentalKey(on_delete=django.db.models.deletion.CASCADE, related_name='wagtail_personalisation_visitcountrule_related', related_query_name='wagtail_personalisation_visitcountrules', to='wagtail_personalisation.Segment')),
             ],
             options={
                 'abstract': False,
@@ -82,11 +82,11 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='referralrule',
             name='segment',
-            field=modelcluster.fields.ParentalKey(on_delete=django.db.models.deletion.CASCADE, related_name='personalisation_referralrule_related', related_query_name='personalisation_referralrules', to='personalisation.Segment'),
+            field=modelcluster.fields.ParentalKey(on_delete=django.db.models.deletion.CASCADE, related_name='wagtail_personalisation_referralrule_related', related_query_name='wagtail_personalisation_referralrules', to='wagtail_personalisation.Segment'),
         ),
         migrations.AddField(
             model_name='personalisablepage',
             name='segment',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.PROTECT, related_name='segments', to='personalisation.Segment'),
+            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.PROTECT, related_name='segments', to='wagtail_personalisation.Segment'),
         ),
     ]

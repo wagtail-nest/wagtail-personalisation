@@ -8,7 +8,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('personalisation', '0005_userisloggedinrule'),
+        ('wagtail_personalisation', '0005_userisloggedinrule'),
     ]
 
     operations = [

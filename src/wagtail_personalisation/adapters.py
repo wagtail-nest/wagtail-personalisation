@@ -1,9 +1,9 @@
 from __future__ import absolute_import, unicode_literals
 
 from django.db.models import F
-from personalisation.models import Segment
-from personalisation.rules import AbstractBaseRule
-from personalisation.utils import create_segment_dictionary
+from wagtail_personalisation.models import Segment
+from wagtail_personalisation.rules import AbstractBaseRule
+from wagtail_personalisation.utils import create_segment_dictionary
 
 
 class BaseSegmentsAdapter(object):
