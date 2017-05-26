@@ -1,7 +1,7 @@
 from __future__ import absolute_import, unicode_literals
 
 from django.conf.urls import url
-from personalisation import views
+from wagtail_personalisation import views
 
 app_name = 'segment'
 

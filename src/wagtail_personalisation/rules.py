@@ -17,7 +17,7 @@ from wagtail.wagtailadmin.edit_handlers import (
 class AbstractBaseRule(models.Model):
     """Base for creating rules to segment users with."""
     segment = ParentalKey(
-        'personalisation.Segment',
+        'wagtail_personalisation.Segment',
         related_name="%(app_label)s_%(class)s_related",
         related_query_name="%(app_label)s_%(class)ss"
     )

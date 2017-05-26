@@ -10,7 +10,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('personalisation', '0007_dayrule'),
+        ('wagtail_personalisation', '0007_dayrule'),
     ]
 
     operations = [
@@ -21,7 +21,7 @@ class Migration(migrations.Migration):
                 ('mobile', models.BooleanField(default=False, verbose_name='Mobile phone')),
                 ('tablet', models.BooleanField(default=False, verbose_name='Tablet')),
                 ('desktop', models.BooleanField(default=False, verbose_name='Desktop')),
-                ('segment', modelcluster.fields.ParentalKey(on_delete=django.db.models.deletion.CASCADE, related_name='personalisation_devicerule_related', related_query_name='personalisation_devicerules', to='personalisation.Segment')),
+                ('segment', modelcluster.fields.ParentalKey(on_delete=django.db.models.deletion.CASCADE, related_name='wagtail_personalisation_devicerule_related', related_query_name='wagtail_personalisation_devicerules', to='wagtail_personalisation.Segment')),
             ],
             options={
                 'abstract': False,

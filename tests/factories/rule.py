@@ -4,7 +4,7 @@ import datetime
 
 import factory
 
-from personalisation import rules
+from wagtail_personalisation import rules
 
 
 class DayRuleFactory(factory.DjangoModelFactory):

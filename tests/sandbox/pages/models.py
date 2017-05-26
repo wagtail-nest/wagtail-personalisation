@@ -4,7 +4,7 @@ from django.db import models
 from wagtail.wagtailadmin.edit_handlers import FieldPanel
 from wagtail.wagtailcore.fields import RichTextField
 
-from personalisation.models import PersonalisablePage
+from wagtail_personalisation.models import PersonalisablePage
 
 
 class HomePage(PersonalisablePage):

@@ -4,7 +4,7 @@ import factory
 from wagtail.wagtailcore.models import Page
 from wagtail_factories import PageFactory
 
-from personalisation.models import PersonalisablePage
+from wagtail_personalisation.models import PersonalisablePage
 from tests.sandbox.pages.models import HomePage
 
 

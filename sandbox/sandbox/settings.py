@@ -60,7 +60,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
-    'personalisation',
+    'wagtail_personalisation',
 
 ]
 

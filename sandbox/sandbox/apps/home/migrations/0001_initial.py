@@ -11,18 +11,18 @@ class Migration(migrations.Migration):
     initial = True
 
     dependencies = [
-        ('personalisation', '0008_devicerule'),
+        ('wagtail_personalisation', '0008_devicerule'),
     ]
 
     operations = [
         migrations.CreateModel(
             name='HomePage',
             fields=[
-                ('personalisablepage_ptr', models.OneToOneField(auto_created=True, on_delete=django.db.models.deletion.CASCADE, parent_link=True, primary_key=True, serialize=False, to='personalisation.PersonalisablePage')),
+                ('personalisablepage_ptr', models.OneToOneField(auto_created=True, on_delete=django.db.models.deletion.CASCADE, parent_link=True, primary_key=True, serialize=False, to='wagtail_personalisation.PersonalisablePage')),
             ],
             options={
                 'abstract': False,
             },
-            bases=('personalisation.personalisablepage',),
+            bases=('wagtail_personalisation.personalisablepage',),
         ),
     ]

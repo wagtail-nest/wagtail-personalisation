@@ -10,7 +10,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('personalisation', '0006_segment_match_any'),
+        ('wagtail_personalisation', '0006_segment_match_any'),
     ]
 
     operations = [
@@ -25,7 +25,7 @@ class Migration(migrations.Migration):
                 ('fri', models.BooleanField(default=False, verbose_name='Friday')),
                 ('sat', models.BooleanField(default=False, verbose_name='Saturday')),
                 ('sun', models.BooleanField(default=False, verbose_name='Sunday')),
-                ('segment', modelcluster.fields.ParentalKey(on_delete=django.db.models.deletion.CASCADE, related_name='personalisation_dayrule_related', related_query_name='personalisation_dayrules', to='personalisation.Segment')),
+                ('segment', modelcluster.fields.ParentalKey(on_delete=django.db.models.deletion.CASCADE, related_name='wagtail_personalisation_dayrule_related', related_query_name='wagtail_personalisation_dayrules', to='wagtail_personalisation.Segment')),
             ],
             options={
                 'abstract': False,

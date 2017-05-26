@@ -10,10 +10,10 @@ from wagtail.wagtailadmin.site_summary import SummaryItem
 from wagtail.wagtailadmin.widgets import Button, ButtonWithDropdownFromHook
 from wagtail.wagtailcore import hooks
 
-from personalisation import admin_urls
-from personalisation.app_settings import segments_adapter
-from personalisation.models import PersonalisablePage, Segment
-from personalisation.utils import impersonate_other_page
+from wagtail_personalisation import admin_urls
+from wagtail_personalisation.app_settings import segments_adapter
+from wagtail_personalisation.models import PersonalisablePage, Segment
+from wagtail_personalisation.utils import impersonate_other_page
 
 logger = logging.getLogger(__name__)
 
@@ -24,8 +24,8 @@ def register_admin_urls():
     return [
         url(r'^personalisation/', include(
             admin_urls,
-            app_name='personalisation',
-            namespace='personalisation')),
+            app_name='wagtail_personalisation',
+            namespace='wagtail_personalisation')),
     ]
 
 
@@ -200,7 +200,7 @@ class SegmentSummaryPanel(SummaryItem):
 
     def render(self):
         segment_count = Segment.objects.count()
-        target_url = reverse('personalisation_segment_modeladmin_index')
+        target_url = reverse('wagtail_personalisation_segment_modeladmin_index')
         title = _("Segments")
         return mark_safe("""
             <li class="icon icon-group">

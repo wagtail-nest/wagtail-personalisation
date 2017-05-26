@@ -10,7 +10,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('personalisation', '0001_initial'),
+        ('wagtail_personalisation', '0001_initial'),
     ]
 
     operations = [
@@ -20,7 +20,7 @@ class Migration(migrations.Migration):
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('query_parameter', models.TextField(verbose_name='The query parameter to search for')),
                 ('query_value', models.TextField(verbose_name='The value of the parameter to match')),
-                ('segment', modelcluster.fields.ParentalKey(on_delete=django.db.models.deletion.CASCADE, related_name='personalisation_queryrule_related', related_query_name='personalisation_queryrules', to='personalisation.Segment')),
+                ('segment', modelcluster.fields.ParentalKey(on_delete=django.db.models.deletion.CASCADE, related_name='wagtail_personalisation_queryrule_related', related_query_name='wagtail_personalisation_queryrules', to='wagtail_personalisation.Segment')),
             ],
             options={
                 'abstract': False,

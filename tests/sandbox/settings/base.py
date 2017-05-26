@@ -64,7 +64,7 @@ MIDDLEWARE = (
 )
 
 INSTALLED_APPS = (
-    'personalisation',
+    'wagtail_personalisation',
     'tests',
 
     'wagtail.contrib.modeladmin',

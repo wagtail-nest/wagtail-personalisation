@@ -5,7 +5,7 @@ from django.shortcuts import get_object_or_404, reverse
 from wagtail.contrib.modeladmin.options import ModelAdmin, modeladmin_register
 from wagtail.contrib.modeladmin.views import IndexView
 
-from personalisation.models import PersonalisablePage, Segment
+from wagtail_personalisation.models import PersonalisablePage, Segment
 
 
 class SegmentModelIndexView(IndexView):

@@ -2,7 +2,7 @@ from __future__ import absolute_import, unicode_literals
 
 import factory
 
-from personalisation import models
+from wagtail_personalisation import models
 
 
 class SegmentFactory(factory.DjangoModelFactory):
