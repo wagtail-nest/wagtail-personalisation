@@ -10,7 +10,7 @@ clean:
 	find . -name '*.egg-info' -delete
 
 requirements:
-	pip install --upgrade -e .[test]
+	pip install --upgrade -e .[docs,test]
 
 install: develop
 
@@ -28,17 +28,14 @@ coverage:
 lint: flake8 isort
 
 flake8:
-	pip install flake8 flake8-debugger flake8-blind-except
-	flake8 src/
+	flake8 src/ tests/
 
 isort:
 	pip install isort
 	isort --recursive src tests
 
-
 dist:
 	./setup.py sdist bdist_wheel
-
 
 sandbox:
 	pip install -r sandbox/requirements.txt

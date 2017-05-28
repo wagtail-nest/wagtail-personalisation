@@ -1,6 +1,6 @@
 from __future__ import absolute_import, unicode_literals
 
-from django.http import HttpResponseRedirect, HttpResponseForbidden
+from django.http import HttpResponseForbidden, HttpResponseRedirect
 from django.shortcuts import get_object_or_404, reverse
 from wagtail.contrib.modeladmin.options import ModelAdmin, modeladmin_register
 from wagtail.contrib.modeladmin.views import IndexView
@@ -13,6 +13,7 @@ class SegmentModelIndexView(IndexView):
     pass
 
 
+@modeladmin_register
 class SegmentModelAdmin(ModelAdmin):
     """The model admin for the Segments administration interface."""
     model = Segment
@@ -24,8 +25,6 @@ class SegmentModelAdmin(ModelAdmin):
     index_view_extra_css = ['css/index.css']
     form_view_extra_js = ['js/commons.js', 'js/form.js']
     form_view_extra_css = ['css/form.css']
-
-modeladmin_register(SegmentModelAdmin)
 
 
 def toggle(request, segment_id):
@@ -56,7 +55,7 @@ def toggle(request, segment_id):
 
 def copy_page_view(request, page_id, segment_id):
     """Copy page with selected segment.
-    
+
     :param request: The http request
     :type request: django.http.HttpRequest
     :param page_id: The primary key of the page
@@ -65,7 +64,7 @@ def copy_page_view(request, page_id, segment_id):
     :type segment_id: int
     :returns: A redirect to the new page
     :rtype: django.http.HttpResponseRedirect
-    
+
     """
     if request.user.has_perm('wagtailadmin.access_admin'):
         segment = get_object_or_404(Segment, pk=segment_id)

@@ -1,5 +1,3 @@
-import pytest
-
 from wagtail_personalisation.utils import impersonate_other_page
 
 

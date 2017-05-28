@@ -1,6 +1,7 @@
 from __future__ import absolute_import, unicode_literals
 
 from django.db.models import F
+
 from wagtail_personalisation.models import Segment
 from wagtail_personalisation.rules import AbstractBaseRule
 from wagtail_personalisation.utils import create_segment_dictionary

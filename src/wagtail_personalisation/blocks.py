@@ -1,8 +1,9 @@
 from __future__ import absolute_import, unicode_literals
 
 from django.utils.translation import ugettext_lazy as _
-from wagtail_personalisation.models import Segment
 from wagtail.wagtailcore import blocks
+
+from wagtail_personalisation.models import Segment
 
 
 def list_segment_choices():

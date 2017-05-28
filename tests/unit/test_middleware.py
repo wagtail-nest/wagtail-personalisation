@@ -3,9 +3,7 @@ from __future__ import absolute_import, unicode_literals
 import datetime
 
 import pytest
-from django.test.client import Client
 from freezegun import freeze_time
-from wagtail.wagtailcore.models import Page
 from wagtail_factories import SiteFactory
 
 from tests.factories.rule import (
@@ -23,41 +21,37 @@ class TestUserSegmenting(object):
         """
         self.site = SiteFactory(is_default_site=True)
 
-
     def test_no_segments(self, client):
-        request = client.get('/')
+        client.get('/')
 
         assert client.session['segments'] == []
-
 
     @freeze_time("10:00:00")
     def test_time_segment(self, client):
         time_only_segment = SegmentFactory(name='Time only')
-        time_rule = TimeRuleFactory(
+        TimeRuleFactory(
             start_time=datetime.time(8, 0, 0),
             end_time=datetime.time(23, 0, 0),
             segment=time_only_segment)
 
-        request = client.get('/')
+        client.get('/')
 
         assert client.session['segments'][0]['encoded_name'] == 'time-only'
-
 
     @freeze_time("2017-01-01")
     def test_day_segment(self, client):
         day_only_segment = SegmentFactory(name='Day only')
-        day_rule = DayRuleFactory(
+        DayRuleFactory(
             sun=True,
             segment=day_only_segment)
 
-        request = client.get('/')
+        client.get('/')
 
         assert client.session['segments'][0]['encoded_name'] == 'day-only'
 
-
     def test_device_segment(self, client):
         device_only_segment = SegmentFactory(name='Device only')
-        device_rule = DeviceRuleFactory(
+        DeviceRuleFactory(
             tablet=True,
             segment=device_only_segment)
 
@@ -65,10 +59,9 @@ class TestUserSegmenting(object):
 
         assert client.session['segments'][0]['encoded_name'] == 'device-only'
 
-
     def test_device_segment_no_match(self, client):
         no_device_segment = SegmentFactory(name='No device')
-        device_rule = DeviceRuleFactory(
+        DeviceRuleFactory(
             mobile=True,
             segment=no_device_segment)
 
@@ -76,10 +69,9 @@ class TestUserSegmenting(object):
 
         assert not client.session['segments']
 
-
     def test_referral_segment(self, client):
         referral_segment = SegmentFactory(name='Referral')
-        referral_rule = ReferralRuleFactory(
+        ReferralRuleFactory(
             regex_string="test.test",
             segment=referral_segment
         )
@@ -91,46 +83,46 @@ class TestUserSegmenting(object):
     @freeze_time("10:00:00")
     def test_time_and_referral_segment(self, client):
         segment = SegmentFactory(name='Both')
-        time_rule = TimeRuleFactory(
+        TimeRuleFactory(
             start_time=datetime.time(8, 0, 0),
             end_time=datetime.time(23, 0, 0),
             segment=segment
         )
-        referral_rule = ReferralRuleFactory(
+        ReferralRuleFactory(
             regex_string="test.test",
             segment=segment
         )
 
-        client.get('/', **{ 'HTTP_REFERER': 'test.test'})
+        client.get('/', **{'HTTP_REFERER': 'test.test'})
 
         assert client.session['segments'][0]['encoded_name'] == 'both'
 
     @freeze_time("7:00:00")
     def test_no_time_but_referral_segment(self, client):
         segment = SegmentFactory(name='Not both')
-        time_rule = TimeRuleFactory(
+        TimeRuleFactory(
             start_time=datetime.time(8, 0, 0),
             end_time=datetime.time(23, 0, 0),
             segment=segment
         )
-        referral_rule = ReferralRuleFactory(
+        ReferralRuleFactory(
             regex_string="test.test",
             segment=segment
         )
 
-        client.get('/', **{ 'HTTP_REFERER': 'test.test'})
+        client.get('/', **{'HTTP_REFERER': 'test.test'})
 
         assert len(client.session['segments']) == 0
 
     @freeze_time("9:00:00")
     def test_time_but_no_referral_segment(self, client):
         segment = SegmentFactory(name='Not both')
-        time_rule = TimeRuleFactory(
+        TimeRuleFactory(
             start_time=datetime.time(8, 0, 0),
             end_time=datetime.time(23, 0, 0),
             segment=segment
         )
-        referral_rule = ReferralRuleFactory(
+        ReferralRuleFactory(
             regex_string="test.test",
             segment=segment
         )
@@ -144,29 +136,26 @@ class TestUserSegmenting(object):
         first_segment = SegmentFactory(name='First')
         second_segment = SegmentFactory(name='Second')
 
-        first_segment_time_rule = TimeRuleFactory(
+        TimeRuleFactory(
             start_time=datetime.time(8, 0, 0),
             end_time=datetime.time(23, 0, 0),
             segment=first_segment
         )
-        first_segment_referral_rule = ReferralRuleFactory(
+        ReferralRuleFactory(
             regex_string="test.test",
             segment=first_segment
         )
 
-        second_segment_time_rule = TimeRuleFactory(
+        TimeRuleFactory(
             start_time=datetime.time(8, 0, 0),
             end_time=datetime.time(23, 0, 0),
             segment=second_segment
         )
 
-        second_segment_referral_rule = ReferralRuleFactory
-
-
     def test_visit_count_rule(self, client):
         segment = SegmentFactory(name='Visit Count')
 
-        visit_count_rule = VisitCountRuleFactory(
+        VisitCountRuleFactory(
             counted_page=self.site.root_page,
             segment=segment
         )
@@ -177,7 +166,7 @@ class TestUserSegmenting(object):
 
     def test_query_rule(self, client):
         segment = SegmentFactory(name='Query')
-        query_rule = QueryRuleFactory(
+        QueryRuleFactory(
             parameter="query",
             value="value",
             segment=segment,
@@ -189,7 +178,7 @@ class TestUserSegmenting(object):
 
     def test_only_one_query_rule(self, client):
         segment = SegmentFactory(name='Query')
-        query_rule = QueryRuleFactory(
+        QueryRuleFactory(
             parameter="query",
             value="value",
             segment=segment
@@ -201,13 +190,13 @@ class TestUserSegmenting(object):
 
     def test_multiple_queries(self, client):
         segment = SegmentFactory(name='Multiple queries')
-        first_query_rule = QueryRuleFactory(
+        QueryRuleFactory(
             parameter="test",
             value="test",
             segment=segment
         )
 
-        second_query_rule = QueryRuleFactory(
+        QueryRuleFactory(
             parameter="query",
             value="value",
             segment=segment,
@@ -217,10 +206,9 @@ class TestUserSegmenting(object):
 
         assert any(item['encoded_name'] == 'multiple-queries' for item in client.session['segments'])
 
-
     def test_persistent_segmenting(self, client):
         segment = SegmentFactory(name='Persistent', persistent=True)
-        query_rule = QueryRuleFactory(
+        QueryRuleFactory(
             parameter="test",
             value="test",
             segment=segment
@@ -236,7 +224,7 @@ class TestUserSegmenting(object):
 
     def test_non_persistent_segmenting(self, client):
         segment = SegmentFactory(name='Non Persistent')
-        query_rule = QueryRuleFactory(
+        QueryRuleFactory(
             parameter="test",
             value="test",
             segment=segment
@@ -250,15 +238,14 @@ class TestUserSegmenting(object):
 
         assert not any(item['encoded_name'] == 'non-persistent' for item in client.session['segments'])
 
-
     def test_match_any_segmenting(self, client):
         segment = SegmentFactory(name='Match any', match_any=True)
-        query_rule = QueryRuleFactory(
+        QueryRuleFactory(
             parameter='test',
             value='test',
             segment=segment,
         )
-        second_query_rule = QueryRuleFactory(
+        QueryRuleFactory(
             parameter='test2',
             value='test2',
             segment=segment
@@ -267,6 +254,7 @@ class TestUserSegmenting(object):
         client.get('/?test=test')
 
         assert any(item['encoded_name'] == 'match-any' for item in client.session['segments'])
+
 
 @pytest.mark.django_db
 class TestUserVisitCount(object):

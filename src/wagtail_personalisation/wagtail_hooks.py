@@ -51,7 +51,7 @@ def set_visit_count(page, request, serve_args, serve_kwargs):
         :type page: wagtail.wagtailcore.models.Page
         :param request: The http request
         :type request: django.http.HttpRequest
-        
+
         """
         countdict = {
             "slug": page.slug,
@@ -129,7 +129,7 @@ def serve_variation(page, request, serve_args, serve_kwargs):
 def _check_for_variations(segments, page):
     """Check whether there are variations available for the provided segments
     on the page being served.
-    
+
     :param segments: The segments applicable to the request.
     :type segments: list of personalisation.models.Segment
     :param page: The page being served
@@ -157,7 +157,7 @@ def _check_for_variations(segments, page):
 def page_listing_variant_buttons(page, page_perms, is_parent=False):
     """Adds page listing buttons to personalisable pages. Shows variants for
     the page (if any) and a 'Create a new variant' button.
-    
+
     """
     personalisable_page = PersonalisablePage.objects.filter(pk=page.pk)
     segments = Segment.objects.all()
@@ -181,9 +181,10 @@ def page_listing_more_buttons(page, page_perms, is_parent=False):
 
     """
     segments = Segment.objects.all()
-    available_segments = [item for item in segments
-                          if not PersonalisablePage.objects.filter(
-                            segment=item, pk=page.pk)]
+    available_segments = [
+        item for item in segments
+        if not PersonalisablePage.objects.filter(segment=item, pk=page.pk)
+    ]
 
     for segment in available_segments:
         yield Button(segment.name,
@@ -194,7 +195,7 @@ def page_listing_more_buttons(page, page_perms, is_parent=False):
 class SegmentSummaryPanel(SummaryItem):
     """The segment summary panel showing the total amount of segments on the
     site and allowing quick access to the Segment dashboard.
-    
+
     """
     order = 500
 

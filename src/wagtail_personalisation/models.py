@@ -77,7 +77,7 @@ class Segment(ClusterableModel):
 class PersonalisablePage(Page):
     """The personalisable page model. Allows creation of variants with linked
     segments.
-    
+
     """
     canonical_page = models.ForeignKey(
         'self', related_name='variations', on_delete=models.SET_NULL,
@@ -130,7 +130,7 @@ class PersonalisablePage(Page):
 def get_edit_handler(cls):
     """Add additional edit handlers to pages that are allowed to have
     variations.
-    
+
     """
     tabs = []
     if cls.content_panels:

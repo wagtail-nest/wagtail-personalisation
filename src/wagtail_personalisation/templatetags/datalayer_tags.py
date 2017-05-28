@@ -1,4 +1,5 @@
 from django.template import Library
+
 from wagtail_personalisation.app_settings import segments_adapter
 
 register = Library()

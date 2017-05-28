@@ -1,11 +1,9 @@
 from __future__ import absolute_import, unicode_literals
 
-import factory
-from wagtail.wagtailcore.models import Page
 from wagtail_factories import PageFactory
 
-from wagtail_personalisation.models import PersonalisablePage
 from tests.sandbox.pages.models import HomePage
+from wagtail_personalisation.models import PersonalisablePage
 
 
 class PersonalisablePageFactory(PageFactory):
