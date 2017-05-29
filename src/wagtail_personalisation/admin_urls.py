@@ -1,6 +1,12 @@
 from __future__ import absolute_import, unicode_literals
 
-from django.conf.urls import url
+try:
+    from django.conf.urls import url
+except ImportError:
+    raise ImportError(
+        'You are using the `wagtail_personalisation` app which requires the `django` module.'
+        'Be sure to add `django` to your INSTALLED_APPS for `wagtail_personalisation` to work properly.'
+)
 
 from wagtail_personalisation import views
 

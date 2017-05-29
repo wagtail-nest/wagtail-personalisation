@@ -1,16 +1,36 @@
 from __future__ import absolute_import, unicode_literals
 
-from django.db import models
-from django.template.defaultfilters import slugify
-from django.utils.encoding import python_2_unicode_compatible
-from django.utils.functional import cached_property
-from django.utils.translation import ugettext_lazy as _
-from modelcluster.models import ClusterableModel
-from wagtail.utils.decorators import cached_classmethod
-from wagtail.wagtailadmin.edit_handlers import (
-    FieldPanel, FieldRowPanel, InlinePanel, MultiFieldPanel, ObjectList,
-    PageChooserPanel, TabbedInterface)
-from wagtail.wagtailcore.models import Page
+try:
+    from django.db import models
+    from django.template.defaultfilters import slugify
+    from django.utils.encoding import python_2_unicode_compatible
+    from django.utils.functional import cached_property
+    from django.utils.translation import ugettext_lazy as _
+except ImportError:
+    raise ImportError(
+        'You are using the `wagtail_personalisation` app which requires the `django` module.'
+        'Be sure to add `django` to your INSTALLED_APPS for `wagtail_personalisation` to work properly.'
+)
+
+try:
+    from wagtail.utils.decorators import cached_classmethod
+    from wagtail.wagtailadmin.edit_handlers import (
+        FieldPanel, FieldRowPanel, InlinePanel, MultiFieldPanel, ObjectList,
+        PageChooserPanel, TabbedInterface)
+    from wagtail.wagtailcore.models import Page
+except ImportError:
+    raise ImportError(
+        'You are using the `wagtail_personalisation` app which requires the `wagtail` module.'
+        'Be sure to add `wagtail` to your INSTALLED_APPS for `wagtail_personalisation` to work properly.'
+)
+
+try:
+    from modelcluster.models import ClusterableModel
+except ImportError:
+    raise ImportError(
+        'You are using the `wagtail_personalisation` app which requires the `modelcluster` module.'
+        'Be sure to add `modelcluster` to your INSTALLED_APPS for `wagtail_personalisation` to work properly.'
+)
 
 from wagtail_personalisation.forms import AdminPersonalisablePageForm
 from wagtail_personalisation.rules import AbstractBaseRule

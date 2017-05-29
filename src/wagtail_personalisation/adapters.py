@@ -1,6 +1,12 @@
 from __future__ import absolute_import, unicode_literals
 
-from django.db.models import F
+try:
+    from django.db.models import F
+except ImportError:
+    raise ImportError(
+        'You are using the `wagtail_personalisation` app which requires the `django` module.'
+        'Be sure to add `django` to your INSTALLED_APPS for `wagtail_personalisation` to work properly.'
+)
 
 from wagtail_personalisation.models import Segment
 from wagtail_personalisation.rules import AbstractBaseRule

@@ -1,9 +1,22 @@
 from __future__ import absolute_import, unicode_literals
 
-from django.http import HttpResponseForbidden, HttpResponseRedirect
-from django.shortcuts import get_object_or_404, reverse
-from wagtail.contrib.modeladmin.options import ModelAdmin, modeladmin_register
-from wagtail.contrib.modeladmin.views import IndexView
+try:
+    from django.http import HttpResponseForbidden, HttpResponseRedirect
+    from django.shortcuts import get_object_or_404, reverse
+except ImportError:
+    raise ImportError(
+        'You are using the `wagtail_personalisation` app which requires the `django` module.'
+        'Be sure to add `django` to your INSTALLED_APPS for `wagtail_personalisation` to work properly.'
+)
+
+try:
+    from wagtail.contrib.modeladmin.options import ModelAdmin, modeladmin_register
+    from wagtail.contrib.modeladmin.views import IndexView
+except ImportError:
+    raise ImportError(
+        'You are using the `wagtail_personalisation` app which requires the `wagtail` module.'
+        'Be sure to add `wagtail` to your INSTALLED_APPS for `wagtail_personalisation` to work properly.'
+)
 
 from wagtail_personalisation.models import PersonalisablePage, Segment
 

@@ -1,4 +1,10 @@
-from wagtail.wagtailadmin.forms import WagtailAdminPageForm
+try:
+    from wagtail.wagtailadmin.forms import WagtailAdminPageForm
+except ImportError:
+    raise ImportError(
+        'You are using the `wagtail_personalisation` app which requires the `wagtail` module.'
+        'Be sure to add `wagtail` to your INSTALLED_APPS for `wagtail_personalisation` to work properly.'
+)
 
 
 class AdminPersonalisablePageForm(WagtailAdminPageForm):

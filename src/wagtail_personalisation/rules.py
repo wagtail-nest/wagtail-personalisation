@@ -3,14 +3,42 @@ from __future__ import absolute_import, unicode_literals
 import re
 from datetime import datetime
 
-from django.db import models
-from django.template.defaultfilters import slugify
-from django.utils.encoding import python_2_unicode_compatible
-from django.utils.translation import ugettext_lazy as _
-from modelcluster.fields import ParentalKey
-from user_agents import parse
-from wagtail.wagtailadmin.edit_handlers import (
-    FieldPanel, FieldRowPanel, PageChooserPanel)
+try:
+    from django.db import models
+    from django.template.defaultfilters import slugify
+    from django.utils.encoding import python_2_unicode_compatible
+    from django.utils.translation import ugettext_lazy as _
+except ImportError:
+    raise ImportError(
+        'You are using the `wagtail_personalisation` app which requires the `django` module.'
+        'Be sure to add `django` to your INSTALLED_APPS for `wagtail_personalisation` to work properly.'
+)
+
+try:
+    from wagtail.wagtailcore import blocks
+    from wagtail.wagtailadmin.edit_handlers import (
+        FieldPanel, FieldRowPanel, PageChooserPanel)
+except ImportError:
+    raise ImportError(
+        'You are using the `wagtail_personalisation` app which requires the `wagtail` module.'
+        'Be sure to add `wagtail` to your INSTALLED_APPS for `wagtail_personalisation` to work properly.'
+)
+
+try:
+    from modelcluster.fields import ParentalKey
+except ImportError:
+    raise ImportError(
+        'You are using the `wagtail_personalisation` app which requires the `modelcluster` module.'
+        'Be sure to add `modelcluster` to your INSTALLED_APPS for `wagtail_personalisation` to work properly.'
+)
+
+try:
+    from user_agents import parse
+except ImportError:
+    raise ImportError(
+        'You are using the `wagtail_personalisation` app which requires the `user_agents` module.'
+        'Be sure to add `user_agents` to your INSTALLED_APPS for `wagtail_personalisation` to work properly.'
+)
 
 
 @python_2_unicode_compatible
