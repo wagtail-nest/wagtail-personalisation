@@ -131,12 +131,12 @@ def _check_for_variations(segments, page):
     on the page being served.
 
     :param segments: The segments applicable to the request.
-    :type segments: list of personalisation.models.Segment
+    :type segments: list of wagtail_personalisation.models.Segment
     :param page: The page being served
-    :type page: personalisation.models.PersonalisablePage or
+    :type page: wagtail_personalisation.models.PersonalisablePage or
                 wagtail.wagtailcore.models.Page
     :returns: A variant of the requested page matching the segments or None
-    :rtype: personalisation.models.PersonalisablePage or None
+    :rtype: wagtail_personalisation.models.PersonalisablePage or None
 
     """
     for segment in segments:

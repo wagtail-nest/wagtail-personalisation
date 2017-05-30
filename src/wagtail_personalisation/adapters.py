@@ -35,7 +35,7 @@ class BaseSegmentsAdapter(object):
         to a segment.
 
         :param rules: The rules to test for
-        :type rules: list of personalisation.rules
+        :type rules: list of wagtail_personalisation.rules
         :param request: The http request
         :type request: django.http.HttpRequest
         :param match_any: Whether all rules need to match, or any
@@ -79,7 +79,7 @@ class SessionSegmentsAdapter(BaseSegmentsAdapter):
         """Return the segments stored in the request session.
 
         :returns: The segments in the request session
-        :rtype: list of personalisation.models.Segment or empty list
+        :rtype: list of wagtail_personalisation.models.Segment or empty list
 
         """
         return self.request.session['segments']
@@ -90,7 +90,7 @@ class SessionSegmentsAdapter(BaseSegmentsAdapter):
         :param segment_id: The primary key of the segment
         :type segment_id: int
         :returns: The matching segment
-        :rtype: personalisation.models.Segment or None
+        :rtype: wagtail_personalisation.models.Segment or None
 
         """
         return next(item for item in self.request.session['segments']
@@ -100,7 +100,7 @@ class SessionSegmentsAdapter(BaseSegmentsAdapter):
         """Add a segment to the request session.
 
         :param segment: The segment to add to the request session
-        :type segment: personalisation.models.Segment
+        :type segment: wagtail_personalisation.models.Segment
 
         """
 
@@ -108,7 +108,7 @@ class SessionSegmentsAdapter(BaseSegmentsAdapter):
             """Check if the user has been segmented.
 
             :param item: The segment to check for
-            :type item: personalisation.models.Segment
+            :type item: wagtail_personalisation.models.Segment
             :returns: Whether the segment is in the request session
             :rtype: bool
 

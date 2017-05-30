@@ -10,7 +10,7 @@ class AdminPersonalisablePageForm(WagtailAdminPageForm):
         """Save a copy of the original page, linked to a segment.
 
         :returns: The original page, or a new page.
-        :rtype: personalisation.models.PersonalisablePage
+        :rtype: wagtail_personalisation.models.PersonalisablePage
 
         """
         page = super(AdminPersonalisablePageForm, self).save(commit=False)

@@ -12,7 +12,7 @@ Import and extend the ``personalisation.models.PersonalisablePage`` class to cre
 
 A very simple example for a personalisable homepage::
 
-    from personalisation.models import PersonalisablePage
+    from wagtail_personalisation.models import PersonalisablePage
 
     class HomePage(PersonalisablePage):
         subtitle = models.CharField(max_length=255)
