@@ -14,6 +14,7 @@ from wagtail.wagtailcore.models import Page
 
 from wagtail_personalisation.forms import AdminPersonalisablePageForm
 from wagtail_personalisation.rules import AbstractBaseRule
+from wagtail_personalisation.utils import count_active_days
 
 
 @python_2_unicode_compatible
@@ -64,6 +65,10 @@ class Segment(ClusterableModel):
     def encoded_name(self):
         """Return a string with a slug for the segment."""
         return slugify(self.name.lower())
+
+    def get_active_days(self):
+        """Return the amount of days the segment has been active."""
+        return count_active_days(self.enable_date, self.disable_date)
 
     def get_rules(self):
         """Retrieve all rules in the segment."""
