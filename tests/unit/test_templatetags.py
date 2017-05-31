@@ -4,27 +4,22 @@ import time
 
 import pytest
 from django.template import TemplateSyntaxError
-from wagtail_factories import SiteFactory
 
 from tests.factories.segment import SegmentFactory
-from tests.factories.rule import TimeRuleFactory
-from tests.utils import render_template, add_session_to_request
+from tests.utils import render_template
 
 
 @pytest.mark.django_db
-def test_segment_template_block(rf):
-    site = SiteFactory(is_default_site=True)
-    segment = SegmentFactory(name='test')
+def test_segment_template_block(rf, site):
+    SegmentFactory(name='test', persistent=True)
 
     request = rf.get('/')
-
-    add_session_to_request(request)
 
     request.session['segments'] = [{
         "encoded_name": 'test',
         "id": 1,
         "timestamp": int(time.time()),
-        "persistent": False
+        "persistent": True
     }]
 
     content = render_template("""
