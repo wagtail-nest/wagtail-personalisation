@@ -8,8 +8,8 @@ from wagtail_personalisation.models import Segment
 
 
 def list_segment_choices():
-    for segment in Segment.objects.all():
-        yield (segment.pk, segment.name)
+    for pk, name in Segment.objects.values_list('pk', 'name'):
+        yield pk, name
 
 
 class PersonalisedStructBlock(blocks.StructBlock):

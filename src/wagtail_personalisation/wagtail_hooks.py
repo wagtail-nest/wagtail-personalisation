@@ -3,13 +3,12 @@ from __future__ import absolute_import, unicode_literals
 import logging
 
 from django.conf.urls import include, url
-from django.shortcuts import reverse
+from django.core.urlresolvers import reverse
 from django.utils.safestring import mark_safe
 from django.utils.translation import ugettext_lazy as _
 from wagtail.wagtailadmin.site_summary import SummaryItem
 from wagtail.wagtailadmin.widgets import Button, ButtonWithDropdownFromHook
 from wagtail.wagtailcore import hooks
-from wagtail.wagtailcore.models import Page
 
 from wagtail_personalisation import admin_urls
 from wagtail_personalisation.adapters import get_segment_adapter
@@ -72,12 +71,11 @@ def serve_variation(page, request, serve_args, serve_kwargs):
     :rtype: wagtail.wagtailcore.models.Page
 
     """
-    user_segments = []
     adapter = get_segment_adapter(request)
     user_segments = adapter.get_segments()
 
-    if len(user_segments) > 0:
-        variations = _check_for_variations(user_segments, page)
+    if user_segments:
+        variations = page.variants_for_segments(user_segments)
 
         if variations:
             variation = variations[0]
@@ -87,36 +85,13 @@ def serve_variation(page, request, serve_args, serve_kwargs):
             return variation.serve(request, *serve_args, **serve_kwargs)
 
 
-def _check_for_variations(segments, page):
-    """Check whether there are variations available for the provided segments
-    on the page being served.
-
-    :param segments: The segments applicable to the request.
-    :type segments: list of wagtail_personalisation.models.Segment
-    :param page: The page being served
-    :type page: wagtail_personalisation.models.PersonalisablePage or
-                wagtail.wagtailcore.models.Page
-    :returns: A variant of the requested page matching the segments or None
-    :rtype: wagtail_personalisation.models.PersonalisablePage or None
-
-    """
-    return page.variants_for_segments(segments)
-
-
 @hooks.register('register_page_listing_buttons')
 def page_listing_variant_buttons(page, page_perms, is_parent=False):
     """Adds page listing buttons to personalisable pages. Shows variants for
     the page (if any) and a 'Create a new variant' button.
 
     """
-
-    if not hasattr(page, 'segment'):
-        return
-    pages = page.__class__.objects.filter(pk=page.pk)
-    segments = Segment.objects.all()
-
-    if pages and len(segments) > 0 and not (
-            any(item.segment for item in pages)):
+    if isinstance(page, PersonalisablePageMixin) and page.get_unused_segments():
         yield ButtonWithDropdownFromHook(
             _('Variants'),
             hook_name='register_page_listing_variant_buttons',
@@ -133,16 +108,9 @@ def page_listing_more_buttons(page, page_perms, is_parent=False):
     create a new variant for the selected segment.
 
     """
-    model = page.__class__
-    segments = Segment.objects.all()
-    available_segments = [
-        item for item in segments
-        if not model.objects.filter(segment=item, pk=page.pk)
-    ]
-
-    for segment in available_segments:
+    for segment in page.get_unused_segments():
         yield Button(segment.name,
-                     reverse('segment:copy_page', args=[page.id, segment.id]),
+                     reverse('segment:copy_page', args=[page.pk, segment.pk]),
                      attrs={"title": _('Create this variant')})
 
 
@@ -166,7 +134,8 @@ class SegmentSummaryPanel(SummaryItem):
 @hooks.register('construct_homepage_summary_items')
 def add_segment_summary_panel(request, items):
     """Adds a summary panel to the Wagtail dashboard showing the total amount
-    of segments on the site and allowing quick access to the Segment dashboard.
+    of segments on the site and allowing quick access to the Segment
+    dashboard.
 
     """
-    return items.append(SegmentSummaryPanel(request))
+    items.append(SegmentSummaryPanel(request))

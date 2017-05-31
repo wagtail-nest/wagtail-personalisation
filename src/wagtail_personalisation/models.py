@@ -61,9 +61,9 @@ class Segment(ClusterableModel):
             ], heading="Segment"),
             MultiFieldPanel([
                 InlinePanel(
-                    "{}_related".format(rule._meta.db_table),
-                    label=rule.__str__,
-                ) for rule in AbstractBaseRule.__subclasses__()
+                    "{}_related".format(rule_model._meta.db_table),
+                    label=rule_model._meta.verbose_name,
+                ) for rule_model in AbstractBaseRule.__subclasses__()
             ], heading=_("Rules")),
         ]
 
@@ -82,11 +82,18 @@ class Segment(ClusterableModel):
 
     def get_rules(self):
         """Retrieve all rules in the segment."""
-        rules = AbstractBaseRule.__subclasses__()
         segment_rules = []
-        for rule in rules:
-            segment_rules += rule.objects.filter(segment=self)
+        for rule_model in AbstractBaseRule.get_descendant_models():
+            segment_rules.extend(
+                rule_model._default_manager.filter(segment=self))
         return segment_rules
+
+    def toggle(self, save=True):
+        self.status = (
+            self.STATUS_ENABLED if self.status == self.STATUS_DISABLED
+            else self.STATUS_DISABLED)
+        if save:
+            self.save()
 
 
 class PersonalisablePageMixin(models.Model):
@@ -103,7 +110,7 @@ class PersonalisablePageMixin(models.Model):
         blank=True, null=True
     )
     segment = models.ForeignKey(
-        Segment, related_name='+', on_delete=models.PROTECT,
+        Segment, related_name='pages', on_delete=models.PROTECT,
         blank=True, null=True
     )
     is_segmented = models.BooleanField(default=False)
@@ -116,9 +123,6 @@ class PersonalisablePageMixin(models.Model):
     ]
 
     base_form_class = AdminPersonalisablePageForm
-
-    def __str__(self):
-        return "{}".format(self.title)
 
     @cached_property
     def has_variations(self):
@@ -137,12 +141,20 @@ class PersonalisablePageMixin(models.Model):
         """Return a boolean indicating whether or not the personalisable page
         is a canonical page.
 
-        :returns: A boolean indicating whether or not the personalisable page
+        :returns: A boolean indicating whether or not the personalisable
+        page
                   is a canonical page.
         :rtype: bool
 
         """
-        return not self.canonical_page and self.has_variations
+        return self.canonical_page_id is None
+
+    def get_unused_segments(self):
+        if not hasattr(self, '_unused_segments'):
+            self._unused_segments = (
+                Segment.objects.exclude(pages__canonical_page=self)
+                if self.is_canonical else Segment.objects.none())
+        return self._unused_segments
 
     def copy_for_segment(self, segment):
         slug = "{}-{}".format(self.slug, segment.encoded_name())

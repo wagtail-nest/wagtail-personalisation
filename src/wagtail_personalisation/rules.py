@@ -3,9 +3,10 @@ from __future__ import absolute_import, unicode_literals
 import re
 from datetime import datetime
 
+from django.apps import apps
 from django.db import models
 from django.template.defaultfilters import slugify
-from django.utils.encoding import python_2_unicode_compatible
+from django.utils.encoding import python_2_unicode_compatible, force_text
 from django.utils.translation import ugettext_lazy as _
 from modelcluster.fields import ParentalKey
 from user_agents import parse
@@ -26,7 +27,7 @@ class AbstractBaseRule(models.Model):
         abstract = True
 
     def __str__(self):
-        return _('Abstract segmentation rule')
+        return force_text(self._meta.verbose_name)
 
     def test_user(self):
         """Test if the user matches this rule."""
@@ -34,7 +35,7 @@ class AbstractBaseRule(models.Model):
 
     def encoded_name(self):
         """Return a string with a slug for the rule."""
-        return slugify(self.__str__().lower())
+        return slugify(force_text(self).lower())
 
     def description(self):
         """Return a description explaining the functionality of the rule.
@@ -51,8 +52,16 @@ class AbstractBaseRule(models.Model):
 
         return description
 
+    @classmethod
+    def get_descendant_models(cls):
+        return [model for model in apps.get_models()
+                if issubclass(model, AbstractBaseRule)]
 
-@python_2_unicode_compatible
+    class Meta:
+        abstract = True
+        verbose_name = 'Abstract segmentation rule'
+
+
 class TimeRule(AbstractBaseRule):
     """Time rule to segment users based on a start and end time.
 
@@ -70,18 +79,14 @@ class TimeRule(AbstractBaseRule):
         ]),
     ]
 
-    def __str__(self):
-        return _('Time Rule')
+    class Meta:
+        verbose_name = _('Time Rule')
 
     def test_user(self, request=None):
-        current_time = datetime.now().time()
-        starting_time = self.start_time
-        ending_time = self.end_time
-
-        return starting_time <= current_time <= ending_time
+        return self.start_time <= datetime.now().time() <= self.end_time
 
     def description(self):
-        description = {
+        return {
             'title': _('These users visit between'),
             'value': _('{} and {}').format(
                 self.start_time.strftime("%H:%M"),
@@ -89,10 +94,7 @@ class TimeRule(AbstractBaseRule):
             ),
         }
 
-        return description
 
-
-@python_2_unicode_compatible
 class DayRule(AbstractBaseRule):
     """Day rule to segment users based on the day(s) of a visit.
 
@@ -118,39 +120,28 @@ class DayRule(AbstractBaseRule):
         FieldPanel('sun'),
     ]
 
-    def __str__(self):
-        return _('Day Rule')
+    class Meta:
+        verbose_name = _('Day Rule')
 
     def test_user(self, request=None):
-        current_day = datetime.today().weekday()
-
-        days = [self.mon, self.tue, self.wed, self.thu,
-                self.fri, self.sat, self.sun]
-
-        return days[current_day]
+        return [self.mon, self.tue, self.wed, self.thu,
+                self.fri, self.sat, self.sun][datetime.today().weekday()]
 
     def description(self):
-        days = {
-            'mon': self.mon, 'tue': self.tue, 'wed': self.wed,
-            'thu': self.thu, 'fri': self.fri, 'sat': self.sat,
-            'sun': self.sun
-        }
+        days = (
+            ('mon', self.mon), ('tue', self.tue), ('wed', self.wed),
+            ('thu', self.thu), ('fri', self.fri), ('sat', self.sat),
+            ('sun', self.sun),
+        )
 
-        chosen_days = []
+        chosen_days = [day_name for day_name, chosen in days if chosen]
 
-        for key, value in days.items():
-            if days[key]:
-                chosen_days.append(key)
-
-        description = {
+        return {
             'title': _('These users visit on'),
-            'value': (', '.join(_(day) for day in chosen_days)).title()
+            'value': ", ".join([day for day in chosen_days]).title(),
         }
 
-        return description
 
-
-@python_2_unicode_compatible
 class ReferralRule(AbstractBaseRule):
     """Referral rule to segment users based on a regex test.
 
@@ -165,8 +156,8 @@ class ReferralRule(AbstractBaseRule):
         FieldPanel('regex_string'),
     ]
 
-    def __str__(self):
-        return _('Referral Rule')
+    class Meta:
+        verbose_name = _('Referral Rule')
 
     def test_user(self, request):
         pattern = re.compile(self.regex_string)
@@ -178,18 +169,13 @@ class ReferralRule(AbstractBaseRule):
         return False
 
     def description(self):
-        description = {
+        return {
             'title': _('These visits originate from'),
-            'value': _('{}').format(
-                self.regex_string
-            ),
+            'value': self.regex_string,
             'code': True
         }
 
-        return description
 
-
-@python_2_unicode_compatible
 class VisitCountRule(AbstractBaseRule):
     """Visit count rule to segment users based on amount of visits to a
     specified page.
@@ -222,6 +208,9 @@ class VisitCountRule(AbstractBaseRule):
         ]),
     ]
 
+    class Meta:
+        verbose_name = _('Visit count Rule')
+
     def test_user(self, request):
         operator = self.operator
         segment_count = self.count
@@ -243,11 +232,8 @@ class VisitCountRule(AbstractBaseRule):
                 return True
         return False
 
-    def __str__(self):
-        return _('Visit count Rule')
-
     def description(self):
-        description = {
+        return {
             'title': _('These users visited {}').format(
                 self.counted_page
             ),
@@ -257,10 +243,7 @@ class VisitCountRule(AbstractBaseRule):
             ),
         }
 
-        return description
 
-
-@python_2_unicode_compatible
 class QueryRule(AbstractBaseRule):
     """Query rule to segment users based on matching queries.
 
@@ -278,18 +261,14 @@ class QueryRule(AbstractBaseRule):
         FieldPanel('value'),
     ]
 
-    def __str__(self):
-        return _('Query Rule')
+    class Meta:
+        verbose_name = _('Query Rule')
 
     def test_user(self, request):
-        parameter = self.parameter
-        value = self.value
-
-        req_value = request.GET.get(parameter, '')
-        return req_value == value
+        return request.GET.get(self.parameter, '') == self.value
 
     def description(self):
-        description = {
+        return {
             'title': _('These users used a URL with the query'),
             'value': _('?{}={}').format(
                 self.parameter,
@@ -298,10 +277,7 @@ class QueryRule(AbstractBaseRule):
             'code': True
         }
 
-        return description
 
-
-@python_2_unicode_compatible
 class DeviceRule(AbstractBaseRule):
     """Device rule to segment users based on matching devices.
 
@@ -319,8 +295,8 @@ class DeviceRule(AbstractBaseRule):
         FieldPanel('desktop'),
     ]
 
-    def __str__(self):
-        return _('Device Rule')
+    class Meta:
+        verbose_name = _('Device Rule')
 
     def test_user(self, request=None):
         ua_header = request.META['HTTP_USER_AGENT']
@@ -328,15 +304,13 @@ class DeviceRule(AbstractBaseRule):
 
         if user_agent.is_mobile:
             return self.mobile
-        elif user_agent.is_tablet:
+        if user_agent.is_tablet:
             return self.tablet
-        elif user_agent.is_pc:
+        if user_agent.is_pc:
             return self.desktop
-        else:
-            return False
+        return False
 
 
-@python_2_unicode_compatible
 class UserIsLoggedInRule(AbstractBaseRule):
     """User is logged in rule to segment users based on their authentication
     status.
@@ -350,22 +324,14 @@ class UserIsLoggedInRule(AbstractBaseRule):
         FieldPanel('is_logged_in'),
     ]
 
-    def __str__(self):
-        return _('Logged in Rule')
+    class Meta:
+        verbose_name = _('Logged in Rule')
 
     def test_user(self, request=None):
         return request.user.is_authenticated() == self.is_logged_in
 
     def description(self):
-        status = _('Logged in')
-        if self.is_logged_in is False:
-            status = _('Not logged in')
-
-        description = {
+        return {
             'title': _('These visitors are'),
-            'value': _('{}').format(
-                status
-            ),
+            'value': _('Logged in') if self.is_logged_in else _('Not logged in'),
         }
-
-        return description
