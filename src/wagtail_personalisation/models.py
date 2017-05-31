@@ -20,18 +20,22 @@ from wagtail_personalisation.utils import count_active_days
 @python_2_unicode_compatible
 class Segment(ClusterableModel):
     """The segment model."""
+    STATUS_ENABLED = 'enabled'
+    STATUS_DISABLED = 'disabled'
+
+    STATUS_CHOICES = (
+        (STATUS_ENABLED, 'Enabled'),
+        (STATUS_DISABLED, 'Disabled'),
+    )
+
     name = models.CharField(max_length=255)
     create_date = models.DateTimeField(auto_now_add=True)
     edit_date = models.DateTimeField(auto_now=True)
     enable_date = models.DateTimeField(null=True, editable=False)
     disable_date = models.DateTimeField(null=True, editable=False)
     visit_count = models.PositiveIntegerField(default=0, editable=False)
-    STATUS_CHOICES = (
-        ('enabled', 'Enabled'),
-        ('disabled', 'Disabled'),
-    )
-    status = models.CharField(max_length=20, choices=STATUS_CHOICES,
-                              default="enabled")
+    status = models.CharField(
+        max_length=20, choices=STATUS_CHOICES, default=STATUS_ENABLED)
     persistent = models.BooleanField(
         default=False, help_text=_("Should the segment persist between visits?"))
     match_any = models.BooleanField(

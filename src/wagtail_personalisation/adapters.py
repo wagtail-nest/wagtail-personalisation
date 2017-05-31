@@ -164,7 +164,7 @@ class SessionSegmentsAdapter(BaseSegmentsAdapter):
         still apply to the requesting visitor.
 
         """
-        enabled_segments = Segment.objects.filter(status='enabled')
+        enabled_segments = Segment.objects.filter(status=Segment.STATUS_ENABLED)
         persistent_segments = enabled_segments.filter(persistent=True)
         session_segments = self.request.session['segments']
         rules = AbstractBaseRule.__subclasses__()

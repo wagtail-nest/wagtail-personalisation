@@ -76,8 +76,8 @@ def serve_variation(page, request, serve_args, serve_kwargs):
 
     for segment in adapter.get_all_segments():
         try:
-            user_segment = Segment.objects.get(pk=segment['id'],
-                                               status='enabled')
+            user_segment = Segment.objects.get(
+                pk=segment['id'], status=Segment.STATUS_ENABLED)
         except Segment.DoesNotExist:
             user_segment = None
         if user_segment:
