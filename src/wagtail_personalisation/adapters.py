@@ -124,6 +124,23 @@ class SessionSegmentsAdapter(BaseSegmentsAdapter):
             segdict = create_segment_dictionary(segment)
             self.request.session['segments'].append(segdict)
 
+    def add_page_visit(self, page):
+        """Mar kthe page as visited by the user"""
+        visit_count = self.request.session.setdefault('visit_count', [])
+        page_visits = [visit for visit in visit_count if visit['id'] == page.pk]
+
+        if page_visits:
+            for page_visit in page_visits:
+                page_visit['count'] += 1
+            self.request.session.modified = True
+        else:
+            visit_count.append({
+                'slug': page.slug,
+                'id': page.pk,
+                'path': self.request.path,
+                'count': 1,
+            })
+
     def update_visit_count(self):
         """Update the visit count for all segments in the request session."""
         segments = self.request.session['segments']

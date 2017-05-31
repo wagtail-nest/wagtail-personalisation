@@ -2,6 +2,8 @@ from __future__ import absolute_import, unicode_literals
 
 import pytest
 from wagtail.wagtailcore.models import Page, Site
+from wagtail_factories import SiteFactory
+from tests.factories.page import PageFactory
 
 
 @pytest.fixture(scope='session')
@@ -10,3 +12,10 @@ def django_db_setup(django_db_setup, django_db_blocker):
         # Remove some initial data that is brought by the sandbox module
         Site.objects.all().delete()
         Page.objects.all().exclude(depth=1).delete()
+
+
+@pytest.fixture(scope='function')
+def site():
+    site = SiteFactory(is_default_site=True)
+    PageFactory(parent=site.root_page, slug='page-1')
+    PageFactory(parent=site.root_page, slug='page-2')
