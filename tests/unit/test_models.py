@@ -6,7 +6,7 @@ import pytest
 from django.http import HttpRequest
 from freezegun import freeze_time
 from wagtail.wagtailcore.models import Site
-from wagtail_factories import SiteFactory
+from tests.factories.site import SiteFactory
 
 from wagtail_personalisation import rules
 
