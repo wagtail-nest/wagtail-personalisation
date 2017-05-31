@@ -39,7 +39,7 @@ To install the package with pip::
     pip install wagtail-personalisation
 
 Next, include the ``wagtail_personalisation``, ``wagtail.contrib.modeladmin``
-and ``wagtailfontawesome`` app in your project's ``INSTALLED_APPS``:
+and ``wagtailfontawesome`` apps in your project's ``INSTALLED_APPS``:
 
 .. code-block:: python
 
