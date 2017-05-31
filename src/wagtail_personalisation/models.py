@@ -11,9 +11,9 @@ from wagtail.wagtailadmin.edit_handlers import (
     FieldPanel, FieldRowPanel, InlinePanel, MultiFieldPanel, ObjectList,
     PageChooserPanel, TabbedInterface)
 
-from .forms import AdminPersonalisablePageForm
-from .rules import AbstractBaseRule
-from .utils import count_active_days
+from wagtail_personalisation.forms import AdminPersonalisablePageForm
+from wagtail_personalisation.rules import AbstractBaseRule
+from wagtail_personalisation.utils import count_active_days
 
 
 class SegmentQuerySet(models.QuerySet):

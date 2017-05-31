@@ -4,9 +4,9 @@ from django.conf import settings
 from django.db.models import F
 from django.utils.module_loading import import_string
 
-from .models import Segment
-from .rules import AbstractBaseRule
-from .utils import create_segment_dictionary
+from wagtail_personalisation.models import Segment
+from wagtail_personalisation.rules import AbstractBaseRule
+from wagtail_personalisation.utils import create_segment_dictionary
 
 
 class BaseSegmentsAdapter(object):

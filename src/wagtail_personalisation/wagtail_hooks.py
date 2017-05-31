@@ -10,10 +10,10 @@ from wagtail.wagtailadmin.site_summary import SummaryItem
 from wagtail.wagtailadmin.widgets import Button, ButtonWithDropdownFromHook
 from wagtail.wagtailcore import hooks
 
-from . import admin_urls
-from .adapters import get_segment_adapter
-from .models import PersonalisablePageMixin, Segment
-from .utils import impersonate_other_page
+from wagtail_personalisation import admin_urls
+from wagtail_personalisation.adapters import get_segment_adapter
+from wagtail_personalisation.models import PersonalisablePageMixin, Segment
+from wagtail_personalisation.utils import impersonate_other_page
 
 logger = logging.getLogger(__name__)
 
