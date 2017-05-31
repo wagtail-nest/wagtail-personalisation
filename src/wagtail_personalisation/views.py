@@ -111,7 +111,8 @@ def toggle(request, segment_id):
 
 
 def copy_page_view(request, page_id, segment_id):
-    """Copy page with selected segment.
+    """Copy page with selected segment. If the page for the selected segment
+    already exists the user will be redirected to that particular page.
 
     :param request: The http request
     :type request: django.http.HttpRequest
@@ -126,8 +127,12 @@ def copy_page_view(request, page_id, segment_id):
     if request.user.has_perm('wagtailadmin.access_admin'):
         segment = get_object_or_404(Segment, pk=segment_id)
         page = get_object_or_404(Page, pk=page_id).specific
-        new_page = page.copy_for_segment(segment)
-        edit_url = reverse('wagtailadmin_pages:edit', args=[new_page.id])
+        variants = page.variants_for_segments([segment])
+        if variants.exists():
+            variant = variants.first()
+        else:
+            variant = page.copy_for_segment(segment)
+        edit_url = reverse('wagtailadmin_pages:edit', args=[variant.id])
 
         return HttpResponseRedirect(edit_url)
 
