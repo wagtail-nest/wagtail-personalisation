@@ -27,7 +27,7 @@
                                         <div class="inspect_container">
                                             <ul class="inspect segment_stats">
                                                 <li class="visit_stat">
-                                                    {% trans "This segmented has been visited" %}
+                                                    {% trans "This segment has been visited" %}
                                                     <span>{{ segment.visit_count|localize }} {% trans "time" %}{{ segment.visit_count|pluralize }}</span>
                                                 </li>
                                                 <li class="days_stat">
@@ -53,7 +53,7 @@
                                                     {% if segment.persistent %}
                                                         <span title="{% trans "This segment persists in between visits" %}">{% trans "Persistent" %}</span>
                                                     {% else %}
-                                                        <span title="{% trans "This segment is reevaluated on every visit" %}">{% trans "Fleeting" %}</span>
+                                                        <span title="{% trans "This segment is re-evaluated on every visit" %}">{% trans "Fleeting" %}</span>
                                                     {% endif %}
                                                 </li>
 

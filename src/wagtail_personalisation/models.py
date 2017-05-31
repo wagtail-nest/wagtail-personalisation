@@ -28,8 +28,8 @@ class Segment(ClusterableModel):
     STATUS_DISABLED = 'disabled'
 
     STATUS_CHOICES = (
-        (STATUS_ENABLED, 'Enabled'),
-        (STATUS_DISABLED, 'Disabled'),
+        (STATUS_ENABLED, _('Enabled')),
+        (STATUS_DISABLED, _('Disabled')),
     )
 
     name = models.CharField(max_length=255)
@@ -64,7 +64,7 @@ class Segment(ClusterableModel):
                     "{}_related".format(rule_model._meta.db_table),
                     label=rule_model._meta.verbose_name,
                 ) for rule_model in AbstractBaseRule.__subclasses__()
-            ], heading="Rules"),
+            ], heading=_("Rules")),
         ]
 
         super(Segment, self).__init__(*args, **kwargs)
