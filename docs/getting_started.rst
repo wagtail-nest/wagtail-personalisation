@@ -21,7 +21,7 @@ The Wagxperience app runs in the Wagtail CMS. You can find out more here_.
     INSTALLED_APPS = [
         # ...
         'wagtail.contrib.modeladmin',
-        'personalisation',
+        'wagtail_personalisation',
         # ...
     ]
 

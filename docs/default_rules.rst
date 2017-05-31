@@ -14,7 +14,7 @@ Start time          The start time of your time frame.
 End time            The end time of your time frame.
 ==================  ==========================================================
 
-``personalisation.rules.TimeRule``
+``wagtail_personalisation.rules.TimeRule``
 
 Day rule
 --------
@@ -34,7 +34,7 @@ Saturday            Matches when the visitors visits on a saturday.
 Sunday              Matches when the visitors visits on a sunday.
 ==================  ==========================================================
 
-``personalisation.rules.DayRule``
+``wagtail_personalisation.rules.DayRule``
 
 Referral rule
 -------------
@@ -52,7 +52,7 @@ Option              Description
 Regex string        The regex string to match the referral header to.
 ==================  ==========================================================
 
-``personalisation.rules.ReferralRule``
+``wagtail_personalisation.rules.ReferralRule``
 
 Visit count rule
 ----------------
@@ -70,7 +70,7 @@ Operator            Whether to match for more than, less than or equal to the
                     specified visit count.
 ==================  ==========================================================
 
-``personalisation.rules.VisitCountRule``
+``wagtail_personalisation.rules.VisitCountRule``
 
 Query rule
 ----------
@@ -90,7 +90,7 @@ Parameter           The first part of the query ('campaign').
 Value               The second part of the query ('ourbestoffer').
 ==================  ==========================================================
 
-``personalisation.rules.QueryRule``
+``wagtail_personalisation.rules.QueryRule``
 
 Device rule
 -----------
@@ -106,7 +106,7 @@ Tablet              Matches when the visitor uses a tablet.
 Desktop             Matches when the visitor uses a desktop.
 ==================  ==========================================================
 
-``personalisation.rules.DeviceRule``
+``wagtail_personalisation.rules.DeviceRule``
 
 User is logged in rule
 ----------------------
@@ -120,4 +120,4 @@ Option              Description
 Is logged in        Whether the user is logged in or logged out.
 ==================  ==========================================================
 
-``personalisation.rules.UserIsLoggedInRule``
+``wagtail_personalisation.rules.UserIsLoggedInRule``

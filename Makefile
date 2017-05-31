@@ -23,7 +23,7 @@ retest:
 	py.test --nomigrations --reuse-db tests/ -vvv
 
 coverage:
-	py.test --nomigrations --reuse-db tests/ --cov=personalisation --cov-report=term-missing --cov-report=html
+	py.test --nomigrations --reuse-db tests/ --cov=wagtail_personalisation --cov-report=term-missing --cov-report=html
 
 lint: flake8 isort
 

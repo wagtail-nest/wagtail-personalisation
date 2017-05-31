@@ -13,7 +13,7 @@ module.exports = {
         form: './js/form.js'
     },
     output: {
-        path: path.resolve(__dirname, './src/personalisation/static/js'),
+        path: path.resolve(__dirname, './src/wagtail_personalisation/static/js'),
         filename: '[name].js',
         sourceMapFilename: '[file].map'
     },
