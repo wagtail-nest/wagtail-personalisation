@@ -1,20 +1,10 @@
 from django.contrib.auth.models import (
     AbstractBaseUser, PermissionsMixin, UserManager)
-from django.contrib.postgres.fields import CIEmailField
 from django.core.mail import send_mail
 from django.db import connections, models
-from django.db.models.signals import pre_migrate
 from django.dispatch import receiver
 from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
-
-
-@receiver(pre_migrate)
-def setup_postgres_extensions(sender, **kwargs):
-    conn = connections[kwargs['using']]
-    if conn.vendor == 'postgresql':
-        cursor = conn.cursor()
-        cursor.execute("CREATE EXTENSION IF NOT EXISTS citext")
 
 
 class User(AbstractBaseUser, PermissionsMixin):
@@ -23,7 +13,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     """
     first_name = models.CharField(_('first name'), max_length=100, blank=True)
     last_name = models.CharField(_('last name'), max_length=100, blank=True)
-    email = CIEmailField(_('email address'), blank=True, unique=True)
+    email = models.EmailField(_('email address'), blank=True, unique=True)
     is_staff = models.BooleanField(
         _('staff status'), default=False,
         help_text=_('Designates whether the user can log into this admin '
