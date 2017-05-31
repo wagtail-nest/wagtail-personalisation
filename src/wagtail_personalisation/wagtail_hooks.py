@@ -71,17 +71,18 @@ def serve_variation(page, request, serve_args, serve_kwargs):
     :rtype: wagtail.wagtailcore.models.Page
 
     """
+    user_segments = []
+    if not isinstance(page, PersonalisablePageMixin):
+        return
+
     adapter = get_segment_adapter(request)
     user_segments = adapter.get_segments()
 
     if user_segments:
         variations = page.variants_for_segments(user_segments)
-
         if variations:
-            variation = variations[0]
-
+            variation = variations.first()
             impersonate_other_page(variation, page)
-
             return variation.serve(request, *serve_args, **serve_kwargs)
 
 
