@@ -201,8 +201,7 @@ class SessionSegmentsAdapter(BaseSegmentsAdapter):
             if result:
                 additional_segments.append(segment)
 
-        new_segments = current_segments + additional_segments
-        self.set_segments(new_segments)
+        self.set_segments(current_segments + additional_segments)
         self.update_visit_count()
 
 
