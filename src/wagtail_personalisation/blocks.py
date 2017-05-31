@@ -3,6 +3,7 @@ from __future__ import absolute_import, unicode_literals
 from django.utils.translation import ugettext_lazy as _
 from wagtail.wagtailcore import blocks
 
+from wagtail_personalisation.adapters import get_segment_adapter
 from wagtail_personalisation.models import Segment
 
 
@@ -30,9 +31,9 @@ class PersonalisedStructBlock(blocks.StructBlock):
         :rtype: blocks.StructBlock or empty str
 
         """
-        # TODO: move logic to its own class instead of getting it from the
-        # session.
-        user_segments = context['request'].session['segments']
+        request = context['request']
+        adapter = get_segment_adapter(request)
+        user_segments = adapter.get_all_segments()
 
         if value['segment']:
             for segment in user_segments:
