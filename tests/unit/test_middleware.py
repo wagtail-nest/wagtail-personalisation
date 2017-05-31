@@ -80,6 +80,17 @@ class TestUserSegmenting(object):
 
         assert client.session['segments'][0]['encoded_name'] == 'referral'
 
+    def test_referral_segment_matches_domain(self, client):
+        referral_segment = SegmentFactory(name='Referral')
+        ReferralRuleFactory(
+            regex_string="google.com",
+            segment=referral_segment
+        )
+
+        client.get('/', **{'HTTP_REFERER': 'https://www.google.com/?q=wagtail'})
+
+        assert client.session['segments'][0]['encoded_name'] == 'referral'
+
     @freeze_time("10:00:00")
     def test_time_and_referral_segment(self, client):
         segment = SegmentFactory(name='Both')

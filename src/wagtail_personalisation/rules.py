@@ -159,7 +159,9 @@ class ReferralRule(AbstractBaseRule):
 
     """
     regex_string = models.TextField(
-        _("Regular expression to match the referrer"))
+        _("Referral"), help_text=_("Enter the domain name (like google.com) "
+                                   "or a regular expression to match the "
+                                   "referrer"))
 
     panels = [
         FieldPanel('regex_string'),
