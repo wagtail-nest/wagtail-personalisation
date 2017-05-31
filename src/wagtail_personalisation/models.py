@@ -79,6 +79,16 @@ class Segment(ClusterableModel):
         """Return the amount of days the segment has been active."""
         return count_active_days(self.enable_date, self.disable_date)
 
+    def get_used_pages(self):
+        pass
+
+    def get_created_variants(self):
+        page_classes = [page_class for page_class
+                        in PersonalisablePage.__subclasses__()]
+        pages = [page.objects.filter(segment=self) for page in page_classes]
+
+        return list(itertools.chain(*pages))
+
     def get_rules(self):
         """Retrieve all rules in the segment."""
         related_rules = [rule.objects.filter(segment=self)
