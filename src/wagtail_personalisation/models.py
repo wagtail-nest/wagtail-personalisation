@@ -10,11 +10,15 @@ from wagtail.utils.decorators import cached_classmethod
 from wagtail.wagtailadmin.edit_handlers import (
     FieldPanel, FieldRowPanel, InlinePanel, MultiFieldPanel, ObjectList,
     PageChooserPanel, TabbedInterface)
-from wagtail.wagtailcore.models import Page
 
 from wagtail_personalisation.forms import AdminPersonalisablePageForm
 from wagtail_personalisation.rules import AbstractBaseRule
 from wagtail_personalisation.utils import count_active_days
+
+
+class SegmentQuerySet(models.QuerySet):
+    def enabled(self):
+        return self.filter(status=self.model.STATUS_ENABLED)
 
 
 @python_2_unicode_compatible
@@ -42,6 +46,8 @@ class Segment(ClusterableModel):
         default=False,
         help_text=_("Should the segment match all the rules or just one of them?")
     )
+
+    objects = SegmentQuerySet.as_manager()
 
     def __init__(self, *args, **kwargs):
         Segment.panels = [
