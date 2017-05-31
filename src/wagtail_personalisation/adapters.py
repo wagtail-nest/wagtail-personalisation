@@ -98,8 +98,12 @@ class SessionSegmentsAdapter(BaseSegmentsAdapter):
         return [segments[pk] for pk in segment_ids if pk in segments]
 
     def set_segments(self, segments):
-        """Set the currently active segments"""
+        """Set the currently active segments
 
+        :param segments: The segments to set for the current request
+        :type segments: list of wagtail_personalisation.models.Segment
+
+        """
         serialized_segments = []
         segment_ids = set()
         for segment in segments:
