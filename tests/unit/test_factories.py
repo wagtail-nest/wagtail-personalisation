@@ -7,6 +7,8 @@ import pytest
 from tests.factories.rule import (
     DayRuleFactory, DeviceRuleFactory, ReferralRuleFactory, TimeRuleFactory)
 from tests.factories.segment import SegmentFactory
+from tests.factories.site import SiteFactory
+from tests.factories.page import PageFactory
 from wagtail_personalisation.models import Segment
 from wagtail_personalisation.rules import TimeRule
 
@@ -84,3 +86,17 @@ def test_create_segment_with_new_referral_rule():
         segment=segment)
 
     assert segment.referral_rule.regex_string == 'test.notest'
+
+
+@pytest.mark.django_db
+def test_site_factory():
+    site = SiteFactory()
+    assert site
+
+
+@pytest.mark.django_db
+def test_page_factory():
+    site = SiteFactory()
+    assert site.root_page
+    page = PageFactory(parent=site.root_page)
+    assert page.get_parent() == site.root_page

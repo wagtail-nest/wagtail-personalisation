@@ -1,16 +1,15 @@
 from __future__ import absolute_import, unicode_literals
 
-from wagtail_factories import PageFactory
+import factory
+from django.utils.text import slugify
+from wagtail_factories.factories import MP_NodeFactory
 
 from tests.sandbox.pages.models import HomePage
-from wagtail_personalisation.models import PersonalisablePage
 
 
-class PersonalisablePageFactory(PageFactory):
-    class Meta:
-        model = PersonalisablePage
+class PageFactory(MP_NodeFactory):
+    title = 'Test page'
+    slug = factory.LazyAttribute(lambda obj: slugify(obj.title))
 
-
-class HomePageFactory(PageFactory):
     class Meta:
         model = HomePage

@@ -1,17 +1,7 @@
 import factory
-from django.utils.text import slugify
 from wagtail.wagtailcore.models import Site
-from wagtail_factories.factories import MP_NodeFactory
 
-from tests.sandbox.pages.models import HomePage
-
-
-class PageFactory(MP_NodeFactory):
-    title = 'Test page'
-    slug = factory.LazyAttribute(lambda obj: slugify(obj.title))
-
-    class Meta:
-        model = HomePage
+from tests.factories.page import PageFactory
 
 
 class SiteFactory(factory.DjangoModelFactory):

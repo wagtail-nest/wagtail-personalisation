@@ -9,7 +9,7 @@ from wagtail.contrib.modeladmin.options import ModelAdmin, modeladmin_register
 from wagtail.contrib.modeladmin.views import IndexView
 from wagtail.wagtailcore.models import Page
 
-from wagtail_personalisation.models import PersonalisablePageMixin, Segment
+from wagtail_personalisation.models import Segment
 
 
 class SegmentModelIndexView(IndexView):
@@ -123,28 +123,11 @@ def copy_page_view(request, page_id, segment_id):
     :rtype: django.http.HttpResponseRedirect
 
     """
-    model = PersonalisablePageMixin.get_model()
     if request.user.has_perm('wagtailadmin.access_admin'):
         segment = get_object_or_404(Segment, pk=segment_id)
-        page = get_object_or_404(model, pk=page_id)
-
-        slug = "{}-{}".format(page.slug, segment.encoded_name())
-        title = "{} ({})".format(page.title, segment.name)
-        update_attrs = {
-            'title': title,
-            'slug': slug,
-            'segment': segment,
-            'live': False,
-            'canonical_page': page,
-            'is_segmented': True,
-        }
-
-        try:
-            variant = Page.objects.get(slug=slug, parent=page.parent)
-        except Page.DoesNotExist:
-            variant = page.copy(update_attrs=update_attrs, copy_revisions=False)
-
-        edit_url = reverse('wagtailadmin_pages:edit', args=[variant.id])
+        page = get_object_or_404(Page, pk=page_id).specific
+        new_page = page.copy_for_segment(segment)
+        edit_url = reverse('wagtailadmin_pages:edit', args=[new_page.id])
 
         return HttpResponseRedirect(edit_url)
 

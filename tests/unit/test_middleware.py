@@ -4,13 +4,13 @@ import datetime
 
 import pytest
 from freezegun import freeze_time
-from wagtail_factories import SiteFactory
 
 from tests.factories.page import PageFactory
 from tests.factories.rule import (
     DayRuleFactory, DeviceRuleFactory, QueryRuleFactory, ReferralRuleFactory,
     TimeRuleFactory, VisitCountRuleFactory)
 from tests.factories.segment import SegmentFactory
+from tests.factories.site import SiteFactory
 
 
 @pytest.mark.django_db

@@ -10,6 +10,7 @@ from wagtail.utils.decorators import cached_classmethod
 from wagtail.wagtailadmin.edit_handlers import (
     FieldPanel, FieldRowPanel, InlinePanel, MultiFieldPanel, ObjectList,
     PageChooserPanel, TabbedInterface)
+from wagtail.wagtailcore.models import Page
 
 from wagtail_personalisation.forms import AdminPersonalisablePageForm
 from wagtail_personalisation.rules import AbstractBaseRule
@@ -136,6 +137,27 @@ class PersonalisablePageMixin(models.Model):
 
         """
         return not self.canonical_page and self.has_variations
+
+    def copy_for_segment(self, segment):
+        slug = "{}-{}".format(self.slug, segment.encoded_name())
+        title = "{} ({})".format(self.title, segment.name)
+        update_attrs = {
+            'title': title,
+            'slug': slug,
+            'segment': segment,
+            'live': False,
+            'canonical_page': self,
+            'is_segmented': True,
+        }
+
+        try:
+            return Page.objects.get(slug=slug, parent=self.parent).specific
+        except Page.DoesNotExist:
+            return self.copy(update_attrs=update_attrs, copy_revisions=False)
+
+    def variants_for_segments(self, segments):
+        return self.__class__.objects.filter(
+            canonical_page=self, segment__in=segments)
 
 
 @cached_classmethod

@@ -6,7 +6,6 @@ import pytest
 from django.http import HttpRequest
 from freezegun import freeze_time
 from wagtail.wagtailcore.models import Site
-from tests.factories.site import SiteFactory
 
 from wagtail_personalisation import rules
 
@@ -49,12 +48,22 @@ def test_visit_count_rule():
 # Test test
 
 @pytest.mark.django_db
-def test_test(rf):
-    site = SiteFactory()
-
+def test_test(rf, site):
     request = HttpRequest()
     request.path = '/'
     request.META['HTTP_HOST'] = 'localhost'
     request.META['SERVER_PORT'] = 8000
 
     assert Site.find_for_request(request) == site
+
+
+@pytest.mark.django_db
+class TestPage(object):
+    def test_page_copy_for_segment(self, segmented_page):
+        assert segmented_page
+
+    def test_page_has_variations(self, segmented_page):
+        assert not segmented_page.is_canonical
+        assert not segmented_page.has_variations
+        assert segmented_page.canonical_page.is_canonical
+        assert segmented_page.canonical_page.has_variations

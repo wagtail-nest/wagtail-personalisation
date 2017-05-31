@@ -5,6 +5,10 @@ from wagtail.wagtailcore.models import Page, Site
 from wagtail_factories import SiteFactory
 from tests.factories.page import PageFactory
 
+pytest_plugins = [
+    'tests.fixtures'
+]
+
 
 @pytest.fixture(scope='session')
 def django_db_setup(django_db_setup, django_db_blocker):
