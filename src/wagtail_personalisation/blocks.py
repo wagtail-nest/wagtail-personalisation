@@ -1,7 +1,20 @@
 from __future__ import absolute_import, unicode_literals
 
-from django.utils.translation import ugettext_lazy as _
-from wagtail.wagtailcore import blocks
+try:
+    from django.utils.translation import ugettext_lazy as _
+except ImportError:
+    raise ImportError(
+        'You are using the `wagtail_personalisation` app which requires the `django` module.'
+        'Be sure to add `django` to your INSTALLED_APPS for `wagtail_personalisation` to work properly.'
+)
+
+try:
+    from wagtail.wagtailcore import blocks
+except ImportError:
+    raise ImportError(
+        'You are using the `wagtail_personalisation` app which requires the `wagtail` module.'
+        'Be sure to add `wagtail` to your INSTALLED_APPS for `wagtail_personalisation` to work properly.'
+)
 
 from wagtail_personalisation.models import Segment
 

@@ -2,13 +2,26 @@ from __future__ import absolute_import, unicode_literals
 
 import logging
 
-from django.conf.urls import include, url
-from django.shortcuts import reverse
-from django.utils.safestring import mark_safe
-from django.utils.translation import ugettext_lazy as _
-from wagtail.wagtailadmin.site_summary import SummaryItem
-from wagtail.wagtailadmin.widgets import Button, ButtonWithDropdownFromHook
-from wagtail.wagtailcore import hooks
+try:
+    from django.conf.urls import include, url
+    from django.shortcuts import reverse
+    from django.utils.safestring import mark_safe
+    from django.utils.translation import ugettext_lazy as _
+except ImportError:
+    raise ImportError(
+        'You are using the `wagtail_personalisation` app which requires the `django` module.'
+        'Be sure to add `django` to your INSTALLED_APPS for `wagtail_personalisation` to work properly.'
+)
+
+try:
+    from wagtail.wagtailadmin.site_summary import SummaryItem
+    from wagtail.wagtailadmin.widgets import Button, ButtonWithDropdownFromHook
+    from wagtail.wagtailcore import hooks
+except ImportError:
+    raise ImportError(
+        'You are using the `wagtail_personalisation` app which requires the `wagtail` module.'
+        'Be sure to add `wagtail` to your INSTALLED_APPS for `wagtail_personalisation` to work properly.'
+)
 
 from wagtail_personalisation import admin_urls
 from wagtail_personalisation.app_settings import segments_adapter
