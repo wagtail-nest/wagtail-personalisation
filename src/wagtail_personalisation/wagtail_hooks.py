@@ -108,21 +108,7 @@ def _check_for_variations(segments, page):
     :rtype: wagtail_personalisation.models.PersonalisablePage or None
 
     """
-    try:
-        model = PersonalisablePageMixin.__subclasses__()[0]
-    except IndexError:
-        return
-    for segment in segments:
-        page_class = page.__class__
-        if any(item == model for item in page_class.__bases__):
-
-            variation = page_class.objects.filter(
-                canonical_page=page, segment=segment)
-
-            if variation:
-                return variation
-
-    return None
+    return page.variants_for_segments(segments)
 
 
 @hooks.register('register_page_listing_buttons')
@@ -132,10 +118,10 @@ def page_listing_variant_buttons(page, page_perms, is_parent=False):
 
     """
 
-    pages = Page.objects.filter(pk=page.pk)
+    if not hasattr(page, 'segment'):
+        return
+    pages = page.__class__.objects.filter(pk=page.pk)
     segments = Segment.objects.all()
-    if pages:
-        pages = [x.specific_class() for x in pages]
 
     if pages and len(segments) > 0 and not (
             any(item.segment for item in pages)):
@@ -155,10 +141,7 @@ def page_listing_more_buttons(page, page_perms, is_parent=False):
     create a new variant for the selected segment.
 
     """
-    try:
-        model = PersonalisablePageMixin.__subclasses__()[0]
-    except IndexError:
-        return
+    model = page.__class__
     segments = Segment.objects.all()
     available_segments = [
         item for item in segments
