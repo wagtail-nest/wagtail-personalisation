@@ -10,7 +10,6 @@ from wagtail.utils.decorators import cached_classmethod
 from wagtail.wagtailadmin.edit_handlers import (
     FieldPanel, FieldRowPanel, InlinePanel, MultiFieldPanel, ObjectList,
     PageChooserPanel, TabbedInterface)
-from wagtail.wagtailcore.models import Page
 
 from wagtail_personalisation.forms import AdminPersonalisablePageForm
 from wagtail_personalisation.rules import AbstractBaseRule
@@ -24,8 +23,8 @@ class Segment(ClusterableModel):
     STATUS_DISABLED = 'disabled'
 
     STATUS_CHOICES = (
-        (STATUS_ENABLED, 'Enabled'),
-        (STATUS_DISABLED, 'Disabled'),
+        (STATUS_ENABLED, _('Enabled')),
+        (STATUS_DISABLED, _('Disabled')),
     )
 
     name = models.CharField(max_length=255)
@@ -58,7 +57,7 @@ class Segment(ClusterableModel):
                     "{}_related".format(rule._meta.db_table),
                     label=rule.__str__,
                 ) for rule in AbstractBaseRule.__subclasses__()
-            ], heading="Rules"),
+            ], heading=_("Rules")),
         ]
 
         super(Segment, self).__init__(*args, **kwargs)

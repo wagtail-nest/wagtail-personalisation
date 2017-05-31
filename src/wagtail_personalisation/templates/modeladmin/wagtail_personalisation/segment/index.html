@@ -3,6 +3,7 @@
 
 {% block toggle_view %}to Dashboard {% endblock%}
 
+<<<<<<< HEAD
 {% block content_main %}
     <div>
         <div class="row">
@@ -16,6 +17,55 @@
                     </div>
                     {% endif %}
                 {% endblock %}
+=======
+                                                <hr />
+
+                                                <ul class="inspect segment_rules">
+                                                    <li class="match_state {{ segment.match_any|yesno:"any,all" }}">
+                                                        {% trans "The visitor must match" %}
+                                                        {% if segment.match_any %}
+                                                            <span>{% trans "Any rule" %}</span>
+                                                        {% else %}
+                                                            <span>{% trans "All rules" %}</span>
+                                                        {% endif %}
+                                                    </li>
+
+                                                    <li class="persistent_state {{ segment.persistent|yesno:"persistent,fleeting" }}">
+                                                        {% trans "The persistence of this segment is" %}
+                                                        {% if segment.persistent %}
+                                                            <span title="{% trans "This segment persists in between visits" %}">{% trans "Persistent" %}</span>
+                                                        {% else %}
+                                                            <span title="{% trans "This segment is reevaluated on every visit" %}">{% trans "Fleeting" %}</span>
+                                                        {% endif %}
+                                                    </li>
+
+                                                    {% for rule in segment.get_rules %}
+                                                        <li class="{{ rule.encoded_name }}">
+                                                            {{ rule.description.title }}
+                                                            {% if rule.description.code %}
+                                                                <pre>{{ rule.description.value }}</pre>
+                                                            {% else %}
+                                                                <span>{{ rule.description.value }}</span>
+                                                            {% endif %}
+                                                        </li>
+                                                    {% endfor %}
+                                                </ul>
+                                            </div>
+
+                                            {% if user_can_create %}
+                                            <ul class="block_actions">
+                                                {% if segment.status == "disabled" %}
+                                                    <li><a href="{% url 'segment:toggle' segment.pk %}" title="{% trans "Enable this segment" %}">{% trans "enable" %}</a></li>
+                                                {% elif segment.status == "enabled" %}
+                                                    <li><a href="{% url 'segment:toggle' segment.pk %}" title="{% trans "Disable this segment" %}">{% trans "disable" %}</a></li>
+                                                {% endif %}
+                                                <li><a href="edit/{{ segment.pk }}" title="{% trans "Configure this segment" %}">{% trans "configure this" %}</a></li>
+                                            </ul>
+                                            {% endif %}
+                                        </div>
+                                    {% endfor %}
+                                {% endif %}
+>>>>>>> fixes a few translation strings and adds translation files
 
                 <div class="result-list {% if view.has_filters and all_count %}col9{% else %}col12{% endif %}">
                     {% block result_list %}

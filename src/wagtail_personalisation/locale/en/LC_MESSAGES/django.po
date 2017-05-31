@@ -1,0 +1,327 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2017-05-31 02:35-0500\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: blocks.py:19
+msgid "Personalisation segment"
+msgstr ""
+
+#: blocks.py:20
+msgid "Only show this content block for users in this segment"
+msgstr ""
+
+#: config.py:8
+msgid "Wagtail Personalisation"
+msgstr ""
+
+#: models.py:29
+msgid "Enabled"
+msgstr ""
+
+#: models.py:30
+msgid "Disabled"
+msgstr ""
+
+#: models.py:35
+msgid "Should the segment persist between visits?"
+msgstr ""
+
+#: models.py:38
+msgid "Should the segment match all the rules or just one of them?"
+msgstr ""
+
+#: models.py:56
+msgid "Rules"
+msgstr ""
+
+#: models.py:137
+msgid "Content"
+msgstr ""
+
+#: models.py:139
+msgid "Variations"
+msgstr ""
+
+#: models.py:141
+msgid "Promote"
+msgstr ""
+
+#: models.py:143
+msgid "Settings"
+msgstr ""
+
+#: rules.py:30 rules.py:45
+msgid "Abstract segmentation rule"
+msgstr ""
+
+#: rules.py:63
+msgid "Starting time"
+msgstr ""
+
+#: rules.py:64
+msgid "Ending time"
+msgstr ""
+
+#: rules.py:84
+msgid "Time Rule"
+msgstr ""
+
+#: rules.py:88
+msgid "These users visit between"
+msgstr ""
+
+#: rules.py:89
+msgid "{} and {}"
+msgstr ""
+
+#: rules.py:106
+msgid "Monday"
+msgstr ""
+
+#: rules.py:107
+msgid "Tuesday"
+msgstr ""
+
+#: rules.py:108
+msgid "Wednesday"
+msgstr ""
+
+#: rules.py:109
+msgid "Thursday"
+msgstr ""
+
+#: rules.py:110
+msgid "Friday"
+msgstr ""
+
+#: rules.py:111
+msgid "Saturday"
+msgstr ""
+
+#: rules.py:112
+msgid "Sunday"
+msgstr ""
+
+#: rules.py:136
+msgid "Day Rule"
+msgstr ""
+
+#: rules.py:152
+msgid "These users visit on"
+msgstr ""
+
+#: rules.py:153 rules.py:192 rules.py:400
+msgid "{}"
+msgstr ""
+
+#: rules.py:168
+msgid "Regex string to match the referer with"
+msgstr ""
+
+#: rules.py:187
+msgid "Referral Rule"
+msgstr ""
+
+#: rules.py:191
+msgid "These visits originate from"
+msgstr ""
+
+#: rules.py:211
+msgid "More than"
+msgstr ""
+
+#: rules.py:212
+msgid "Less than"
+msgstr ""
+
+#: rules.py:213
+msgid "Equal to"
+msgstr ""
+
+#: rules.py:270
+msgid "Visit count Rule"
+msgstr ""
+
+#: rules.py:274
+msgid "These users visited {}"
+msgstr ""
+
+#: rules.py:277
+msgid "{} {} times"
+msgstr ""
+
+#: rules.py:294
+msgid "The query parameter to search for"
+msgstr ""
+
+#: rules.py:296
+msgid "The value of the parameter to match"
+msgstr ""
+
+#: rules.py:317
+msgid "Query Rule"
+msgstr ""
+
+#: rules.py:321
+msgid "These users used a url with the query"
+msgstr ""
+
+#: rules.py:322
+msgid "?{}={}"
+msgstr ""
+
+#: rules.py:340
+msgid "Mobile phone"
+msgstr ""
+
+#: rules.py:341
+msgid "Tablet"
+msgstr ""
+
+#: rules.py:342
+msgid "Desktop"
+msgstr ""
+
+#: rules.py:367
+msgid "Device Rule"
+msgstr ""
+
+#: rules.py:391
+msgid "Logged In Rule"
+msgstr ""
+
+#: rules.py:394
+msgid "Logged in"
+msgstr ""
+
+#: rules.py:396
+msgid "Not logged in"
+msgstr ""
+
+#: rules.py:399
+msgid "These visitors are"
+msgstr ""
+
+#: templates/modeladmin/wagtail_personalisation/segment/index.html:12
+msgid "Filter"
+msgstr ""
+
+#: templates/modeladmin/wagtail_personalisation/segment/index.html:28
+msgid "This segmented has been visited"
+msgstr ""
+
+#: templates/modeladmin/wagtail_personalisation/segment/index.html:29
+msgid "time"
+msgstr ""
+
+#: templates/modeladmin/wagtail_personalisation/segment/index.html:32
+msgid "This segment has been active for"
+msgstr ""
+
+#: templates/modeladmin/wagtail_personalisation/segment/index.html:33
+msgid "day"
+msgstr ""
+
+#: templates/modeladmin/wagtail_personalisation/segment/index.html:41
+msgid "The visitor must match"
+msgstr ""
+
+#: templates/modeladmin/wagtail_personalisation/segment/index.html:43
+msgid "Any rule"
+msgstr ""
+
+#: templates/modeladmin/wagtail_personalisation/segment/index.html:45
+msgid "All rules"
+msgstr ""
+
+#: templates/modeladmin/wagtail_personalisation/segment/index.html:50
+msgid "The persistence of this segment is"
+msgstr ""
+
+#: templates/modeladmin/wagtail_personalisation/segment/index.html:52
+msgid "This segment persists in between visits"
+msgstr ""
+
+#: templates/modeladmin/wagtail_personalisation/segment/index.html:52
+msgid "Persistent"
+msgstr ""
+
+#: templates/modeladmin/wagtail_personalisation/segment/index.html:54
+msgid "This segment is reevaluated on every visit"
+msgstr ""
+
+#: templates/modeladmin/wagtail_personalisation/segment/index.html:54
+msgid "Fleeting"
+msgstr ""
+
+#: templates/modeladmin/wagtail_personalisation/segment/index.html:74
+msgid "Enable this segment"
+msgstr ""
+
+#: templates/modeladmin/wagtail_personalisation/segment/index.html:74
+msgid "enable"
+msgstr ""
+
+#: templates/modeladmin/wagtail_personalisation/segment/index.html:76
+msgid "Disable this segment"
+msgstr ""
+
+#: templates/modeladmin/wagtail_personalisation/segment/index.html:76
+msgid "disable"
+msgstr ""
+
+#: templates/modeladmin/wagtail_personalisation/segment/index.html:78
+msgid "Configure this segment"
+msgstr ""
+
+#: templates/modeladmin/wagtail_personalisation/segment/index.html:78
+msgid "configure this"
+msgstr ""
+
+#: templates/modeladmin/wagtail_personalisation/segment/index.html:86
+#, python-format
+msgid ""
+"\n"
+"                                        <a class=\"block suggestion\" href="
+"\"%(url)s\">\n"
+"                                            <span class=\"suggestive_text"
+"\">Add a new %(name)s</span>\n"
+"                                        </a>\n"
+"                                    "
+msgstr ""
+
+#: templates/modeladmin/wagtail_personalisation/segment/index.html:99
+#, python-format
+msgid "Page %(current_page)s of %(num_pages)s."
+msgstr ""
+
+#: wagtail_hooks.py:167
+msgid "Variants"
+msgstr ""
+
+#: wagtail_hooks.py:172
+msgid "Create a new variant"
+msgstr ""
+
+#: wagtail_hooks.py:191
+msgid "Create this variant"
+msgstr ""
+
+#: wagtail_hooks.py:204
+msgid "Segments"
+msgstr ""
