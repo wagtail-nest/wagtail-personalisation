@@ -40,41 +40,8 @@ def set_visit_count(page, request, serve_args, serve_kwargs):
     :type request: django.http.HttpRequest
 
     """
-    # Create a new dict in the session if it's empty.
-    if 'visit_count' not in request.session:
-        request.session['visit_count'] = []
-
-    def create_new_counter(page, request):
-        """Create a new counter dict and place it in session storage.
-
-        :param page: The page being served
-        :type page: wagtail.wagtailcore.models.Page
-        :param request: The http request
-        :type request: django.http.HttpRequest
-
-        """
-        countdict = {
-            "slug": page.slug,
-            "id": page.pk,
-            "path": request.path,
-            "count": 1,
-        }
-        request.session['visit_count'].append(countdict)
-
-    if len(request.session['visit_count']) > 0:
-        for index, counter in enumerate(request.session['visit_count']):
-            if counter['id'] == page.pk:
-                # Counter already exists. Increase the count value by 1.
-                newcount = counter['count'] + 1
-                request.session['visit_count'][index]['count'] = newcount
-                request.session.modified = True
-            else:
-                # Counter doesn't exist.
-                # Create a new counter with count value 1.
-                create_new_counter(page, request)
-    else:
-        # No counters exist. Create a new counter with count value 1.
-        create_new_counter(page, request)
+    adapter = get_segment_adapter(request)
+    adapter.add_page_visit(page)
 
 
 @hooks.register('before_serve_page')

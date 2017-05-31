@@ -6,6 +6,7 @@ import pytest
 from freezegun import freeze_time
 from wagtail_factories import SiteFactory
 
+from tests.factories.page import PageFactory
 from tests.factories.rule import (
     DayRuleFactory, DeviceRuleFactory, QueryRuleFactory, ReferralRuleFactory,
     TimeRuleFactory, VisitCountRuleFactory)
@@ -257,19 +258,21 @@ class TestUserSegmenting(object):
 
 
 @pytest.mark.django_db
-class TestUserVisitCount(object):
+def test_visit_count(site, client):
+    response = client.get('/')
+    assert response.status_code == 200
+    visit_count = client.session['visit_count']
+    assert visit_count[0]['path'] == '/'
+    assert visit_count[0]['count'] == 1
 
-    def setup(self):
-        self.site = SiteFactory(is_default_site=True)
+    response = client.get('/')
+    assert response.status_code == 200
+    visit_count = client.session['visit_count']
+    assert visit_count[0]['path'] == '/'
+    assert visit_count[0]['count'] == 2
 
-        # TODO: Set up a bunch of pages for testing the visit count
-
-    def test_visit_count(self, client):
-        client.get('/')
-
-        assert any(item['path'] == '/' for item in client.session['visit_count'])
-
-    def test_no_visit_count(self, client):
-        client.get('/')
-
-        assert not any(item['path'] == '/doesntexist' for item in client.session['visit_count'])
+    response = client.get('/page-1/')
+    assert response.status_code == 200
+    visit_count = client.session['visit_count']
+    assert visit_count[0]['count'] == 2
+    assert visit_count[1]['count'] == 1
