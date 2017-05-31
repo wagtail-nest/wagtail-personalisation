@@ -112,7 +112,13 @@ def page_listing_more_buttons(page, page_perms, is_parent=False):
     for segment in page.get_unused_segments():
         yield Button(segment.name,
                      reverse('segment:copy_page', args=[page.pk, segment.pk]),
-                     attrs={"title": _('Create this variant')})
+                     attrs={"title": _('Create this variant')},
+                     priority=100)
+
+    yield Button(_('Create a new segment'),
+                 reverse('wagtail_personalisation_segment_modeladmin_create'),
+                 attrs={"title": _('Create a new segment')},
+                 priority=200)
 
 
 class SegmentSummaryPanel(SummaryItem):
