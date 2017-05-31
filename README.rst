@@ -1,7 +1,7 @@
 .. start-no-pypi
 
 .. image:: https://readthedocs.org/projects/wagtail-personalisation/badge/?version=latest
-    :target: https://readthedocs.org/projects/wagtail-personalisation/
+     :target: http://wagtail-personalisation.readthedocs.io/en/latest/?badge=latest
 
 .. image:: https://travis-ci.org/LabD/wagtail-personalisation.svg?branch=master
     :target: https://travis-ci.org/LabD/wagtail-personalisation
