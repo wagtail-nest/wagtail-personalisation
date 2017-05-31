@@ -33,10 +33,6 @@ EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 # Application definition
 
 INSTALLED_APPS = [
-    'sandbox.apps.home',
-    'sandbox.apps.search',
-    'sandbox.apps.user',
-
     'wagtail.wagtailforms',
     'wagtail.wagtailredirects',
     'wagtail.wagtailembeds',
@@ -62,6 +58,10 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     'wagtail_personalisation',
+
+    'sandbox.apps.home',
+    'sandbox.apps.search',
+    'sandbox.apps.user',
 
 ]
 

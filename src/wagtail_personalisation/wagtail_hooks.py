@@ -9,6 +9,7 @@ from django.utils.translation import ugettext_lazy as _
 from wagtail.wagtailadmin.site_summary import SummaryItem
 from wagtail.wagtailadmin.widgets import Button, ButtonWithDropdownFromHook
 from wagtail.wagtailcore import hooks
+from wagtail.wagtailcore.models import Page
 
 from wagtail_personalisation import admin_urls
 from wagtail_personalisation.adapters import get_segment_adapter
@@ -107,7 +108,10 @@ def _check_for_variations(segments, page):
     :rtype: wagtail_personalisation.models.PersonalisablePage or None
 
     """
-    model = AbstractPersonalisablePage.get_model()
+    try:
+        model = AbstractPersonalisablePage.__subclasses__()[0]
+    except IndexError:
+        return
     for segment in segments:
         page_class = page.__class__
         if any(item == model for item in page_class.__bases__):
@@ -127,15 +131,14 @@ def page_listing_variant_buttons(page, page_perms, is_parent=False):
     the page (if any) and a 'Create a new variant' button.
 
     """
-    model = AbstractPersonalisablePage.get_model()
-    if model:
-        personalisable_page = model.objects.filter(pk=page.pk)
-    else:
-        personalisable_page = page
-    segments = Segment.objects.all()
 
-    if personalisable_page and len(segments) > 0 and not (
-            any(item.segment for item in personalisable_page)):
+    pages = Page.objects.filter(pk=page.pk)
+    segments = Segment.objects.all()
+    if pages:
+        pages = [x.specific_class() for x in pages]
+
+    if pages and len(segments) > 0 and not (
+            any(item.segment for item in pages)):
         yield ButtonWithDropdownFromHook(
             _('Variants'),
             hook_name='register_page_listing_variant_buttons',
@@ -152,7 +155,10 @@ def page_listing_more_buttons(page, page_perms, is_parent=False):
     create a new variant for the selected segment.
 
     """
-    model = AbstractPersonalisablePage.get_model()
+    try:
+        model = AbstractPersonalisablePage.__subclasses__()[0]
+    except IndexError:
+        return
     segments = Segment.objects.all()
     available_segments = [
         item for item in segments

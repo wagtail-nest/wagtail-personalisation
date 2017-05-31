@@ -113,14 +113,6 @@ class AbstractPersonalisablePage(models.Model):
     def __str__(self):
         return "{}".format(self.title)
 
-    @classmethod
-    def get_model(cls):
-        try:
-            cls.__subclasses__()[0]
-        except IndexError:
-            raise Exception("Unable to find non-abstract subclass for %s" %
-                            cls.__name)
-
     @cached_property
     def has_variations(self):
         """Return a boolean indicating whether or not the personalisable page
