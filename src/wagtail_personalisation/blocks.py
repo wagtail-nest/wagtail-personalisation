@@ -3,13 +3,13 @@ from __future__ import absolute_import, unicode_literals
 from django.utils.translation import ugettext_lazy as _
 from wagtail.wagtailcore import blocks
 
-from wagtail_personalisation.adapters import get_segment_adapter
-from wagtail_personalisation.models import Segment
+from .adapters import get_segment_adapter
+from .models import Segment
 
 
 def list_segment_choices():
-    for segment in Segment.objects.all():
-        yield (segment.pk, segment.name)
+    for pk, name in Segment.objects.values_list('pk', 'name'):
+        yield pk, name
 
 
 class PersonalisedStructBlock(blocks.StructBlock):

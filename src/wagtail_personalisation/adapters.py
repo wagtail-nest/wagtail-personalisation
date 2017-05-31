@@ -4,9 +4,9 @@ from django.conf import settings
 from django.db.models import F
 from django.utils.module_loading import import_string
 
-from wagtail_personalisation.models import Segment
-from wagtail_personalisation.rules import AbstractBaseRule
-from wagtail_personalisation.utils import create_segment_dictionary
+from .models import Segment
+from .rules import AbstractBaseRule
+from .utils import create_segment_dictionary
 
 
 class BaseSegmentsAdapter(object):
@@ -23,28 +23,22 @@ class BaseSegmentsAdapter(object):
 
     def setup(self):
         """Prepare the adapter for segment storage."""
-        return None
 
     def get_segments(self):
         """Return the segments stored in the adapter storage."""
-        return None
 
     def get_segment_by_id(self):
         """Return a single segment stored in the adapter storage."""
-        return None
 
     def add(self):
         """Add a new segment to the adapter storage."""
-        return None
 
     def refresh(self):
         """Refresh the segments stored in the adapter storage."""
-        return None
 
     def _test_rules(self, rules, request, match_any=False):
         """Tests the provided rules to see if the request still belongs
         to a segment.
-
         :param rules: The rules to test for
         :type rules: list of wagtail_personalisation.rules
         :param request: The http request
@@ -53,20 +47,12 @@ class BaseSegmentsAdapter(object):
         :type match_any: bool
         :returns: A boolean indicating the segment matches the request
         :rtype: bool
-
         """
-        if len(rules) > 0:
-            for rule in rules:
-                result = rule.test_user(request)
-                if match_any:
-                    if result is True:
-                        return result
-
-                elif result is False:
-                    return False
-            if not match_any:
-                return True
-        return False
+        if not rules:
+            return False
+        if match_any:
+            return any(rule.test_user(request) for rule in rules)
+        return all(rule.test_user(request) for rule in rules)
 
     class Meta:
         abstract = True
@@ -134,8 +120,9 @@ class SessionSegmentsAdapter(BaseSegmentsAdapter):
         :rtype: wagtail_personalisation.models.Segment or None
 
         """
-        segments = self.get_segments()
-        return next((s for s in segments if s.pk == segment_id), None)
+        for segment in self.get_segments():
+            if segment.pk == segment_id:
+                return segment
 
     def add_page_visit(self, page):
         """Mark the page as visited by the user"""
@@ -179,20 +166,20 @@ class SessionSegmentsAdapter(BaseSegmentsAdapter):
         still apply to the requesting visitor.
 
         """
-        all_segments = Segment.objects.filter(status=Segment.STATUS_ENABLED)
+        enabled_segments = Segment.objects.filter(status=Segment.STATUS_ENABLED)
+        rule_models = AbstractBaseRule.get_descendant_models()
 
         current_segments = self.get_segments()
-        rules = AbstractBaseRule.__subclasses__()
 
         # Run tests on all remaining enabled segments to verify applicability.
         additional_segments = []
-        for segment in all_segments:
+        for segment in enabled_segments:
             segment_rules = []
-            for rule in rules:
-                segment_rules += rule.objects.filter(segment=segment)
+            for rule_model in rule_models:
+                segment_rules.extend(rule_model.objects.filter(segment=segment))
 
-            result = self._test_rules(
-                segment_rules, self.request, match_any=segment.match_any)
+            result = self._test_rules(segment_rules, self.request,
+                                      match_any=segment.match_any)
 
             if result:
                 additional_segments.append(segment)
