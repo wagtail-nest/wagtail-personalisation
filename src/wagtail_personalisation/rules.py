@@ -4,7 +4,7 @@ import re
 from datetime import datetime
 
 from django.db import models
-from django.template.defaultfilters import slugify
+from django.template.defaultfilters import pluralize, slugify
 from django.utils.encoding import python_2_unicode_compatible
 from django.utils.translation import ugettext_lazy as _
 from modelcluster.fields import ParentalKey
@@ -251,9 +251,10 @@ class VisitCountRule(AbstractBaseRule):
             'title': _('These users visited {}').format(
                 self.counted_page
             ),
-            'value': _('{} {} times').format(
+            'value': _('{} {} time{}').format(
                 self.get_operator_display(),
-                self.count
+                self.count,
+                pluralize(self.count)
             ),
         }
 
