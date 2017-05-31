@@ -166,17 +166,13 @@ class SessionSegmentsAdapter(BaseSegmentsAdapter):
     def update_visit_count(self):
         """Update the visit count for all segments in the request session."""
         segments = self.request.session['segments']
-        for seg in segments:
-            try:
-                segment = Segment.objects.get(pk=seg['id'])
-                segment.visit_count = F('visit_count') + 1
-                segment.save()
+        segment_pks = [s['id'] for s in segments]
 
-            except Segment.DoesNotExist:
-                # The segment no longer exists.
-                # Remove it from the request session.
-                self.request.session['segments'][:] = [
-                    item for item in segments if item.get('id') != seg['id']]
+        # Update counts
+        (Segment.objects
+            .enabled()
+            .filter(pk__in=segment_pks)
+            .update(visit_count=F('visit_count') + 1))
 
     def refresh(self):
         """Retrieve the request session segments and verify whether or not they
