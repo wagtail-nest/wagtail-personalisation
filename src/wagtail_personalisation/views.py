@@ -1,7 +1,10 @@
 from __future__ import absolute_import, unicode_literals
 
+from django import forms
+
 from django.http import HttpResponseForbidden, HttpResponseRedirect
 from django.shortcuts import get_object_or_404, reverse
+from django.utils.translation import ugettext_lazy as _
 from wagtail.contrib.modeladmin.options import ModelAdmin, modeladmin_register
 from wagtail.contrib.modeladmin.views import IndexView
 
@@ -13,18 +16,47 @@ class SegmentModelIndexView(IndexView):
     pass
 
 
+class SegmentModelDashboardView(IndexView):
+    """Placeholder for additional dashboard functionality."""
+    def media(self):
+        return forms.Media(
+            css={'all': ['css/dashboard.css']},
+            js=['js/commons.js', 'js/dashboard.js']
+        )
+
+    def get_template_names(self):
+        return [
+            'modeladmin/wagtail_personalisation/segment/dashboard.html',
+            'modeladmin/index.html'
+        ]
+
+
 @modeladmin_register
 class SegmentModelAdmin(ModelAdmin):
     """The model admin for the Segments administration interface."""
     model = Segment
     index_view_class = SegmentModelIndexView
+    dashboard_view_class = SegmentModelDashboardView
     menu_icon = 'group'
     add_to_settings_menu = False
-    list_display = ('status', 'name', 'create_date', 'edit_date')
+    list_display = ('name', 'visits', 'active_days', 'status')
     index_view_extra_js = ['js/commons.js', 'js/index.js']
     index_view_extra_css = ['css/index.css']
     form_view_extra_js = ['js/commons.js', 'js/form.js']
     form_view_extra_css = ['css/form.css']
+
+    def index_view(self, request):
+        kwargs = {'model_admin': self}
+        view_class = self.index_view_class
+        return view_class.as_view(**kwargs)(request)
+
+    def visits(self, obj):
+        return _("{visits} visits").format(
+            visits=obj.visit_count)
+
+    def active_days(self, obj):
+        return _("{days} days").format(
+            days=obj.get_active_days())
 
 
 def toggle(request, segment_id):
