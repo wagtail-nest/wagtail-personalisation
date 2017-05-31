@@ -16,7 +16,7 @@ The Wagxperience app runs in the Wagtail CMS. You can find out more here_.
 
     pip install wagtail-personalisation
 
-2. Add the module and it's dependencies to your ``INSTALLED_APPS``::
+2. Add the module and ``wagtail.contrib.modeladmin`` to your ``INSTALLED_APPS``::
 
     INSTALLED_APPS = [
         # ...
