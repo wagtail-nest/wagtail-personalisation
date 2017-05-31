@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: wagtail_personalisation 0.1.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-05-31 02:35-0500\n"
+"POT-Creation-Date: 2017-05-31 03:00-0500\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -293,19 +293,12 @@ msgstr ""
 msgid "configure this"
 msgstr ""
 
-#: templates/modeladmin/wagtail_personalisation/segment/index.html:86
+#: templates/modeladmin/wagtail_personalisation/segment/index.html:87
 #, python-format
-msgid ""
-"\n"
-"                                        <a class=\"block suggestion\" href="
-"\"%(url)s\">\n"
-"                                            <span class=\"suggestive_text"
-"\">Add a new %(name)s</span>\n"
-"                                        </a>\n"
-"                                    "
+msgid "Add a new %(name)s"
 msgstr ""
 
-#: templates/modeladmin/wagtail_personalisation/segment/index.html:99
+#: templates/modeladmin/wagtail_personalisation/segment/index.html:97
 #, python-format
 msgid "Page %(current_page)s of %(num_pages)s."
 msgstr ""
