@@ -40,7 +40,7 @@ setup(
     packages=find_packages('src'),
     package_dir={'': 'src'},
     include_package_data=True,
-    license='BSD',
+    license='MIT',
     long_description=open('README.rst').read(),
     classifiers=[
         'Development Status :: 2 - Pre-Alpha',
