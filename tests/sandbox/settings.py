@@ -63,7 +63,7 @@ MIDDLEWARE = (
 
 INSTALLED_APPS = (
     'wagtail_personalisation',
-    'tests',
+    'tests.sandbox.pages',
 
     'wagtail.contrib.modeladmin',
     'wagtail.wagtailsearch',
