@@ -48,11 +48,11 @@ class SegmentModelAdmin(ModelAdmin):
 
     def index_view(self, request):
         kwargs = {'model_admin': self}
-        view_class = self.index_view_class
+        view_class = self.dashboard_view_class
 
-        request.session.setdefault('segment_view', 'list')
-        if request.session['segment_view'] != 'list':
-            view_class = self.dashboard_view_class
+        request.session.setdefault('segment_view', 'dashboard')
+        if request.session['segment_view'] != 'dashboard':
+            view_class = self.index_view_class
 
         return view_class.as_view(**kwargs)(request)
 
@@ -73,11 +73,11 @@ def toggle_segment_view(request):
 
     """
     if request.user.has_perm('wagtailadmin.access_admin'):
-        if request.session['segment_view'] == 'list':
-            request.session['segment_view'] = 'dashboard'
-
-        elif request.session['segment_view'] != 'list':
+        if request.session['segment_view'] == 'dashboard':
             request.session['segment_view'] = 'list'
+
+        elif request.session['segment_view'] != 'dashboard':
+            request.session['segment_view'] = 'dashboard'
 
         return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
 
