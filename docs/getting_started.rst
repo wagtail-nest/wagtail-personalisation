@@ -16,13 +16,13 @@ The Wagxperience app runs in the Wagtail CMS. You can find out more here_.
 
     pip install wagtail-personalisation
 
-2. Add the module and ``wagtail.contrib.modeladmin`` to your ``INSTALLED_APPS``::
+2. Add the required apps in your ``INSTALLED_APPS`` setting::
 
     INSTALLED_APPS = [
-        # ...
+        # Required apps
+        'django.contrib.humanize',
         'wagtail.contrib.modeladmin',
         'wagtail_personalisation',
-        # ...
     ]
 
 3. Update your database::

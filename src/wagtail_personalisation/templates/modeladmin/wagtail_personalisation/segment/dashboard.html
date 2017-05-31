@@ -1,5 +1,5 @@
 {% extends "modeladmin/wagtail_personalisation/segment/base.html" %}
-{% load i18n l10n staticfiles modeladmin_tags wagtail_personalisation_filters %}
+{% load humanize i18n l10n staticfiles modeladmin_tags wagtail_personalisation_filters %}
 
 {% block toggle_view %}to List {% endblock%}
 
@@ -31,8 +31,8 @@
                                                     <span>{{ segment.visit_count|localize }} {% trans "time" %}{{ segment.visit_count|pluralize }}</span>
                                                 </li>
                                                 <li class="days_stat">
-                                                    {% trans "This segment has been active for" %}
-                                                    <span>{{ segment.enable_date|days_since:segment.disable_date }} {% trans "day" %}{{ segment.enable_date|days_since:segment.disable_date|pluralize }}</span>
+                                                    {% trans "This segment has been active since" %}
+                                                    <span>{{ segment.enable_date|naturaltime }}</span>
                                                 </li>
                                             </ul>
 

@@ -38,16 +38,15 @@ To install the package with pip::
 
     pip install wagtail-personalisation
 
-Next, include the ``wagtail_personalisation`` and
-``wagtail.contrib.modeladmin`` app in your project's ``INSTALLED_APPS``:
+Next, add the required apps in your ``INSTALLED_APPS`` setting:
 
 .. code-block:: python
 
     INSTALLED_APPS = [
-        # ...
+        # Required apps
+        'django.contrib.humanize',
         'wagtail.contrib.modeladmin',
         'wagtail_personalisation',
-        # ...
     ]
 
 Make sure that ``django.contrib.sessions.middleware.SessionMiddleware`` has
