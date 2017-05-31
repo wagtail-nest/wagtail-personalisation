@@ -11,7 +11,7 @@ from wagtail.wagtailadmin.widgets import Button, ButtonWithDropdownFromHook
 from wagtail.wagtailcore import hooks
 
 from wagtail_personalisation import admin_urls
-from wagtail_personalisation.app_settings import segments_adapter
+from wagtail_personalisation.adapters import get_segment_adapter
 from wagtail_personalisation.models import PersonalisablePage, Segment
 from wagtail_personalisation.utils import impersonate_other_page
 
@@ -87,8 +87,8 @@ def segment_user(page, request, serve_args, serve_kwargs):
     :type request: django.http.HttpRequest
 
     """
-    segments_adapter.setup(request)
-    segments_adapter.refresh()
+    adapter = get_segment_adapter(request)
+    adapter.refresh()
 
 
 @hooks.register('before_serve_page')
@@ -105,8 +105,9 @@ def serve_variation(page, request, serve_args, serve_kwargs):
 
     """
     user_segments = []
+    adapter = get_segment_adapter(request)
 
-    for segment in segments_adapter.get_all_segments():
+    for segment in adapter.get_all_segments():
         try:
             user_segment = Segment.objects.get(pk=segment['id'],
                                                status='enabled')
