@@ -226,23 +226,12 @@ class VisitCountRule(AbstractBaseRule):
         operator = self.operator
         segment_count = self.count
 
-        def get_visit_count(request):
-            """Search through the request sessions to get the page visit count
-            corresponding to the request.
+        # Local import for cyclic import
+        from wagtail_personalisation.adapters import get_segment_adapter
 
-            :param request: The http request
-            :type request: django.http.HttpRequest
-            :returns: A number indicating the amount of visits
-                      to the requested page
-            :rtype: int
+        adapter = get_segment_adapter(request)
 
-            """
-            for page in request.session['visit_count']:
-                if page['path'] == request.path:
-                    return page['count']
-
-        visit_count = get_visit_count(request)
-
+        visit_count = adapter.get_visit_count()
         if visit_count and operator == "more_than":
             if visit_count > segment_count:
                 return True
