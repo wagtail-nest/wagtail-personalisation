@@ -1,5 +1,6 @@
 import time
 
+from django.template.base import FilterExpression, kwarg_re
 from django.utils import timezone
 
 
@@ -58,3 +59,37 @@ def count_active_days(enable_date, disable_date):
             return delta.days
 
     return 0
+
+
+def parse_tag(token, parser):
+    """Parses template tag for name, arguments and keyword arguments.
+
+    :param token: Template token containing all the tag contents
+    :type token: django.template.base.Token
+    :param parser: Template parser
+    :type parser: django.template.base.Parser
+    :return: Tuple with tag name, arguments and keyword arguments
+    :rtype: tuple
+
+    """
+    # Split the tag content into words, respecting quoted strings.
+    bits = token.split_contents()
+
+    # Pull out the tag name.
+    tag_name = bits.pop(0)
+
+    # Parse the rest of the args, and build FilterExpressions from them so that
+    # we can evaluate them later.
+    args = []
+    kwargs = {}
+    for bit in bits:
+        # Is this a kwarg or an arg?
+        match = kwarg_re.match(bit)
+        kwarg_format = match and match.group(1)
+        if kwarg_format:
+            key, value = match.groups()
+            kwargs[key] = FilterExpression(value, parser)
+        else:
+            args.append(FilterExpression(bit, parser))
+
+    return (tag_name, args, kwargs)
