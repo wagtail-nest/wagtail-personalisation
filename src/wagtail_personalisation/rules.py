@@ -17,6 +17,8 @@ from wagtail.wagtailadmin.edit_handlers import (
 @python_2_unicode_compatible
 class AbstractBaseRule(models.Model):
     """Base for creating rules to segment users with."""
+    icon = 'fa-circle-o'
+
     segment = ParentalKey(
         'wagtail_personalisation.Segment',
         related_name="%(app_label)s_%(class)s_related",
@@ -69,6 +71,8 @@ class TimeRule(AbstractBaseRule):
     set start time and end time.
 
     """
+    icon = 'fa-clock-o'
+
     start_time = models.TimeField(_("Starting time"))
     end_time = models.TimeField(_("Ending time"))
 
@@ -102,6 +106,8 @@ class DayRule(AbstractBaseRule):
     set in the rule.
 
     """
+    icon = 'fa-calendar-o'
+
     mon = models.BooleanField(_("Monday"), default=False)
     tue = models.BooleanField(_("Tuesday"), default=False)
     wed = models.BooleanField(_("Wednesday"), default=False)
@@ -149,6 +155,8 @@ class ReferralRule(AbstractBaseRule):
     the set regex test.
 
     """
+    icon = 'fa-globe'
+
     regex_string = models.TextField(
         _("Regular expression to match the referrer"))
 
@@ -184,6 +192,8 @@ class VisitCountRule(AbstractBaseRule):
     when visiting the set page.
 
     """
+    icon = 'fa-calculator'
+
     OPERATOR_CHOICES = (
         ('more_than', _("More than")),
         ('less_than', _("Less than")),
@@ -251,6 +261,8 @@ class QueryRule(AbstractBaseRule):
     present in the request query.
 
     """
+    icon = 'fa-link-o'
+
     parameter = models.SlugField(_("The query parameter to search for"),
                                  max_length=20)
     value = models.SlugField(_("The value of the parameter to match"),
@@ -285,6 +297,8 @@ class DeviceRule(AbstractBaseRule):
     in the request user agent headers.
 
     """
+    icon = 'fa-tablet'
+
     mobile = models.BooleanField(_("Mobile phone"), default=False)
     tablet = models.BooleanField(_("Tablet"), default=False)
     desktop = models.BooleanField(_("Desktop"), default=False)
@@ -318,6 +332,8 @@ class UserIsLoggedInRule(AbstractBaseRule):
     Matches when the user is authenticated.
 
     """
+    icon = 'fa-user'
+
     is_logged_in = models.BooleanField(default=False)
 
     panels = [
