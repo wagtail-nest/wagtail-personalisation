@@ -128,7 +128,10 @@ def page_listing_variant_buttons(page, page_perms, is_parent=False):
 
     """
     model = AbstractPersonalisablePage.get_model()
-    personalisable_page = model.objects.filter(pk=page.pk)
+    if model:
+        personalisable_page = model.objects.filter(pk=page.pk)
+    else:
+        personalisable_page = page
     segments = Segment.objects.all()
 
     if personalisable_page and len(segments) > 0 and not (

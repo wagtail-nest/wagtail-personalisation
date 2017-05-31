@@ -10,7 +10,6 @@ from wagtail.utils.decorators import cached_classmethod
 from wagtail.wagtailadmin.edit_handlers import (
     FieldPanel, FieldRowPanel, InlinePanel, MultiFieldPanel, ObjectList,
     PageChooserPanel, TabbedInterface)
-from wagtail.wagtailcore.models import Page
 
 from wagtail_personalisation.forms import AdminPersonalisablePageForm
 from wagtail_personalisation.rules import AbstractBaseRule
@@ -147,10 +146,6 @@ class AbstractPersonalisablePage(models.Model):
         return not self.canonical_page and self.has_variations
 
 
-class PersonalisablePage(AbstractPersonalisablePage, Page):
-    """ """
-
-
 @cached_classmethod
 def get_edit_handler(cls):
     """Add additional edit handlers to pages that are allowed to have
@@ -172,4 +167,4 @@ def get_edit_handler(cls):
     return edit_handler.bind_to_model(cls)
 
 
-PersonalisablePage.get_edit_handler = get_edit_handler
+AbstractPersonalisablePage.get_edit_handler = get_edit_handler
