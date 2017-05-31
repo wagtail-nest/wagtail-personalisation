@@ -10,7 +10,6 @@ from wagtail.utils.decorators import cached_classmethod
 from wagtail.wagtailadmin.edit_handlers import (
     FieldPanel, FieldRowPanel, InlinePanel, MultiFieldPanel, ObjectList,
     PageChooserPanel, TabbedInterface)
-from wagtail.wagtailcore.models import Page
 
 from wagtail_personalisation.forms import AdminPersonalisablePageForm
 from wagtail_personalisation.rules import AbstractBaseRule
@@ -97,7 +96,7 @@ class PersonalisablePageMixin(models.Model):
         blank=True, null=True
     )
     segment = models.ForeignKey(
-        Segment, related_name='segments', on_delete=models.PROTECT,
+        Segment, related_name='+', on_delete=models.PROTECT,
         blank=True, null=True
     )
     is_segmented = models.BooleanField(default=False)
