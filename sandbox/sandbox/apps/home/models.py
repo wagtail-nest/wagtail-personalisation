@@ -1,7 +1,9 @@
 from __future__ import absolute_import, unicode_literals
 
-from wagtail_personalisation.models import PersonalisablePage
+from wagtail.wagtailcore.models import Page
+
+from wagtail_personalisation.models import AbstractPersonalisablePage
 
 
-class HomePage(PersonalisablePage):
+class HomePage(AbstractPersonalisablePage, Page):
     pass
