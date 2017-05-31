@@ -29,7 +29,7 @@ setup(
     version='0.1.0',
     description='A Wagtail add-on for showing personalized content',
     author='Lab Digital BV',
-    author_email='b.besemer@labdigital.nl',
+    author_email='opensource@labdigital.nl',
     url='http://labdigital.nl',
     install_requires=install_requires,
     tests_require=tests_require,
