@@ -9,7 +9,7 @@ from wagtail.contrib.modeladmin.options import ModelAdmin, modeladmin_register
 from wagtail.contrib.modeladmin.views import IndexView
 from wagtail.wagtailcore.models import Page
 
-from wagtail_personalisation.models import AbstractPersonalisablePage, Segment
+from wagtail_personalisation.models import PersonalisablePageMixin, Segment
 
 
 class SegmentModelIndexView(IndexView):
@@ -123,7 +123,7 @@ def copy_page_view(request, page_id, segment_id):
     :rtype: django.http.HttpResponseRedirect
 
     """
-    model = AbstractPersonalisablePage.get_model()
+    model = PersonalisablePageMixin.get_model()
     if request.user.has_perm('wagtailadmin.access_admin'):
         segment = get_object_or_404(Segment, pk=segment_id)
         page = get_object_or_404(model, pk=page_id)
