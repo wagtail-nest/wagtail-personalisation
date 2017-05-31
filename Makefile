@@ -1,4 +1,4 @@
-.PHONY: all clean requirements develop test lint flake8 isort dist sandbox
+.PHONY: all clean requirements develop test lint flake8 isort dist sandbox docs
 
 all: clean requirements dist
 
@@ -24,6 +24,9 @@ retest:
 
 coverage:
 	py.test --nomigrations --reuse-db tests/ --cov=wagtail_personalisation --cov-report=term-missing --cov-report=html
+
+docs:
+	$(MAKE) -C docs html
 
 lint: flake8 isort
 

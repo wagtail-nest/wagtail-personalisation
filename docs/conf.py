@@ -90,11 +90,19 @@ html_theme = 'alabaster'
 # documentation.
 #
 # html_theme_options = {}
+html_theme_options = {
+    'github_user': 'LabD',
+    'github_banner': True,
+    'github_repo': 'wagtail-personalisation',
+    'travis_button': True,
+    'codecov_button': True,
+    'analytics_id': 'UA-100203499-2',
+}
 
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
-html_static_path = ['_static']
+# html_static_path = ['_static']
 
 
 # -- Options for HTMLHelp output ------------------------------------------
