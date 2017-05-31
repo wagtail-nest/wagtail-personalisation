@@ -83,11 +83,15 @@ class Segment(ClusterableModel):
         return segment_rules
 
 
-class PersonalisablePage(Page):
+class AbstractPersonalisablePage(models.Model):
     """The personalisable page model. Allows creation of variants with linked
     segments.
 
     """
+
+    class Meta:
+        abstract = True
+
     canonical_page = models.ForeignKey(
         'self', related_name='variations', on_delete=models.SET_NULL,
         blank=True, null=True
@@ -109,6 +113,14 @@ class PersonalisablePage(Page):
 
     def __str__(self):
         return "{}".format(self.title)
+
+    @classmethod
+    def get_model(cls):
+        try:
+            cls.__subclasses__()[0]
+        except IndexError:
+            raise Exception("Unable to find non-abstract subclass for %s" %
+                            cls.__name)
 
     @cached_property
     def has_variations(self):
@@ -133,6 +145,10 @@ class PersonalisablePage(Page):
 
         """
         return not self.canonical_page and self.has_variations
+
+
+class PersonalisablePage(AbstractPersonalisablePage, Page):
+    """ """
 
 
 @cached_classmethod
