@@ -150,10 +150,7 @@ class PersonalisablePageMixin(models.Model):
             'is_segmented': True,
         }
 
-        try:
-            return Page.objects.get(slug=slug, parent=self.parent).specific
-        except Page.DoesNotExist:
-            return self.copy(update_attrs=update_attrs, copy_revisions=False)
+        return self.copy(update_attrs=update_attrs, copy_revisions=False)
 
     def variants_for_segments(self, segments):
         return self.__class__.objects.filter(

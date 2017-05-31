@@ -5,9 +5,12 @@ from tests.factories.segment import SegmentFactory
 from tests.factories.site import SiteFactory
 
 
-@pytest.fixture
+@pytest.fixture(scope='function')
 def site():
-    return SiteFactory()
+    site = SiteFactory(is_default_site=True)
+    PageFactory(parent=site.root_page, slug='page-1')
+    PageFactory(parent=site.root_page, slug='page-2')
+    return site
 
 
 @pytest.fixture
