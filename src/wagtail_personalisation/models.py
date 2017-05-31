@@ -110,7 +110,7 @@ class PersonalisablePageMixin(models.Model):
         blank=True, null=True
     )
     segment = models.ForeignKey(
-        Segment, related_name='+', on_delete=models.PROTECT,
+        Segment, related_name='pages', on_delete=models.PROTECT,
         blank=True, null=True
     )
     is_segmented = models.BooleanField(default=False)
