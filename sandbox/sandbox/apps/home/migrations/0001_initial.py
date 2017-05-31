@@ -12,7 +12,6 @@ class Migration(migrations.Migration):
 
     dependencies = [
         ('wagtail_personalisation', '0009_auto_20170531_0428'),
-        ('wagtailcore', '0033_remove_golive_expiry_help_text'),
     ]
 
     operations = [
