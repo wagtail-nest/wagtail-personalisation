@@ -82,7 +82,7 @@ class Segment(ClusterableModel):
         return segment_rules
 
 
-class AbstractPersonalisablePage(models.Model):
+class PersonalisablePageMixin(models.Model):
     """The personalisable page model. Allows creation of variants with linked
     segments.
 
@@ -159,4 +159,4 @@ def get_edit_handler(cls):
     return edit_handler.bind_to_model(cls)
 
 
-AbstractPersonalisablePage.get_edit_handler = get_edit_handler
+PersonalisablePageMixin.get_edit_handler = get_edit_handler

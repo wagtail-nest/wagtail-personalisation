@@ -13,7 +13,7 @@ from wagtail.wagtailcore.models import Page
 
 from wagtail_personalisation import admin_urls
 from wagtail_personalisation.adapters import get_segment_adapter
-from wagtail_personalisation.models import AbstractPersonalisablePage, Segment
+from wagtail_personalisation.models import PersonalisablePageMixin, Segment
 from wagtail_personalisation.utils import impersonate_other_page
 
 logger = logging.getLogger(__name__)
@@ -109,7 +109,7 @@ def _check_for_variations(segments, page):
 
     """
     try:
-        model = AbstractPersonalisablePage.__subclasses__()[0]
+        model = PersonalisablePageMixin.__subclasses__()[0]
     except IndexError:
         return
     for segment in segments:
@@ -156,7 +156,7 @@ def page_listing_more_buttons(page, page_perms, is_parent=False):
 
     """
     try:
-        model = AbstractPersonalisablePage.__subclasses__()[0]
+        model = PersonalisablePageMixin.__subclasses__()[0]
     except IndexError:
         return
     segments = Segment.objects.all()
