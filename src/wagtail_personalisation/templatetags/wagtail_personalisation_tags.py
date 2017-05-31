@@ -3,7 +3,6 @@ from django.template import TemplateSyntaxError
 from django.template.base import FilterExpression, kwarg_re
 from django.utils.safestring import mark_safe
 
-from wagtail_personalisation.app_settings import segments_adapter
 from wagtail_personalisation.models import Segment
 
 register = template.Library()
@@ -81,7 +80,7 @@ class SegmentNode(template.Node):
             return ""
 
         # Check if user has segment
-        user_segment = segments_adapter.get_segment(segment_id=segment.pk)
+        user_segment = context['request'].segment_adapter.get_segment(segment_id=segment.pk)
         if not user_segment:
             return ""
 

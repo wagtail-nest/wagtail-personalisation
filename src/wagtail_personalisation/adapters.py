@@ -97,8 +97,11 @@ class SessionSegmentsAdapter(BaseSegmentsAdapter):
         :rtype: wagtail_personalisation.models.Segment or None
 
         """
-        return next(item for item in self.request.session['segments']
-                    if item.id == segment_id)
+        try:
+            return next(item for item in self.request.session['segments']
+                        if item['id'] == segment_id)
+        except StopIteration:
+            return None
 
     def add(self, segment):
         """Add a segment to the request session.
