@@ -4,6 +4,7 @@ from django.http import HttpResponseForbidden, HttpResponseRedirect
 from django.shortcuts import get_object_or_404, reverse
 from wagtail.contrib.modeladmin.options import ModelAdmin, modeladmin_register
 from wagtail.contrib.modeladmin.views import IndexView
+from wagtail.wagtailcore.models import Page
 
 from wagtail_personalisation.models import PersonalisablePage, Segment
 
@@ -81,9 +82,12 @@ def copy_page_view(request, page_id, segment_id):
             'is_segmented': True,
         }
 
-        new_page = page.copy(update_attrs=update_attrs, copy_revisions=False)
+        try:
+            variant = Page.objects.get(slug=slug, depth=page.depth)
+        except Page.DoesNotExist:
+            variant = page.copy(update_attrs=update_attrs, copy_revisions=False)
 
-        edit_url = reverse('wagtailadmin_pages:edit', args=[new_page.id])
+        edit_url = reverse('wagtailadmin_pages:edit', args=[variant.id])
 
         return HttpResponseRedirect(edit_url)
 
