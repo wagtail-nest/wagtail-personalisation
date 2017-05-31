@@ -56,6 +56,12 @@ def segment_user(page, request, serve_args, serve_kwargs):
     adapter = get_segment_adapter(request)
     adapter.refresh()
 
+    forced_segment = request.GET.get('segment', None)
+    if request.user.is_superuser and forced_segment is not None:
+        segment = Segment.objects.filter(pk=forced_segment).first()
+        if segment:
+            adapter.add(segment)
+
 
 @hooks.register('before_serve_page')
 def serve_variant(page, request, serve_args, serve_kwargs):
