@@ -10,6 +10,7 @@ module.exports = {
     context: path.resolve(__dirname, './frontend'),
     entry: {
         index: './js/index.js',
+        dashboard: './js/dashboard.js',
         form: './js/form.js'
     },
     output: {

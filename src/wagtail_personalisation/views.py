@@ -12,12 +12,12 @@ from wagtail_personalisation.models import PersonalisablePage, Segment
 
 
 class SegmentModelIndexView(IndexView):
-    """Placeholder for additional dashboard functionality."""
+    """Placeholder for additional list functionality."""
     pass
 
 
 class SegmentModelDashboardView(IndexView):
-    """Placeholder for additional dashboard functionality."""
+    """Additional dashboard functionality."""
     def media(self):
         return forms.Media(
             css={'all': ['css/dashboard.css']},
@@ -48,6 +48,11 @@ class SegmentModelAdmin(ModelAdmin):
     def index_view(self, request):
         kwargs = {'model_admin': self}
         view_class = self.index_view_class
+
+        request.session.setdefault('segment_view', 'list')
+        if request.session['segment_view'] != 'list':
+            view_class = self.dashboard_view_class
+
         return view_class.as_view(**kwargs)(request)
 
     def visits(self, obj):
@@ -57,6 +62,27 @@ class SegmentModelAdmin(ModelAdmin):
     def active_days(self, obj):
         return _("{days} days").format(
             days=obj.get_active_days())
+
+
+def toggle_segment_view(request):
+    """Toggle between the list view and dashboard view.
+
+    :param request: The http request
+    :type request: django.http.HttpRequest
+    :returns: A redirect to the original page
+    :rtype: django.http.HttpResponseRedirect
+
+    """
+    if request.user.has_perm('wagtailadmin.access_admin'):
+        if request.session['segment_view'] == 'list':
+            request.session['segment_view'] = 'dashboard'
+
+        elif request.session['segment_view'] != 'list':
+            request.session['segment_view'] = 'list'
+
+        return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
+
+    return HttpResponseForbidden()
 
 
 def toggle(request, segment_id):
