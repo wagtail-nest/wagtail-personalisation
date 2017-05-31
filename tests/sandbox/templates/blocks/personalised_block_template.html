@@ -1,0 +1,9 @@
+{% load wagtailcore_tags %}
+
+<div class="personalisation-block-template">
+    <p>This is a block with <strong>template</strong>.</p>
+    <h2>Heading: {{ value.heading }}</h2>
+    <div>
+        {{ value.paragraph|richtext }}
+    </div>
+</div>
