@@ -17,9 +17,3 @@ def django_db_setup(django_db_setup, django_db_blocker):
         Site.objects.all().delete()
         Page.objects.all().exclude(depth=1).delete()
 
-
-@pytest.fixture(scope='function')
-def site():
-    site = SiteFactory(is_default_site=True)
-    PageFactory(parent=site.root_page, slug='page-1')
-    PageFactory(parent=site.root_page, slug='page-2')
