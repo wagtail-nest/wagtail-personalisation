@@ -141,6 +141,15 @@ class SessionSegmentsAdapter(BaseSegmentsAdapter):
                 'count': 1,
             })
 
+    def get_visit_count(self, page=None):
+        """Return the number of visits on the current request or given page"""
+        path = page.path if page else self.request.path
+        visit_count = self.request.session.setdefault('visit_count', [])
+        for visit in visit_count:
+            if visit['path'] == path:
+                return visit['count']
+        return 0
+
     def update_visit_count(self):
         """Update the visit count for all segments in the request session."""
         segments = self.request.session['segments']
