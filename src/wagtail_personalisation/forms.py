@@ -3,8 +3,6 @@ from wagtail.wagtailadmin.forms import WagtailAdminPageForm
 
 class AdminPersonalisablePageForm(WagtailAdminPageForm):
     """The personalisable page form that allows creation of variants."""
-    def __init__(self, *args, **kwargs):
-        super(AdminPersonalisablePageForm, self).__init__(*args, **kwargs)
 
     def save(self, commit=True):
         """Save a copy of the original page, linked to a segment.

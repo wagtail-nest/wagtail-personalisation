@@ -22,12 +22,15 @@ class AbstractBaseRule(models.Model):
         related_query_name="%(app_label)s_%(class)ss"
     )
 
-    def test_user(self):
-        """Test if the user matches this rule."""
-        return True
+    class Meta:
+        abstract = True
 
     def __str__(self):
         return _('Abstract segmentation rule')
+
+    def test_user(self):
+        """Test if the user matches this rule."""
+        return True
 
     def encoded_name(self):
         """Return a string with a slug for the rule."""
@@ -48,9 +51,6 @@ class AbstractBaseRule(models.Model):
 
         return description
 
-    class Meta:
-        abstract = True
-
 
 @python_2_unicode_compatible
 class TimeRule(AbstractBaseRule):
@@ -70,8 +70,8 @@ class TimeRule(AbstractBaseRule):
         ]),
     ]
 
-    def __init__(self, *args, **kwargs):
-        super(TimeRule, self).__init__(*args, **kwargs)
+    def __str__(self):
+        return _('Time Rule')
 
     def test_user(self, request=None):
         current_time = datetime.now().time()
@@ -79,9 +79,6 @@ class TimeRule(AbstractBaseRule):
         ending_time = self.end_time
 
         return starting_time <= current_time <= ending_time
-
-    def __str__(self):
-        return _('Time Rule')
 
     def description(self):
         description = {
@@ -121,8 +118,8 @@ class DayRule(AbstractBaseRule):
         FieldPanel('sun'),
     ]
 
-    def __init__(self, *args, **kwargs):
-        super(DayRule, self).__init__(*args, **kwargs)
+    def __str__(self):
+        return _('Day Rule')
 
     def test_user(self, request=None):
         current_day = datetime.today().weekday()
@@ -131,9 +128,6 @@ class DayRule(AbstractBaseRule):
                 self.fri, self.sat, self.sun]
 
         return days[current_day]
-
-    def __str__(self):
-        return _('Day Rule')
 
     def description(self):
         days = {
@@ -171,8 +165,8 @@ class ReferralRule(AbstractBaseRule):
         FieldPanel('regex_string'),
     ]
 
-    def __init__(self, *args, **kwargs):
-        super(ReferralRule, self).__init__(*args, **kwargs)
+    def __str__(self):
+        return _('Referral Rule')
 
     def test_user(self, request):
         pattern = re.compile(self.regex_string)
@@ -182,9 +176,6 @@ class ReferralRule(AbstractBaseRule):
             if pattern.search(referer):
                 return True
         return False
-
-    def __str__(self):
-        return _('Referral Rule')
 
     def description(self):
         description = {
@@ -230,9 +221,6 @@ class VisitCountRule(AbstractBaseRule):
             FieldPanel('count'),
         ]),
     ]
-
-    def __init__(self, *args, **kwargs):
-        super(VisitCountRule, self).__init__(*args, **kwargs)
 
     def test_user(self, request):
         operator = self.operator
@@ -301,20 +289,15 @@ class QueryRule(AbstractBaseRule):
         FieldPanel('value'),
     ]
 
-    def __init__(self, *args, **kwargs):
-        super(QueryRule, self).__init__(*args, **kwargs)
+    def __str__(self):
+        return _('Query Rule')
 
     def test_user(self, request):
         parameter = self.parameter
         value = self.value
 
         req_value = request.GET.get(parameter, '')
-        if req_value == value:
-            return True
-        return False
-
-    def __str__(self):
-        return _('Query Rule')
+        return req_value == value
 
     def description(self):
         description = {
@@ -347,8 +330,8 @@ class DeviceRule(AbstractBaseRule):
         FieldPanel('desktop'),
     ]
 
-    def __init__(self, *args, **kwargs):
-        super(DeviceRule, self).__init__(*args, **kwargs)
+    def __str__(self):
+        return _('Device Rule')
 
     def test_user(self, request=None):
         ua_header = request.META['HTTP_USER_AGENT']
@@ -362,9 +345,6 @@ class DeviceRule(AbstractBaseRule):
             return self.desktop
         else:
             return False
-
-    def __str__(self):
-        return _('Device Rule')
 
 
 @python_2_unicode_compatible
@@ -381,14 +361,11 @@ class UserIsLoggedInRule(AbstractBaseRule):
         FieldPanel('is_logged_in'),
     ]
 
-    def __init__(self, *args, **kwargs):
-        super(UserIsLoggedInRule, self).__init__(*args, **kwargs)
+    def __str__(self):
+        return _('Logged In Rule')
 
     def test_user(self, request=None):
         return request.user.is_authenticated() == self.is_logged_in
-
-    def __str__(self):
-        return _('Logged In Rule')
 
     def description(self):
         status = _('Logged in')
