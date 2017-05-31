@@ -80,9 +80,11 @@ class Segment(ClusterableModel):
         return count_active_days(self.enable_date, self.disable_date)
 
     def get_used_pages(self):
+        """Return the pages that have variants using this segment."""
         pass
 
     def get_created_variants(self):
+        """Return the variants using this segment."""
         page_classes = [page_class for page_class
                         in PersonalisablePageMixin.__subclasses__()]
         pages = [page.objects.filter(segment=self) for page in page_classes]
