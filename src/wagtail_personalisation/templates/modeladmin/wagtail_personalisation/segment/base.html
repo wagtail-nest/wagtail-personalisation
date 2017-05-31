@@ -25,6 +25,7 @@
                 {% if user_can_create %}
                     <div class="right">
                         <div class="addbutton">
+                            <a href="{% url 'segment:toggle_segment_view' %}" class="button" title="{% trans "Switch view" %}">Switch {% block toggle_view %}{% endblock%}view</a>
                             {% include 'modeladmin/includes/button.html' with button=view.button_helper.add_button %}
                             </div>
                         </div>
