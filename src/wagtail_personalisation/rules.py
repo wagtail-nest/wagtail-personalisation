@@ -106,7 +106,7 @@ class DayRule(AbstractBaseRule):
     set in the rule.
 
     """
-    icon = 'fa-calendar-o'
+    icon = 'fa-calendar-check-o'
 
     mon = models.BooleanField(_("Monday"), default=False)
     tue = models.BooleanField(_("Tuesday"), default=False)

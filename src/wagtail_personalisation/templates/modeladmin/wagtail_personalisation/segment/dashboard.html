@@ -27,12 +27,12 @@
                                         <div class="inspect_container">
                                             <ul class="inspect segment_stats">
                                                 <li class="visit_stat">
-                                                    {% trans "This segment has been visited" %}
-                                                    <span>{{ segment.visit_count|localize }} {% trans "time" %}{{ segment.visit_count|pluralize }}</span>
+                                                    {% trans "This segmented has been visited" %}
+                                                    <span class="icon icon-fa-rocket">{{ segment.visit_count|localize }} {% trans "time" %}{{ segment.visit_count|pluralize }}</span>
                                                 </li>
                                                 <li class="days_stat">
                                                     {% trans "This segment has been active for" %}
-                                                    <span>{{ segment.enable_date|days_since:segment.disable_date }} {% trans "day" %}{{ segment.enable_date|days_since:segment.disable_date|pluralize }}</span>
+                                                    <span class="icon icon-fa-calendar">{{ segment.enable_date|days_since:segment.disable_date }} {% trans "day" %}{{ segment.enable_date|days_since:segment.disable_date|pluralize }}</span>
                                                 </li>
                                             </ul>
 
@@ -42,18 +42,18 @@
                                                 <li class="match_state {{ segment.match_any|yesno:"any,all" }}">
                                                     {% trans "The visitor must match" %}
                                                     {% if segment.match_any %}
-                                                        <span>{% trans "Any rule" %}</span>
+                                                        <span class="icon icon-fa-cube">{% trans "Any rule" %}</span>
                                                     {% else %}
-                                                        <span>{% trans "All rules" %}</span>
+                                                        <span class="icon icon-fa-cubes">{% trans "All rules" %}</span>
                                                     {% endif %}
                                                 </li>
 
                                                 <li class="persistent_state {{ segment.persistent|yesno:"persistent,fleeting" }}">
                                                     {% trans "The persistence of this segment is" %}
                                                     {% if segment.persistent %}
-                                                        <span title="{% trans "This segment persists in between visits" %}">{% trans "Persistent" %}</span>
+                                                        <span class="icon icon-fa-bookmark" title="{% trans "This segment persists in between visits" %}">{% trans "Persistent" %}</span>
                                                     {% else %}
-                                                        <span title="{% trans "This segment is re-evaluated on every visit" %}">{% trans "Fleeting" %}</span>
+                                                        <span class="icon icon-fa-bookmark-o" title="{% trans "This segment is reevaluated on every visit" %}">{% trans "Fleeting" %}</span>
                                                     {% endif %}
                                                 </li>
 
@@ -63,7 +63,7 @@
                                                         {% if rule.description.code %}
                                                             <pre>{{ rule.description.value }}</pre>
                                                         {% else %}
-                                                            <span>{{ rule.description.value }}</span>
+                                                            <span class="icon icon-{{ rule.icon }}">{{ rule.description.value }}</span>
                                                         {% endif %}
                                                     </li>
                                                 {% endfor %}
