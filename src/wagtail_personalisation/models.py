@@ -1,4 +1,5 @@
 from __future__ import absolute_import, unicode_literals
+import itertools
 
 from django.db import models, transaction
 from django.template.defaultfilters import slugify
@@ -80,11 +81,10 @@ class Segment(ClusterableModel):
 
     def get_rules(self):
         """Retrieve all rules in the segment."""
-        segment_rules = []
-        for rule_model in AbstractBaseRule.get_descendant_models():
-            segment_rules.extend(
-                rule_model._default_manager.filter(segment=self))
-        return segment_rules
+        related_rules = [rule.objects.filter(segment=self)
+                         for rule in AbstractBaseRule.__subclasses__()]
+
+        return list(itertools.chain(*related_rules))
 
     def toggle(self, save=True):
         self.status = (

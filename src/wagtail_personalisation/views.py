@@ -39,7 +39,7 @@ class SegmentModelAdmin(ModelAdmin):
     dashboard_view_class = SegmentModelDashboardView
     menu_icon = 'fa-snowflake-o'
     add_to_settings_menu = False
-    list_display = ('name', 'visits', 'active_days', 'status')
+    list_display = ('name', 'persistent', 'match_any', 'status', 'statistics')
     index_view_extra_js = ['js/commons.js', 'js/index.js']
     index_view_extra_css = ['css/index.css']
     form_view_extra_js = ['js/commons.js', 'js/form.js']
@@ -55,11 +55,9 @@ class SegmentModelAdmin(ModelAdmin):
 
         return view_class.as_view(**kwargs)(request)
 
-    def visits(self, obj):
-        return _("{visits} visits").format(visits=obj.visit_count)
-
-    def active_days(self, obj):
-        return _("{days} days").format(days=obj.get_active_days())
+    def statistics(self, obj):
+        return _("{visits} visits in {days} days").format(
+            visits=obj.visit_count, days=obj.get_active_days())
 
 
 def toggle_segment_view(request):
