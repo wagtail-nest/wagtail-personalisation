@@ -1,8 +1,5 @@
 .. start-no-pypi
 
-Status
-------
-
 .. image:: https://readthedocs.org/projects/wagtail-personalisation/badge/?version=latest
     :target: https://readthedocs.org/projects/wagtail-personalisation/
 
@@ -19,6 +16,7 @@ Status
 
 Wagtail personalisation
 =======================
+
 Wagtail personalisation enables simple content personalisation through
 segmentation for the `Wagtail CMS`_.
 
