@@ -139,7 +139,8 @@ def copy_page_view(request, page_id, segment_id):
         }
 
         try:
-            variant = Page.objects.get(slug=slug, parent=page.parent)
+            variant = PersonalisablePage.objects.get(
+                slug=slug, canonical_page=page)
         except Page.DoesNotExist:
             variant = page.copy(update_attrs=update_attrs, copy_revisions=False)
 
