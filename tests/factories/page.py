@@ -4,12 +4,20 @@ import factory
 from django.utils.text import slugify
 from wagtail_factories.factories import MP_NodeFactory
 
-from tests.sandbox.pages.models import HomePage
+from tests.sandbox.pages.models import HomePage, SpecialPage
 
 
-class PageFactory(MP_NodeFactory):
+class HomePageFactory(MP_NodeFactory):
     title = 'Test page'
     slug = factory.LazyAttribute(lambda obj: slugify(obj.title))
 
     class Meta:
         model = HomePage
+
+
+class SpecialPageFactory(MP_NodeFactory):
+    title = 'Test page'
+    slug = factory.LazyAttribute(lambda obj: slugify(obj.title))
+
+    class Meta:
+        model = SpecialPage
