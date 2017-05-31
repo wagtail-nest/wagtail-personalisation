@@ -33,12 +33,15 @@ class BasePersonalisedStructBlock(blocks.StructBlock):
 
         Keyword Arguments:
             render_fields: List with field names to be rendered or None to use
-                the default block rendering.
+                the default block rendering. Please set to None if using block
+                with template since then it's the template that takes care
+                of what fields are rendered.
         """
         render_fields = kwargs.pop('render_fields',
                                    self._meta_class.render_fields)
         super(BasePersonalisedStructBlock, self).__init__(*args, **kwargs)
 
+        # Check "render_fields" are either a list or None.
         if isinstance(render_fields, tuple):
             render_fields = list(render_fields)
 
@@ -50,7 +53,13 @@ class BasePersonalisedStructBlock(blocks.StructBlock):
             raise ValueError('"render_fields" has to contain name(s) of the '
                              'specified blocks.')
         else:
-            setattr(self._meta_class, 'render_fields', render_fields)
+            setattr(self.meta, 'render_fields', render_fields)
+
+        # Template can be used only when "render_fields" is set to None.
+        if self.meta.render_fields is not None \
+                and getattr(self.meta, 'template', None):
+            raise ValueError('"render_fields" has to be set to None when using '
+                             'template.')
 
 
     def is_visible(self, value, request):
@@ -86,13 +95,13 @@ class BasePersonalisedStructBlock(blocks.StructBlock):
         if not self.is_visible(value, context['request']):
             return ""
 
-        if self._meta_class.render_fields is None:
+        if self.meta.render_fields is None:
             return super(BasePersonalisedStructBlock, self).render(
                 value, context)
 
-        if isinstance(self._meta_class.render_fields, list):
+        if isinstance(self.meta.render_fields, list):
             render_value = ''
-            for field_name in self._meta_class.render_fields:
+            for field_name in self.meta.render_fields:
                 if hasattr(value.bound_blocks[field_name], 'render_as_block'):
                     block_value = value.bound_blocks[field_name] \
                                          .render_as_block(context=context)

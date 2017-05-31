@@ -12,7 +12,7 @@ class Migration(migrations.Migration):
     initial = True
 
     dependencies = [
-        ('wagtailcore', '0033_remove_golive_expiry_help_text'),
+        ('wagtailcore', '0001_initial'),
         ('wagtail_personalisation', '0011_personalisablepagemetadata'),
     ]
 
