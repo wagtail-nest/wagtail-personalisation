@@ -81,7 +81,7 @@ class SessionSegmentsAdapter(BaseSegmentsAdapter):
 
         segments = (
             Segment.objects
-            .filter(status=Segment.STATUS_ENABLED)
+            .enabled()
             .filter(persistent=True)
             .in_bulk(segment_ids))
 
@@ -166,7 +166,7 @@ class SessionSegmentsAdapter(BaseSegmentsAdapter):
         still apply to the requesting visitor.
 
         """
-        enabled_segments = Segment.objects.filter(status=Segment.STATUS_ENABLED)
+        enabled_segments = Segment.objects.enabled()
         rule_models = AbstractBaseRule.get_descendant_models()
 
         current_segments = self.get_segments()
@@ -196,8 +196,6 @@ SEGMENT_ADAPTER_CLASS = import_string(getattr(
 
 def get_segment_adapter(request):
     """Return the Segment Adapter for the given request"""
-    try:
-        return request.segment_adapter
-    except AttributeError:
+    if not hasattr(request, 'segment_adapter'):
         request.segment_adapter = SEGMENT_ADAPTER_CLASS(request)
-        return request.segment_adapter
+    return request.segment_adapter

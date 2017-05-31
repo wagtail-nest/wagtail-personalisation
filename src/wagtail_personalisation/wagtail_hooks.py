@@ -75,7 +75,7 @@ def serve_variation(page, request, serve_args, serve_kwargs):
     user_segments = adapter.get_segments()
 
     if user_segments:
-        variations = _check_for_variations(user_segments, page)
+        variations = page.variants_for_segments(user_segments)
 
         if variations:
             variation = variations[0]
@@ -83,22 +83,6 @@ def serve_variation(page, request, serve_args, serve_kwargs):
             impersonate_other_page(variation, page)
 
             return variation.serve(request, *serve_args, **serve_kwargs)
-
-
-def _check_for_variations(segments, page):
-    """Check whether there are variations available for the provided segments
-    on the page being served.
-
-    :param segments: The segments applicable to the request.
-    :type segments: list of wagtail_personalisation.models.Segment
-    :param page: The page being served
-    :type page: wagtail_personalisation.models.PersonalisablePage or
-                wagtail.wagtailcore.models.Page
-    :returns: A variant of the requested page matching the segments or None
-    :rtype: wagtail_personalisation.models.PersonalisablePage or None
-
-    """
-    return page.variants_for_segments(segments)
 
 
 @hooks.register('register_page_listing_buttons')

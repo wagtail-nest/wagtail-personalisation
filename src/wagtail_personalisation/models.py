@@ -88,6 +88,13 @@ class Segment(ClusterableModel):
                 rule_model._default_manager.filter(segment=self))
         return segment_rules
 
+    def toggle(self, save=True):
+        self.status = (
+            self.STATUS_ENABLED if self.status == self.STATUS_DISABLED
+            else self.STATUS_DISABLED)
+        if save:
+            self.save()
+
 
 class PersonalisablePageMixin(models.Model):
     """The personalisable page model. Allows creation of variants with linked

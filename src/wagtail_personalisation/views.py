@@ -98,12 +98,7 @@ def toggle(request, segment_id):
     if request.user.has_perm('wagtailadmin.access_admin'):
         segment = get_object_or_404(Segment, pk=segment_id)
 
-        if segment.status == Segment.STATUS_ENABLED:
-            segment.status = Segment.STATUS_DISABLED
-        elif segment.status == Segment.STATUS_DISABLED:
-            segment.status = Segment.STATUS_ENABLED
-
-        segment.save()
+        segment.toggle()
 
         return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
 
