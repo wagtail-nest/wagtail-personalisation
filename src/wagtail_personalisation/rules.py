@@ -159,7 +159,7 @@ class ReferralRule(AbstractBaseRule):
 
     """
     regex_string = models.TextField(
-        _("Regex string to match the referer with"))
+        _("Regular expression to match the referrer"))
 
     panels = [
         FieldPanel('regex_string'),
@@ -290,7 +290,7 @@ class QueryRule(AbstractBaseRule):
 
     def description(self):
         description = {
-            'title': _('These users used a url with the query'),
+            'title': _('These users used a URL with the query'),
             'value': _('?{}={}').format(
                 self.parameter,
                 self.value
@@ -351,7 +351,7 @@ class UserIsLoggedInRule(AbstractBaseRule):
     ]
 
     def __str__(self):
-        return _('Logged In Rule')
+        return _('Logged in Rule')
 
     def test_user(self, request=None):
         return request.user.is_authenticated() == self.is_logged_in
