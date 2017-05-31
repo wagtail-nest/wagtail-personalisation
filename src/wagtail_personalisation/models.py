@@ -96,6 +96,8 @@ class PersonalisablePage(Page):
         ])
     ]
 
+    is_creatable = False
+
     base_form_class = AdminPersonalisablePageForm
 
     def __str__(self):
