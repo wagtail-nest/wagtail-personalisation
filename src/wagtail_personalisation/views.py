@@ -56,12 +56,10 @@ class SegmentModelAdmin(ModelAdmin):
         return view_class.as_view(**kwargs)(request)
 
     def visits(self, obj):
-        return _("{visits} visits").format(
-            visits=obj.visit_count)
+        return _("{visits} visits").format(visits=obj.visit_count)
 
     def active_days(self, obj):
-        return _("{days} days").format(
-            days=obj.get_active_days())
+        return _("{days} days").format(days=obj.get_active_days())
 
 
 def toggle_segment_view(request):
