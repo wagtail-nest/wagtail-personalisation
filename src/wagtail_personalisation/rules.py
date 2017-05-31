@@ -150,7 +150,7 @@ class DayRule(AbstractBaseRule):
 
         description = {
             'title': _('These users visit on'),
-            'value': _('{}').format(", ".join([f"{day}" for day in chosen_days]).title()),
+            'value': (', '.join(_(day) for day in chosen_days)).title()
         }
 
         return description
