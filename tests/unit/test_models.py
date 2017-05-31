@@ -63,7 +63,9 @@ class TestPage(object):
         assert segmented_page
 
     def test_page_has_variations(self, segmented_page):
-        assert not segmented_page.is_canonical
-        assert not segmented_page.has_variations
-        assert segmented_page.canonical_page.is_canonical
-        assert segmented_page.canonical_page.has_variations
+        assert not segmented_page.personalisable_metadata.is_canonical
+        assert not segmented_page.personalisable_metadata.has_variations
+
+        canonical = segmented_page.personalisable_metadata.canonical_page
+        assert canonical.personalisable_metadata.is_canonical
+        assert canonical.personalisable_metadata.has_variations

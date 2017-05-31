@@ -10,7 +10,7 @@ from wagtail.wagtailadmin.site_summary import SummaryItem
 from wagtail.wagtailadmin.widgets import Button, ButtonWithDropdownFromHook
 from wagtail.wagtailcore import hooks
 
-from wagtail_personalisation import admin_urls
+from wagtail_personalisation import admin_urls, models
 from wagtail_personalisation.adapters import get_segment_adapter
 from wagtail_personalisation.models import PersonalisablePageMixin, Segment
 from wagtail_personalisation.utils import impersonate_other_page
@@ -79,7 +79,8 @@ def serve_variation(page, request, serve_args, serve_kwargs):
     user_segments = adapter.get_segments()
 
     if user_segments:
-        variations = page.variants_for_segments(user_segments)
+        metadata = page.personalisable_metadata
+        variations = metadata.variants_for_segments(user_segments)
         if variations:
             variation = variations.first()
             impersonate_other_page(variation, page)
@@ -92,7 +93,11 @@ def page_listing_variant_buttons(page, page_perms, is_parent=False):
     the page (if any) and a 'Create a new variant' button.
 
     """
-    if isinstance(page, PersonalisablePageMixin) and page.get_unused_segments():
+    if not isinstance(page, models.PersonalisablePageMixin):
+        return
+
+    metadata = page.personalisable_metadata
+    if metadata.is_canonical and metadata.get_unused_segments():
         yield ButtonWithDropdownFromHook(
             _('Variants'),
             hook_name='register_page_listing_variant_buttons',
@@ -109,7 +114,11 @@ def page_listing_more_buttons(page, page_perms, is_parent=False):
     create a new variant for the selected segment.
 
     """
-    for segment in page.get_unused_segments():
+    if not isinstance(page, models.PersonalisablePageMixin):
+        return
+
+    metadata = page.personalisable_metadata
+    for segment in metadata.get_unused_segments():
         yield Button(segment.name,
                      reverse('segment:copy_page', args=[page.pk, segment.pk]),
                      attrs={"title": _('Create this variant')},

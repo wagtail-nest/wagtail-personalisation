@@ -122,11 +122,13 @@ def copy_page_view(request, page_id, segment_id):
     if request.user.has_perm('wagtailadmin.access_admin'):
         segment = get_object_or_404(Segment, pk=segment_id)
         page = get_object_or_404(Page, pk=page_id).specific
-        variants = page.variants_for_segments([segment])
+
+        metadata = page.personalisable_metadata
+        variants = metadata.variants_for_segments([segment])
         if variants.exists():
             variant = variants.first()
         else:
-            variant = page.copy_for_segment(segment)
+            variant = metadata.copy_for_segment(segment)
         edit_url = reverse('wagtailadmin_pages:edit', args=[variant.id])
 
         return HttpResponseRedirect(edit_url)

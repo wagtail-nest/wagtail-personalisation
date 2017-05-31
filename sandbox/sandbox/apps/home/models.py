@@ -5,5 +5,5 @@ from wagtail.wagtailcore.models import Page
 from wagtail_personalisation.models import PersonalisablePageMixin
 
 
-class HomePage(Page, PersonalisablePageMixin):
+class HomePage(PersonalisablePageMixin, Page):
     pass

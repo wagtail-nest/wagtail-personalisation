@@ -1,11 +1,13 @@
 from __future__ import absolute_import, unicode_literals
 
-from django.db import models
+from django.db import models, transaction
 from django.template.defaultfilters import slugify
 from django.utils.encoding import python_2_unicode_compatible
 from django.utils.functional import cached_property
 from django.utils.translation import ugettext_lazy as _
+from modelcluster.fields import ParentalKey
 from modelcluster.models import ClusterableModel
+from wagtail.wagtailcore.models import Page
 from wagtail.utils.decorators import cached_classmethod
 from wagtail.wagtailadmin.edit_handlers import (
     FieldPanel, FieldRowPanel, InlinePanel, MultiFieldPanel, ObjectList,
@@ -96,31 +98,24 @@ class Segment(ClusterableModel):
             self.save()
 
 
-class PersonalisablePageMixin(models.Model):
+class PersonalisablePageMetadata(ClusterableModel):
     """The personalisable page model. Allows creation of variants with linked
     segments.
 
     """
-
-    class Meta:
-        abstract = True
-
     canonical_page = models.ForeignKey(
-        'self', related_name='variations', on_delete=models.SET_NULL,
+        Page, related_name='personalisable_canonical_metadata',
+        on_delete=models.SET_NULL,
         blank=True, null=True
     )
-    segment = models.ForeignKey(
-        Segment, related_name='pages', on_delete=models.PROTECT,
-        blank=True, null=True
-    )
-    is_segmented = models.BooleanField(default=False)
 
-    variation_panels = [
-        MultiFieldPanel([
-            FieldPanel('segment'),
-            PageChooserPanel('canonical_page', page_type=None),
-        ])
-    ]
+    variant = models.OneToOneField(
+        Page, related_name='_personalisable_page_metadata')
+
+    segment = models.ForeignKey(
+        Segment, related_name='page_metadata', null=True, blank=True)
+
+    is_segmented = models.BooleanField(default=False)
 
     base_form_class = AdminPersonalisablePageForm
 
@@ -137,6 +132,14 @@ class PersonalisablePageMixin(models.Model):
         return self.variations.exists()
 
     @cached_property
+    def variations(self):
+        return (
+            PersonalisablePageMetadata.objects
+            .filter(canonical_page_id=self.canonical_page_id)
+            .exclude(variant_id=self.variant_id)
+            .exclude(variant_id=self.canonical_page_id))
+
+    @cached_property
     def is_canonical(self):
         """Return a boolean indicating whether or not the personalisable page
         is a canonical page.
@@ -147,53 +150,56 @@ class PersonalisablePageMixin(models.Model):
         :rtype: bool
 
         """
-        return self.canonical_page_id is None
-
-    def get_unused_segments(self):
-        if not hasattr(self, '_unused_segments'):
-            self._unused_segments = (
-                Segment.objects.exclude(pages__canonical_page=self)
-                if self.is_canonical else Segment.objects.none())
-        return self._unused_segments
+        return self.canonical_page_id == self.variant_id
 
     def copy_for_segment(self, segment):
-        slug = "{}-{}".format(self.slug, segment.encoded_name())
-        title = "{} ({})".format(self.title, segment.name)
+        page = self.canonical_page
+
+        slug = "{}-{}".format(page.slug, segment.encoded_name())
+        title = "{} ({})".format(page.title, segment.name)
         update_attrs = {
             'title': title,
             'slug': slug,
-            'segment': segment,
             'live': False,
-            'canonical_page': self,
-            'is_segmented': True,
         }
 
-        return self.copy(update_attrs=update_attrs, copy_revisions=False)
+        with transaction.atomic():
+            new_page = self.canonical_page.copy(
+                update_attrs=update_attrs, copy_revisions=False)
+
+            PersonalisablePageMetadata.objects.create(
+                canonical_page=page,
+                variant=new_page,
+                segment=segment,
+                is_segmented=True)
+        return new_page
 
     def variants_for_segments(self, segments):
-        return self.__class__.objects.filter(
-            canonical_page=self, segment__in=segments)
+        return (
+            self.__class__.objects
+            .filter(
+                canonical_page_id=self.canonical_page_id,
+                segment__in=segments))
+
+    def get_unused_segments(self):
+        if self.is_canonical:
+            return (
+                Segment.objects
+                .exclude(page_metadata__canonical_page_id=self.canonical_page_id))
+        return Segment.objects.none()
 
 
-@cached_classmethod
-def get_edit_handler(cls):
-    """Add additional edit handlers to pages that are allowed to have
-    variations.
+class PersonalisablePageMixin(object):
+    """The personalisable page model. Allows creation of variants with linked
+    segments.
 
     """
-    tabs = []
-    if cls.content_panels:
-        tabs.append(ObjectList(cls.content_panels, heading=_("Content")))
-    if cls.variation_panels:
-        tabs.append(ObjectList(cls.variation_panels, heading=_("Variations")))
-    if cls.promote_panels:
-        tabs.append(ObjectList(cls.promote_panels, heading=_("Promote")))
-    if cls.settings_panels:
-        tabs.append(ObjectList(cls.settings_panels, heading=_("Settings"),
-                               classname='settings'))
 
-    edit_handler = TabbedInterface(tabs, base_form_class=cls.base_form_class)
-    return edit_handler.bind_to_model(cls)
-
-
-PersonalisablePageMixin.get_edit_handler = get_edit_handler
+    @cached_property
+    def personalisable_metadata(self):
+        try:
+            metadata = self._personalisable_page_metadata
+        except AttributeError:
+            metadata = PersonalisablePageMetadata.objects.create(
+                canonical_page=self, variant=self)
+        return metadata

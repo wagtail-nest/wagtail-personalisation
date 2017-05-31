@@ -23,7 +23,7 @@ def site():
 def segmented_page(site):
     page = HomePageFactory(parent=site.root_page)
     segment = SegmentFactory()
-    return page.copy_for_segment(segment)
+    return page.personalisable_metadata.copy_for_segment(segment)
 
 
 @pytest.fixture()
