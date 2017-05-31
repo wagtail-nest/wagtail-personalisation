@@ -2,13 +2,16 @@ from __future__ import absolute_import, unicode_literals
 
 from django import forms
 
-from django.http import HttpResponseForbidden, HttpResponseRedirect
+from django.http import HttpResponseForbidden, HttpResponseRedirect, HttpResponseBadRequest, JsonResponse
 from django.shortcuts import get_object_or_404, reverse
+from django.views.decorators.cache import never_cache
+from django.views.decorators.http import require_POST
 from django.utils.translation import ugettext_lazy as _
 from wagtail.contrib.modeladmin.options import ModelAdmin, modeladmin_register
 from wagtail.contrib.modeladmin.views import IndexView
 from wagtail.wagtailcore.models import Page
 
+from wagtail_personalisation.adapters import get_segment_adapter
 from wagtail_personalisation.models import Segment
 
 
@@ -137,3 +140,36 @@ def copy_page_view(request, page_id, segment_id):
         return HttpResponseRedirect(edit_url)
 
     return HttpResponseForbidden()
+
+
+@never_cache
+@require_POST
+def visit_page(request):
+    """Allows a frontend user to submit a page view and retrieve their current
+    segments on a site that is behind a cache or CDN.
+
+    On each page view, the user must POST to this view the page ID and path
+    that they are browsing. It will return a JSON-formatted document containing
+    a list of segments that are currently active for them.
+    """
+    segment_adapter = get_segment_adapter(request)
+    page_id = request.POST.get('page_id')
+    path = request.POST.get('path')
+
+    if page_id is None or path is None:
+        return HttpResponseBadRequest()
+
+    page = Page.objects.filter(id=page_id).only('id', 'slug', 'live').first()
+
+    if page is None or page.live is False:
+        return HttpResponseBadRequest()
+
+    segment_adapter.add_page_visit(page, path=path)
+    segment_adapter.refresh()
+
+    return JsonResponse({
+        'segments': [
+            segment['encoded_name']
+            for segment in segment_adapter.get_segments()
+        ]
+    })

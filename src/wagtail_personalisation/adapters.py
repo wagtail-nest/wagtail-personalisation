@@ -137,7 +137,7 @@ class SessionSegmentsAdapter(BaseSegmentsAdapter):
         segments = self.get_segments()
         return next((s for s in segments if s.pk == segment_id), None)
 
-    def add_page_visit(self, page):
+    def add_page_visit(self, page, path=None):
         """Mark the page as visited by the user"""
         visit_count = self.request.session.setdefault('visit_count', [])
         page_visits = [visit for visit in visit_count if visit['id'] == page.pk]
@@ -150,7 +150,7 @@ class SessionSegmentsAdapter(BaseSegmentsAdapter):
             visit_count.append({
                 'slug': page.slug,
                 'id': page.pk,
-                'path': self.request.path,
+                'path': path or self.request.path,
                 'count': 1,
             })
 
