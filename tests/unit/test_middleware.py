@@ -5,7 +5,6 @@ import datetime
 import pytest
 from freezegun import freeze_time
 
-from tests.factories.page import PageFactory
 from tests.factories.rule import (
     DayRuleFactory, DeviceRuleFactory, QueryRuleFactory, ReferralRuleFactory,
     TimeRuleFactory, VisitCountRuleFactory)

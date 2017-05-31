@@ -1,0 +1,352 @@
+# Wagtail Personalisation english translation strings.
+# Copyright (C) 2017 Lab Digital B.V.
+# This file is distributed under the same license as the wagtail_personalisation package.
+# Boris Besemer <b.besemer@labdigital.nl>, 2017.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: wagtail_personalisation 0.1.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2017-05-31 09:30-0500\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: blocks.py:20
+msgid "Personalisation segment"
+msgstr ""
+
+#: blocks.py:21
+msgid "Only show this content block for users in this segment"
+msgstr ""
+
+#: config.py:8
+msgid "Wagtail Personalisation"
+msgstr ""
+
+#: models.py:26
+msgid "Enabled"
+msgstr ""
+
+#: models.py:27
+msgid "Disabled"
+msgstr ""
+
+#: models.py:39
+msgid "Should the segment persist between visits?"
+msgstr ""
+
+#: models.py:42
+msgid "Should the segment match all the rules or just one of them?"
+msgstr ""
+
+#: models.py:60
+msgid "Rules"
+msgstr ""
+
+#: models.py:167
+msgid "Content"
+msgstr ""
+
+#: models.py:169
+msgid "Variations"
+msgstr ""
+
+#: models.py:171
+msgid "Promote"
+msgstr ""
+
+#: models.py:173
+msgid "Settings"
+msgstr ""
+
+#: rules.py:29 rules.py:48
+msgid "Abstract segmentation rule"
+msgstr ""
+
+#: rules.py:63
+msgid "Starting time"
+msgstr ""
+
+#: rules.py:64
+msgid "Ending time"
+msgstr ""
+
+#: rules.py:74
+msgid "Time Rule"
+msgstr ""
+
+#: rules.py:85
+msgid "These users visit between"
+msgstr ""
+
+#: rules.py:86
+msgid "{} and {}"
+msgstr ""
+
+#: rules.py:103
+msgid "Monday"
+msgstr ""
+
+#: rules.py:104
+msgid "Tuesday"
+msgstr ""
+
+#: rules.py:105
+msgid "Wednesday"
+msgstr ""
+
+#: rules.py:106
+msgid "Thursday"
+msgstr ""
+
+#: rules.py:107
+msgid "Friday"
+msgstr ""
+
+#: rules.py:108
+msgid "Saturday"
+msgstr ""
+
+#: rules.py:109
+msgid "Sunday"
+msgstr ""
+
+#: rules.py:122
+msgid "Day Rule"
+msgstr ""
+
+#: rules.py:146
+msgid "These users visit on"
+msgstr ""
+
+#: rules.py:162
+msgid "Regular expression to match the referrer"
+msgstr ""
+
+#: rules.py:169
+msgid "Referral Rule"
+msgstr ""
+
+#: rules.py:182
+msgid "These visits originate from"
+msgstr ""
+
+#: rules.py:183 rules.py:366
+msgid "{}"
+msgstr ""
+
+#: rules.py:202
+msgid "More than"
+msgstr ""
+
+#: rules.py:203
+msgid "Less than"
+msgstr ""
+
+#: rules.py:204
+msgid "Equal to"
+msgstr ""
+
+#: rules.py:247
+msgid "Visit count Rule"
+msgstr ""
+
+#: rules.py:251
+msgid "These users visited {}"
+msgstr ""
+
+#: rules.py:254
+msgid "{} {} times"
+msgstr ""
+
+#: rules.py:271
+msgid "The query parameter to search for"
+msgstr ""
+
+#: rules.py:273
+msgid "The value of the parameter to match"
+msgstr ""
+
+#: rules.py:282
+msgid "Query Rule"
+msgstr ""
+
+#: rules.py:293
+msgid "These users used a URL with the query"
+msgstr ""
+
+#: rules.py:294
+msgid "?{}={}"
+msgstr ""
+
+#: rules.py:312
+msgid "Mobile phone"
+msgstr ""
+
+#: rules.py:313
+msgid "Tablet"
+msgstr ""
+
+#: rules.py:314
+msgid "Desktop"
+msgstr ""
+
+#: rules.py:323
+msgid "Device Rule"
+msgstr ""
+
+#: rules.py:354
+msgid "Logged in Rule"
+msgstr ""
+
+#: rules.py:360
+msgid "Logged in"
+msgstr ""
+
+#: rules.py:362
+msgid "Not logged in"
+msgstr ""
+
+#: rules.py:365
+msgid "These visitors are"
+msgstr ""
+
+#: templates/modeladmin/wagtail_personalisation/segment/base.html:28
+msgid "Switch view"
+msgstr ""
+
+#: templates/modeladmin/wagtail_personalisation/segment/dashboard.html:14
+#: templates/modeladmin/wagtail_personalisation/segment/index.html:14
+msgid "Filter"
+msgstr ""
+
+#: templates/modeladmin/wagtail_personalisation/segment/dashboard.html:30
+msgid "This segment has been visited"
+msgstr ""
+
+#: templates/modeladmin/wagtail_personalisation/segment/dashboard.html:31
+msgid "time"
+msgstr ""
+
+#: templates/modeladmin/wagtail_personalisation/segment/dashboard.html:34
+msgid "This segment has been active for"
+msgstr ""
+
+#: templates/modeladmin/wagtail_personalisation/segment/dashboard.html:35
+msgid "day"
+msgstr ""
+
+#: templates/modeladmin/wagtail_personalisation/segment/dashboard.html:43
+msgid "The visitor must match"
+msgstr ""
+
+#: templates/modeladmin/wagtail_personalisation/segment/dashboard.html:45
+msgid "Any rule"
+msgstr ""
+
+#: templates/modeladmin/wagtail_personalisation/segment/dashboard.html:47
+msgid "All rules"
+msgstr ""
+
+#: templates/modeladmin/wagtail_personalisation/segment/dashboard.html:52
+msgid "The persistence of this segment is"
+msgstr ""
+
+#: templates/modeladmin/wagtail_personalisation/segment/dashboard.html:54
+msgid "This segment persists in between visits"
+msgstr ""
+
+#: templates/modeladmin/wagtail_personalisation/segment/dashboard.html:54
+msgid "Persistent"
+msgstr ""
+
+#: templates/modeladmin/wagtail_personalisation/segment/dashboard.html:56
+msgid "This segment is re-evaluated on every visit"
+msgstr ""
+
+#: templates/modeladmin/wagtail_personalisation/segment/dashboard.html:56
+msgid "Fleeting"
+msgstr ""
+
+#: templates/modeladmin/wagtail_personalisation/segment/dashboard.html:76
+msgid "Enable this segment"
+msgstr ""
+
+#: templates/modeladmin/wagtail_personalisation/segment/dashboard.html:78
+msgid "Disable this segment"
+msgstr ""
+
+#: templates/modeladmin/wagtail_personalisation/segment/dashboard.html:80
+msgid "Configure this segment"
+msgstr ""
+
+#: templates/modeladmin/wagtail_personalisation/segment/dashboard.html:88
+#, python-format
+msgid ""
+"\n"
+"                                    <a class=\"block suggestion\" href="
+"\"%(url)s\">\n"
+"                                        <span class=\"suggestive_text\">Add "
+"a new %(name)s</span>\n"
+"                                    </a>\n"
+"                                "
+msgstr ""
+
+#: templates/modeladmin/wagtail_personalisation/segment/dashboard.html:101
+#: templates/modeladmin/wagtail_personalisation/segment/index.html:45
+#, python-format
+msgid "Page %(current_page)s of %(num_pages)s."
+msgstr ""
+
+#: templates/modeladmin/wagtail_personalisation/segment/index.html:24
+#, python-format
+msgid ""
+"No %(name)s have been created yet. One of the following must be created "
+"before you can add any %(name)s:"
+msgstr ""
+
+#: templates/modeladmin/wagtail_personalisation/segment/index.html:29
+#, python-format
+msgid "No %(name)s have been created yet."
+msgstr ""
+
+#: templates/modeladmin/wagtail_personalisation/segment/index.html:31
+#, python-format
+msgid ""
+"\n"
+"                                            Why not <a href=\"%(url)s\">add "
+"one</a>?\n"
+"                                        "
+msgstr ""
+
+#: views.py:60
+#, python-brace-format
+msgid "{visits} visits"
+msgstr ""
+
+#: views.py:63
+#, python-brace-format
+msgid "{days} days"
+msgstr ""
+
+#: wagtail_hooks.py:121
+msgid "Variants"
+msgstr ""
+
+#: wagtail_hooks.py:126
+msgid "Create a new variant"
+msgstr ""
+
+#: wagtail_hooks.py:146
+msgid "Create this variant"
+msgstr ""
+
+#: wagtail_hooks.py:159
+msgid "Segments"
+msgstr ""

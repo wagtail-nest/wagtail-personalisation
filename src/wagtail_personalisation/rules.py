@@ -47,7 +47,7 @@ class AbstractBaseRule(models.Model):
         """
         description = {
             'title': _('Abstract segmentation rule'),
-            'value': _(''),
+            'value': '',
         }
 
         return description
@@ -150,7 +150,7 @@ class ReferralRule(AbstractBaseRule):
 
     """
     regex_string = models.TextField(
-        _("Regex string to match the referer with"))
+        _("Regular expression to match the referrer"))
 
     panels = [
         FieldPanel('regex_string'),
@@ -269,7 +269,7 @@ class QueryRule(AbstractBaseRule):
 
     def description(self):
         return {
-            'title': _('These users used a url with the query'),
+            'title': _('These users used a URL with the query'),
             'value': _('?{}={}').format(
                 self.parameter,
                 self.value
@@ -325,7 +325,7 @@ class UserIsLoggedInRule(AbstractBaseRule):
     ]
 
     class Meta:
-        verbose_name = _('Logged In Rule')
+        verbose_name = _('Logged in Rule')
 
     def test_user(self, request=None):
         return request.user.is_authenticated() == self.is_logged_in
