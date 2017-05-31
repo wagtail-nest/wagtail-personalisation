@@ -16,7 +16,7 @@ def do_segment(parser, token):
 
     # If no segment is provided this block will raise an error
     if set(kwargs.keys()) != {'name'}:
-        usage = '{% {tag_name} name="segmentname" %} ... {% end{tag_name} %}'.format(tag_name=tag_name)
+        usage = '{% segment name="segmentname" %} ... {% endsegment %}'
         raise TemplateSyntaxError("Usage: %s" % usage)
 
     nodelist = parser.parse(('endsegment',))
