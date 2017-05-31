@@ -74,15 +74,7 @@ def serve_variation(page, request, serve_args, serve_kwargs):
     """
     user_segments = []
     adapter = get_segment_adapter(request)
-
-    for segment in adapter.get_segments():
-        try:
-            user_segment = Segment.objects.get(
-                pk=segment['id'], status=Segment.STATUS_ENABLED)
-        except Segment.DoesNotExist:
-            user_segment = None
-        if user_segment:
-            user_segments.append(user_segment)
+    user_segments = adapter.get_segments()
 
     if len(user_segments) > 0:
         variations = _check_for_variations(user_segments, page)
