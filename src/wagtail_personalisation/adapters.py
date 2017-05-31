@@ -1,6 +1,8 @@
 from __future__ import absolute_import, unicode_literals
 
+from django.conf import settings
 from django.db.models import F
+from django.utils.module_loading import import_string
 
 from wagtail_personalisation.models import Segment
 from wagtail_personalisation.rules import AbstractBaseRule
@@ -9,6 +11,15 @@ from wagtail_personalisation.utils import create_segment_dictionary
 
 class BaseSegmentsAdapter(object):
     """Base segments adapter."""
+
+    def __init__(self, request):
+        """Prepare the request session for segment storage.
+
+        :param request: The http request
+        :type request: django.http.HttpRequest
+
+        """
+        self.request = request
 
     def setup(self):
         """Prepare the adapter for segment storage."""
@@ -64,15 +75,8 @@ class BaseSegmentsAdapter(object):
 class SessionSegmentsAdapter(BaseSegmentsAdapter):
     """Segment adapter that uses Django's session backend."""
 
-    def setup(self, request):
-        """Prepare the request session for segment storage.
-
-        :param request: The http request
-        :type request: django.http.HttpRequest
-
-        """
-        self.request = request
-
+    def __init__(self, request):
+        super(SessionSegmentsAdapter, self).__init__(request)
         self.request.session.setdefault('segments', [])
 
     def get_all_segments(self):
@@ -166,3 +170,18 @@ class SessionSegmentsAdapter(BaseSegmentsAdapter):
         self.request.session['segments'] = new_segments
 
         self.update_visit_count()
+
+
+SEGMENT_ADAPTER_CLASS = import_string(getattr(
+    settings,
+    'PERSONALISATION_SEGMENTS_ADAPTER',
+    'wagtail_personalisation.adapters.SessionSegmentsAdapter'))
+
+
+def get_segment_adapter(request):
+    """Return the Segment Adapter for the given request"""
+    try:
+        return request.segment_adapter
+    except AttributeError:
+        request.segment_adapter = SEGMENT_ADAPTER_CLASS(request)
+        return request.segment_adapter
