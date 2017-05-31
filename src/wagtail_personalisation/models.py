@@ -84,7 +84,7 @@ class Segment(ClusterableModel):
 
     def get_created_variants(self):
         page_classes = [page_class for page_class
-                        in PersonalisablePage.__subclasses__()]
+                        in PersonalisablePageMixin.__subclasses__()]
         pages = [page.objects.filter(segment=self) for page in page_classes]
 
         return list(itertools.chain(*pages))
