@@ -43,7 +43,7 @@ class SegmentNode(template.Node):
     def render(self, context):
         # Check if segment exists
         name = self.name.resolve(context)
-        segment = Segment.objects.filter(name=name).first()
+        segment = Segment.objects.enabled().filter(name=name).first()
         if not segment:
             return ""
 
