@@ -1,6 +1,6 @@
 # Wagtail Personalisation english translation strings.
 # Copyright (C) 2017 Lab Digital B.V.
-# This file is distributed under the same license as the PACKAGE package.
+# This file is distributed under the same license as the wagtail_personalisation package.
 # Boris Besemer <b.besemer@labdigital.nl>, 2017.
 #
 #, fuzzy
