@@ -33,7 +33,7 @@ class PersonalisedStructBlock(blocks.StructBlock):
         """
         request = context['request']
         adapter = get_segment_adapter(request)
-        user_segments = adapter.get_all_segments()
+        user_segments = adapter.get_segments()
 
         if value['segment']:
             for segment in user_segments:

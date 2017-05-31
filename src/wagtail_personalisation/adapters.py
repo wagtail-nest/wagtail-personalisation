@@ -25,11 +25,11 @@ class BaseSegmentsAdapter(object):
         """Prepare the adapter for segment storage."""
         return None
 
-    def get_all_segments(self):
+    def get_segments(self):
         """Return the segments stored in the adapter storage."""
         return None
 
-    def get_segment(self):
+    def get_segment_by_id(self):
         """Return a single segment stored in the adapter storage."""
         return None
 
@@ -79,7 +79,7 @@ class SessionSegmentsAdapter(BaseSegmentsAdapter):
         super(SessionSegmentsAdapter, self).__init__(request)
         self.request.session.setdefault('segments', [])
 
-    def get_all_segments(self):
+    def get_segments(self):
         """Return the segments stored in the request session.
 
         :returns: The segments in the request session
@@ -88,7 +88,11 @@ class SessionSegmentsAdapter(BaseSegmentsAdapter):
         """
         return self.request.session['segments']
 
-    def get_segment(self, segment_id):
+    def set_segments(self, segments):
+        """Set the currently active segments"""
+        self.request.session['segments'] = segments
+
+    def get_segment_by_id(self, segment_id):
         """Find and return a single segment from the request session.
 
         :param segment_id: The primary key of the segment
@@ -175,7 +179,8 @@ class SessionSegmentsAdapter(BaseSegmentsAdapter):
         """
         enabled_segments = Segment.objects.filter(status=Segment.STATUS_ENABLED)
         persistent_segments = enabled_segments.filter(persistent=True)
-        session_segments = self.request.session['segments']
+
+        session_segments = self.get_segments()
         rules = AbstractBaseRule.__subclasses__()
 
         # Create a list to store the new request session segments and
@@ -196,8 +201,7 @@ class SessionSegmentsAdapter(BaseSegmentsAdapter):
                 if not any(seg['id'] == segdict['id'] for seg in new_segments):
                     new_segments.append(segdict)
 
-        self.request.session['segments'] = new_segments
-
+        self.set_segments(new_segments)
         self.update_visit_count()
 
 

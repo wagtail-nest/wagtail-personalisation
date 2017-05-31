@@ -1,8 +1,8 @@
 from django import template
 from django.template import TemplateSyntaxError
-
 from django.utils.safestring import mark_safe
 
+from wagtail_personalisation.adapters import get_segment_adapter
 from wagtail_personalisation.models import Segment
 from wagtail_personalisation.utils import parse_tag
 
@@ -48,11 +48,11 @@ class SegmentNode(template.Node):
             return ""
 
         # Check if user has segment
-        user_segment = context['request'].segment_adapter.get_segment(segment_id=segment.pk)
+        adapter = get_segment_adapter(context['request'])
+        user_segment = adapter.get_segment_by_id(segment_id=segment.pk)
         if not user_segment:
-            return ""
+            return ''
 
         content = self.nodelist.render(context)
         content = mark_safe(content)
-
         return content
