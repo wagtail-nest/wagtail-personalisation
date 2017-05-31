@@ -10,9 +10,7 @@ register = template.Library()
 
 
 def do_segment(parser, token):
-    """Block that only shows content if user is in chosen segment.
-
-    """
+    """Block that only shows content if user is in chosen segment."""
     # Parse the tag
     tag_name, _, kwargs = parse_tag(token, parser)
 
@@ -33,9 +31,9 @@ register.tag('segment', do_segment)
 class SegmentNode(template.Node):
     """Node that only returns contents if user is in the segment.
 
-        This node checks if the chosen segment exists and if the
-        user has been segmented in the chosen segment.
-        If not it will return nothing
+    This node checks if the chosen segment exists and if the
+    user has been segmented in the chosen segment.
+    If not it will return nothing
 
     """
     def __init__(self, nodelist, name):

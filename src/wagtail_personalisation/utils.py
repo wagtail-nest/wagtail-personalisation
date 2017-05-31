@@ -3,7 +3,6 @@ import time
 from django.template.base import FilterExpression, kwarg_re
 from django.utils import timezone
 
-
 def impersonate_other_page(page, other_page):
     """Function to change the page metadata so the user gets to see the
     non-personalized path and page.

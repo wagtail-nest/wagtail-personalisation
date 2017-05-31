@@ -75,18 +75,18 @@ Method 2: Create a StreamField block
 Method 3: Create a template block
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-You can add a template block that only shows it's contents to users of a
+You can add a template block that only shows its contents to users of a
 specific segment. This is done using the "segment" block.
 
-When editing templates make sure to add the `wagtail_personalisation_tags`
-tag to the template::
+When editing templates make sure to load the ``wagtail_personalisation_tags``
+tags library in the template::
 
     {% load wagtail_personalisation_tags %}
 
 After that you can add a template block with the name of the segment you want
 the content to show up for::
 
-    {% segment name="My Segment"}
+    {% segment name="My Segment" %}
         <p>Only users within "My Segment" see this!</p>
     {% endsegment %}
 
