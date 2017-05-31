@@ -80,10 +80,11 @@ def serve_variation(page, request, serve_args, serve_kwargs):
 
     if user_segments:
         metadata = page.personalisable_metadata
+
+        # TODO: This is never more then one page? (fix query count)
         variations = metadata.variants_for_segments(user_segments)
         if variations:
-            variation = variations.first()
-            impersonate_other_page(variation, page)
+            variation = variations.first().variant.specific
             return variation.serve(request, *serve_args, **serve_kwargs)
 
 
