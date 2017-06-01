@@ -25,6 +25,7 @@ class AbstractBaseRule(models.Model):
 
     class Meta:
         abstract = True
+        verbose_name = 'Abstract segmentation rule'
 
     def __str__(self):
         return force_text(self._meta.verbose_name)
@@ -56,10 +57,6 @@ class AbstractBaseRule(models.Model):
     def get_descendant_models(cls):
         return [model for model in apps.get_models()
                 if issubclass(model, AbstractBaseRule)]
-
-    class Meta:
-        abstract = True
-        verbose_name = 'Abstract segmentation rule'
 
 
 class TimeRule(AbstractBaseRule):
