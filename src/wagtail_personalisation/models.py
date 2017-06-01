@@ -5,12 +5,9 @@ from django.template.defaultfilters import slugify
 from django.utils.encoding import python_2_unicode_compatible
 from django.utils.functional import cached_property
 from django.utils.translation import ugettext_lazy as _
-from modelcluster.fields import ParentalKey
 from modelcluster.models import ClusterableModel
-from wagtail.utils.decorators import cached_classmethod
 from wagtail.wagtailadmin.edit_handlers import (
-    FieldPanel, FieldRowPanel, InlinePanel, MultiFieldPanel, ObjectList,
-    PageChooserPanel, TabbedInterface)
+    FieldPanel, FieldRowPanel, InlinePanel, MultiFieldPanel)
 from wagtail.wagtailcore.models import Page
 
 from wagtail_personalisation.rules import AbstractBaseRule
