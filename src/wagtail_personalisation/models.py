@@ -7,13 +7,12 @@ from django.utils.functional import cached_property
 from django.utils.translation import ugettext_lazy as _
 from modelcluster.fields import ParentalKey
 from modelcluster.models import ClusterableModel
-from wagtail.wagtailcore.models import Page
 from wagtail.utils.decorators import cached_classmethod
 from wagtail.wagtailadmin.edit_handlers import (
     FieldPanel, FieldRowPanel, InlinePanel, MultiFieldPanel, ObjectList,
     PageChooserPanel, TabbedInterface)
+from wagtail.wagtailcore.models import Page
 
-from wagtail_personalisation.forms import AdminPersonalisablePageForm
 from wagtail_personalisation.rules import AbstractBaseRule
 from wagtail_personalisation.utils import count_active_days
 
@@ -115,10 +114,6 @@ class PersonalisablePageMetadata(ClusterableModel):
     segment = models.ForeignKey(
         Segment, related_name='page_metadata', null=True, blank=True)
 
-    is_segmented = models.BooleanField(default=False)
-
-    base_form_class = AdminPersonalisablePageForm
-
     @cached_property
     def has_variations(self):
         """Return a boolean indicating whether or not the personalisable page
@@ -170,8 +165,7 @@ class PersonalisablePageMetadata(ClusterableModel):
             PersonalisablePageMetadata.objects.create(
                 canonical_page=page,
                 variant=new_page,
-                segment=segment,
-                is_segmented=True)
+                segment=segment)
         return new_page
 
     def variants_for_segments(self, segments):
