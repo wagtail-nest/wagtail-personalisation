@@ -16,7 +16,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='homepage',
             name='text_content',
-            field=wagtail.wagtailcore.fields.RichTextField(default=''),
+            field=wagtail.wagtailcore.fields.RichTextField(default='Thank you for trying Wagxperience!'),
             preserve_default=False,
         ),
     ]
