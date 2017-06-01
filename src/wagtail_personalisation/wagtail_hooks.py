@@ -13,7 +13,6 @@ from wagtail.wagtailcore import hooks
 from wagtail_personalisation import admin_urls, models
 from wagtail_personalisation.adapters import get_segment_adapter
 from wagtail_personalisation.models import PersonalisablePageMixin, Segment
-from wagtail_personalisation.utils import impersonate_other_page
 
 logger = logging.getLogger(__name__)
 
