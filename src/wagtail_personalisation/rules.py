@@ -6,7 +6,7 @@ from datetime import datetime
 from django.apps import apps
 from django.db import models
 from django.template.defaultfilters import slugify
-from django.utils.encoding import python_2_unicode_compatible, force_text
+from django.utils.encoding import force_text, python_2_unicode_compatible
 from django.utils.translation import ugettext_lazy as _
 from modelcluster.fields import ParentalKey
 from user_agents import parse
