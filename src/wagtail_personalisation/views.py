@@ -38,7 +38,7 @@ class SegmentModelAdmin(ModelAdmin):
     model = Segment
     index_view_class = SegmentModelIndexView
     dashboard_view_class = SegmentModelDashboardView
-    menu_icon = 'group'
+    menu_icon = 'fa-snowflake-o'
     add_to_settings_menu = False
     list_display = ('name', 'visits', 'active_days', 'status')
     index_view_extra_js = ['js/commons.js', 'js/index.js']
