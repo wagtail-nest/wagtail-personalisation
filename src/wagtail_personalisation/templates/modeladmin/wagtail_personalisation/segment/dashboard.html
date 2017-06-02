@@ -3,111 +3,92 @@
 
 {% block toggle_view %}to List {% endblock%}
 
-{% block content_main %}
-    <div>
-        <div class="row">
-            {% block content_cols %}
+{% block result_list %}
+    <div class="block-container">
+        {% if all_count %}
+            {% for segment in object_list %}
+                <div class="block block__segment block__segment--{{ segment.status }} segment--match-{{ segment.match_any|yesno:"any,all" }} segment--{{ segment.persistent|yesno:"persistent,fleeting" }}">
 
-                {% block filters %}
-                    {% if view.has_filters and all_count %}
-                    <div class="changelist-filter col3">
-                        <h2>{% trans 'Filter' %}</h2>
-                        {% for spec in view.filter_specs %}{% admin_list_filter view spec %}{% endfor %}
-                    </div>
-                    {% endif %}
-                {% endblock %}
-
-                <div>
-                    {% block result_list %}
-                        <div class="nice-padding block_container">
-                            {% if all_count %}
-                                {% for segment in object_list %}
-                                    <div class="block block--{{ segment.status }}" onclick="location.href = 'edit/{{ segment.pk }}'">
-                                        <h2>{{ segment }}</h2>
-                                        <div class="inspect_container">
-                                            <ul class="inspect segment_stats">
-                                                <li class="visit_stat">
-                                                    {% trans "This segment has been visited" %}
-                                                    <span class="icon icon-fa-rocket">{{ segment.visit_count|localize }} {% trans "time" %}{{ segment.visit_count|pluralize }}</span>
-                                                </li>
-                                                <li class="days_stat">
-                                                    {% trans "This segment has been active for" %}
-                                                    <span class="icon icon-fa-calendar">{{ segment.enable_date|days_since:segment.disable_date }} {% trans "day" %}{{ segment.enable_date|days_since:segment.disable_date|pluralize }}</span>
-                                                </li>
-                                            </ul>
-
-                                            <hr />
-
-                                            <ul class="inspect segment_rules">
-                                                <li class="match_state {{ segment.match_any|yesno:"any,all" }}">
-                                                    {% trans "The visitor must match" %}
-                                                    {% if segment.match_any %}
-                                                        <span class="icon icon-fa-cube">{% trans "Any rule" %}</span>
-                                                    {% else %}
-                                                        <span class="icon icon-fa-cubes">{% trans "All rules" %}</span>
-                                                    {% endif %}
-                                                </li>
-
-                                                <li class="persistent_state {{ segment.persistent|yesno:"persistent,fleeting" }}">
-                                                    {% trans "The persistence of this segment is" %}
-                                                    {% if segment.persistent %}
-                                                        <span class="icon icon-fa-bookmark" title="{% trans "This segment persists in between visits" %}">{% trans "Persistent" %}</span>
-                                                    {% else %}
-                                                        <span class="icon icon-fa-bookmark-o" title="{% trans "This segment is reevaluated on every visit" %}">{% trans "Fleeting" %}</span>
-                                                    {% endif %}
-                                                </li>
-
-                                                {% for rule in segment.get_rules %}
-                                                    <li class="{{ rule.encoded_name }}">
-                                                        {{ rule.description.title }}
-                                                        {% if rule.description.code %}
-                                                            <pre>{{ rule.description.value }}</pre>
-                                                        {% else %}
-                                                            <span class="icon icon-{{ rule.icon }}">{{ rule.description.value }}</span>
-                                                        {% endif %}
-                                                    </li>
-                                                {% endfor %}
-                                            </ul>
-                                        </div>
-
-                                        {% if user_can_create %}
-                                        <ul class="block_actions">
-                                            {% if segment.status == segment.STATUS_DISABLED %}
-                                                <li><a href="{% url 'segment:toggle' segment.pk %}" title="{% trans "Enable this segment" %}">enable</a></li>
-                                            {% elif segment.status == segment.STATUS_ENABLED %}
-                                                <li><a href="{% url 'segment:toggle' segment.pk %}" title="{% trans "Disable this segment" %}">disable</a></li>
-                                            {% endif %}
-                                            <li><a href="edit/{{ segment.pk }}" title="{% trans "Configure this segment" %}">configure this</a></li>
-                                        </ul>
-                                        {% endif %}
-                                    </div>
-                                {% endfor %}
-                            {% endif %}
-
-                            {% if user_can_create %}
-                                {% blocktrans with url=view.create_url name=view.verbose_name %}
-                                    <a class="block suggestion" href="{{ url }}">
-                                        <span class="suggestive_text">Add a new {{name}}</span>
-                                    </a>
-                                {% endblocktrans %}
-                            {% endif %}
+                    <div class="block-header">
+                        <h2>{{ segment.name }}</h2>
+                        <div class="block-data">
+                            <p class="block-data__description">{% trans "This segment has been visited" %}</p>
+                            <p class="block-data__content">
+                                <strong>{{ segment.visit_count|localize }}</strong>
+                                {% trans "time" %}{{ segment.visit_count|pluralize }} {% trans "in" %}
+                                <strong>{{ segment.enable_date|days_since:segment.disable_date }}</strong>
+                                {% trans "day" %}{{ segment.enable_date|days_since:segment.disable_date|pluralize }}
+                            </p>
                         </div>
-                    {% endblock %}
-                </div>
+                    </div>
 
-                {% block pagination %}
-                    {% if paginator.num_pages > 1 %}
-                    <div class="pagination {% if view.has_filters and all_count %}col9{% else %}col12{% endif %}">
-                        <p>{% blocktrans with page_obj.number as current_page and paginator.num_pages as num_pages %}Page {{ current_page }} of {{ num_pages }}.{% endblocktrans %}</p>
-                        <ul>
-                            {% pagination_link_previous page_obj view %}
-                            {% pagination_link_next page_obj view %}
+                    <div class="block-rules">
+                        {% for rule in segment.get_rules %}
+                            <div class="block-data block-data--icon icon icon-{{ rule.icon }}">
+                                <p class="block-data__description">{{ rule.description.title }}</p>
+                                <p class="block-data__content">
+                                    {% if rule.description.code %}
+                                        <pre>{{ rule.description.value }}</pre>
+                                    {% else %}
+                                        <span>{{ rule.description.value }}</span>
+                                    {% endif %}
+                                </p>
+                            </div>
+                        {% endfor %}
+                    </div>
+
+                    <div class="block-footer">
+                        <div class="block-stats">
+                            <p class="block-stats__content">
+                                {% trans "Active on" %}
+                                <strong>{{ segment.get_used_pages|length }}</strong>
+                                {% trans "page" %}{{ segment.get_used_pages|length|pluralize }} {% trans "and" %}
+                                <strong>{{ segment.get_created_variants|length }}</strong>
+                                {% trans "variant" %}{{ segment.get_created_variants|length|pluralize }}.
+                            </p>
+                        </div>
+                        <ul class="block-actions">
+                            {% if segment.status == segment.STATUS_DISABLED %}
+                                <li class="block-actions__action">
+                                    {% if user_can_create %}
+                                        <a href="{% url 'segment:toggle' segment.pk %}" title="{% trans "Enable this segment" %}">enable</a>
+                                    {% else %}
+                                        <span>enabled</span>
+                                    {% endif %}
+                                </li>
+                            {% elif segment.status == segment.STATUS_ENABLED %}
+                                <li class="block-actions__action">
+                                    {% if user_can_create %}
+                                        <a href="{% url 'segment:toggle' segment.pk %}" title="{% trans "Disable this segment" %}">disable</a>
+                                    {% else %}
+                                        <span>disabled</span>
+                                    {% endif %}
+                                </li>
+                            {% endif %}
+                            <li class="block-actions__action">
+                                <a href="{% url 'wagtail_personalisation_segment_modeladmin_inspect' segment.pk %}" title="{% trans "Inspect this segment" %}">inspect</a>
+                            </li>
+                            {% if user_can_create %}
+                            <li class="block-actions__action">
+                                <a href="{% url 'wagtail_personalisation_segment_modeladmin_edit' segment.pk %}" title="{% trans "Edit this segment" %}">edit</a>
+                            </li>
+                            <li class="block-actions__action">
+                                <a href="{% url 'wagtail_personalisation_segment_modeladmin_delete' segment.pk %}" title="{% trans "Delete this segment" %}">delete</a>
+                            </li>
+                            {% endif %}
                         </ul>
                     </div>
-                    {% endif %}
-                {% endblock %}
 
-            {% endblock %}
-        </div>
+                </div>
+            {% endfor %}
+        {% endif %}
+
+        {% if user_can_create %}
+            {% blocktrans with url=view.create_url name=view.verbose_name %}
+                <a class="block block__suggestion" href="{{ url }}">
+                    <span class="suggestive_text">Add a new {{ name }}</span>
+                </a>
+            {% endblocktrans %}
+        {% endif %}
     </div>
 {% endblock %}

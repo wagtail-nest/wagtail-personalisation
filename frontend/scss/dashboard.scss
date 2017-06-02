@@ -1,132 +1,89 @@
-.nice-padding {
-    padding-left: 50px;
-    padding-right: 50px;
-}
+$color-gray: #D0D2D3;
+$color-light-gray: #F6F6F6;
+$color-dark-gray: #727272;
+$block-spacing: 20px;
 
-.block_container {
-    display: block;
-    margin-top: 30px;
-}
-
-.block_container .block {
-    display: block;
-    float: left;
-    box-sizing: border-box;
-    position: relative;
-    width: calc(50% - 10px);
-    min-height: 216px;
-    padding: 10px 20px;
-    margin-bottom: 20px;
-    border: 1px solid #d9d9d9;
-    border-radius: 3px;
-    background-color: #fff;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.00), 0 1px 2px rgba(0,0,0,0.00);
-    transition: box-shadow 0.3s cubic-bezier(.25,.8,.25,1), border 0.3s cubic-bezier(.25,.8,.25,1);
-    cursor: pointer;
-}
-
-.block_container .block--disabled h2,
-.block_container .block--disabled .inspect_container {
-    opacity: 0.5;
-}
-
-    .block_container .block h2 {
-        display: inline-block;
-        width: auto;
-    }
-
-.block_container .block:nth-child(odd) {
-    margin-right: 20px;
-}
-
-    .block_container .block .block_actions {
-        list-style: none;
-        margin: 0;
-        padding: 0;
-    }
-
-        .block_container .block .block_actions li {
-            float: left;
-            margin-right: 10px;
-        }
-
-        .block_container .block .block_actions li:last-child {
-            margin-right: 0;
-        }
-
-.block_container .block.suggestion {
-    border: 1px dashed #d9d9d9;
-}
-
-.block_container .block:hover {
-    border: 1px solid #fff;
-    box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
-}
-
-@media (max-width: 699px) {
-    .block_container .block {
-        width: 100%;
-        margin-right: 0;
-    }
-}
-
-.block_container .block .inspect_container {
+.block-container {
     display: flex;
-    flex-direction: row;
-    flex-wrap: nowrap;
-    justify-content: space-between;
-    align-items: stretch;
-    margin-bottom: 10px;
-}
+    flex-wrap: wrap;
+    justify-content: flex-start;
 
-.block_container .block .inspect_container .inspect {
-    display: block;
-    float: left;
-    width: calc(50% - 10px);
-    padding: 0;
-    margin: 0;
-    list-style: none;
-}
-
-    .block_container .block span.icon::before {
-        margin-right: 0.3em;
-        vertical-align: bottom;
-    }
-
-    .block_container .block .inspect_container .inspect li {
-        display: inline-block;
-        margin-bottom: 5px;
-    }
-
-    .block_container .block .inspect_container .inspect li span {
+    .block {
         display: block;
-        font-size: 20px;
-        font-weight: bold;
-        margin: 5px 0;
-        overflow-wrap: break-word;
-    }
-
-    .block_container .block .inspect_container .inspect li pre {
-        position: relative;
         box-sizing: border-box;
-        width: auto;
-        background-color: #eee;
-        border: 1px solid #ccc;
-        margin: 5px 0 5px 21px;
-        padding: 2px 5px;
-        word-wrap: break-word;
-        word-break: break-all;
+        width: 22%;
+        min-width: 280px;
+        margin: 1.5%;
+        border: 1px solid $color-gray;
         border-radius: 3px;
-    }
 
-.block_container .block.suggestion .suggestive_text {
-    display: block;
-    position: absolute;
-    width: calc(100% - 40px);
-    text-align: center;
-    top: 50%;
-    transform: translateY(-50%);
-    color: #d9d9d9;
-    font-size: 20px;
-    font-weight: 100;
+        &__segment {
+            .block-header,
+            .block-rules,
+            .block-footer {
+                display: block;
+                box-sizing: border-box;
+            }
+
+            .block-header {
+                padding: $block-spacing;
+                border-bottom: 1px solid $color-gray;
+
+                h2 {
+                    margin-top: 0;
+                }
+            }
+
+            .block-rules {
+                padding: $block-spacing 0;
+            }
+
+            .block-footer {
+                padding: $block-spacing / 2 $block-spacing;
+                border-top: 1px solid $color-gray;
+                background-color: $color-light-gray;
+            }
+
+            .block-data {
+                &__description {
+                    margin-bottom: 3px;
+                    font-size: 14px;
+                    color: $color-dark-gray;
+                }
+
+                &__content {
+                    margin-bottom: 0;
+                    font-size: 18px;
+                }
+
+                &--icon {
+                    .block-data__description {
+                        padding-left: 1.5em;
+                    }
+                }
+            }
+
+            .block-stats {
+                &__content {
+                    margin-bottom: 3px;
+                }
+            }
+
+            .block-actions {
+                margin: 0;
+                padding: 0;
+                list-style: none;
+
+                &__action {
+                    display: inline-block;
+                    margin-right: 5px;
+
+                    &:last-child {
+                        margin-right: 0;
+                    }
+                }
+
+            }
+        }
+    }
 }

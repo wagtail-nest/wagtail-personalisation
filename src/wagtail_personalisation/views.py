@@ -46,6 +46,7 @@ class SegmentModelAdmin(ModelAdmin):
     index_view_extra_css = ['css/index.css']
     form_view_extra_js = ['js/commons.js', 'js/form.js']
     form_view_extra_css = ['css/form.css']
+    inspect_view_enabled = True
 
     def index_view(self, request):
         kwargs = {'model_admin': self}
