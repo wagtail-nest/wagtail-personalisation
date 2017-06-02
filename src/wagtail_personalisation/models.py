@@ -81,22 +81,26 @@ class Segment(ClusterableModel):
 
     def get_used_pages(self):
         """Return the pages that have variants using this segment."""
-        pass
+        pages = [page for page
+                 in PersonalisablePageMetadata.objects.filter(segment=self)]
+
+        return pages
 
     def get_created_variants(self):
         """Return the variants using this segment."""
-        page_classes = [page_class for page_class
-                        in PersonalisablePageMixin.__subclasses__()]
-        pages = [page.objects.filter(segment=self) for page in page_classes]
+        pages = [page.variations for page
+                 in PersonalisablePageMetadata.objects.filter(segment=self)]
 
         return list(itertools.chain(*pages))
 
     def get_rules(self):
         """Retrieve all rules in the segment."""
-        related_rules = [rule.objects.filter(segment=self)
-                         for rule in AbstractBaseRule.__subclasses__()]
+        segment_rules = []
+        for rule_model in AbstractBaseRule.get_descendant_models():
+            segment_rules.extend(
+                rule_model._default_manager.filter(segment=self))
 
-        return list(itertools.chain(*related_rules))
+        return segment_rules
 
     def toggle(self, save=True):
         self.status = (

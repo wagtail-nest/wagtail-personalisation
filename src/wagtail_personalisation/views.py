@@ -39,7 +39,8 @@ class SegmentModelAdmin(ModelAdmin):
     dashboard_view_class = SegmentModelDashboardView
     menu_icon = 'fa-snowflake-o'
     add_to_settings_menu = False
-    list_display = ('name', 'persistent', 'match_any', 'status', 'variant_count', 'statistics')
+    list_display = ('name', 'persistent', 'match_any', 'status',
+                    'page_count', 'variant_count', 'statistics')
     index_view_extra_js = ['js/commons.js', 'js/index.js']
     index_view_extra_css = ['css/index.css']
     form_view_extra_js = ['js/commons.js', 'js/form.js']
@@ -55,9 +56,11 @@ class SegmentModelAdmin(ModelAdmin):
 
         return view_class.as_view(**kwargs)(request)
 
+    def page_count(self, obj):
+        return len(obj.get_used_pages())
+
     def variant_count(self, obj):
-        return _("{pages} pages").format(
-            pages=len(obj.get_created_variants()))
+        return len(obj.get_created_variants())
 
     def statistics(self, obj):
         return _("{visits} visits in {days} days").format(
