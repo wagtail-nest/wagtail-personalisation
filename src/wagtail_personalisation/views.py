@@ -122,7 +122,7 @@ def copy_page_view(request, page_id, segment_id):
         segment = get_object_or_404(Segment, pk=segment_id)
         page = get_object_or_404(Page, pk=page_id).specific
 
-        metadata = page.personalisable_metadata
+        metadata = page.personalisation_metadata
         variants = metadata.variants_for_segments([segment])
         if variants.exists():
             variant = variants.first()
