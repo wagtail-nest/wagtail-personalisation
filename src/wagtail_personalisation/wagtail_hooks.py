@@ -65,7 +65,7 @@ def serve_variant(page, request, serve_args, serve_kwargs):
     :type page: wagtail.wagtailcore.models.Page
     :param request: The http request
     :type request: django.http.HttpRequest
-    :returns: A variation if one is available for the visitor's segment,
+    :returns: A variant if one is available for the visitor's segment,
               otherwise the original page
     :rtype: wagtail.wagtailcore.models.Page
 
@@ -127,14 +127,14 @@ def page_listing_more_buttons(page, page_perms, is_parent=False):
     metadata = page.personalisation_metadata
 
     for vm in metadata.variants_metadata:
-        yield Button('%s variation' % (vm.segment.name),
+        yield Button('%s variant' % (vm.segment.name),
                      reverse('wagtailadmin_pages:edit', args=[vm.variant_id]),
                      attrs={"title": _('Edit this variant')},
                      classes=("icon", "icon-fa-pencil"),
                      priority=0)
 
     for segment in metadata.get_unused_segments():
-        yield Button('%s variation' % (segment.name),
+        yield Button('%s variant' % (segment.name),
                      reverse('segment:copy_page', args=[page.pk, segment.pk]),
                      attrs={"title": _('Create this variant')},
                      classes=("icon", "icon-fa-plus"),
