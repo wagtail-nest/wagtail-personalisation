@@ -17,7 +17,10 @@
 Wagtail Personalisation
 =======================
 
-Wagtail Personalisation is a fully-featured personalisation module for `Wagtail CMS`_. It enables editors to create customised pages - or parts of pages - based on segments whose rules are configured directly in the admin interface.
+Wagtail Personalisation is a fully-featured personalisation module for
+`Wagtail CMS`_. It enables editors to create customised pages
+- or parts of pages - based on segments whose rules are configured directly
+in the admin interface.
 
 .. _Wagtail CMS: http://wagtail.io/
 
@@ -46,13 +49,20 @@ and ``wagtailfontawesome`` apps in your project's ``INSTALLED_APPS``:
     INSTALLED_APPS = [
         # ...
         'wagtail.contrib.modeladmin',
-        'wagtailfontawesome',
         'wagtail_personalisation',
+        'wagtailfontawesome',
         # ...
     ]
 
 Make sure that ``django.contrib.sessions.middleware.SessionMiddleware`` has
 been added in first, this is a prerequisite for this project.
+
+.. code-block:: python
+
+    MIDDLEWARE = [
+        'django.contrib.sessions.middleware.SessionMiddleware',
+        # ...
+    ]
 
 Sandbox
 -------
