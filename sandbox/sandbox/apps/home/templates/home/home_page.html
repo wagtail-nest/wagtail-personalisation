@@ -7,8 +7,12 @@
 {% block content %}
     <h1>Wagtail Personalisation</h1>
     <hr>
-
     <h2>{{ self.title }}</h2>
 
-    {{ self.text_content|richtext }}
+    {{ self.intro|richtext }}
+
+    {% for block in page.body %}
+        <div>{% include_block block %}</div>
+    {% endfor %}
+
 {% endblock %}
