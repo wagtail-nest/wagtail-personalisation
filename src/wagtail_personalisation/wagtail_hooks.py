@@ -97,14 +97,14 @@ def page_listing_variant_buttons(page, page_perms, is_parent=False):
         return
 
     metadata = page.personalisation_metadata
-    if metadata.is_canonical and metadata.get_unused_segments():
+    if metadata.is_canonical:
         yield ButtonWithDropdownFromHook(
             _('Variants'),
             hook_name='register_page_listing_variant_buttons',
             page=page,
             page_perms=page_perms,
             is_parent=is_parent,
-            attrs={'target': '_blank', 'title': _('Create a new variant')},
+            attrs={'target': '_blank', 'title': _('Create or edit a variant')},
             priority=100)
 
 
@@ -118,8 +118,16 @@ def page_listing_more_buttons(page, page_perms, is_parent=False):
         return
 
     metadata = page.personalisation_metadata
+
+    for variation in metadata.variations:
+        segment = Segment.objects.get(pk=variation.segment_id)
+        yield Button('Edit %s variation' % (segment.name),
+                     reverse('wagtailadmin_pages:edit', args=[variation.variant_id]),
+                     attrs={"title": _('Edit this variant')},
+                     priority=0)
+
     for segment in metadata.get_unused_segments():
-        yield Button(segment.name,
+        yield Button('Add %s variation' % (segment.name),
                      reverse('segment:copy_page', args=[page.pk, segment.pk]),
                      attrs={"title": _('Create this variant')},
                      priority=100)
