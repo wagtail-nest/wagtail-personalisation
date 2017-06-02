@@ -11,7 +11,9 @@ from tests.factories.site import SiteFactory
 
 @pytest.fixture(scope='function')
 def site():
-    site = SiteFactory(is_default_site=True)
+    root_page = ContentPageFactory(parent=None, slug='')
+    site = SiteFactory(is_default_site=True, root_page=root_page)
+
     page1 = ContentPageFactory(parent=site.root_page, slug='page-1')
     page2 = ContentPageFactory(parent=site.root_page, slug='page-2')
     ContentPageFactory(parent=page1, slug='page-1-1')
@@ -21,7 +23,7 @@ def site():
 
 @pytest.fixture
 def segmented_page(site):
-    page = ContentPageFactory(parent=site.root_page)
+    page = ContentPageFactory(parent=site.root_page, slug='personalised')
     segment = SegmentFactory()
     return page.personalisable_metadata.copy_for_segment(segment)
 
