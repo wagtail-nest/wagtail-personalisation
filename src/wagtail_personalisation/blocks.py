@@ -37,7 +37,7 @@ class PersonalisedStructBlock(blocks.StructBlock):
 
         if value['segment']:
             for segment in user_segments:
-                if segment['id'] == int(value['segment']):
+                if segment.id == int(value['segment']):
                     return super(PersonalisedStructBlock, self).render(
                         value, context)
 
