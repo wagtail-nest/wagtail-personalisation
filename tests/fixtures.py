@@ -19,7 +19,7 @@ def site():
     ContentPageFactory(parent=page1, slug='page-1-1')
     ContentPageFactory(parent=page2, slug='page-2-1')
 
-    ContentPageFactory(parent=root_page, slug='regular')
+    RegularPageFactory(parent=root_page, slug='regular')
     return site
 
 

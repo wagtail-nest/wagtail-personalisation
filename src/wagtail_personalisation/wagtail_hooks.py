@@ -117,7 +117,7 @@ def page_listing_more_buttons(page, page_perms, is_parent=False):
     if not isinstance(page, models.PersonalisablePageMixin):
         return
 
-    metadata = page.personalisable_metadata
+    metadata = page.personalisation_metadata
     for segment in metadata.get_unused_segments():
         yield Button(segment.name,
                      reverse('segment:copy_page', args=[page.pk, segment.pk]),
