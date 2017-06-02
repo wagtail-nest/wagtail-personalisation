@@ -121,20 +121,23 @@ def page_listing_more_buttons(page, page_perms, is_parent=False):
 
     for variation in metadata.variations:
         segment = Segment.objects.get(pk=variation.segment_id)
-        yield Button('Edit %s variation' % (segment.name),
+        yield Button('%s variation' % (segment.name),
                      reverse('wagtailadmin_pages:edit', args=[variation.variant_id]),
                      attrs={"title": _('Edit this variant')},
+                     classes=("icon", "icon-fa-pencil"),
                      priority=0)
 
     for segment in metadata.get_unused_segments():
-        yield Button('Add %s variation' % (segment.name),
+        yield Button('%s variation' % (segment.name),
                      reverse('segment:copy_page', args=[page.pk, segment.pk]),
                      attrs={"title": _('Create this variant')},
+                     classes=("icon", "icon-fa-plus"),
                      priority=100)
 
     yield Button(_('Create a new segment'),
                  reverse('wagtail_personalisation_segment_modeladmin_create'),
                  attrs={"title": _('Create a new segment')},
+                 classes=("icon", "icon-fa-snowflake-o"),
                  priority=200)
 
 
