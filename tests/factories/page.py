@@ -4,7 +4,7 @@ import factory
 from django.utils.text import slugify
 from wagtail_factories.factories import MP_NodeFactory
 
-from tests.sandbox.pages.models import HomePage, SpecialPage
+from tests.site.pages.models import HomePage, SpecialPage
 
 
 class HomePageFactory(MP_NodeFactory):

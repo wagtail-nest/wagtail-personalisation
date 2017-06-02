@@ -21,7 +21,7 @@ CACHES = {
 SECRET_KEY = 'not needed'
 SESSION_ENGINE = 'django.contrib.sessions.backends.cached_db'
 
-ROOT_URLCONF = 'tests.sandbox.urls'
+ROOT_URLCONF = 'tests.site.urls'
 
 STATIC_URL = '/static/'
 
@@ -31,12 +31,12 @@ STATICFILES_FINDERS = (
 
 USE_TZ = False
 
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+TESTS_ROOT = os.path.dirname(os.path.abspath(__file__))
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [
-            os.path.join(BASE_DIR, 'templates'),
+            os.path.join(TESTS_ROOT, 'site', 'templates'),
         ],
         'APP_DIRS': True,
         'OPTIONS': {
@@ -66,7 +66,6 @@ MIDDLEWARE = (
 
 INSTALLED_APPS = (
     'wagtail_personalisation',
-    'tests.sandbox.pages',
 
     'wagtail.contrib.modeladmin',
     'wagtail.wagtailsearch',
@@ -85,6 +84,8 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+
+    'tests.site.pages',
 )
 
 PASSWORD_HASHERS = (

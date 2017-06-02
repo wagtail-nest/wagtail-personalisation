@@ -160,6 +160,3 @@ texinfo_documents = [
      author, 'wagtail-personalisation', 'One line description of project.',
      'Miscellaneous'),
 ]
-
-
-
