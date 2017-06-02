@@ -4,7 +4,7 @@ from django.contrib.messages.storage.fallback import FallbackStorage
 from django.contrib.sessions.backends.db import SessionStore
 from django.test.client import RequestFactory as BaseRequestFactory
 
-from tests.factories.page import ContentPageFactory
+from tests.factories.page import ContentPageFactory, RegularPageFactory
 from tests.factories.segment import SegmentFactory
 from tests.factories.site import SiteFactory
 
@@ -14,10 +14,12 @@ def site():
     root_page = ContentPageFactory(parent=None, slug='')
     site = SiteFactory(is_default_site=True, root_page=root_page)
 
-    page1 = ContentPageFactory(parent=site.root_page, slug='page-1')
-    page2 = ContentPageFactory(parent=site.root_page, slug='page-2')
+    page1 = ContentPageFactory(parent=root_page, slug='page-1')
+    page2 = ContentPageFactory(parent=root_page, slug='page-2')
     ContentPageFactory(parent=page1, slug='page-1-1')
     ContentPageFactory(parent=page2, slug='page-2-1')
+
+    ContentPageFactory(parent=root_page, slug='regular')
     return site
 
 
