@@ -27,7 +27,7 @@ docs_require = [
 
 setup(
     name='wagtail_personalisation',
-    version='0.1.0',
+    version='0.9.0',
     description='A Wagtail add-on for showing personalized content',
     author='Lab Digital BV',
     author_email='opensource@labdigital.nl',
