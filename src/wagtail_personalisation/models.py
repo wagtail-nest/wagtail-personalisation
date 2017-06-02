@@ -81,17 +81,15 @@ class Segment(ClusterableModel):
 
     def get_used_pages(self):
         """Return the pages that have variants using this segment."""
-        pages = [page for page
-                 in PersonalisablePageMetadata.objects.filter(segment=self)]
+        pages = list(PersonalisablePageMetadata.objects.filter(segment=self))
 
         return pages
 
     def get_created_variants(self):
         """Return the variants using this segment."""
-        pages = [page.variations for page
-                 in PersonalisablePageMetadata.objects.filter(segment=self)]
+        pages = Page.objects.filter(_personalisable_page_metadata__segment=self)
 
-        return list(itertools.chain(*pages))
+        return pages
 
     def get_rules(self):
         """Retrieve all rules in the segment."""
