@@ -120,8 +120,7 @@ def page_listing_more_buttons(page, page_perms, is_parent=False):
     metadata = page.personalisation_metadata
 
     for variation in metadata.variations:
-        segment = Segment.objects.get(pk=variation.segment_id)
-        yield Button('%s variation' % (segment.name),
+        yield Button('%s variation' % (variation.segment.name),
                      reverse('wagtailadmin_pages:edit', args=[variation.variant_id]),
                      attrs={"title": _('Edit this variant')},
                      classes=("icon", "icon-fa-pencil"),
