@@ -4,14 +4,13 @@ import datetime
 
 import pytest
 
-from tests.factories.page import HomePageFactory
+from tests.factories.page import ContentPageFactory
 from tests.factories.rule import (
     DayRuleFactory, DeviceRuleFactory, ReferralRuleFactory, TimeRuleFactory)
 from tests.factories.segment import SegmentFactory
 from tests.factories.site import SiteFactory
 from wagtail_personalisation.models import Segment
 from wagtail_personalisation.rules import TimeRule
-
 
 # Factory tests
 
@@ -98,5 +97,5 @@ def test_site_factory():
 def test_page_factory():
     site = SiteFactory()
     assert site.root_page
-    page = HomePageFactory(parent=site.root_page)
+    page = ContentPageFactory(parent=site.root_page)
     assert page.get_parent() == site.root_page

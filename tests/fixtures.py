@@ -4,7 +4,7 @@ from django.contrib.messages.storage.fallback import FallbackStorage
 from django.contrib.sessions.backends.db import SessionStore
 from django.test.client import RequestFactory as BaseRequestFactory
 
-from tests.factories.page import HomePageFactory, SpecialPageFactory
+from tests.factories.page import ContentPageFactory
 from tests.factories.segment import SegmentFactory
 from tests.factories.site import SiteFactory
 
@@ -12,16 +12,16 @@ from tests.factories.site import SiteFactory
 @pytest.fixture(scope='function')
 def site():
     site = SiteFactory(is_default_site=True)
-    page1 = HomePageFactory(parent=site.root_page, slug='page-1')
-    page2 = HomePageFactory(parent=site.root_page, slug='page-2')
-    SpecialPageFactory(parent=page1, slug='page-1-1')
-    SpecialPageFactory(parent=page2, slug='page-2-1')
+    page1 = ContentPageFactory(parent=site.root_page, slug='page-1')
+    page2 = ContentPageFactory(parent=site.root_page, slug='page-2')
+    ContentPageFactory(parent=page1, slug='page-1-1')
+    ContentPageFactory(parent=page2, slug='page-2-1')
     return site
 
 
 @pytest.fixture
 def segmented_page(site):
-    page = HomePageFactory(parent=site.root_page)
+    page = ContentPageFactory(parent=site.root_page)
     segment = SegmentFactory()
     return page.personalisable_metadata.copy_for_segment(segment)
 
