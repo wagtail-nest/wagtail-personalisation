@@ -58,7 +58,7 @@ def segment_user(page, request, serve_args, serve_kwargs):
 
 
 @hooks.register('before_serve_page')
-def serve_variation(page, request, serve_args, serve_kwargs):
+def serve_variant(page, request, serve_args, serve_kwargs):
     """Apply a segment to a visitor before serving the page.
 
     :param page: The page being served
@@ -81,14 +81,14 @@ def serve_variation(page, request, serve_args, serve_kwargs):
         metadata = page.personalisation_metadata
 
         # TODO: This is never more then one page? (fix query count)
-        variations = metadata.variants_for_segments(user_segments)
-        if variations:
-            variation = variations.first().variant.specific
-            return variation.serve(request, *serve_args, **serve_kwargs)
+        metadata = metadata.metadata_for_segments(user_segments)
+        if metadata:
+            variant = metadata.first().variant.specific
+            return variant.serve(request, *serve_args, **serve_kwargs)
 
 
 @hooks.register('construct_explorer_page_queryset')
-def dont_show_variations(parent_page, pages, request):
+def dont_show_variant(parent_page, pages, request):
     return [page for page in pages
             if (page.personalisation_metadata is None)
             or (page.personalisation_metadata.is_canonical)]
@@ -126,9 +126,9 @@ def page_listing_more_buttons(page, page_perms, is_parent=False):
 
     metadata = page.personalisation_metadata
 
-    for variation in metadata.variations:
-        yield Button('%s variation' % (variation.segment.name),
-                     reverse('wagtailadmin_pages:edit', args=[variation.variant_id]),
+    for vm in metadata.variants_metadata:
+        yield Button('%s variation' % (vm.segment.name),
+                     reverse('wagtailadmin_pages:edit', args=[vm.variant_id]),
                      attrs={"title": _('Edit this variant')},
                      classes=("icon", "icon-fa-pencil"),
                      priority=0)

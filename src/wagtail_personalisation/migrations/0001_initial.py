@@ -21,7 +21,7 @@ class Migration(migrations.Migration):
             fields=[
                 ('page_ptr', models.OneToOneField(auto_created=True, on_delete=django.db.models.deletion.CASCADE, parent_link=True, primary_key=True, serialize=False, to='wagtailcore.Page')),
                 ('is_segmented', models.BooleanField(default=False)),
-                ('canonical_page', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='variations', to='wagtail_personalisation.PersonalisablePage')),
+                ('canonical_page', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='variants', to='wagtail_personalisation.PersonalisablePage')),
             ],
             options={
                 'abstract': False,

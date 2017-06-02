@@ -18,10 +18,10 @@ def test_segment_create():
 
 
 @pytest.mark.django_db
-def test_metadata_page_has_variations(segmented_page):
+def test_metadata_page_has_variants(segmented_page):
     assert not segmented_page.personalisation_metadata.is_canonical
-    assert not segmented_page.personalisation_metadata.has_variations
+    assert not segmented_page.personalisation_metadata.has_variants
 
     canonical = segmented_page.personalisation_metadata.canonical_page
     assert canonical.personalisation_metadata.is_canonical
-    assert canonical.personalisation_metadata.has_variations
+    assert canonical.personalisation_metadata.has_variants

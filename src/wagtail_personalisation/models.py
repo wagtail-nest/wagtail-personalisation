@@ -126,19 +126,19 @@ class PersonalisablePageMetadata(ClusterableModel):
         Segment, related_name='page_metadata', null=True, blank=True)
 
     @cached_property
-    def has_variations(self):
+    def has_variants(self):
         """Return a boolean indicating whether or not the personalisable page
-        has variations.
+        has variants.
 
         :returns: A boolean indicating whether or not the personalisable page
-                  has variations.
+                  has variants.
         :rtype: bool
 
         """
-        return self.variations.exists()
+        return self.variants_metadata.exists()
 
     @cached_property
-    def variations(self):
+    def variants_metadata(self):
         return (
             PersonalisablePageMetadata.objects
             .filter(canonical_page_id=self.canonical_page_id)
@@ -179,7 +179,7 @@ class PersonalisablePageMetadata(ClusterableModel):
                 segment=segment)
         return new_page
 
-    def variants_for_segments(self, segments):
+    def metadata_for_segments(self, segments):
         return (
             self.__class__.objects
             .filter(
