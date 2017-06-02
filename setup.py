@@ -1,3 +1,4 @@
+import re
 from setuptools import find_packages, setup
 
 
@@ -25,8 +26,12 @@ docs_require = [
     'sphinx>=1.4.0',
 ]
 
+with open('README.rst') as fh:
+    long_description = re.sub(
+        '^.. start-no-pypi.*^.. end-no-pypi', '', fh.read(), flags=re.M | re.S)
+
 setup(
-    name='wagtail_personalisation',
+    name='wagtail-personalisation',
     version='0.9.0',
     description='A Wagtail add-on for showing personalized content',
     author='Lab Digital BV',
@@ -42,7 +47,7 @@ setup(
     package_dir={'': 'src'},
     include_package_data=True,
     license='MIT',
-    long_description=open('README.rst').read(),
+    long_description=long_description,
     classifiers=[
         'Development Status :: 2 - Pre-Alpha',
         'Environment :: Web Environment',
