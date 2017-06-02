@@ -1,100 +1,133 @@
-[{
-    "model": "wagtail_personalisation.visitcountrule",
-    "pk": 1,
-    "fields": {
-        "segment": 1,
-        "operator": "more_than",
-        "count": 3,
-        "counted_page": 3
+[
+    {
+        "model": "wagtail_personalisation.timerule",
+        "pk": 1,
+        "fields": {
+            "segment": 2,
+            "start_time": "06:00:00",
+            "end_time": "10:00:00"
+        }
+    },
+    {
+        "model": "wagtail_personalisation.visitcountrule",
+        "pk": 1,
+        "fields": {
+            "segment": 1,
+            "operator": "more_than",
+            "count": 3,
+            "counted_page": 3
+        }
+    },
+    {
+        "model": "wagtail_personalisation.segment",
+        "pk": 1,
+        "fields": {
+            "name": "Returning Rook",
+            "create_date": "2017-06-02T05:38:02.304Z",
+            "edit_date": "2017-06-02T05:38:02.304Z",
+            "enable_date": "2017-06-02T05:38:02.290Z",
+            "disable_date": null,
+            "visit_count": 0,
+            "status": "enabled",
+            "persistent": false,
+            "match_any": false
+        }
+    },
+    {
+        "model": "wagtail_personalisation.segment",
+        "pk": 2,
+        "fields": {
+            "name": "Early Birds",
+            "create_date": "2017-06-02T05:38:14.749Z",
+            "edit_date": "2017-06-02T05:38:14.750Z",
+            "enable_date": "2017-06-02T05:38:14.736Z",
+            "disable_date": null,
+            "visit_count": 0,
+            "status": "enabled",
+            "persistent": false,
+            "match_any": false
+        }
+    },
+    {
+        "model": "wagtail_personalisation.personalisablepagemetadata",
+        "pk": 1,
+        "fields": {
+            "canonical_page": 3,
+            "variant": 3,
+            "segment": null
+        }
+    },
+    {
+        "model": "wagtail_personalisation.personalisablepagemetadata",
+        "pk": 2,
+        "fields": {
+            "canonical_page": 3,
+            "variant": 4,
+            "segment": 1
+        }
+    },
+    {
+        "model": "home.homepage",
+        "pk": 3,
+        "fields": {
+            "text_content": "<p>Thank you for trying <a href=\"http://wagxperience.io\" target=\"_blank\">Wagxperience</a>!</p>"
+        }
+    },
+    {
+        "model": "home.homepage",
+        "pk": 4,
+        "fields": {
+            "text_content": "<p>Thank you for trying <a href=\"http://wagxperience.io\">Wagxperience</a>!</p><p>You've visited the homepage more than 3 times!</p>"
+        }
+    },
+    {
+        "model": "wagtailcore.page",
+        "pk": 3,
+        "fields": {
+            "path": "00010001",
+            "depth": 2,
+            "numchild": 0,
+            "title": "Home",
+            "slug": "home",
+            "content_type": 2,
+            "live": true,
+            "has_unpublished_changes": false,
+            "url_path": "/home/",
+            "owner": null,
+            "seo_title": "",
+            "show_in_menus": false,
+            "search_description": "",
+            "go_live_at": null,
+            "expire_at": null,
+            "expired": false,
+            "locked": false,
+            "first_published_at": null,
+            "latest_revision_created_at": null
+        }
+    },
+    {
+        "model": "wagtailcore.page",
+        "pk": 4,
+        "fields": {
+            "path": "00010002",
+            "depth": 2,
+            "numchild": 0,
+            "title": "Home (Returning Rook)",
+            "slug": "home-returning-rook",
+            "content_type": 2,
+            "live": true,
+            "has_unpublished_changes": false,
+            "url_path": "/home-returning-rook/",
+            "owner": null,
+            "seo_title": "",
+            "show_in_menus": false,
+            "search_description": "",
+            "go_live_at": null,
+            "expire_at": null,
+            "expired": false,
+            "locked": false,
+            "first_published_at": "2017-06-02T05:38:53.568Z",
+            "latest_revision_created_at": "2017-06-02T05:38:53.390Z"
+        }
     }
-}, {
-    "model": "wagtail_personalisation.segment",
-    "pk": 1,
-    "fields": {
-        "name": "Returning Rook",
-        "create_date": "2017-06-01T14:24:17.309Z",
-        "edit_date": "2017-06-01T14:24:17.309Z",
-        "enable_date": "2017-06-01T14:34:59.243Z",
-        "disable_date": null,
-        "visit_count": 3,
-        "status": "enabled",
-        "persistent": false,
-        "match_any": false
-    }
-}, {
-    "model": "wagtail_personalisation.personalisablepagemetadata",
-    "pk": 1,
-    "fields": {
-        "canonical_page": 3,
-        "variant": 3,
-        "segment": null
-    }
-}, {
-    "model": "wagtail_personalisation.personalisablepagemetadata",
-    "pk": 2,
-    "fields": {
-        "canonical_page": 3,
-        "variant": 4,
-        "segment": 1
-    }
-}, {
-    "model": "home.homepage",
-    "pk": 3,
-    "fields": {
-        "text_content": "<p>Thank you for trying <a href=\"http://wagxperience.io\" target=\"_blank\">Wagxperience</a>!</p>"
-    }
-}, {
-    "model": "home.homepage",
-    "pk": 4,
-    "fields": {
-        "text_content": "<p>Thank you for trying <a href=\"http://wagxperience.io\">Wagxperience</a>!</p><p>You've visited the homepage more than 3 times!</p>"
-    }
-}, {
-    "model": "wagtailcore.page",
-    "pk": 3,
-    "fields": {
-        "path": "00010001",
-        "depth": 2,
-        "numchild": 0,
-        "title": "Home",
-        "slug": "home",
-        "content_type": 2,
-        "live": true,
-        "has_unpublished_changes": false,
-        "url_path": "/home/",
-        "owner": null,
-        "seo_title": "",
-        "show_in_menus": false,
-        "search_description": "",
-        "go_live_at": null,
-        "expire_at": null,
-        "expired": false,
-        "locked": false,
-        "first_published_at": null,
-        "latest_revision_created_at": null
-    }
-}, {
-    "model": "wagtailcore.page",
-    "pk": 4,
-    "fields": {
-        "path": "00010002",
-        "depth": 2,
-        "numchild": 0,
-        "title": "Home (Returning Rook)",
-        "slug": "home-returning-rook",
-        "content_type": 2,
-        "live": true,
-        "has_unpublished_changes": false,
-        "url_path": "/home-returning-rook/",
-        "owner": null,
-        "seo_title": "",
-        "show_in_menus": false,
-        "search_description": "",
-        "go_live_at": null,
-        "expire_at": null,
-        "expired": false,
-        "locked": false,
-        "first_published_at": "2017-06-01T14:53:44.441Z",
-        "latest_revision_created_at": "2017-06-01T14:53:44.312Z"
-    }
-}]
+]
