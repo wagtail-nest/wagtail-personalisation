@@ -87,6 +87,13 @@ def serve_variation(page, request, serve_args, serve_kwargs):
             return variation.serve(request, *serve_args, **serve_kwargs)
 
 
+@hooks.register('construct_explorer_page_queryset')
+def dont_show_variations(parent_page, pages, request):
+    return [page for page in pages
+            if (page.personalisation_metadata is None)
+            or (page.personalisation_metadata.segment_id is None)]
+
+
 @hooks.register('register_page_listing_buttons')
 def page_listing_variant_buttons(page, page_perms, is_parent=False):
     """Adds page listing buttons to personalisable pages. Shows variants for
