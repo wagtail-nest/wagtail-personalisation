@@ -142,7 +142,7 @@ class SegmentSummaryPanel(SummaryItem):
         target_url = reverse('wagtail_personalisation_segment_modeladmin_index')
         title = _("Segments")
         return mark_safe("""
-            <li class="icon icon-group">
+            <li class="icon icon-fa-snowflake-o">
                 <a href="{}"><span>{}</span>{}</a>
             </li>""".format(target_url, segment_count, title))
 
