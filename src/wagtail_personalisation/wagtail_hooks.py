@@ -91,7 +91,7 @@ def serve_variation(page, request, serve_args, serve_kwargs):
 def dont_show_variations(parent_page, pages, request):
     return [page for page in pages
             if (page.personalisation_metadata is None)
-            or (page.personalisation_metadata.segment_id is None)]
+            or (page.personalisation_metadata.is_canonical)]
 
 
 @hooks.register('register_page_listing_buttons')
