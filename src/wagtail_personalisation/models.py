@@ -187,7 +187,7 @@ class PersonalisablePageMixin(object):
     """
 
     @cached_property
-    def personalisable_metadata(self):
+    def personalisation_metadata(self):
         try:
             metadata = self._personalisable_page_metadata
         except AttributeError:

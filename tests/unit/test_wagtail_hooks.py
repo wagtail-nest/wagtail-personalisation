@@ -20,7 +20,7 @@ def test_serve_variation_with_variant_no_segment(site, rf, segmented_page):
     args = tuple()
     kwargs = {}
 
-    page = segmented_page.personalisable_metadata.canonical_page
+    page = segmented_page.personalisation_metadata.canonical_page
     result = wagtail_hooks.serve_variation(page, request, args, kwargs)
     assert result is None
 
@@ -31,8 +31,8 @@ def test_serve_variation_with_variant_segmented(site, rf, segmented_page):
     args = tuple()
     kwargs = {}
 
-    page = segmented_page.personalisable_metadata.canonical_page
-    segment = segmented_page.personalisable_metadata.segment
+    page = segmented_page.personalisation_metadata.canonical_page
+    segment = segmented_page.personalisation_metadata.segment
 
     adapter = adapters.get_segment_adapter(request)
     adapter.set_segments([segment])

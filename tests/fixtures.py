@@ -25,7 +25,7 @@ def site():
 def segmented_page(site):
     page = ContentPageFactory(parent=site.root_page, slug='personalised')
     segment = SegmentFactory()
-    return page.personalisable_metadata.copy_for_segment(segment)
+    return page.personalisation_metadata.copy_for_segment(segment)
 
 
 @pytest.fixture()
