@@ -59,4 +59,4 @@ def test_page_listing_more_buttons(site, rf, segmented_page):
     SegmentFactory(name='something')
     result = wagtail_hooks.page_listing_more_buttons(page, [])
     items = list(result)
-    assert len(items) == 2
+    assert len(items) == 3
