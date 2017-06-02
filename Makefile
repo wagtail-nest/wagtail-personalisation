@@ -46,3 +46,9 @@ sandbox:
 	sandbox/manage.py loaddata sandbox/exampledata/users.json
 	sandbox/manage.py loaddata sandbox/exampledata/personalisation.json
 	sandbox/manage.py runserver
+
+release:
+	pip install twine wheel
+	rm -rf dist/*
+	python setup.py sdist bdist_wheel
+	twine upload -s dist/*
