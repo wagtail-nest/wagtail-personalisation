@@ -12,6 +12,7 @@ $block-spacing: 20px;
     .block {
         display: block;
         box-sizing: border-box;
+        overflow-x: hidden;
         width: 22%;
         max-width: 320px;
         min-width: 280px;
@@ -54,8 +55,8 @@ $block-spacing: 20px;
             }
 
             .block-data {
-                overflow: hidden;
                 margin-bottom: $block-spacing;
+                margin-right: $block-spacing / 2;
 
                 &__description {
                     margin-bottom: 3px;
@@ -75,7 +76,6 @@ $block-spacing: 20px;
                         padding-top: 1px;
                         padding-bottom: 1px;
                         margin-left: $block-spacing + 10px;
-                        margin-right: $block-spacing / 2;
                         margin-top: 0;
                         border: 1px solid $color-gray;
                         border-radius: 3px;
@@ -160,14 +160,23 @@ $block-spacing: 20px;
         &--match-all,
         &--match-any {
             .block-data--icon {
+                position: relative;
+
                 &:after {
                     position: absolute;
                     left: 5px;
+                    margin: 2px 0;
                     padding-left: 5px;
-                    border-left: $color-lighest-gray;
+                    border-left: 1px solid $color-lighest-gray;
                     color: $color-lighest-gray;
                     text-align: left;
-                    font-family: 'wagtail';
+                    font-family: "FontAwesome";
+                    font-size: 14px;
+                    font-weight: 500;
+                }
+
+                &:last-child:after {
+                    display: none;
                 }
             }
         }
@@ -175,7 +184,7 @@ $block-spacing: 20px;
         &--match-all {
             .block-data--icon {
                 &:after {
-                    content: "&";
+                    content: "\f0c1";
                 }
             }
         }
@@ -183,7 +192,7 @@ $block-spacing: 20px;
         &--match-any {
             .block-data--icon {
                 &:after {
-                    content: "//";
+                    content: "\f127";
                 }
             }
         }

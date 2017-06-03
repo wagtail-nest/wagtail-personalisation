@@ -66,9 +66,6 @@
                                     {% endif %}
                                 </li>
                             {% endif %}
-                            <li class="block-actions__action">
-                                <a href="{% url 'wagtail_personalisation_segment_modeladmin_inspect' segment.pk %}" title="{% trans "Inspect this segment" %}">inspect</a>
-                            </li>
                             {% if user_can_create %}
                             <li class="block-actions__action">
                                 <a href="{% url 'wagtail_personalisation_segment_modeladmin_edit' segment.pk %}" title="{% trans "Edit this segment" %}">edit</a>
@@ -77,6 +74,9 @@
                                 <a href="{% url 'wagtail_personalisation_segment_modeladmin_delete' segment.pk %}" title="{% trans "Delete this segment" %}">delete</a>
                             </li>
                             {% endif %}
+                            <li class="block-actions__action">
+                                <a href="{% url 'wagtail_personalisation_segment_modeladmin_inspect' segment.pk %}" title="{% trans "Inspect this segment" %}">inspect</a>
+                            </li>
                         </ul>
                     </div>
 
