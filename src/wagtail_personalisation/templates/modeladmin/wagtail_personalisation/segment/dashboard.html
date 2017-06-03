@@ -26,13 +26,14 @@
                         {% for rule in segment.get_rules %}
                             <div class="block-data block-data--icon icon icon-{{ rule.icon }}">
                                 <p class="block-data__description">{{ rule.description.title }}</p>
-                                <p class="block-data__content">
-                                    {% if rule.description.code %}
-                                        <pre>{{ rule.description.value }}</pre>
-                                    {% else %}
-                                        <span>{{ rule.description.value }}</span>
-                                    {% endif %}
-                                </p>
+                                {% if rule.description.code %}
+                                    <pre class="block-data__content block-data__content--code">{{ rule.description.value }}</pre>
+                                {% else %}
+                                    <p class="block-data__content block-data__content--text">
+                                        <strong>{{ rule.description.value }}</strong>
+                                    </p>
+                                {% endif %}
+
                             </div>
                         {% endfor %}
                     </div>
@@ -85,8 +86,8 @@
 
         {% if user_can_create %}
             {% blocktrans with url=view.create_url name=view.verbose_name %}
-                <a class="block block__suggestion" href="{{ url }}">
-                    <span class="suggestive_text">Add a new {{ name }}</span>
+                <a class="block block-suggestion" href="{{ url }}">
+                    <span class="block-suggestion__text">Add a new {{ name }}</span>
                 </a>
             {% endblocktrans %}
         {% endif %}

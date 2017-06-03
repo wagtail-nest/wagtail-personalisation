@@ -1,4 +1,5 @@
 $color-gray: #D0D2D3;
+$color-lighest-gray: #EBEBEB;
 $color-light-gray: #F6F6F6;
 $color-dark-gray: #727272;
 $block-spacing: 20px;
@@ -12,12 +13,17 @@ $block-spacing: 20px;
         display: block;
         box-sizing: border-box;
         width: 22%;
+        max-width: 320px;
         min-width: 280px;
+        min-height: 260px;
         margin: 1.5%;
         border: 1px solid $color-gray;
         border-radius: 3px;
+        padding-bottom: 62px;
 
         &__segment {
+            position: relative;
+
             .block-header,
             .block-rules,
             .block-footer {
@@ -39,12 +45,18 @@ $block-spacing: 20px;
             }
 
             .block-footer {
+                position: absolute;
+                width: 100%;
+                bottom: 0;
                 padding: $block-spacing / 2 $block-spacing;
                 border-top: 1px solid $color-gray;
                 background-color: $color-light-gray;
             }
 
             .block-data {
+                overflow: hidden;
+                margin-bottom: $block-spacing;
+
                 &__description {
                     margin-bottom: 3px;
                     font-size: 14px;
@@ -54,12 +66,46 @@ $block-spacing: 20px;
                 &__content {
                     margin-bottom: 0;
                     font-size: 18px;
+
+                    &--code {
+                        display: inline-block;
+                        width: auto;
+                        padding-left: 3px !important;
+                        padding-right: 3px;
+                        padding-top: 1px;
+                        padding-bottom: 1px;
+                        margin-left: $block-spacing + 10px;
+                        margin-right: $block-spacing / 2;
+                        margin-top: 0;
+                        border: 1px solid $color-gray;
+                        border-radius: 3px;
+                        font-size: 14px;
+                        background-color: $color-light-gray;
+                    }
                 }
 
                 &--icon {
-                    .block-data__description {
-                        padding-left: 1.5em;
+                    position: relative;
+
+                    &:before {
+                        display: block;
+                        position: absolute;
+                        top: 50%;
+                        left: 0;
+                        transform: translate(-20%, -50%);
+                        margin-right: 0;
+                        font-size: 32px;
+                        color: $color-lighest-gray;
                     }
+
+                    .block-data__description,
+                    .block-data__content {
+                        padding-left: 30px;
+                    }
+                }
+
+                &:last-child {
+                    margin-bottom: 0;
                 }
             }
 
@@ -83,6 +129,62 @@ $block-spacing: 20px;
                     }
                 }
 
+            }
+        }
+
+        &-suggestion {
+            position: relative;
+            border: 1px dashed $color-gray;
+
+            &__text {
+                position: absolute;
+                top: 50%;
+                transform: translateY(-50%);
+                width: 100%;
+                text-align: center;
+                font-size: 16px;
+                color: $color-gray;
+            }
+
+            &:hover {
+                .block-suggestion {
+                    &__text {
+                        color: $color-dark-gray;
+                    }
+                }
+            }
+        }
+    }
+
+    .segment {
+        &--match-all,
+        &--match-any {
+            .block-data--icon {
+                &:after {
+                    position: absolute;
+                    left: 5px;
+                    padding-left: 5px;
+                    border-left: $color-lighest-gray;
+                    color: $color-lighest-gray;
+                    text-align: left;
+                    font-family: 'wagtail';
+                }
+            }
+        }
+
+        &--match-all {
+            .block-data--icon {
+                &:after {
+                    content: "&";
+                }
+            }
+        }
+
+        &--match-any {
+            .block-data--icon {
+                &:after {
+                    content: "//";
+                }
             }
         }
     }
