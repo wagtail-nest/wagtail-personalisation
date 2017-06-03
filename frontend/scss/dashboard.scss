@@ -1,6 +1,6 @@
 $color-gray: #D0D2D3;
-$color-lighest-gray: #EBEBEB;
-$color-light-gray: #F6F6F6;
+$color-light-gray: #EBEBEB;
+$color-lightest-gray: #F6F6F6;
 $color-dark-gray: #727272;
 $block-spacing: 20px;
 
@@ -51,7 +51,7 @@ $block-spacing: 20px;
                 bottom: 0;
                 padding: $block-spacing / 2 $block-spacing;
                 border-top: 1px solid $color-gray;
-                background-color: $color-light-gray;
+                background-color: $color-lightest-gray;
             }
 
             .block-data {
@@ -80,7 +80,7 @@ $block-spacing: 20px;
                         border: 1px solid $color-gray;
                         border-radius: 3px;
                         font-size: 14px;
-                        background-color: $color-light-gray;
+                        background-color: $color-lightest-gray;
                     }
                 }
 
@@ -95,7 +95,7 @@ $block-spacing: 20px;
                         transform: translate(-20%, -50%);
                         margin-right: 0;
                         font-size: 32px;
-                        color: $color-lighest-gray;
+                        color: $color-light-gray;
                     }
 
                     .block-data__description,
@@ -165,13 +165,12 @@ $block-spacing: 20px;
                 &:after {
                     position: absolute;
                     left: 5px;
-                    margin: 2px 0;
                     padding-left: 5px;
-                    border-left: 1px solid $color-lighest-gray;
-                    color: $color-lighest-gray;
+                    border-left: 1px solid $color-light-gray;
+                    color: $color-light-gray;
                     text-align: left;
                     font-family: "FontAwesome";
-                    font-size: 14px;
+                    font-size: 16px;
                     font-weight: 500;
                 }
 
