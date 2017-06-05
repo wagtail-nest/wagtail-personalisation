@@ -12,7 +12,7 @@ class Migration(migrations.Migration):
     initial = True
 
     dependencies = [
-        ('wagtailcore', '0030_index_on_pagerevision_created_at'),
+        ('wagtailcore', '0001_initial'),
     ]
 
     operations = [
