@@ -93,8 +93,11 @@ def serve_variant(page, request, serve_args, serve_kwargs):
 @hooks.register('construct_explorer_page_queryset')
 def dont_show_variant(parent_page, pages, request):
     return [page for page in pages
-            if (page.personalisation_metadata is None)
-            or (page.personalisation_metadata.is_canonical)]
+            if (hasattr(page, 'personalisation_metadata') is False)
+            or (hasattr(page, 'personalisation_metadata')
+                and page.personalisation_metadata is None)
+            or (hasattr(page, 'personalisation_metadata')
+                and page.personalisation_metadata.is_canonical)]
 
 
 @hooks.register('register_page_listing_buttons')
@@ -154,12 +157,12 @@ class CorrectedPagesSummaryPanel(PagesSummaryItem):
     def get_context(self):
         context = super(CorrectedPagesSummaryPanel, self).get_context()
 
-        pages = [page for page in Page.objects.all()
-                 if (hasattr(page.specific, 'personalisation_metadata') is False)
-                 or (hasattr(page.specific, 'personalisation_metadata')
-                     and page.specific.personalisation_metadata is None)
-                 or (hasattr(page.specific, 'personalisation_metadata')
-                     and page.specific.personalisation_metadata.is_canonical)]
+        pages = [page for page in Page.objects.all().specific()
+                 if (hasattr(page, 'personalisation_metadata') is False)
+                 or (hasattr(page, 'personalisation_metadata')
+                     and page.personalisation_metadata is None)
+                 or (hasattr(page, 'personalisation_metadata')
+                     and page.personalisation_metadata.is_canonical)]
 
         context['total_pages'] = len(pages) - 1
         return context
@@ -208,7 +211,7 @@ class VariantPagesSummaryPanel(PagesSummaryItem):
 
     def render(self):
         page_count = PersonalisablePageMetadata.objects\
-                     .filter(segment__isnull=True).count()
+                     .filter(segment__isnull=False).count()
         title = _("Variant")
         return mark_safe("""
                 <li class="icon icon-fa-files-o">
