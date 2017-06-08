@@ -4,15 +4,18 @@ import logging
 
 from django.conf.urls import include, url
 from django.core.urlresolvers import reverse
+from django.template.defaultfilters import pluralize
 from django.utils.safestring import mark_safe
 from django.utils.translation import ugettext_lazy as _
-from wagtail.wagtailadmin.site_summary import SummaryItem
+from wagtail.wagtailadmin.site_summary import SummaryItem, PagesSummaryItem
 from wagtail.wagtailadmin.widgets import Button, ButtonWithDropdownFromHook
 from wagtail.wagtailcore import hooks
+from wagtail.wagtailcore.models import Page
 
 from wagtail_personalisation import admin_urls, models
 from wagtail_personalisation.adapters import get_segment_adapter
-from wagtail_personalisation.models import PersonalisablePageMixin, Segment
+from wagtail_personalisation.models import PersonalisablePageMixin, Segment, \
+    PersonalisablePageMetadata
 
 logger = logging.getLogger(__name__)
 
@@ -147,12 +150,35 @@ def page_listing_more_buttons(page, page_perms, is_parent=False):
                  priority=200)
 
 
+class CorrectedPagesSummaryPanel(PagesSummaryItem):
+    def get_context(self):
+        context = super(CorrectedPagesSummaryPanel, self).get_context()
+
+        pages = [page for page in Page.objects.all()
+                 if (hasattr(page.specific, 'personalisation_metadata') is False)
+                 or (hasattr(page.specific, 'personalisation_metadata')
+                     and page.specific.personalisation_metadata is None)
+                 or (hasattr(page.specific, 'personalisation_metadata')
+                     and page.specific.personalisation_metadata.is_canonical)]
+
+        context['total_pages'] = len(pages) - 1
+        return context
+
+
+@hooks.register('construct_homepage_summary_items')
+def add_corrected_pages_summary_panel(request, items):
+    """Replaces the Pages summary panel to hide variants."""
+    for index, item in enumerate(items):
+        if item.__class__ is PagesSummaryItem:
+            items[index] = CorrectedPagesSummaryPanel(request)
+
+
 class SegmentSummaryPanel(SummaryItem):
     """The segment summary panel showing the total amount of segments on the
     site and allowing quick access to the Segment dashboard.
 
     """
-    order = 500
+    order = 2000
 
     def render(self):
         segment_count = Segment.objects.count()
@@ -164,11 +190,39 @@ class SegmentSummaryPanel(SummaryItem):
             </li>""".format(target_url, segment_count, title))
 
 
+class PersonalisedPagesSummaryPanel(PagesSummaryItem):
+    order = 2100
+
+    def render(self):
+        page_count = PersonalisablePageMetadata.objects\
+                     .filter(segment__isnull=True).count()
+        title = _("Personalised Page")
+        return mark_safe("""
+            <li class="icon icon-fa-file-o">
+                <span>{}</span>{}{}
+            </li>""".format(page_count, title, pluralize(page_count)))
+
+
+class VariantPagesSummaryPanel(PagesSummaryItem):
+    order = 2200
+
+    def render(self):
+        page_count = PersonalisablePageMetadata.objects\
+                     .filter(segment__isnull=True).count()
+        title = _("Variant")
+        return mark_safe("""
+                <li class="icon icon-fa-files-o">
+                    <span>{}</span>{}{}
+                </li>""".format(page_count, title, pluralize(page_count)))
+
+
 @hooks.register('construct_homepage_summary_items')
-def add_segment_summary_panel(request, items):
+def add_personalisation_summary_panels(request, items):
     """Adds a summary panel to the Wagtail dashboard showing the total amount
     of segments on the site and allowing quick access to the Segment
     dashboard.
 
     """
     items.append(SegmentSummaryPanel(request))
+    items.append(PersonalisedPagesSummaryPanel(request))
+    items.append(VariantPagesSummaryPanel(request))
