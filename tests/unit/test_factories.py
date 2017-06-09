@@ -15,14 +15,14 @@ from wagtail_personalisation.rules import TimeRule
 @pytest.mark.django_db
 def test_segment_create():
     factoried_segment = SegmentFactory()
-    segment = Segment(name='TestSegment', status='enabled')
+    segment = Segment(name='TestSegment', enabled='enabled')
     TimeRule(
         start_time=datetime.time(8, 0, 0),
         end_time=datetime.time(23, 0, 0),
         segment=segment)
 
     assert factoried_segment.name == segment.name
-    assert factoried_segment.status == segment.status
+    assert factoried_segment.enabled == segment.enabled
 
 
 @pytest.mark.django_db

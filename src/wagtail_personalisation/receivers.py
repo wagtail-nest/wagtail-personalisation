@@ -7,16 +7,16 @@ from wagtail_personalisation.models import Segment
 def check_status_change(sender, instance, *args, **kwargs):
     """Check if the status has changed. Alter dates accordingly."""
     try:
-        original_status = sender.objects.get(pk=instance.id).status
+        original_status = sender.objects.get(pk=instance.id).enabled
     except sender.DoesNotExist:
-        original_status = ""
+        original_status = None
 
-    if original_status != instance.status:
-        if instance.status == instance.STATUS_ENABLED:
+    if original_status != instance.enabled:
+        if instance.enabled == True:
             instance.enable_date = timezone.now()
             instance.visit_count = 0
             return instance
-        if instance.status == instance.STATUS_DISABLED:
+        if instance.enabled == False:
             instance.disable_date = timezone.now()
 
 

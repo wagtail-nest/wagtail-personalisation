@@ -22,20 +22,12 @@ from .forms import SegmentAdminForm
 
 class SegmentQuerySet(models.QuerySet):
     def enabled(self):
-        return self.filter(status=self.model.STATUS_ENABLED)
+        return self.filter(enabled=True)
 
 
 @python_2_unicode_compatible
 class Segment(ClusterableModel):
     """The segment model."""
-    STATUS_ENABLED = 'enabled'
-    STATUS_DISABLED = 'disabled'
-
-    STATUS_CHOICES = (
-        (STATUS_ENABLED, _('Enabled')),
-        (STATUS_DISABLED, _('Disabled')),
-    )
-
     TYPE_DYNAMIC = 'dynamic'
     TYPE_STATIC = 'static'
 
@@ -50,8 +42,8 @@ class Segment(ClusterableModel):
     enable_date = models.DateTimeField(null=True, editable=False)
     disable_date = models.DateTimeField(null=True, editable=False)
     visit_count = models.PositiveIntegerField(default=0, editable=False)
-    status = models.CharField(
-        max_length=20, choices=STATUS_CHOICES, default=STATUS_ENABLED)
+    enabled = models.BooleanField(
+        default=True, help_text=_("Should the segment be active?"))
     persistent = models.BooleanField(
         default=False, help_text=_("Should the segment persist between visits?"))
     match_any = models.BooleanField(
@@ -111,7 +103,7 @@ class Segment(ClusterableModel):
             MultiFieldPanel([
                 FieldPanel('name', classname="title"),
                 FieldRowPanel([
-                    FieldPanel('status'),
+                    FieldPanel('enabled'),
                     FieldPanel('persistent'),
                 ]),
                 FieldPanel('match_any'),
@@ -178,9 +170,9 @@ class Segment(ClusterableModel):
         return segment_rules
 
     def toggle(self, save=True):
-        self.status = (
-            self.STATUS_ENABLED if self.status == self.STATUS_DISABLED
-            else self.STATUS_DISABLED)
+        self.enabled = (
+            True if self.enabled == False
+            else False)
         if save:
             self.save()
 

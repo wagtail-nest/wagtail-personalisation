@@ -64,7 +64,7 @@ def test_refresh_removes_disabled(rf):
     adapter.set_segments([segment_1, segment_2])
 
     adapter = adapters.SessionSegmentsAdapter(request)
-    segment_1.status = segment_1.STATUS_DISABLED
+    segment_1.enabled = False
     segment_1.save()
     adapter.refresh()
 

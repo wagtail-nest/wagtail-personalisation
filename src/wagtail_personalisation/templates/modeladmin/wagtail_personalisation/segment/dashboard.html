@@ -22,7 +22,7 @@
                         <div class="nice-padding block_container">
                             {% if all_count %}
                                 {% for segment in object_list %}
-                                    <div class="block block--{{ segment.status }}" onclick="location.href = '{% url 'wagtail_personalisation_segment_modeladmin_edit' segment.pk %}'">
+                                    <div class="block block--{{ segment.enabled|yesno:"enabled,disabled" }}" onclick="location.href = '{% url 'wagtail_personalisation_segment_modeladmin_edit' segment.pk %}'">
                                         <h2>{{ segment }}</h2>
 
                                         <div class="inspect_container">
@@ -98,10 +98,10 @@
 
                                         {% if user_can_create %}
                                         <ul class="block_actions">
-                                            {% if segment.status == segment.STATUS_DISABLED %}
-                                                <li><a href="{% url 'segment:toggle' segment.pk %}" title="{% trans "Enable this segment" %}">enable</a></li>
-                                            {% elif segment.status == segment.STATUS_ENABLED %}
+                                            {% if segment.enabled %}
                                                 <li><a href="{% url 'segment:toggle' segment.pk %}" title="{% trans "Disable this segment" %}">disable</a></li>
+                                            {% else %}
+                                                <li><a href="{% url 'segment:toggle' segment.pk %}" title="{% trans "Enable this segment" %}">enable</a></li>
                                             {% endif %}
                                             <li><a href="{% url 'wagtail_personalisation_segment_modeladmin_edit' segment.pk %}" title="{% trans "Configure this segment" %}">configure this</a></li>
                                             {% if segment.is_static %}
