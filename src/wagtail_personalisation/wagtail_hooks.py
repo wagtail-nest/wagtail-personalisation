@@ -14,8 +14,8 @@ from wagtail.wagtailcore.models import Page
 
 from wagtail_personalisation import admin_urls, models
 from wagtail_personalisation.adapters import get_segment_adapter
-from wagtail_personalisation.models import PersonalisablePageMixin, Segment, \
-    PersonalisablePageMetadata
+from wagtail_personalisation.models import (PersonalisablePageMixin, Segment,
+                                            PersonalisablePageMetadata)
 
 logger = logging.getLogger(__name__)
 
@@ -197,8 +197,8 @@ class PersonalisedPagesSummaryPanel(PagesSummaryItem):
     order = 2100
 
     def render(self):
-        page_count = PersonalisablePageMetadata.objects\
-                     .filter(segment__isnull=True).count()
+        page_count = PersonalisablePageMetadata.objects.filter(
+            segment__isnull=True).count()
         title = _("Personalised Page")
         return mark_safe("""
             <li class="icon icon-fa-file-o">
@@ -210,8 +210,8 @@ class VariantPagesSummaryPanel(PagesSummaryItem):
     order = 2200
 
     def render(self):
-        page_count = PersonalisablePageMetadata.objects\
-                     .filter(segment__isnull=False).count()
+        page_count = PersonalisablePageMetadata.objects.filter(
+            segment__isnull=False).count()
         title = _("Variant")
         return mark_safe("""
                 <li class="icon icon-fa-files-o">
