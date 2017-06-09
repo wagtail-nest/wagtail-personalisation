@@ -93,3 +93,12 @@ def parse_tag(token, parser):
             args.append(FilterExpression(bit, parser))
 
     return (tag_name, args, kwargs)
+
+
+def exclude_variants(pages):
+    return [page for page in pages
+            if (hasattr(page, 'personalisation_metadata') is False)
+            or (hasattr(page, 'personalisation_metadata')
+                and page.personalisation_metadata is None)
+            or (hasattr(page, 'personalisation_metadata')
+                and page.personalisation_metadata.is_canonical)]

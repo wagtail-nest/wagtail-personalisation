@@ -12,10 +12,8 @@ from wagtail.wagtailadmin.widgets import Button, ButtonWithDropdownFromHook
 from wagtail.wagtailcore import hooks
 from wagtail.wagtailcore.models import Page
 
-from wagtail_personalisation import admin_urls, models
+from wagtail_personalisation import admin_urls, models, utils
 from wagtail_personalisation.adapters import get_segment_adapter
-from wagtail_personalisation.models import (PersonalisablePageMixin, Segment,
-                                            PersonalisablePageMetadata)
 
 logger = logging.getLogger(__name__)
 
@@ -74,7 +72,7 @@ def serve_variant(page, request, serve_args, serve_kwargs):
 
     """
     user_segments = []
-    if not isinstance(page, PersonalisablePageMixin):
+    if not isinstance(page, models.PersonalisablePageMixin):
         return
 
     adapter = get_segment_adapter(request)
@@ -92,12 +90,7 @@ def serve_variant(page, request, serve_args, serve_kwargs):
 
 @hooks.register('construct_explorer_page_queryset')
 def dont_show_variant(parent_page, pages, request):
-    return [page for page in pages
-            if (hasattr(page, 'personalisation_metadata') is False)
-            or (hasattr(page, 'personalisation_metadata')
-                and page.personalisation_metadata is None)
-            or (hasattr(page, 'personalisation_metadata')
-                and page.personalisation_metadata.is_canonical)]
+    return utils.exclude_variants(pages)
 
 
 @hooks.register('register_page_listing_buttons')
@@ -157,12 +150,7 @@ class CorrectedPagesSummaryPanel(PagesSummaryItem):
     def get_context(self):
         context = super(CorrectedPagesSummaryPanel, self).get_context()
 
-        pages = [page for page in Page.objects.all().specific()
-                 if (hasattr(page, 'personalisation_metadata') is False)
-                 or (hasattr(page, 'personalisation_metadata')
-                     and page.personalisation_metadata is None)
-                 or (hasattr(page, 'personalisation_metadata')
-                     and page.personalisation_metadata.is_canonical)]
+        pages = utils.exclude_variants(Page.objects.all().specific())
 
         context['total_pages'] = len(pages) - 1
         return context
@@ -184,7 +172,7 @@ class SegmentSummaryPanel(SummaryItem):
     order = 2000
 
     def render(self):
-        segment_count = Segment.objects.count()
+        segment_count = models.Segment.objects.count()
         target_url = reverse('wagtail_personalisation_segment_modeladmin_index')
         title = _("Segments")
         return mark_safe("""
@@ -197,7 +185,7 @@ class PersonalisedPagesSummaryPanel(PagesSummaryItem):
     order = 2100
 
     def render(self):
-        page_count = PersonalisablePageMetadata.objects.filter(
+        page_count = models.PersonalisablePageMetadata.objects.filter(
             segment__isnull=True).count()
         title = _("Personalised Page")
         return mark_safe("""
@@ -210,7 +198,7 @@ class VariantPagesSummaryPanel(PagesSummaryItem):
     order = 2200
 
     def render(self):
-        page_count = PersonalisablePageMetadata.objects.filter(
+        page_count = models.PersonalisablePageMetadata.objects.filter(
             segment__isnull=False).count()
         title = _("Variant")
         return mark_safe("""
