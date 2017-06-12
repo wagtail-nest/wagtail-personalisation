@@ -60,7 +60,7 @@ def segment_user(page, request, serve_args, serve_kwargs):
     if request.user.is_superuser and forced_segment is not None:
         segment = Segment.objects.filter(pk=forced_segment).first()
         if segment:
-            adapter.add(segment)
+            adapter.set_segments([segment])
 
 
 @hooks.register('before_serve_page')
