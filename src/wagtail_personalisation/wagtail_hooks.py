@@ -90,7 +90,8 @@ def serve_variant(page, request, serve_args, serve_kwargs):
 @hooks.register('construct_explorer_page_queryset')
 def dont_show_variant(parent_page, pages, request):
     return [page for page in pages
-            if (page.personalisation_metadata is None)
+            if not hasattr(page, 'personalisation_metadata')
+            or (page.personalisation_metadata is None)
             or (page.personalisation_metadata.is_canonical)]
 
 
