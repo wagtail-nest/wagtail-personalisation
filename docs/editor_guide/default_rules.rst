@@ -1,5 +1,8 @@
-Included rules
-==============
+Default rules
+=============
+
+Wagxperience comes with a base set of rules that allow you start segmenting
+your visitors quickly.
 
 Time rule
 ---------

@@ -39,7 +39,7 @@ A very simple example of a rule would look something like this::
     from django.db import models
     from wagtail.wagtailadmin.edit_handlers import FieldPanel
     from personalisation import AbstractBaseRule
-    
+
     class MyNewRule(AbstractBaseRule):
         field = models.BooleanField(default=False)
 
@@ -57,7 +57,7 @@ As you can see, the only real requirement is the ``test_user`` function that wil
 ``True`` or ``False`` based on the model's fields and optionally the request object.
 
 Below is the "Time rule" model included with the module, which offers more complex functionality::
-    
+
     @python_2_unicode_compatible
     class TimeRule(AbstractBaseRule):
         """Time rule to segment users based on a start and end time"""
@@ -83,5 +83,3 @@ Below is the "Time rule" model included with the module, which offers more compl
 
         def __str__(self):
             return 'Time Rule'
-
-Continue reading: :doc:`usage_guide`
