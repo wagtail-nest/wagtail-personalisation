@@ -5,3 +5,4 @@ Usage Guide
    :maxdepth: 3
 
    implementation
+   custom_rules

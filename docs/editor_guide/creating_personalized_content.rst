@@ -2,7 +2,7 @@ Creating personalized content
 =============================
 
 Once you've created a segment you can start serving these visitors with
-personalised content. To do this, you can go one of two directions.
+personalised content. To do this, you can go one of three directions.
 
 1. Create a copy of a page for your segment.
 
@@ -29,28 +29,15 @@ You can change everything on this page you'd like. Visitors that are included in
 your segment, will automatically see the new page you've created for them.
 
 
-Method 2: Create a StreamField block
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-
-Method 3: Create a template block
+Method 2: Use a StreamField block
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-You can add a template block that only shows its contents to users of a
-specific segment. This is done using the "segment" block.
+This method requires implementation in your back-end. Take a look at
+:doc:`../usage_guide/implementation` for more information.
 
-When editing templates make sure to load the ``wagtail_personalisation_tags``
-tags library in the template::
 
-    {% load wagtail_personalisation_tags %}
+Method 3: Use a template block
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-After that you can add a template block with the name of the segment you want
-the content to show up for::
-
-    {% segment name="My Segment" %}
-        <p>Only users within "My Segment" see this!</p>
-    {% endsegment %}
-
-The template block currently only supports one segment at a time. If you want
-to target multiple segments you will have to make multiple blocks with the
-same content.
+This method requires implementation in your back-end. Take a look at
+:doc:`../usage_guide/implementation` for more information.

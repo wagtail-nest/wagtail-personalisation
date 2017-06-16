@@ -1,85 +1,73 @@
 Implementation
-===============
+==============
 
 Extending a page to be personalisable
 -------------------------------------
 Wagxperience offers a ``PersonalisablePage`` base class to extend from.
 This is a standard ``Page`` class with personalisation options added.
 
+
 Creating a new personalisable page
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-Import and extend the ``personalisation.models.PersonalisablePage`` class to create a personalisable page.
 
-A very simple example for a personalisable homepage::
+Import and extend the ``personalisation.models.PersonalisablePage`` class to
+create a personalisable page.
 
-    from wagtail_personalisation.models import PersonalisablePage
+A very simple example for a personalisable homepage:
 
-    class HomePage(PersonalisablePage):
-        subtitle = models.CharField(max_length=255)
-        body = RichTextField(blank=True, default='')
+.. code-block:: python
 
-        content_panels = PersonalisablePage.content_panels + [
-            FieldPanel('subtitle'),
-            FieldPanel('body'),
-        ]
+    from wagtail.wagtailcore.models import Page
+    from wagtail_personalisation.models import PersonalisablePageMixin
 
-It's just as simple as extending a standard ``Page`` class.
+    class HomePage(PersonalisablePageMixin, Page):
+        pass
+
+All you need is the ``PersonalisablePageMixin`` mixin and a Wagtail ``Page``
+class of your liking.
+
 
 Migrating an existing page to be personalisable
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Coming soon...
 
-Creating custom rules
----------------------
 
-Rules consist of two important elements, the model's fields and the ``test_user`` function.
+Adding personalisable StreamField blocks
+----------------------------------------
 
-A very simple example of a rule would look something like this::
+Taking things a step further, you can also add personalisable StreamField blocks
+to your page models. Below is the full Homepage model used in the sandbox.
 
-    from django.db import models
-    from wagtail.wagtailadmin.edit_handlers import FieldPanel
-    from personalisation import AbstractBaseRule
+.. literalinclude:: ../../sandbox/sandbox/apps/home/models.py
 
-    class MyNewRule(AbstractBaseRule):
-        field = models.BooleanField(default=False)
 
-        panels = [
-            FieldPanel('field'),
-        ]
+Using template blocks for personalisation
+-----------------------------------------
 
-        def __init__(self, *args, **kwargs):
-            super(MyNewRule, self).__init__(*args, **kwargs)
+*Please note that using personalisable template tags is not the recommended
+method for adding personalisation to your websites content, as it is fully
+decoupled from the administration interface. Use responsibly.*
 
-        def test_user(self, request):
-            return self.field
+You can add a template block that only shows its contents to users of a
+specific segment. This is done using the "segment" block.
 
-As you can see, the only real requirement is the ``test_user`` function that will either return
-``True`` or ``False`` based on the model's fields and optionally the request object.
+When editing templates make sure to load the ``wagtail_personalisation_tags``
+tags library in the template:
 
-Below is the "Time rule" model included with the module, which offers more complex functionality::
+.. code-block:: jinja
 
-    @python_2_unicode_compatible
-    class TimeRule(AbstractBaseRule):
-        """Time rule to segment users based on a start and end time"""
-        start_time = models.TimeField(_("Starting time"))
-        end_time = models.TimeField(_("Ending time"))
+    {% load wagtail_personalisation_tags %}
 
-        panels = [
-            FieldRowPanel([
-                FieldPanel('start_time'),
-                FieldPanel('end_time'),
-            ]),
-        ]
+After that you can add a template block with the name of the segment you want
+the content to show up for:
 
-        def __init__(self, *args, **kwargs):
-            super(TimeRule, self).__init__(*args, **kwargs)
+.. code-block:: jinja
 
-        def test_user(self, request=None):
-            current_time = datetime.now().time()
-            starting_time = self.start_time
-            ending_time = self.end_time
+    {% segment name="My Segment" %}
+        <p>Only users within "My Segment" see this!</p>
+    {% endsegment %}
 
-            return starting_time <= current_time <= ending_time
-
-        def __str__(self):
-            return 'Time Rule'
+The template block currently only supports one segment at a time. If you want
+to target multiple segments you will have to make multiple blocks with the
+same content.

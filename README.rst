@@ -37,7 +37,9 @@ Instructions
 ------------
 Wagtail Personalisation requires Wagtail 1.9 or 1.10 and Django 1.9, 1.10 or 1.11.
 
-To install the package with pip::
+To install the package with pip:
+
+.. code-block:: console
 
     pip install wagtail-personalisation
 
