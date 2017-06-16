@@ -24,7 +24,7 @@ new segment:
 
 4. Define your segment rules.
 
-    Wagxperience comes with a basic set of :doc:`default_rules` that allow
+    Wagxperience comes with a basic set of :doc:`../default_rules` that allow
     you to get started quickly. The rules you define will be evaluated once a
     visitor makes a request to your application.
 

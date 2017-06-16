@@ -18,6 +18,7 @@ Welcome to the Wagxperience documentation
 .. image:: https://img.shields.io/pypi/v/wagtail-personalisation.svg
     :target: https://pypi.python.org/pypi/wagtail-personalisation/
 
+
 Wagxperience is a fully-featured personalisation module for Wagtail CMS.
 It enables editors to create customised pages - or parts of pages - based on
 segments whose rules are configured directly in the admin interface.
@@ -25,19 +26,17 @@ segments whose rules are configured directly in the admin interface.
 
 * **Get up and running**
 
-    * :doc:`getting_started/installation`
+    * :doc:`getting_started/index`
 
 
 * **For developers**
 
-    * :doc:`usage_guide/implementation`
+    * :doc:`usage_guide/index`
 
 
-* **For editors**
+* **For editors & marketeers**
 
-    * :doc:`editor_guide/creating_segments`
-    * :doc:`editor_guide/creating_personalized_content`
-    * :doc:`editor_guide/default_rules`
+    * :doc:`editor_guide/index`
 
 
 Index
@@ -45,16 +44,8 @@ Index
 
 .. toctree::
    :maxdepth: 2
-   :titlesonly:
 
    getting_started/index
    usage_guide/index
    editor_guide/index
-
-
-Indices and tables
-------------------
-
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
+   default_rules

@@ -1,7 +1,11 @@
 Installing Wagxperience
 =======================
 
-Wagtail Personalisation requires Wagtail 1.10 and Django 1.11.
+Wagtail Personalisation requires Wagtail_ 1.10 and Django_ 1.11.
+
+.. _Wagtail: https://github.com/wagtail/wagtail
+.. _Django: https://github.com/django/django
+
 
 To install the package with pip:
 

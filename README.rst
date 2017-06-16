@@ -64,6 +64,16 @@ been added in first, this is a prerequisite for this project.
         # ...
     ]
 
+
+Documentation
+-------------
+
+You can find more information about installing, extending and using this module
+on `Read the Docs`_.
+
+.. _Read the Docs: http://wagtail-personalisation.readthedocs.io
+
+
 Sandbox
 -------
 
