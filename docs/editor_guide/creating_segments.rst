@@ -1,34 +1,65 @@
 Creating a segment
 ==================
 
-As soon as the installation is completed and configured, the module will be
-visible in the Wagtail administrative area.
+To create a segment, go to the "Segments dashboard" and click "Add segment".
+You can find the segments dashboard in the administration menu on the left of
+the page.
 
-To create a segment, go to the "Segments" page and click on "Add a new segment".
+.. figure:: ../_static/images/segment_dashboard_header.png
+   :alt: The segment dashboard header containing the "Add segment" button.
 
-On this page you will be presented with a form. Follow these steps to create a
-new segment:
+On this page you will be presented with two forms. One with specific information
+about your segment, and the other allowing you to choose and configure your
+rules.
+
+
+Set segment specific options
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. figure:: ../_static/images/edit_segment_specifics.png
+   :alt: The form that allows you to configure specific segment options.
 
 1. Enter a name for your segment.
 
-2. (Optional) Select whether to match any or all defined rules.
+    Choose something meaningful like "Newsletter campaign visitors". This will
+    ensure you'll have a global idea about which visitors are in this segment in
+    other parts of the administration interface.
 
-    ``match any`` will result in a segment that is applied as soon as one of
-    your rules matches the visitor. When ``match all`` is selected, all rules
-    must match before the segment is applied.
+2. Select the status of the segment *Optional*
 
-3. (Optional) Set the segment persistence.
+    You will generally keep this one on **enabled**. If for some reason you wan't
+    to disable the segment, you can change this to **disabled**.
 
-    When persistence is enabled, your segment will stick to the visitor once
+3. Set the segment persistence. *Optional*
+
+    When persistence is **enabled**, your segment will stick to the visitor once
     applied, even if the rules no longer match on the next visit.
 
-4. Define your segment rules.
+4. Select whether to match any or all defined rules. *Optional*
+
+    **Match any** will result in a segment that is applied as soon as one of
+    your rules matches the visitor. When **match all** is selected, all rules
+    must match before the segment is applied.
+
+
+Defining rules
+^^^^^^^^^^^^^^
+
+.. figure:: ../_static/images/edit_segment_rules.png
+   :alt: The form that allows you to set the rules for a segment.
+
+5. Choose the rules you want to use.
 
     Wagxperience comes with a basic set of :doc:`../default_rules` that allow
     you to get started quickly. The rules you define will be evaluated once a
     visitor makes a request to your application.
 
-5. Save your segment.
+    The rules that come with Wagxperience are as follows:
 
-    Click "save" to store your segment. It will be enabled by default,
-    unless otherwise defined.
+    .. toctree::
+       :maxdepth: 2
+
+       ../default_rules
+
+Click "save" to store your segment. It will be enabled by default, unless
+otherwise defined.

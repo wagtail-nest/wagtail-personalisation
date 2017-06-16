@@ -1,8 +1,9 @@
-Default rules
-=============
+Included rules
+==============
 
 Wagxperience comes with a base set of rules that allow you to start segmenting
 your visitors quickly.
+
 
 Time rule
 ---------
@@ -18,6 +19,7 @@ End time            The end time of your time frame.
 ==================  ==========================================================
 
 ``wagtail_personalisation.rules.TimeRule``
+
 
 Day rule
 --------
@@ -39,6 +41,7 @@ Sunday              Matches when the visitors visits on a sunday.
 
 ``wagtail_personalisation.rules.DayRule``
 
+
 Referral rule
 -------------
 
@@ -57,6 +60,7 @@ Regex string        The regex string to match the referral header to.
 
 ``wagtail_personalisation.rules.ReferralRule``
 
+
 Visit count rule
 ----------------
 
@@ -74,6 +78,7 @@ Operator            Whether to match for more than, less than or equal to the
 ==================  ==========================================================
 
 ``wagtail_personalisation.rules.VisitCountRule``
+
 
 Query rule
 ----------
@@ -95,6 +100,7 @@ Value               The second part of the query ('ourbestoffer').
 
 ``wagtail_personalisation.rules.QueryRule``
 
+
 Device rule
 -----------
 
@@ -110,6 +116,7 @@ Desktop             Matches when the visitor uses a desktop.
 ==================  ==========================================================
 
 ``wagtail_personalisation.rules.DeviceRule``
+
 
 User is logged in rule
 ----------------------

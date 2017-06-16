@@ -16,7 +16,7 @@ If you'd like to switch between the dashboard view and list view, open the
 segment dashboard and click the "Switch view" button in the green header at the
 top of the page.
 
-.. figure:: ../_static/images/switch_view_button.png
+.. figure:: ../_static/images/segment_dashboard_header.png
    :alt: The header containing the "Switch view" button.
 
 
