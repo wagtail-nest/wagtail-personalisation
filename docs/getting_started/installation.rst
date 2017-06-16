@@ -35,14 +35,3 @@ been added in first, this is a prerequisite for this project.
         'django.contrib.sessions.middleware.SessionMiddleware',
         # ...
     ]
-
-
-Sandbox
--------
-
-To experiment with the package you can use the sandbox provided in
-this repository. To install this you will need to create and activate a
-virtualenv and then run ``make sandbox``. This will start a fresh Wagtail
-install, with the personalisation module enabled, on http://localhost:8000
-and http://localhost:8000/cms/. The superuser credentials are
-``superuser@example.com`` with the password ``testing``.

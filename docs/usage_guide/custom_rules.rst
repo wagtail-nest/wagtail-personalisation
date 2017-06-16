@@ -14,8 +14,4 @@ As you can see, the only real requirement is the ``test_user`` function that
 will either return ``True`` or ``False`` based on the model's fields and
 optionally the request object.
 
-Below is the "Visit count rule" model included with the module, which uses
-more complex functionality:
-
-.. literalinclude:: ../../src/wagtail_personalisation/rules.py
-   :pyobject: VisitCountRule
+That's it!

@@ -5,3 +5,4 @@ Getting Started
    :maxdepth: 3
 
    installation
+   sandbox

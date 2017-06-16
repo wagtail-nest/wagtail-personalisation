@@ -46,8 +46,8 @@ Using template blocks for personalisation
 -----------------------------------------
 
 *Please note that using personalisable template tags is not the recommended
-method for adding personalisation to your websites content, as it is fully
-decoupled from the administration interface. Use responsibly.*
+method for adding personalisation to your content, as it is largely decoupled
+from the administration interface. Use responsibly.*
 
 You can add a template block that only shows its contents to users of a
 specific segment. This is done using the "segment" block.
