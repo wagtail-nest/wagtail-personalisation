@@ -96,6 +96,13 @@ def parse_tag(token, parser):
 
 
 def exclude_variants(pages):
+    """Checks if page is not a variant
+
+    :param pages: List of pages to check
+    :type pages: list
+    :return: List of pages that aren't variants
+    :rtype: list
+    """
     return [page for page in pages
             if (hasattr(page, 'personalisation_metadata') is False)
             or (hasattr(page, 'personalisation_metadata')
