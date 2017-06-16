@@ -58,7 +58,7 @@ INSTALLED_APPS = [
     'wagtailfontawesome',
     'modelcluster',
     'taggit',
-    'debug_toolbar',
+    # 'debug_toolbar',
 
     'wagtail_personalisation',
 
