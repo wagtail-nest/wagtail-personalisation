@@ -102,7 +102,7 @@ html_theme_options = {
     'analytics_id': 'UA-100203499-2',
 }
 
-html_logo = '../logo_bw.png'
+html_logo = 'logo.png'
 
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
