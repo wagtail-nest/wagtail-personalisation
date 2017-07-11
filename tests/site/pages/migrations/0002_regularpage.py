@@ -10,7 +10,7 @@ import wagtail.wagtailcore.fields
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('wagtailcore', '0033_remove_golive_expiry_help_text'),
+        ('wagtailcore', '0001_initial'),
         ('pages', '0001_initial'),
     ]
 
