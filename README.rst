@@ -35,7 +35,7 @@ in the admin interface.
 
 Instructions
 ------------
-Wagtail Personalisation requires Wagtail 1.10 and Django 1.11.
+Wagtail Personalisation requires Wagtail 1.9 or 1.10 and Django 1.9, 1.10 or 1.11.
 
 To install the package with pip::
 
@@ -70,6 +70,6 @@ Sandbox
 To experiment with the package you can use the sandbox provided in
 this repository. To install this you will need to create and activate a
 virtualenv and then run ``make sandbox``. This will start a fresh Wagtail
-install, with the personalisation module enabled, on http://localhost:8000 
-and http://localhost:8000/cms/. The superuser credentials are 
+install, with the personalisation module enabled, on http://localhost:8000
+and http://localhost:8000/cms/. The superuser credentials are
 ``superuser@example.com`` with the password ``testing``.
