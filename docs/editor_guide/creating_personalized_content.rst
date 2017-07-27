@@ -12,12 +12,12 @@ visitors. To do this, you can go one of three directions.
 Method 1: Create a variant
 --------------------------
 
-*Why you'd want to use this method*
+**Why you'd want to use this method**
 
 * It has absolutely no restrictions, change anything you want.
 * That's pretty much it.
 
-*Why you'd want to use a different method*
+**Why you'd want to use a different method**
 
 * You are editing a page that changes often. You'd probably rather not change
   variant every time the original page changes.
@@ -48,12 +48,44 @@ when attempting to visit the original page.
 Method 2: Use a StreamField block
 ---------------------------------
 
-This method requires changes to the back-end of your website. Take a look at
-:doc:`../usage_guide/implementation` for more information.
+Preparing a page and it's StreamField blocks for this method is described in the
+Usage guide for developers. Please refer to
+:ref:`implementing_streamfield_blocks` for more information.
+
+**Why you'd want to use this method**
+
+* Allows you to create personalised content in the original page (without
+  creating a variant).
+* Create multiple StreamField blocks for different segments inline.
+
+**Why you'd want to use a different method**
+
+* You need someone tech savvy to change the back-end implementation.
+
+To create personalised stream field blocks, first select the page you wan't to
+create the content for. Note that the personalisable streamfield blocks must be
+activated on the page by your developer.
+
+Scroll down to the block containing the stream field and add a personalisable
+block. The first input field in the block is a dropdown allowing you to select
+the segment this streamfield block is ment for.
+
+.. figure:: ../_static/images/single_streamfield.png
+   :alt: Create a new streamfield block and select the segment.
+
+If you want, you can even add multiple blocks and change the segment to show
+different content between segments!
+
+.. figure:: ../_static/images/dual_streamfield.png
+   :alt: You can even create multiple variations of the same block!
+
+Once saved, the page will selectively show streamfield blocks based on the
+visitor's segment.
 
 
 Method 3: Use a template block
 ------------------------------
 
-This method requires changes to the back-end of your website. Take a look at
-:doc:`../usage_guide/implementation` for more information.
+Setting up content in this manner is described in the Usage guide for
+developers. Please refer to :ref:`implementing_template_blocks` for more
+information.

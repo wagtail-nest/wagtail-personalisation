@@ -33,6 +33,8 @@ Migrating an existing page to be personalisable
 Coming soon...
 
 
+.. _implementing_streamfield_blocks:
+
 Adding personalisable StreamField blocks
 ----------------------------------------
 
@@ -41,6 +43,8 @@ to your page models. Below is the full Homepage model used in the sandbox.
 
 .. literalinclude:: ../../sandbox/sandbox/apps/home/models.py
 
+
+.. _implementing_template_blocks:
 
 Using template blocks for personalisation
 -----------------------------------------
