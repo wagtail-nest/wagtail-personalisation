@@ -62,16 +62,16 @@ Usage guide for developers. Please refer to
 
 * You need someone tech savvy to change the back-end implementation.
 
-To create personalised stream field blocks, first select the page you wan't to
-create the content for. Note that the personalisable streamfield blocks must be
+To create personalised StreamField blocks, first select the page you wan't to
+create the content for. Note that the personalisable StreamField blocks must be
 activated on the page by your developer.
 
-Scroll down to the block containing the stream field and add a personalisable
+Scroll down to the block containing the StreamField and add a personalisable
 block. The first input field in the block is a dropdown allowing you to select
-the segment this streamfield block is ment for.
+the segment this StreamField block is ment for.
 
 .. figure:: ../_static/images/single_streamfield.png
-   :alt: Create a new streamfield block and select the segment.
+   :alt: Create a new StreamField block and select the segment.
 
 If you want, you can even add multiple blocks and change the segment to show
 different content between segments!
@@ -79,7 +79,7 @@ different content between segments!
 .. figure:: ../_static/images/dual_streamfield.png
    :alt: You can even create multiple variations of the same block!
 
-Once saved, the page will selectively show streamfield blocks based on the
+Once saved, the page will selectively show StreamField blocks based on the
 visitor's segment.
 
 
