@@ -12,7 +12,7 @@ Switching between views
 -----------------------
 
 By default, Wagxperience's "dashboard view" is active on the segment dashboard.
-If you'd like to switch between the dashboard view and list view, open the
+If you would like to switch between the dashboard view and list view, open the
 segment dashboard and click the "Switch view" button in the green header at the
 top of the page.
 
@@ -23,7 +23,7 @@ top of the page.
 Using the list view
 -------------------
 
-The advantages of using the list view:
+Advantages of using the list view:
 
 * Uses the familiar table view that is used on many other parts of the Wagtail
   administration interface.
@@ -55,7 +55,7 @@ Match any
 Status
     Indicates whether this segment is active (default) or inactive. If it has
     been set to 'inactive', visitors will not be appointed to this segment and no
-    personalized content for this segment will be shown to visitors.
+    personalised content for this segment will be shown to visitors.
 
 Page count
     The amount of pages that have variants using this segment.
@@ -65,7 +65,7 @@ Variant count
     will always match the amount of pages in the "Page count".
 
 Statistics
-    Shows the amount of visits the this segment and the days it has been
+    Shows the amount of visits of this segment and the days it has been
     enabled. If the segment is disabled and then re-enabled, these statistics
     will reset.
 
@@ -73,7 +73,7 @@ Statistics
 Using the dashboard view
 ------------------------
 
-The advantages of using the dashboard view:
+Advantages of using the dashboard view:
 
 * Offers a more pleasing visual representation of segments.
 * Focused on giving insights about your segments at a glance.

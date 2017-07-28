@@ -19,7 +19,7 @@ Welcome to the Wagxperience documentation
     :target: https://pypi.python.org/pypi/wagtail-personalisation/
 
 
-Wagxperience is a fully-featured personalisation module for Wagtail CMS.
+Wagxperience is a fully-featured personalisation module for Wagtail.
 It enables editors to create customised pages - or parts of pages - based on
 segments whose rules are configured directly in the admin interface.
 

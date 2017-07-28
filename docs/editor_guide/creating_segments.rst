@@ -9,7 +9,7 @@ the page.
    :alt: The segment dashboard header containing the "Add segment" button.
 
 On this page you will be presented with two forms. One with specific information
-about your segment, and the other allowing you to choose and configure your
+about your segment, the other allowing you to choose and configure your
 rules.
 
 
@@ -22,18 +22,18 @@ Set segment specific options
 1. Enter a name for your segment.
 
     Choose something meaningful like "Newsletter campaign visitors". This will
-    ensure you'll have a global idea about which visitors are in this segment in
+    ensure you'll have a general idea which visitors are in this segment in
     other parts of the administration interface.
 
 2. Select the status of the segment *Optional*
 
-    You will generally keep this one on **enabled**. If for some reason you wan't
+    You will generally keep this one **enabled**. If for some reason you want
     to disable the segment, you can change this to **disabled**.
 
 3. Set the segment persistence. *Optional*
 
     When persistence is **enabled**, your segment will stick to the visitor once
-    applied, even if the rules no longer match on the next visit.
+    applied, even if the rules no longer match the next visit.
 
 4. Select whether to match any or all defined rules. *Optional*
 

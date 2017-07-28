@@ -49,7 +49,7 @@ to your page models. Below is the full Homepage model used in the sandbox.
 Using template blocks for personalisation
 -----------------------------------------
 
-*Please note that using personalisable template tags is not the recommended
+*Please note that using the personalisable template tag is not the recommended
 method for adding personalisation to your content, as it is largely decoupled
 from the administration interface. Use responsibly.*
 

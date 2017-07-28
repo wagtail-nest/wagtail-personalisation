@@ -2,7 +2,7 @@ Editor Guide
 ============
 
 The editor guide is meant for content editors and marketers using Wagxperience
-to offer a personalized experience to their visitors.
+to offer a personalised experience to their visitors.
 
 .. toctree::
    :maxdepth: 2
@@ -10,4 +10,4 @@ to offer a personalized experience to their visitors.
    introduction
    segments_dashboard
    creating_segments
-   creating_personalized_content
+   creating_personalised_content

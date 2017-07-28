@@ -1,36 +1,36 @@
-Creating personalized content
+Creating personalised content
 =============================
 
 Once you've created a segment you can start serving personalised content to your
-visitors. To do this, you can go one of three directions.
+visitors. To do this, you can choose one of three methods.
 
-1. Create a variant of a page for your segment.
-2. Use StreamField blocks only visible to your segment.
-3. Use a template block only visible to your segment.
+1. Create a page variant for a segment.
+2. Use StreamField blocks visible for a segment only.
+3. Use a template block visible for a segment only.
 
 
-Method 1: Create a variant
---------------------------
+Method 1: Create a page variant
+-------------------------------
 
-**Why you'd want to use this method**
+**Why you would want to use this method**
 
-* It has absolutely no restrictions, change anything you want.
+* It has absolutely no restrictions, you can change anything you want.
 * That's pretty much it.
 
-**Why you'd want to use a different method**
+**Why you would want to use a different method**
 
-* You are editing a page that changes often. You'd probably rather not change
-  variant every time the original page changes.
+* You are editing a page that changes often. You would probably rather not
+  change the variation(s) every time the original page changes.
 
-To create a variant from a page for a specific Segment (which you can change to
+To create a variant of a page for a specific Segment (which you can change to
 your liking after creating it), simply go to the Explorer section and find the
-page you'd like to personalize.
+page you would like to personalize.
 
 .. figure:: ../_static/images/variants_button.png
    :alt: The variants button that appears on personalisable pages.
 
 When you hover over a page, you'll notice a "Variants" dropdown button appears.
-Click the button and select the segment you'd like to create personalized
+Click the button and select the segment you would like to create personalised
 content for.
 
 Once you've selected the segment, a copy of the original page will be created
@@ -40,7 +40,7 @@ to see this title. It's only there for your reference.
 .. figure:: ../_static/images/editing_variant.png
    :alt: The newly created page allowing you to change anything you want.
 
-You can change everything on this page you'd like. Visitors that are appointed
+You can change everything on this page you would like. Visitors that are appointed
 to your segment will automatically see the new variant you've created for them
 when attempting to visit the original page.
 
@@ -52,13 +52,13 @@ Preparing a page and it's StreamField blocks for this method is described in the
 Usage guide for developers. Please refer to
 :ref:`implementing_streamfield_blocks` for more information.
 
-**Why you'd want to use this method**
+**Why you would want to use this method**
 
 * Allows you to create personalised content in the original page (without
   creating a variant).
 * Create multiple StreamField blocks for different segments inline.
 
-**Why you'd want to use a different method**
+**Why you would want to use a different method**
 
 * You need someone tech savvy to change the back-end implementation.
 

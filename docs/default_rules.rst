@@ -25,7 +25,7 @@ Day rule
 --------
 
 The day rule allows you to segment visitors based on the day of their visit.
-Select one or multiple days on which you'd like your segment to be applied.
+Select one or multiple days on which you would like your segment to be applied.
 
 ==================  ==========================================================
 Option              Description
