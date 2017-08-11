@@ -56,6 +56,7 @@ TEMPLATES = [
     },
 ]
 
+
 def get_middleware_settings():
     return (
         'django.middleware.common.CommonMiddleware',
@@ -68,6 +69,7 @@ def get_middleware_settings():
 
         'wagtail.wagtailcore.middleware.SiteMiddleware',
     )
+
 
 # Django 1.10 started to use "MIDDLEWARE" instead of "MIDDLEWARE_CLASSES".
 if V(django.get_version()) < V('1.10'):

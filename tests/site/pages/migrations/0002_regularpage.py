@@ -18,9 +18,15 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='RegularPage',
             fields=[
-                ('page_ptr', models.OneToOneField(auto_created=True, on_delete=django.db.models.deletion.CASCADE, parent_link=True, primary_key=True, serialize=False, to='wagtailcore.Page')),
-                ('subtitle', models.CharField(blank=True, default='', max_length=255)),
-                ('body', wagtail.wagtailcore.fields.RichTextField(blank=True, default='')),
+                ('page_ptr', models.OneToOneField(
+                    auto_created=True,
+                    on_delete=django.db.models.deletion.CASCADE,
+                    parent_link=True, primary_key=True, serialize=False,
+                    to='wagtailcore.Page')),
+                ('subtitle', models.CharField(
+                    blank=True, default='', max_length=255)),
+                ('body', wagtail.wagtailcore.fields.RichTextField(
+                    blank=True, default='')),
             ],
             options={
                 'abstract': False,

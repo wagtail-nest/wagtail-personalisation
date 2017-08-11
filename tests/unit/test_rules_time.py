@@ -16,6 +16,8 @@ def test_time_rule_create():
         segment=segment)
 
     assert time_rule.start_time == datetime.time(8, 0, 0)
+
+
 @pytest.mark.django_db
 @freeze_time("10:00:00")
 def test_requesttime_segment(client, site):
