@@ -170,9 +170,7 @@ class Segment(ClusterableModel):
         return segment_rules
 
     def toggle(self, save=True):
-        self.enabled = (
-            True if self.enabled == False
-            else False)
+        self.enabled = not self.enabled
         if save:
             self.save()
 
