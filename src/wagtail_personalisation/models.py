@@ -1,5 +1,7 @@
 from __future__ import absolute_import, unicode_literals
 
+from django.core.validators import validate_comma_separated_integer_list
+from django.conf import settings
 from django.db import models, transaction
 from django.template.defaultfilters import slugify
 from django.utils.encoding import python_2_unicode_compatible
@@ -35,7 +37,6 @@ class Segment(ClusterableModel):
     edit_date = models.DateTimeField(auto_now=True)
     enable_date = models.DateTimeField(null=True, editable=False)
     disable_date = models.DateTimeField(null=True, editable=False)
-    visit_count = models.PositiveIntegerField(default=0, editable=False)
     status = models.CharField(
         max_length=20, choices=STATUS_CHOICES, default=STATUS_ENABLED)
     persistent = models.BooleanField(
@@ -74,9 +75,26 @@ class Segment(ClusterableModel):
         """Return a string with a slug for the segment."""
         return slugify(self.name.lower())
 
-    def get_active_days(self):
+    @property
+    def active_days(self):
         """Return the amount of days the segment has been active."""
         return count_active_days(self.enable_date, self.disable_date)
+
+    def get_visits(self):
+        """Return the segment visits."""
+        return SegmentVisit.objects.filter(segments=self)
+
+    @property
+    def visit_count(self):
+        """Returns the total amount of segment visits."""
+        return self.get_visits().count()
+
+    def get_serves(self):
+        return SegmentVisit.objects.filter(served_segment=self)
+
+    @property
+    def serve_count(self):
+        return self.get_serves().count()
 
     def get_used_pages(self):
         """Return the pages that have variants using this segment."""
@@ -105,6 +123,84 @@ class Segment(ClusterableModel):
             else self.STATUS_DISABLED)
         if save:
             self.save()
+
+
+class SegmentVisitMetadata(models.Model):
+    visit = models.ForeignKey(
+        'wagtail_personalisation.SegmentVisit', on_delete=models.CASCADE)
+    segment = models.ForeignKey(
+        'wagtail_personalisation.Segment', on_delete=models.SET_NULL, null=True)
+    matched_rules = models.CharField(
+        max_length=255, validators=[validate_comma_separated_integer_list])
+
+
+class SegmentVisit(models.Model):
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True)
+    page = models.ForeignKey(Page, on_delete=models.SET_NULL, null=True)
+    segments = models.ManyToManyField(Segment, through=SegmentVisitMetadata)
+    served_segment = models.ForeignKey(
+        Segment, on_delete=models.CASCADE,
+        related_name='served_segment', null=True)
+    served_variant = models.ForeignKey(
+        Page, on_delete=models.SET_NULL,
+        related_name='served_variant', null=True)
+    session = models.CharField(
+        max_length=64, editable=False, null=True, db_index=True)
+    visit_date = models.DateTimeField(auto_now_add=True)
+
+    @classmethod
+    def create_segment_visit(cls, page, request, metadata=None):
+        """Create a segment visit object.
+        :param page: The page being visited
+        :type page: wagtail.wagtailcore.models.Page
+        :param request: The http request
+        :type request: django.http.HttpRequest
+        :param metadata: A list of personalisable page metadata
+        :type page: wagtail_personalisation.models.PersonalisablePageMetadata
+        :returns: A committed Segment Visit object
+        :rtype: wagtail_personalisation.models.SegmentVisit
+        """
+        from wagtail_personalisation.adapters import get_segment_adapter
+
+        adapter = get_segment_adapter(request)
+        user_segments = adapter.get_segments()
+
+        if not metadata:
+            metadata = page.personalisation_metadata
+            metadata = metadata.metadata_for_segments(user_segments)
+
+        user = request.user if request.user.is_authenticated() else None
+        visit = cls.objects.create(
+            user=user,
+            page=page,
+            served_segment=metadata.first().segment,
+            served_variant=metadata.first().variant,
+            session=request.session.session_key
+        )
+
+        for segment in user_segments:
+            rules = [rule for rule in segment.get_rules()
+                     if rule.pk in request.matched_rules]
+
+            SegmentVisitMetadata.objects.create(
+                visit=visit,
+                segment=segment,
+                matched_rules=','.join(str(rule.pk) for rule in rules)
+            )
+
+        return visit
+
+    @classmethod
+    def reverse_match(cls, user):
+        # TODO: Find a way to automate this, preferably without celery.
+        user_visits = cls.objects.filter(user=user)
+
+        for visit in user_visits:
+            cls.objects.filter(
+                session=visit.session,
+                user__isnull=True
+            ).update(user=user)
 
 
 class PersonalisablePageMetadata(ClusterableModel):

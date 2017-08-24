@@ -5,11 +5,12 @@ from django.core.urlresolvers import reverse
 from django.http import HttpResponseForbidden, HttpResponseRedirect
 from django.shortcuts import get_object_or_404
 from django.utils.translation import ugettext_lazy as _
-from wagtail.contrib.modeladmin.options import ModelAdmin, modeladmin_register
+from wagtail.contrib.modeladmin.options import (
+    ModelAdmin, ModelAdminGroup, modeladmin_register)
 from wagtail.contrib.modeladmin.views import IndexView
 from wagtail.wagtailcore.models import Page
 
-from wagtail_personalisation.models import Segment
+from wagtail_personalisation.models import Segment, SegmentVisit
 
 
 class SegmentModelIndexView(IndexView):
@@ -32,16 +33,18 @@ class SegmentModelDashboardView(IndexView):
         ]
 
 
-@modeladmin_register
 class SegmentModelAdmin(ModelAdmin):
     """The model admin for the Segments administration interface."""
     model = Segment
     index_view_class = SegmentModelIndexView
     dashboard_view_class = SegmentModelDashboardView
+    inspect_view_enabled = True
     menu_icon = 'fa-snowflake-o'
     add_to_settings_menu = False
-    list_display = ('name', 'persistent', 'match_any', 'status',
-                    'page_count', 'variant_count', 'statistics')
+    # TODO: Only show additional fields when 'detailed visits' is enabled.
+    list_display = (
+        'name', 'persistent', 'match_any', 'status', 'page_count',
+        'variant_count', 'active_days', 'visit_count', 'serve_count')
     index_view_extra_js = ['js/commons.js', 'js/index.js']
     index_view_extra_css = ['css/index.css']
     form_view_extra_js = ['js/commons.js', 'js/form.js']
@@ -63,9 +66,28 @@ class SegmentModelAdmin(ModelAdmin):
     def variant_count(self, obj):
         return len(obj.get_created_variants())
 
-    def statistics(self, obj):
-        return _("{visits} visits in {days} days").format(
-            visits=obj.visit_count, days=obj.get_active_days())
+
+class SegmentVisitModelAdmin(ModelAdmin):
+    model = SegmentVisit
+    menu_icon = 'fa-rocket'
+    list_display = (
+        'page', 'segments_display', 'served_segment', 'served_variant', 'user',
+        'session', 'visit_date')
+    list_filter = ('page', 'served_segment', 'served_variant', 'user')
+    search_fields = ('segments', 'user' 'session')
+
+    def segments_display(self, obj):
+        return [segment.__str__() for segment in obj.segments.all()]
+
+    segments_display.short_description = 'Segments'
+
+
+class PersonalisationAdminGroup(ModelAdminGroup):
+    menu_label = 'Personalisation'
+    menu_icon = 'fa-magic'
+    items = (SegmentModelAdmin, SegmentVisitModelAdmin)
+
+modeladmin_register(PersonalisationAdminGroup)
 
 
 def toggle_segment_view(request):

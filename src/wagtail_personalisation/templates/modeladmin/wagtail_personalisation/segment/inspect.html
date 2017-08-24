@@ -1,0 +1,38 @@
+{% extends "modeladmin/inspect.html" %}
+
+{% load i18n %}
+{% load wagtailadmin_tags %}
+
+{% block content_main %}
+    <div class="row">
+        <div class="col12">
+            <div class="nice-padding">
+                <p class="back"><a href="{{ view.index_url }}" class="icon icon-arrow-left">{% blocktrans with view.verbose_name as model_name %}Back to {{ model_name }} list{% endblocktrans %}</a></p>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        {% block fields_output %}
+            <div class="col6">
+                <div class="nice-padding">
+                    {{ block.super }}
+                </div>
+            </div>
+        {% endblock %}
+
+        {% block rule_data %}
+            <div class="col6">
+                <div class="nice-padding">
+                    {% if instance.rules %}
+                        <dl>
+                        {% for rule in instance.get_rules %}
+                            <dt class="{{ field.type|lower }}">{{ rule }}</dt>
+                            <dd>{{ rule.description.title }} {{ rule.description.value|lower }} ({{ rule.get_hit_percentage }}%)</dd>
+                        {% endfor %}
+                        </dl>
+                    {% endif %}
+                </div>
+            </div>
+        {% endblock %}
+    </div>
+{% endblock %}

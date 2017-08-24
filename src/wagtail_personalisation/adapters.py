@@ -1,7 +1,6 @@
 from __future__ import absolute_import, unicode_literals
 
 from django.conf import settings
-from django.db.models import F
 from django.utils.module_loading import import_string
 
 from wagtail_personalisation.models import Segment
@@ -36,7 +35,7 @@ class BaseSegmentsAdapter(object):
     def refresh(self):
         """Refresh the segments stored in the adapter storage."""
 
-    def _test_rules(self, rules, request, match_any=False):
+    def _test_rules(self, rules, match_any=False):
         """Tests the provided rules to see if the request still belongs
         to a segment.
         :param rules: The rules to test for
@@ -50,9 +49,20 @@ class BaseSegmentsAdapter(object):
         """
         if not rules:
             return False
+
+        if not hasattr(self.request, 'matched_rules'):
+            self.request.matched_rules = []
+
+        results = []
+        for rule in rules:
+            validation = rule.test_user(self.request)
+            if validation:
+                self.request.matched_rules.append(rule.pk)
+            results.append(validation)
+
         if match_any:
-            return any(rule.test_user(request) for rule in rules)
-        return all(rule.test_user(request) for rule in rules)
+            return any(results)
+        return all(results)
 
     class Meta:
         abstract = True
@@ -150,17 +160,6 @@ class SessionSegmentsAdapter(BaseSegmentsAdapter):
                 return visit['count']
         return 0
 
-    def update_visit_count(self):
-        """Update the visit count for all segments in the request session."""
-        segments = self.request.session['segments']
-        segment_pks = [s['id'] for s in segments]
-
-        # Update counts
-        (Segment.objects
-            .enabled()
-            .filter(pk__in=segment_pks)
-            .update(visit_count=F('visit_count') + 1))
-
     def refresh(self):
         """Retrieve the request session segments and verify whether or not they
         still apply to the requesting visitor.
@@ -178,14 +177,13 @@ class SessionSegmentsAdapter(BaseSegmentsAdapter):
             for rule_model in rule_models:
                 segment_rules.extend(rule_model.objects.filter(segment=segment))
 
-            result = self._test_rules(segment_rules, self.request,
-                                      match_any=segment.match_any)
+            result = self._test_rules(
+                segment_rules, match_any=segment.match_any)
 
             if result:
                 additional_segments.append(segment)
 
         self.set_segments(current_segments + additional_segments)
-        self.update_visit_count()
 
 
 SEGMENT_ADAPTER_CLASS = import_string(getattr(
