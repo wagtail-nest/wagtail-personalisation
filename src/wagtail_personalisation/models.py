@@ -172,6 +172,9 @@ class SegmentVisit(models.Model):
         max_length=64, editable=False, null=True, db_index=True)
     visit_date = models.DateTimeField(auto_now_add=True)
 
+    class Meta:
+        ordering = ['-visit_date']
+
     @classmethod
     def create_segment_visit(cls, page, request, metadata=None):
         """Create a segment visit object.
@@ -185,37 +188,39 @@ class SegmentVisit(models.Model):
         :rtype: wagtail_personalisation.models.SegmentVisit
         """
         from wagtail_personalisation.adapters import get_segment_adapter
+        wxp_settings = PersonalisationSettings.for_site(request.site)
 
-        adapter = get_segment_adapter(request)
-        user_segments = adapter.get_segments()
+        if wxp_settings.detailed_visits:
+            adapter = get_segment_adapter(request)
+            user_segments = adapter.get_segments()
 
-        if not metadata:
-            metadata = page.personalisation_metadata
-            metadata = metadata.metadata_for_segments(user_segments)
+            if not metadata:
+                metadata = page.personalisation_metadata
+                metadata = metadata.metadata_for_segments(user_segments)
 
-        user = request.user if request.user.is_authenticated() else None
-        visit = cls.objects.create(
-            user=user,
-            page=page,
-            served_segment=metadata.first().segment,
-            served_variant=metadata.first().variant,
-            session=request.session.session_key
-        )
-
-        for segment in user_segments:
-            rules = [
-                rule for rule in segment.get_rules() if rule.unique_encoded_name
-                in request.matched_rules
-            ]
-
-            SegmentVisitMetadata.objects.create(
-                visit=visit,
-                segment=segment,
-                matched_rules=','.join(
-                    rule.unique_encoded_name for rule in rules)
+            user = request.user if request.user.is_authenticated else None
+            visit = cls.objects.create(
+                user=user,
+                page=page,
+                served_segment=metadata.first().segment,
+                served_variant=metadata.first().variant,
+                session=request.session.session_key
             )
 
-        return visit
+            for segment in user_segments:
+                rules = [
+                    rule for rule in segment.get_rules() if rule.unique_encoded_name
+                    in request.matched_rules
+                ]
+
+                SegmentVisitMetadata.objects.create(
+                    visit=visit,
+                    segment=segment,
+                    matched_rules=','.join(
+                        rule.unique_encoded_name for rule in rules)
+                )
+
+            return visit
 
     @classmethod
     def reverse_match(cls, user):
