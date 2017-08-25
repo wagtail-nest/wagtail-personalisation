@@ -10,7 +10,6 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('wagtailcore', '0033_remove_golive_expiry_help_text'),
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
         ('wagtail_personalisation', '0012_remove_personalisablepagemetadata_is_segmented'),
     ]
