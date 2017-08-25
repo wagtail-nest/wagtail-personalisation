@@ -23,14 +23,15 @@
         {% block rule_data %}
             <div class="col6">
                 <div class="nice-padding">
-                    {% if instance.rules %}
-                        <dl>
-                        {% for rule in instance.get_rules %}
-                            <dt class="{{ field.type|lower }}">{{ rule }}</dt>
-                            <dd>{{ rule.description.title }} {{ rule.description.value|lower }} ({{ rule.get_hit_percentage }}%)</dd>
-                        {% endfor %}
-                        </dl>
-                    {% endif %}
+                    <dl>
+                    {% for rule in instance.get_rules %}
+                        <dt class="{{ field.type|lower }}">{{ rule }}</dt>
+                        <dd>
+                            {{ rule.description.title }} {{ rule.description.value|lower }}<br/>
+                            {{ rule.hit_percentage }}% ({{ rule.hit_count }} of {{ rule.visit_count }} visit{{ rule.visit_count|pluralize }})
+                        </dd>
+                    {% endfor %}
+                    </dl>
                 </div>
             </div>
         {% endblock %}

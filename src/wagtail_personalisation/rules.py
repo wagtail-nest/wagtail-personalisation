@@ -2,11 +2,14 @@ from __future__ import absolute_import, unicode_literals
 
 import re
 from datetime import datetime
+from decimal import *
 
 from django.apps import apps
 from django.db import models
+from django.db.models import Q
 from django.template.defaultfilters import slugify
 from django.utils.encoding import force_text, python_2_unicode_compatible
+from django.utils.functional import cached_property
 from django.utils.translation import ugettext_lazy as _
 from modelcluster.fields import ParentalKey
 from user_agents import parse
@@ -40,6 +43,10 @@ class AbstractBaseRule(models.Model):
         """Return a string with a slug for the rule."""
         return slugify(force_text(self).lower())
 
+    @cached_property
+    def unique_encoded_name(self):
+        return '%s-%d' % (self.encoded_name(), self.pk)
+
     def description(self):
         """Return a description explaining the functionality of the rule.
         Used in the segmentation dashboard.
@@ -54,6 +61,26 @@ class AbstractBaseRule(models.Model):
         }
 
         return description
+
+    @property
+    def hit_percentage(self):
+        percentage = Decimal(
+            (self.hit_count / self.visit_count) * 100
+        ).quantize(Decimal('.01'))
+        return '%d' % percentage
+
+    @property
+    def hit_count(self):
+        from wagtail_personalisation.models import SegmentVisitMetadata
+
+        hits = SegmentVisitMetadata.objects.filter(
+            Q(matched_rules__contains=self.unique_encoded_name),
+            segment=self.segment)
+        return hits.count()
+
+    @property
+    def visit_count(self):
+        return self.segment.visit_count
 
     @classmethod
     def get_descendant_models(cls):

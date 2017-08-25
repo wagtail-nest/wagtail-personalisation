@@ -57,7 +57,7 @@ class BaseSegmentsAdapter(object):
         for rule in rules:
             validation = rule.test_user(self.request)
             if validation:
-                self.request.matched_rules.append(rule.pk)
+                self.request.matched_rules.append(rule.unique_encoded_name)
             results.append(validation)
 
         if match_any:

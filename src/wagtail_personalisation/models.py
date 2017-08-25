@@ -1,19 +1,43 @@
 from __future__ import absolute_import, unicode_literals
 
-from django.core.validators import validate_comma_separated_integer_list
 from django.conf import settings
+from django.contrib.auth.signals import user_logged_in
 from django.db import models, transaction
 from django.template.defaultfilters import slugify
 from django.utils.encoding import python_2_unicode_compatible
 from django.utils.functional import cached_property
 from django.utils.translation import ugettext_lazy as _
 from modelcluster.models import ClusterableModel
+from wagtail.contrib.settings.models import BaseSetting, register_setting
 from wagtail.wagtailadmin.edit_handlers import (
     FieldPanel, FieldRowPanel, InlinePanel, MultiFieldPanel)
 from wagtail.wagtailcore.models import Page
 
 from wagtail_personalisation.rules import AbstractBaseRule
 from wagtail_personalisation.utils import count_active_days
+
+
+@register_setting(icon='fa-magic')
+class PersonalisationSettings(BaseSetting):
+    detailed_visits = models.BooleanField(
+        default=False,
+        help_text=_('Enable to gather more detailed metadata about the visits '
+                    'to your segments and the rules that matched. '
+                    'Please note that this will create additional load on your '
+                    'database. Usage of caching is recommended.'))
+    reverse_match = models.BooleanField(
+        default=False,
+        help_text=_('Enable to reverse match past visits with users as soon as '
+                    'a user logs in. This will ensure your data is as complete '
+                    'as possible.'))
+
+    panels = [
+        MultiFieldPanel([
+            FieldPanel('detailed_visits'),
+            FieldPanel('reverse_match'),
+        ], heading='Analytics'
+        )
+    ]
 
 
 class SegmentQuerySet(models.QuerySet):
@@ -130,8 +154,7 @@ class SegmentVisitMetadata(models.Model):
         'wagtail_personalisation.SegmentVisit', on_delete=models.CASCADE)
     segment = models.ForeignKey(
         'wagtail_personalisation.Segment', on_delete=models.SET_NULL, null=True)
-    matched_rules = models.CharField(
-        max_length=255, validators=[validate_comma_separated_integer_list])
+    matched_rules = models.CharField(max_length=2048)
 
 
 class SegmentVisit(models.Model):
@@ -180,20 +203,22 @@ class SegmentVisit(models.Model):
         )
 
         for segment in user_segments:
-            rules = [rule for rule in segment.get_rules()
-                     if rule.pk in request.matched_rules]
+            rules = [
+                rule for rule in segment.get_rules() if rule.unique_encoded_name
+                in request.matched_rules
+            ]
 
             SegmentVisitMetadata.objects.create(
                 visit=visit,
                 segment=segment,
-                matched_rules=','.join(str(rule.pk) for rule in rules)
+                matched_rules=','.join(
+                    rule.unique_encoded_name for rule in rules)
             )
 
         return visit
 
     @classmethod
     def reverse_match(cls, user):
-        # TODO: Find a way to automate this, preferably without celery.
         user_visits = cls.objects.filter(user=user)
 
         for visit in user_visits:
@@ -201,6 +226,14 @@ class SegmentVisit(models.Model):
                 session=visit.session,
                 user__isnull=True
             ).update(user=user)
+
+
+def reverse_match(sender, request, user, **kwargs):
+    wxp_settings = PersonalisationSettings.for_site(request.site)
+    if wxp_settings.detailed_visits and wxp_settings.reverse_match:
+        SegmentVisit.reverse_match(user)
+
+user_logged_in.connect(reverse_match)
 
 
 class PersonalisablePageMetadata(ClusterableModel):
