@@ -64,9 +64,9 @@ class AbstractBaseRule(models.Model):
 
     @property
     def hit_percentage(self):
-        percentage = Decimal(
+        percentage = round(Decimal(
             (self.hit_count / self.visit_count) * 100
-        ).quantize(Decimal('.01'))
+        ), 2)
         return '%d' % percentage
 
     @property
