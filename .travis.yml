@@ -28,6 +28,22 @@ matrix:
     - python: 3.6
       env: TOXENV=py36-django111-wagtail110
 
+      # Django 1.11, Wagtail 1.11
+    - python: 2.7
+      env: TOXENV=py27-django111-wagtail111
+    - python: 3.5
+      env: TOXENV=py35-django111-wagtail111
+    - python: 3.6
+      env: TOXENV=py36-django111-wagtail111
+
+      # Django 1.11, Wagtail 1.12
+    - python: 2.7
+      env: TOXENV=py27-django111-wagtail112
+    - python: 3.5
+      env: TOXENV=py35-django111-wagtail112
+    - python: 3.6
+      env: TOXENV=py36-django111-wagtail112
+
   allow_failures:
     - python: 3.5
       env: TOXENV=lint
