@@ -81,6 +81,7 @@
         "depth": 1,
         "numchild": 1,
         "title": "Root",
+        "draft_title": "",
         "slug": "root",
         "content_type": 1,
         "live": true,
@@ -95,7 +96,9 @@
         "expired": false,
         "locked": false,
         "first_published_at": null,
-        "latest_revision_created_at": null
+        "last_published_at": null,
+        "latest_revision_created_at": null,
+        "live_revision": null
     }
 }, {
     "model": "wagtailcore.page",
@@ -105,12 +108,13 @@
         "depth": 2,
         "numchild": 0,
         "title": "Home",
+        "draft_title": "Home",
         "slug": "home",
         "content_type": 2,
         "live": true,
         "has_unpublished_changes": false,
         "url_path": "/home/",
-        "owner": null,
+        "owner": 1,
         "seo_title": "",
         "show_in_menus": false,
         "search_description": "",
@@ -118,8 +122,10 @@
         "expire_at": null,
         "expired": false,
         "locked": false,
-        "first_published_at": "2017-06-02T10:35:34.706Z",
-        "latest_revision_created_at": "2017-06-02T10:35:34.565Z"
+        "first_published_at": null,
+        "last_published_at": null,
+        "latest_revision_created_at": null,
+        "live_revision": null
     }
 }, {
     "model": "wagtailcore.page",
@@ -129,12 +135,13 @@
         "depth": 2,
         "numchild": 0,
         "title": "Home (Returning Rook)",
+        "draft_title": "Home (Returning Rook)",
         "slug": "home-returning-rook",
         "content_type": 2,
         "live": true,
         "has_unpublished_changes": false,
         "url_path": "/home-returning-rook/",
-        "owner": null,
+        "owner": 1,
         "seo_title": "",
         "show_in_menus": false,
         "search_description": "",
@@ -142,7 +149,9 @@
         "expire_at": null,
         "expired": false,
         "locked": false,
-        "first_published_at": "2017-06-02T05:38:53.568Z",
-        "latest_revision_created_at": "2017-06-02T05:38:53.390Z"
+        "first_published_at": null,
+        "last_published_at": null,
+        "latest_revision_created_at": null,
+        "live_revision": null
     }
 }]
