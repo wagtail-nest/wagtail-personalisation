@@ -18,6 +18,7 @@ tests_require = [
     'pytest-cov==2.4.0',
     'pytest-django==3.1.2',
     'pytest-sugar==0.7.1',
+    'pytest-mock==1.6.3',
     'pytest==3.1.0',
     'wagtail_factories==0.3.0',
 ]

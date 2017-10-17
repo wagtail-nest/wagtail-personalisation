@@ -175,7 +175,7 @@ class SessionSegmentsAdapter(BaseSegmentsAdapter):
         # Run tests on all remaining enabled segments to verify applicability.
         additional_segments = []
         for segment in enabled_segments:
-            if segment.is_static and self.request.session in segment.sessions.all():
+            if segment.is_static and self.request.session.session_key in segment.sessions.values_list('session_key', flat=True):
                 additional_segments.append(segment)
             elif not segment.is_static or not segment.is_full:
                 segment_rules = []

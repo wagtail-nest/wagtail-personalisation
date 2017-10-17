@@ -73,3 +73,17 @@ def test_sessions_not_added_to_static_segment_if_rule_not_static():
         segment=segment)
 
     assert not segment.sessions.all()
+
+
+@pytest.mark.django_db
+def test_does_not_calculate_the_segment_again(rf, site, client, mocker):
+    session = client.session
+    session.save()
+    client.get(site.root_page.url)
+
+    segment = SegmentFactory(type=Segment.TYPE_STATIC, count=2)
+    VisitCountRule.objects.create(counted_page=site.root_page, segment=segment)
+
+    mock_test_rule = mocker.patch('wagtail_personalisation.adapters.SessionSegmentsAdapter._test_rules')
+    client.get(site.root_page.url)
+    assert mock_test_rule.call_count == 0
