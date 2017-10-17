@@ -18,6 +18,7 @@ from wagtail.wagtailadmin.edit_handlers import (
 class AbstractBaseRule(models.Model):
     """Base for creating rules to segment users with."""
     icon = 'fa-circle-o'
+    static = False
 
     segment = ParentalKey(
         'wagtail_personalisation.Segment',
@@ -190,6 +191,7 @@ class VisitCountRule(AbstractBaseRule):
 
     """
     icon = 'fa-calculator'
+    static = True
 
     OPERATOR_CHOICES = (
         ('more_than', _("More than")),

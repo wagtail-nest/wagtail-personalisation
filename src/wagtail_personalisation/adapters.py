@@ -3,6 +3,7 @@ from __future__ import absolute_import, unicode_literals
 from django.conf import settings
 from django.db.models import F
 from django.utils.module_loading import import_string
+from django.utils import timezone
 
 from wagtail_personalisation.models import Segment
 from wagtail_personalisation.rules import AbstractBaseRule
@@ -174,15 +175,25 @@ class SessionSegmentsAdapter(BaseSegmentsAdapter):
         # Run tests on all remaining enabled segments to verify applicability.
         additional_segments = []
         for segment in enabled_segments:
-            segment_rules = []
-            for rule_model in rule_models:
-                segment_rules.extend(rule_model.objects.filter(segment=segment))
-
-            result = self._test_rules(segment_rules, self.request,
-                                      match_any=segment.match_any)
-
-            if result:
+            if segment.is_static and self.request.session in segment.sessions.all():
                 additional_segments.append(segment)
+            elif not segment.is_static or not segment.is_full:
+                segment_rules = []
+                for rule_model in rule_models:
+                    segment_rules.extend(rule_model.objects.filter(segment=segment))
+
+                result = self._test_rules(segment_rules, self.request,
+                                          match_any=segment.match_any)
+
+                if result and segment.is_static and not segment.is_full:
+                    session = self.request.session.model.objects.get(
+                        session_key=self.request.session.session_key,
+                        expire_date__gt=timezone.now(),
+                    )
+                    segment.sessions.add(session)
+
+                if result:
+                    additional_segments.append(segment)
 
         self.set_segments(current_segments + additional_segments)
         self.update_visit_count()

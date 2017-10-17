@@ -1,9 +1,19 @@
 from __future__ import absolute_import, unicode_literals
 
+from importlib import import_module
+
+from django import forms
+from django.conf import settings
+from django.contrib.auth import get_user_model
+from django.contrib.auth.models import AnonymousUser
+from django.contrib.sessions.models import Session
 from django.db import models, transaction
 from django.template.defaultfilters import slugify
+from django.test.client import RequestFactory
+from django.utils import timezone
 from django.utils.encoding import python_2_unicode_compatible
 from django.utils.functional import cached_property
+from django.utils.lru_cache import lru_cache
 from django.utils.translation import ugettext_lazy as _
 from modelcluster.models import ClusterableModel
 from wagtail.wagtailadmin.edit_handlers import (
@@ -14,9 +24,21 @@ from wagtail_personalisation.rules import AbstractBaseRule
 from wagtail_personalisation.utils import count_active_days
 
 
+SessionStore = import_module(settings.SESSION_ENGINE).SessionStore
+
+
 class SegmentQuerySet(models.QuerySet):
     def enabled(self):
         return self.filter(status=self.model.STATUS_ENABLED)
+
+
+@lru_cache(maxsize=1000)
+def user_from_data(user_id):
+    User = get_user_model()
+    try:
+        return User.objects.get(id=user_id)
+    except User.DoesNotExist:
+        return AnonymousUser
 
 
 @python_2_unicode_compatible
@@ -28,6 +50,14 @@ class Segment(ClusterableModel):
     STATUS_CHOICES = (
         (STATUS_ENABLED, _('Enabled')),
         (STATUS_DISABLED, _('Disabled')),
+    )
+
+    TYPE_DYNAMIC = 'dynamic'
+    TYPE_STATIC = 'static'
+
+    TYPE_CHOICES = (
+        (TYPE_DYNAMIC, _('Dynamic')),
+        (TYPE_STATIC, _('Static')),
     )
 
     name = models.CharField(max_length=255)
@@ -44,6 +74,24 @@ class Segment(ClusterableModel):
         default=False,
         help_text=_("Should the segment match all the rules or just one of them?")
     )
+    type = models.CharField(
+        max_length=20,
+        choices=TYPE_CHOICES,
+        default=TYPE_DYNAMIC,
+        help_text=_(
+            "The users in a dynamic segment will change as more or less users meet "
+            "the rules specified in the segment. Static segments will contain the "
+            "members that existed at creation."
+        )
+    )
+    count = models.PositiveSmallIntegerField(
+        default=0,
+        help_text=_(
+            "If this number is set for a static segment users will be added to the "
+            "set until the number is reached. After this no more users will be added."
+        )
+    )
+    sessions = models.ManyToManyField(Session)
 
     objects = SegmentQuerySet.as_manager()
 
@@ -56,6 +104,8 @@ class Segment(ClusterableModel):
                     FieldPanel('persistent'),
                 ]),
                 FieldPanel('match_any'),
+                FieldPanel('type', widget=forms.RadioSelect),
+                FieldPanel('count'),
             ], heading="Segment"),
             MultiFieldPanel([
                 InlinePanel(
@@ -69,6 +119,14 @@ class Segment(ClusterableModel):
 
     def __str__(self):
         return self.name
+
+    @property
+    def is_static(self):
+        return self.type == self.TYPE_STATIC
+
+    @property
+    def is_full(self):
+        return self.sessions.count() >= self.count
 
     def encoded_name(self):
         """Return a string with a slug for the segment."""
@@ -105,6 +163,21 @@ class Segment(ClusterableModel):
             else self.STATUS_DISABLED)
         if save:
             self.save()
+
+    def save(self, *args, **kwargs):
+        super(Segment, self).save(*args, **kwargs)
+
+        if self.is_static:
+            request = RequestFactory().get('/')
+            for session in Session.objects.filter(
+                expire_date__gt=timezone.now(),
+            ).iterator():
+                session_data = session.get_decoded()
+                user = user_from_data(session_data.get('_auth_id'))
+                request.user = user
+                request.session = SessionStore(session_key=session.session_key)
+                if all(rule.test_user(request) for rule in self.get_rules() if rule.static):
+                    self.sessions.add(session)
 
 
 class PersonalisablePageMetadata(ClusterableModel):
