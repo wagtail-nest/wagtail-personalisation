@@ -88,8 +88,7 @@ class Segment(ClusterableModel):
             those rules when the segment is created. Mixed static segments or
             those containing entirely non static compatible rules will be
             populated using the count variable.
-        """
-        ))
+        """))
     )
     count = models.PositiveSmallIntegerField(
         default=0,
