@@ -15,6 +15,7 @@ from django.utils import timezone
 from django.utils.encoding import python_2_unicode_compatible
 from django.utils.functional import cached_property
 from django.utils.lru_cache import lru_cache
+from django.utils.safestring import mark_safe
 from django.utils.translation import ugettext_lazy as _
 from modelcluster.models import ClusterableModel
 from wagtail.wagtailadmin.edit_handlers import (
@@ -79,13 +80,16 @@ class Segment(ClusterableModel):
         max_length=20,
         choices=TYPE_CHOICES,
         default=TYPE_DYNAMIC,
-        help_text=_(
-            "The users in a dynamic segment will change as more or less users meet "
-            "the rules specified in the segment. Static segments containing only "
-            "static compatible ruless will contain the members that existed at "
-            "creation. Mixed static segments or those containing entirely non "
-            "static compatible rules will be populated using the count variable."
-        )
+        help_text=mark_safe(_("""
+            </br></br><strong>Dynamic:</strong> Users in this segment will change
+            as more or less meet the rules specified in the segment.
+            </br><strong>Static:</strong> If the segment contains only static
+            compatible rules the segment will contain the members that pass
+            those rules when the segment is created. Mixed static segments or
+            those containing entirely non static compatible rules will be
+            populated using the count variable.
+        """
+        ))
     )
     count = models.PositiveSmallIntegerField(
         default=0,
