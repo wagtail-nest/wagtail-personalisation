@@ -9,6 +9,7 @@ from django.contrib.auth.models import AnonymousUser
 from django.contrib.sessions.models import Session
 from django.core.exceptions import ValidationError
 from django.db import models, transaction
+from django.dispatch import receiver
 from django.template.defaultfilters import slugify
 from django.test.client import RequestFactory
 from django.utils import timezone
@@ -98,6 +99,7 @@ class Segment(ClusterableModel):
         )
     )
     sessions = models.ManyToManyField(Session)
+    frozen = models.BooleanField(default=False)
 
     objects = SegmentQuerySet.as_manager()
 
@@ -149,6 +151,12 @@ class Segment(ClusterableModel):
     def is_full(self):
         return self.sessions.count() >= self.count
 
+    @property
+    def can_populate(self):
+        return (
+            self.id and self.is_static and not self.frozen and self.is_consistent
+        )
+
     def encoded_name(self):
         """Return a string with a slug for the segment."""
         return slugify(self.name.lower())
@@ -185,22 +193,28 @@ class Segment(ClusterableModel):
         if save:
             self.save()
 
-    def save(self, *args, **kwargs):
-        super(Segment, self).save(*args, **kwargs)
 
-        if self.is_static:
-            request = RequestFactory().get('/')
+@receiver(models.signals.post_init, sender=Segment)
+def populate_sessions_first_time(sender, **kwargs):
+    instance = kwargs.pop('instance', None)
+    if instance.can_populate:
+        request = RequestFactory().get('/')
 
-            for session in Session.objects.filter(
-                expire_date__gt=timezone.now(),
-            ).iterator():
-                session_data = session.get_decoded()
-                user = user_from_data(session_data.get('_auth_id'))
-                request.user = user
-                request.session = SessionStore(session_key=session.session_key)
-                all_pass = all(rule.test_user(request) for rule in self.get_rules() if rule.static)
-                if not self.is_consistent and all_pass:
-                    self.sessions.add(session)
+        for session in Session.objects.filter(
+            expire_date__gt=timezone.now(),
+        ).iterator():
+            session_data = session.get_decoded()
+            user = user_from_data(session_data.get('_auth_id'))
+            request.user = user
+            request.session = SessionStore(session_key=session.session_key)
+            all_pass = all(rule.test_user(request) for rule in instance.get_rules() if rule.static)
+            if all_pass:
+                instance.sessions.add(session.session_key)
+
+        models.signals.post_init.disconnect(populate_sessions_first_time, sender=sender)
+        instance.frozen = True
+        instance.save()
+        models.signals.post_init.connect(populate_sessions_first_time, sender=sender)
 
 
 class PersonalisablePageMetadata(ClusterableModel):

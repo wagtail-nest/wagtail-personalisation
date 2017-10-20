@@ -20,6 +20,9 @@ def test_session_added_to_static_segment_at_creation(rf, site, client):
     VisitCountRule.objects.create(counted_page=site.root_page, segment=segment)
     segment.save()
 
+    # We need to trigger the post init
+    segment = Segment.objects.get(id=segment.id)
+
     assert session.session_key in segment.sessions.values_list('session_key', flat=True)
 
 
@@ -37,6 +40,9 @@ def test_mixed_static_dynamic_session_doesnt_generate_at_creation(rf, site, clie
         segment=segment,
     )
     segment.save()
+
+    # We need to trigger the post init
+    segment = Segment.objects.get(id=segment.id)
 
     assert not segment.sessions.all()
 
