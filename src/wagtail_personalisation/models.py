@@ -81,8 +81,10 @@ class Segment(ClusterableModel):
         default=TYPE_DYNAMIC,
         help_text=_(
             "The users in a dynamic segment will change as more or less users meet "
-            "the rules specified in the segment. Static segments will contain the "
-            "members that existed at creation."
+            "the rules specified in the segment. Static segments containing only "
+            "static compatible ruless will contain the members that existed at "
+            "creation. Mixed static segments or those containing entirely non "
+            "static compatible rules will be populated using the count variable."
         )
     )
     count = models.PositiveSmallIntegerField(
@@ -111,7 +113,10 @@ class Segment(ClusterableModel):
             MultiFieldPanel([
                 InlinePanel(
                     "{}_related".format(rule_model._meta.db_table),
-                    label=rule_model._meta.verbose_name,
+                    label='{}{}'.format(
+                        rule_model._meta.verbose_name,
+                        ' ({})'.format(_('Static compatible')) if rule_model.static else ''
+                    ),
                 ) for rule_model in AbstractBaseRule.__subclasses__()
             ], heading=_("Rules")),
         ]
@@ -124,7 +129,7 @@ class Segment(ClusterableModel):
     def clean(self):
         if self.is_static and not self.is_consistent and not self.count:
             raise ValidationError({
-                'count': _('Static segments with non-static rules must include a count.'),
+                'count': _('Static segments with non-static compatible rules must include a count.'),
             })
 
     @property
