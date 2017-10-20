@@ -169,6 +169,10 @@ class Segment(ClusterableModel):
 
         if self.is_static:
             request = RequestFactory().get('/')
+
+            rules = self.get_rules()
+            all_static = all(rule.static for rule in rules)
+
             for session in Session.objects.filter(
                 expire_date__gt=timezone.now(),
             ).iterator():
@@ -176,7 +180,8 @@ class Segment(ClusterableModel):
                 user = user_from_data(session_data.get('_auth_id'))
                 request.user = user
                 request.session = SessionStore(session_key=session.session_key)
-                if all(rule.test_user(request) for rule in self.get_rules() if rule.static):
+                all_pass = all(rule.test_user(request) for rule in rules if rule.static)
+                if rules and all_static and all_pass:
                     self.sessions.add(session)
 
 
