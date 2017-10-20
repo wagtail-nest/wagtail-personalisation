@@ -7,6 +7,7 @@ from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import AnonymousUser
 from django.contrib.sessions.models import Session
+from django.core.exceptions import ValidationError
 from django.db import models, transaction
 from django.template.defaultfilters import slugify
 from django.test.client import RequestFactory
@@ -120,9 +121,21 @@ class Segment(ClusterableModel):
     def __str__(self):
         return self.name
 
+    def clean(self):
+        if self.is_static and not self.is_consistent and not self.count:
+            raise ValidationError({
+                'count': _('Static segments with non-static rules must include a count.'),
+            })
+
     @property
     def is_static(self):
         return self.type == self.TYPE_STATIC
+
+    @property
+    def is_consistent(self):
+        rules = self.get_rules()
+        all_static = all(rule.static for rule in rules)
+        return rules and all_static
 
     @property
     def is_full(self):
@@ -170,9 +183,6 @@ class Segment(ClusterableModel):
         if self.is_static:
             request = RequestFactory().get('/')
 
-            rules = self.get_rules()
-            all_static = all(rule.static for rule in rules)
-
             for session in Session.objects.filter(
                 expire_date__gt=timezone.now(),
             ).iterator():
@@ -180,8 +190,8 @@ class Segment(ClusterableModel):
                 user = user_from_data(session_data.get('_auth_id'))
                 request.user = user
                 request.session = SessionStore(session_key=session.session_key)
-                all_pass = all(rule.test_user(request) for rule in rules if rule.static)
-                if rules and all_static and all_pass:
+                all_pass = all(rule.test_user(request) for rule in self.get_rules() if rule.static)
+                if not self.is_consistent and all_pass:
                     self.sessions.add(session)
 
 
