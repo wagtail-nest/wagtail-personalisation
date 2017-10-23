@@ -1,26 +1,20 @@
 from __future__ import absolute_import, unicode_literals
 
-from importlib import import_module
-
 from django import forms
-from django.conf import settings
-from django.contrib.auth import get_user_model
-from django.contrib.auth.models import AnonymousUser
 from django.contrib.sessions.models import Session
-from django.core.exceptions import ValidationError
 from django.db import models, transaction
-from django.dispatch import receiver
 from django.template.defaultfilters import slugify
-from django.test.client import RequestFactory
-from django.utils import timezone
 from django.utils.encoding import python_2_unicode_compatible
 from django.utils.functional import cached_property
-from django.utils.lru_cache import lru_cache
 from django.utils.safestring import mark_safe
 from django.utils.translation import ugettext_lazy as _
 from modelcluster.models import ClusterableModel
 from wagtail.wagtailadmin.edit_handlers import (
-    FieldPanel, FieldRowPanel, InlinePanel, MultiFieldPanel)
+    FieldPanel,
+    FieldRowPanel,
+    InlinePanel,
+    MultiFieldPanel,
+)
 from wagtail.wagtailcore.models import Page
 
 from wagtail_personalisation.rules import AbstractBaseRule
@@ -29,21 +23,9 @@ from wagtail_personalisation.utils import count_active_days
 from .forms import SegmentAdminForm
 
 
-SessionStore = import_module(settings.SESSION_ENGINE).SessionStore
-
-
 class SegmentQuerySet(models.QuerySet):
     def enabled(self):
         return self.filter(status=self.model.STATUS_ENABLED)
-
-
-@lru_cache(maxsize=1000)
-def user_from_data(user_id):
-    User = get_user_model()
-    try:
-        return User.objects.get(id=user_id)
-    except User.DoesNotExist:
-        return AnonymousUser
 
 
 @python_2_unicode_compatible
@@ -190,29 +172,6 @@ class Segment(ClusterableModel):
             else self.STATUS_DISABLED)
         if save:
             self.save()
-
-
-@receiver(models.signals.post_init, sender=Segment)
-def populate_sessions_first_time(sender, **kwargs):
-    instance = kwargs.pop('instance', None)
-    if instance.can_populate:
-        request = RequestFactory().get('/')
-
-        for session in Session.objects.filter(
-            expire_date__gt=timezone.now(),
-        ).iterator():
-            session_data = session.get_decoded()
-            user = user_from_data(session_data.get('_auth_id'))
-            request.user = user
-            request.session = SessionStore(session_key=session.session_key)
-            all_pass = all(rule.test_user(request) for rule in instance.get_rules() if rule.static)
-            if all_pass:
-                instance.sessions.add(session.session_key)
-
-        models.signals.post_init.disconnect(populate_sessions_first_time, sender=sender)
-        instance.frozen = True
-        instance.save()
-        models.signals.post_init.connect(populate_sessions_first_time, sender=sender)
 
 
 class PersonalisablePageMetadata(ClusterableModel):
