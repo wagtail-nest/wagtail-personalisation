@@ -26,6 +26,8 @@ from wagtail.wagtailcore.models import Page
 from wagtail_personalisation.rules import AbstractBaseRule
 from wagtail_personalisation.utils import count_active_days
 
+from .forms import SegmentAdminForm
+
 
 SessionStore = import_module(settings.SESSION_ENGINE).SessionStore
 
@@ -103,6 +105,8 @@ class Segment(ClusterableModel):
 
     objects = SegmentQuerySet.as_manager()
 
+    base_form_class = SegmentAdminForm
+
     def __init__(self, *args, **kwargs):
         Segment.panels = [
             MultiFieldPanel([
@@ -130,12 +134,6 @@ class Segment(ClusterableModel):
 
     def __str__(self):
         return self.name
-
-    def clean(self):
-        if self.is_static and not self.is_consistent and not self.count:
-            raise ValidationError({
-                'count': _('Static segments with non-static compatible rules must include a count.'),
-            })
 
     @property
     def is_static(self):
