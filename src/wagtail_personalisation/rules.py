@@ -229,7 +229,7 @@ class VisitCountRule(AbstractBaseRule):
 
         adapter = get_segment_adapter(request)
 
-        visit_count = adapter.get_visit_count()
+        visit_count = adapter.get_visit_count(self.counted_page)
         if visit_count and operator == "more_than":
             if visit_count > segment_count:
                 return True

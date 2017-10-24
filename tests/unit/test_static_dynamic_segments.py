@@ -3,16 +3,17 @@ from __future__ import absolute_import, unicode_literals
 import datetime
 
 from django.forms.models import model_to_dict
-from tests.factories.segment import SegmentFactory
-
+from django.contrib.sessions.backends.db import SessionStore
 import pytest
 from wagtail_personalisation.forms import SegmentAdminForm
 from wagtail_personalisation.models import Segment
 from wagtail_personalisation.rules import TimeRule, VisitCountRule
 
+from tests.factories.segment import SegmentFactory
+
 
 def form_with_data(segment, *rules):
-    model_fields = ['type', 'status', 'count', 'name']
+    model_fields = ['type', 'status', 'count', 'name', 'match_any']
 
     class TestSegmentAdminForm(SegmentAdminForm):
         class Meta:
@@ -22,13 +23,15 @@ def form_with_data(segment, *rules):
     data = model_to_dict(segment, model_fields)
     for formset in TestSegmentAdminForm().formsets.values():
         rule_data = {}
+        count = 0
         for rule in rules:
             if isinstance(rule, formset.model):
                 rule_data = model_to_dict(rule)
                 for key, value in rule_data.items():
-                    data['{}-0-{}'.format(formset.prefix, key)] = value
+                    data['{}-{}-{}'.format(formset.prefix, count, key)] = value
+                count += 1
         data['{}-INITIAL_FORMS'.format(formset.prefix)] = 0
-        data['{}-TOTAL_FORMS'.format(formset.prefix)] = 1 if rule_data else 0
+        data['{}-TOTAL_FORMS'.format(formset.prefix)] = count
     return TestSegmentAdminForm(data)
 
 
@@ -45,6 +48,28 @@ def test_session_added_to_static_segment_at_creation(site, client):
 
     assert instance.frozen
     assert session.session_key in instance.sessions.values_list('session_key', flat=True)
+
+
+@pytest.mark.django_db
+def test_match_any_correct_populates(site, client):
+    session = client.session
+    client.get(site.root_page.url)
+
+    client.cookies.clear()
+    second_session = client.session
+    other_page = site.root_page.get_last_child()
+    client.get(other_page.url)
+
+    segment = SegmentFactory.build(type=Segment.TYPE_STATIC, match_any=True)
+    rule_1 = VisitCountRule(counted_page=site.root_page)
+    rule_2 = VisitCountRule(counted_page=other_page)
+    form = form_with_data(segment, rule_1, rule_2)
+    instance = form.save()
+
+    assert instance.frozen
+    assert session.session_key != second_session.session_key
+    assert session.session_key in instance.sessions.values_list('session_key', flat=True)
+    assert second_session.session_key in instance.sessions.values_list('session_key', flat=True)
 
 
 @pytest.mark.django_db
@@ -107,13 +132,12 @@ def test_session_not_added_to_static_segment_after_full(site, client):
     assert instance.sessions.count() == 0
 
     session = client.session
-    session.save()
     client.get(site.root_page.url)
 
     assert instance.sessions.count() == 1
 
+    client.cookies.clear()
     second_session = client.session
-    second_session.create()
     client.get(site.root_page.url)
 
     assert session.session_key != second_session.session_key

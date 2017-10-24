@@ -1,3 +1,5 @@
+from __future__ import absolute_import, unicode_literals
+
 from importlib import import_module
 
 from django.conf import settings
@@ -9,6 +11,7 @@ from django.test.client import RequestFactory
 from django.utils import timezone
 from django.utils.lru_cache import lru_cache
 from wagtail.wagtailadmin.forms import WagtailAdminModelForm
+
 
 
 SessionStore = import_module(settings.SESSION_ENGINE).SessionStore
@@ -43,15 +46,21 @@ class SegmentAdminForm(WagtailAdminModelForm):
         instance = super(SegmentAdminForm, self).save(*args, **kwargs)
 
         if instance.can_populate:
+            from .adapters import get_segment_adapter
+
             request = RequestFactory().get('/')
+            request.session = SessionStore()
+            adapter = get_segment_adapter(request)
+
+            rules = [rule for rule in instance.get_rules() if rule.static]
 
             for session in Session.objects.filter(expire_date__gt=timezone.now()).iterator():
                 session_data = session.get_decoded()
                 user = user_from_data(session_data.get('_auth_id'))
                 request.user = user
                 request.session = SessionStore(session_key=session.session_key)
-                all_pass = all(rule.test_user(request) for rule in instance.get_rules() if rule.static)
-                if all_pass:
+                passes = adapter._test_rules(rules, request, instance.match_any)
+                if passes:
                     instance.sessions.add(session)
 
         instance.frozen = True
