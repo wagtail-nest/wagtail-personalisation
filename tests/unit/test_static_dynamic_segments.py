@@ -46,7 +46,6 @@ def test_session_added_to_static_segment_at_creation(site, client):
     form = form_with_data(segment, rule)
     instance = form.save()
 
-    assert instance.frozen
     assert session.session_key in instance.sessions.values_list('session_key', flat=True)
 
 
@@ -66,7 +65,6 @@ def test_match_any_correct_populates(site, client):
     form = form_with_data(segment, rule_1, rule_2)
     instance = form.save()
 
-    assert instance.frozen
     assert session.session_key != second_session.session_key
     assert session.session_key in instance.sessions.values_list('session_key', flat=True)
     assert second_session.session_key in instance.sessions.values_list('session_key', flat=True)
@@ -87,7 +85,6 @@ def test_mixed_static_dynamic_session_doesnt_generate_at_creation(site, client):
     form = form_with_data(segment, static_rule, non_static_rule)
     instance = form.save()
 
-    assert instance.frozen
     assert not instance.sessions.all()
 
 
@@ -102,7 +99,6 @@ def test_session_not_added_to_static_segment_after_creation(site, client):
     session.save()
     client.get(site.root_page.url)
 
-    assert instance.frozen
     assert not instance.sessions.all()
 
 
@@ -117,7 +113,6 @@ def test_session_added_to_static_segment_after_creation(site, client):
     session.save()
     client.get(site.root_page.url)
 
-    assert instance.frozen
     assert session.session_key in instance.sessions.values_list('session_key', flat=True)
 
 
@@ -128,7 +123,6 @@ def test_session_not_added_to_static_segment_after_full(site, client):
     form = form_with_data(segment, rule)
     instance = form.save()
 
-    assert instance.frozen
     assert instance.sessions.count() == 0
 
     session = client.session
@@ -161,7 +155,6 @@ def test_sessions_not_added_to_static_segment_if_rule_not_static(client, site):
     form = form_with_data(segment, rule)
     instance = form.save()
 
-    assert instance.frozen
     assert not instance.sessions.all()
 
 
@@ -175,7 +168,7 @@ def test_does_not_calculate_the_segment_again(site, client, mocker):
     rule = VisitCountRule(counted_page=site.root_page, segment=segment)
     form = form_with_data(segment, rule)
     instance = form.save()
-    assert instance.frozen
+
     assert session.session_key in instance.sessions.values_list('session_key', flat=True)
 
     mock_test_rule = mocker.patch('wagtail_personalisation.adapters.SessionSegmentsAdapter._test_rules')

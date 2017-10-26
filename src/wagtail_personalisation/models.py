@@ -83,7 +83,6 @@ class Segment(ClusterableModel):
         )
     )
     sessions = models.ManyToManyField(Session)
-    frozen = models.BooleanField(default=False)
 
     objects = SegmentQuerySet.as_manager()
 
@@ -121,21 +120,18 @@ class Segment(ClusterableModel):
     def is_static(self):
         return self.type == self.TYPE_STATIC
 
+    @classmethod
+    def all_static(cls, rules):
+       return all(rule.static for rule in rules)
+
     @property
-    def is_consistent(self):
+    def all_rules_static(self):
         rules = self.get_rules()
-        all_static = all(rule.static for rule in rules)
-        return rules and all_static
+        return rules and self.all_static(rules)
 
     @property
     def is_full(self):
         return self.sessions.count() >= self.count
-
-    @property
-    def can_populate(self):
-        return (
-            self.id and self.is_static and not self.frozen and self.is_consistent
-        )
 
     def encoded_name(self):
         """Return a string with a slug for the segment."""
