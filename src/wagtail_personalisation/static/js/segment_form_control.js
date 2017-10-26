@@ -1,7 +1,7 @@
 (function($) {
     $(document).ready( () => {
         var count = $('.count_field');
-        count.hide();
+        var typeRadio = $('input:radio[name="type"]');
 
         var updateCountDispay = function(value) {
             if (value == 'dynamic') {
@@ -11,7 +11,9 @@
             }
         };
 
-        $('input:radio[name="type"]').change( event => {
+        updateCountDispay(typeRadio.filter(':checked').val());
+
+        typeRadio.change( event => {
             updateCountDispay(event.target.value);
         });
     });
