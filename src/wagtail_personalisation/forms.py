@@ -1,6 +1,7 @@
 from __future__ import absolute_import, unicode_literals
 
 from importlib import import_module
+from itertools import takewhile
 
 from django.conf import settings
 from django.contrib.auth import get_user_model
@@ -49,6 +50,9 @@ class SegmentAdminForm(WagtailAdminModelForm):
     def save(self, *args, **kwargs):
         is_new = not self.instance.id
 
+        if not self.instance.is_static:
+            self.instance.count = 0
+
         instance = super(SegmentAdminForm, self).save(*args, **kwargs)
 
         if is_new and instance.is_static and instance.all_rules_static:
@@ -58,14 +62,22 @@ class SegmentAdminForm(WagtailAdminModelForm):
             request.session = SessionStore()
             adapter = get_segment_adapter(request)
 
-            for session in Session.objects.filter(expire_date__gt=timezone.now()).iterator():
+            sessions_to_add = []
+            sessions = Session.objects.filter(expire_date__gt=timezone.now()).iterator()
+            take_session = takewhile(
+                lambda x: instance.count == 0 or len(sessions_to_add) <= instance.count,
+                sessions
+            )
+            for session in take_session:
                 session_data = session.get_decoded()
                 user = user_from_data(session_data.get('_auth_id'))
                 request.user = user
                 request.session = SessionStore(session_key=session.session_key)
                 passes = adapter._test_rules(instance.get_rules(), request, instance.match_any)
                 if passes:
-                    instance.sessions.add(session)
+                    sessions_to_add.append(session)
+
+            instance.sessions.add(*sessions_to_add)
 
         return instance
 
