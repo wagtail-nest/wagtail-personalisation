@@ -45,7 +45,23 @@ class SegmentAdminForm(WagtailAdminModelForm):
         if cleaned_data.get('type') == Segment.TYPE_STATIC and not cleaned_data.get('count') and not consistent:
             self.add_error('count', _('Static segments with non-static compatible rules must include a count.'))
 
+        if self.instance.id and self.instance.is_static:
+            if self.has_changed():
+                self.add_error_to_fields(self, 'name')
+
+            for formset in self.formsets.values():
+                if formset.has_changed():
+                    for form in formset:
+                        if form not in formset.deleted_forms:
+                            self.add_error_to_fields(form)
+
         return cleaned_data
+
+    def add_error_to_fields(self, form, *exclude):
+        for field in form.changed_data:
+            if field not in exclude:
+                form.add_error(field, _('Cannot update a static segment'))
+
 
     def save(self, *args, **kwargs):
         is_new = not self.instance.id
