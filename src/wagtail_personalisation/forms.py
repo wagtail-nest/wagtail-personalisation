@@ -6,6 +6,7 @@ from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import AnonymousUser
 from django.contrib.sessions.models import Session
+from django.contrib.staticfiles.templatetags.staticfiles import static
 from django.core.exceptions import ValidationError
 from django.test.client import RequestFactory
 from django.utils import timezone
@@ -67,3 +68,11 @@ class SegmentAdminForm(WagtailAdminModelForm):
                     instance.sessions.add(session)
 
         return instance
+
+    @property
+    def media(self):
+        media = super(SegmentAdminForm, self).media
+        media.add_js(
+            [static('js/segment_form_control.js')]
+        )
+        return media

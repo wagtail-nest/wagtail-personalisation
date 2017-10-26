@@ -98,7 +98,7 @@ class Segment(ClusterableModel):
                 ]),
                 FieldPanel('match_any'),
                 FieldPanel('type', widget=forms.RadioSelect),
-                FieldPanel('count'),
+                FieldPanel('count', classname='count_field'),
             ], heading="Segment"),
             MultiFieldPanel([
                 InlinePanel(
