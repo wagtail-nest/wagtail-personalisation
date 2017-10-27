@@ -47,7 +47,7 @@ class SegmentAdminForm(WagtailAdminModelForm):
 
         if self.instance.id and self.instance.is_static:
             if self.has_changed():
-                self.add_error_to_fields(self, 'name')
+                self.add_error_to_fields(self, excluded=['name', 'enabled'])
 
             for formset in self.formsets.values():
                 if formset.has_changed():
@@ -57,9 +57,9 @@ class SegmentAdminForm(WagtailAdminModelForm):
 
         return cleaned_data
 
-    def add_error_to_fields(self, form, *exclude):
+    def add_error_to_fields(self, form, excluded=list()):
         for field in form.changed_data:
-            if field not in exclude:
+            if field not in excluded:
                 form.add_error(field, _('Cannot update a static segment'))
 
 
