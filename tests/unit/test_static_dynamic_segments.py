@@ -51,6 +51,19 @@ def test_session_added_to_static_segment_at_creation(site, client, user):
 
 
 @pytest.mark.django_db
+def test_anonymous_user_not_added_to_static_segment_at_creation(site, client):
+    session = client.session
+    session.save()
+    client.get(site.root_page.url)
+
+    segment = SegmentFactory.build(type=Segment.TYPE_STATIC)
+    rule = VisitCountRule(counted_page=site.root_page)
+    form = form_with_data(segment, rule)
+    instance = form.save()
+
+    assert not instance.static_users.all()
+
+@pytest.mark.django_db
 def test_match_any_correct_populates(site, client, django_user_model):
     user = django_user_model.objects.create(username='first')
     session = client.session
@@ -122,6 +135,20 @@ def test_session_added_to_static_segment_after_creation(site, client, user):
     client.get(site.root_page.url)
 
     assert user in instance.static_users.all()
+
+
+@pytest.mark.django_db
+def test_anonymou_user_not_added_to_static_segment_after_creation(site, client):
+    segment = SegmentFactory.build(type=Segment.TYPE_STATIC, count=1)
+    rule = VisitCountRule(counted_page=site.root_page)
+    form = form_with_data(segment, rule)
+    instance = form.save()
+
+    session = client.session
+    session.save()
+    client.get(site.root_page.url)
+
+    assert not instance.static_users.all()
 
 
 @pytest.mark.django_db
