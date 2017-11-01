@@ -1,6 +1,7 @@
 from __future__ import absolute_import, unicode_literals
 
 from django import forms
+from django.conf import settings
 from django.contrib.sessions.models import Session
 from django.db import models, transaction
 from django.template.defaultfilters import slugify
@@ -82,7 +83,9 @@ class Segment(ClusterableModel):
             "set until the number is reached. After this no more users will be added."
         )
     )
-    sessions = models.ManyToManyField(Session)
+    static_users = models.ManyToManyField(
+        settings.AUTH_USER_MODEL,
+    )
 
     objects = SegmentQuerySet.as_manager()
 
@@ -131,7 +134,7 @@ class Segment(ClusterableModel):
 
     @property
     def is_full(self):
-        return self.sessions.count() >= self.count
+        return self.static_users.count() >= self.count
 
     def encoded_name(self):
         """Return a string with a slug for the segment."""

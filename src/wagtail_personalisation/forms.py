@@ -26,7 +26,7 @@ def user_from_data(user_id):
     try:
         return User.objects.get(id=user_id)
     except User.DoesNotExist:
-        return AnonymousUser
+        return AnonymousUser()
 
 
 
@@ -78,22 +78,23 @@ class SegmentAdminForm(WagtailAdminModelForm):
             request.session = SessionStore()
             adapter = get_segment_adapter(request)
 
-            sessions_to_add = []
-            sessions = Session.objects.filter(expire_date__gt=timezone.now()).iterator()
+            users_to_add = []
+            sessions = Session.objects.iterator()
             take_session = takewhile(
-                lambda x: instance.count == 0 or len(sessions_to_add) <= instance.count,
+                lambda x: instance.count == 0 or len(users_to_add) <= instance.count,
                 sessions
             )
             for session in take_session:
                 session_data = session.get_decoded()
-                user = user_from_data(session_data.get('_auth_id'))
-                request.user = user
-                request.session = SessionStore(session_key=session.session_key)
-                passes = adapter._test_rules(instance.get_rules(), request, instance.match_any)
-                if passes:
-                    sessions_to_add.append(session)
+                user = user_from_data(session_data.get('_auth_user_id'))
+                if user.is_authenticated:
+                    request.user = user
+                    request.session = SessionStore(session_key=session.session_key)
+                    passes = adapter._test_rules(instance.get_rules(), request, instance.match_any)
+                    if passes:
+                        users_to_add.append(user)
 
-            instance.sessions.add(*sessions_to_add)
+            instance.static_users.add(*users_to_add)
 
         return instance
 

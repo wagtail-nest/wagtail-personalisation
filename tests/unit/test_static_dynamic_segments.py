@@ -36,9 +36,10 @@ def form_with_data(segment, *rules):
 
 
 @pytest.mark.django_db
-def test_session_added_to_static_segment_at_creation(site, client):
+def test_session_added_to_static_segment_at_creation(site, client, user):
     session = client.session
     session.save()
+    client.force_login(user)
     client.get(site.root_page.url)
 
     segment = SegmentFactory.build(type=Segment.TYPE_STATIC)
@@ -46,17 +47,21 @@ def test_session_added_to_static_segment_at_creation(site, client):
     form = form_with_data(segment, rule)
     instance = form.save()
 
-    assert session.session_key in instance.sessions.values_list('session_key', flat=True)
+    assert user in instance.static_users.all()
 
 
 @pytest.mark.django_db
-def test_match_any_correct_populates(site, client):
+def test_match_any_correct_populates(site, client, django_user_model):
+    user = django_user_model.objects.create(username='first')
     session = client.session
+    client.force_login(user)
     client.get(site.root_page.url)
 
+    other_user = django_user_model.objects.create(username='second')
     client.cookies.clear()
     second_session = client.session
     other_page = site.root_page.get_last_child()
+    client.force_login(other_user)
     client.get(other_page.url)
 
     segment = SegmentFactory.build(type=Segment.TYPE_STATIC, match_any=True)
@@ -66,14 +71,15 @@ def test_match_any_correct_populates(site, client):
     instance = form.save()
 
     assert session.session_key != second_session.session_key
-    assert session.session_key in instance.sessions.values_list('session_key', flat=True)
-    assert second_session.session_key in instance.sessions.values_list('session_key', flat=True)
+    assert user in instance.static_users.all()
+    assert other_user in instance.static_users.all()
 
 
 @pytest.mark.django_db
-def test_mixed_static_dynamic_session_doesnt_generate_at_creation(site, client):
+def test_mixed_static_dynamic_session_doesnt_generate_at_creation(site, client, user):
     session = client.session
     session.save()
+    client.force_login(user)
     client.get(site.root_page.url)
 
     segment = SegmentFactory.build(type=Segment.TYPE_STATIC, count=1)
@@ -85,11 +91,11 @@ def test_mixed_static_dynamic_session_doesnt_generate_at_creation(site, client):
     form = form_with_data(segment, static_rule, non_static_rule)
     instance = form.save()
 
-    assert not instance.sessions.all()
+    assert not instance.static_users.all()
 
 
 @pytest.mark.django_db
-def test_session_not_added_to_static_segment_after_creation(site, client):
+def test_session_not_added_to_static_segment_after_creation(site, client, user):
     segment = SegmentFactory.build(type=Segment.TYPE_STATIC, count=0)
     rule = VisitCountRule(counted_page=site.root_page)
     form = form_with_data(segment, rule)
@@ -97,13 +103,14 @@ def test_session_not_added_to_static_segment_after_creation(site, client):
 
     session = client.session
     session.save()
+    client.force_login(user)
     client.get(site.root_page.url)
 
-    assert not instance.sessions.all()
+    assert not instance.static_users.all()
 
 
 @pytest.mark.django_db
-def test_session_added_to_static_segment_after_creation(site, client):
+def test_session_added_to_static_segment_after_creation(site, client, user):
     segment = SegmentFactory.build(type=Segment.TYPE_STATIC, count=1)
     rule = VisitCountRule(counted_page=site.root_page)
     form = form_with_data(segment, rule)
@@ -111,39 +118,45 @@ def test_session_added_to_static_segment_after_creation(site, client):
 
     session = client.session
     session.save()
+    client.force_login(user)
     client.get(site.root_page.url)
 
-    assert session.session_key in instance.sessions.values_list('session_key', flat=True)
+    assert user in instance.static_users.all()
 
 
 @pytest.mark.django_db
-def test_session_not_added_to_static_segment_after_full(site, client):
+def test_session_not_added_to_static_segment_after_full(site, client, django_user_model):
+    user = django_user_model.objects.create(username='first')
+    other_user = django_user_model.objects.create(username='second')
     segment = SegmentFactory.build(type=Segment.TYPE_STATIC, count=1)
     rule = VisitCountRule(counted_page=site.root_page)
     form = form_with_data(segment, rule)
     instance = form.save()
 
-    assert instance.sessions.count() == 0
+    assert not instance.static_users.all()
 
     session = client.session
+    client.force_login(user)
     client.get(site.root_page.url)
 
-    assert instance.sessions.count() == 1
+    assert instance.static_users.count() == 1
 
     client.cookies.clear()
     second_session = client.session
+    client.force_login(other_user)
     client.get(site.root_page.url)
 
     assert session.session_key != second_session.session_key
-    assert instance.sessions.count() == 1
-    assert session.session_key in instance.sessions.values_list('session_key', flat=True)
-    assert second_session.session_key not in instance.sessions.values_list('session_key', flat=True)
+    assert instance.static_users.count() == 1
+    assert user in instance.static_users.all()
+    assert other_user not in instance.static_users.all()
 
 
 @pytest.mark.django_db
-def test_sessions_not_added_to_static_segment_if_rule_not_static(client, site):
+def test_sessions_not_added_to_static_segment_if_rule_not_static(client, site, user):
     session = client.session
     session.save()
+    client.force_login(user)
     client.get(site.root_page.url)
 
     segment = SegmentFactory.build(type=Segment.TYPE_STATIC, count=1)
@@ -155,13 +168,14 @@ def test_sessions_not_added_to_static_segment_if_rule_not_static(client, site):
     form = form_with_data(segment, rule)
     instance = form.save()
 
-    assert not instance.sessions.all()
+    assert not instance.static_users.all()
 
 
 @pytest.mark.django_db
-def test_does_not_calculate_the_segment_again(site, client, mocker):
+def test_does_not_calculate_the_segment_again(site, client, mocker, user):
     session = client.session
     session.save()
+    client.force_login(user)
     client.get(site.root_page.url)
 
     segment = SegmentFactory.build(type=Segment.TYPE_STATIC, count=2)
@@ -169,7 +183,7 @@ def test_does_not_calculate_the_segment_again(site, client, mocker):
     form = form_with_data(segment, rule)
     instance = form.save()
 
-    assert session.session_key in instance.sessions.values_list('session_key', flat=True)
+    assert user in instance.static_users.all()
 
     mock_test_rule = mocker.patch('wagtail_personalisation.adapters.SessionSegmentsAdapter._test_rules')
     client.get(site.root_page.url)
