@@ -86,16 +86,16 @@
     padding: 0;
     margin: 0;
     list-style: none;
+    .stat_card {
+        display: inline-block;
+        margin-bottom: 5px;
+        margin-right: 10px;
+    }
 }
 
     .block_container .block span.icon::before {
         margin-right: 0.3em;
         vertical-align: bottom;
-    }
-
-    .block_container .block .inspect_container .inspect li {
-        display: inline-block;
-        margin-bottom: 5px;
     }
 
     .block_container .block .inspect_container .inspect li span {

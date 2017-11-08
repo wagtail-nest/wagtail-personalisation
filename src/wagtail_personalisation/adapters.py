@@ -3,6 +3,7 @@ from __future__ import absolute_import, unicode_literals
 from django.conf import settings
 from django.db.models import F
 from django.utils.module_loading import import_string
+from django.utils import timezone
 
 from wagtail_personalisation.models import Segment
 from wagtail_personalisation.rules import AbstractBaseRule
@@ -143,7 +144,7 @@ class SessionSegmentsAdapter(BaseSegmentsAdapter):
 
     def get_visit_count(self, page=None):
         """Return the number of visits on the current request or given page"""
-        path = page.path if page else self.request.path
+        path = page.url_path if page else self.request.path
         visit_count = self.request.session.setdefault('visit_count', [])
         for visit in visit_count:
             if visit['path'] == path:
@@ -174,15 +175,22 @@ class SessionSegmentsAdapter(BaseSegmentsAdapter):
         # Run tests on all remaining enabled segments to verify applicability.
         additional_segments = []
         for segment in enabled_segments:
-            segment_rules = []
-            for rule_model in rule_models:
-                segment_rules.extend(rule_model.objects.filter(segment=segment))
-
-            result = self._test_rules(segment_rules, self.request,
-                                      match_any=segment.match_any)
-
-            if result:
+            if segment.is_static and segment.static_users.filter(id=self.request.user.id).exists():
                 additional_segments.append(segment)
+            elif not segment.is_static or not segment.is_full:
+                segment_rules = []
+                for rule_model in rule_models:
+                    segment_rules.extend(rule_model.objects.filter(segment=segment))
+
+                result = self._test_rules(segment_rules, self.request,
+                                          match_any=segment.match_any)
+
+                if result and segment.is_static and not segment.is_full:
+                    if self.request.user.is_authenticated():
+                        segment.static_users.add(self.request.user)
+
+                if result:
+                    additional_segments.append(segment)
 
         self.set_segments(current_segments + additional_segments)
         self.update_visit_count()

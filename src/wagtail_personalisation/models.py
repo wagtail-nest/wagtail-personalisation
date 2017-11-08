@@ -1,17 +1,27 @@
 from __future__ import absolute_import, unicode_literals
 
+from django import forms
+from django.conf import settings
+from django.contrib.sessions.models import Session
 from django.db import models, transaction
 from django.template.defaultfilters import slugify
 from django.utils.encoding import python_2_unicode_compatible
 from django.utils.functional import cached_property
+from django.utils.safestring import mark_safe
 from django.utils.translation import ugettext_lazy as _
 from modelcluster.models import ClusterableModel
 from wagtail.wagtailadmin.edit_handlers import (
-    FieldPanel, FieldRowPanel, InlinePanel, MultiFieldPanel)
+    FieldPanel,
+    FieldRowPanel,
+    InlinePanel,
+    MultiFieldPanel,
+)
 from wagtail.wagtailcore.models import Page
 
 from wagtail_personalisation.rules import AbstractBaseRule
 from wagtail_personalisation.utils import count_active_days
+
+from .forms import SegmentAdminForm
 
 
 class SegmentQuerySet(models.QuerySet):
@@ -30,6 +40,14 @@ class Segment(ClusterableModel):
         (STATUS_DISABLED, _('Disabled')),
     )
 
+    TYPE_DYNAMIC = 'dynamic'
+    TYPE_STATIC = 'static'
+
+    TYPE_CHOICES = (
+        (TYPE_DYNAMIC, _('Dynamic')),
+        (TYPE_STATIC, _('Static')),
+    )
+
     name = models.CharField(max_length=255)
     create_date = models.DateTimeField(auto_now_add=True)
     edit_date = models.DateTimeField(auto_now=True)
@@ -44,8 +62,34 @@ class Segment(ClusterableModel):
         default=False,
         help_text=_("Should the segment match all the rules or just one of them?")
     )
+    type = models.CharField(
+        max_length=20,
+        choices=TYPE_CHOICES,
+        default=TYPE_DYNAMIC,
+        help_text=mark_safe(_("""
+            </br></br><strong>Dynamic:</strong> Users in this segment will change
+            as more or less meet the rules specified in the segment.
+            </br><strong>Static:</strong> If the segment contains only static
+            compatible rules the segment will contain the members that pass
+            those rules when the segment is created. Mixed static segments or
+            those containing entirely non static compatible rules will be
+            populated using the count variable.
+        """))
+    )
+    count = models.PositiveSmallIntegerField(
+        default=0,
+        help_text=_(
+            "If this number is set for a static segment users will be added to the "
+            "set until the number is reached. After this no more users will be added."
+        )
+    )
+    static_users = models.ManyToManyField(
+        settings.AUTH_USER_MODEL,
+    )
 
     objects = SegmentQuerySet.as_manager()
+
+    base_form_class = SegmentAdminForm
 
     def __init__(self, *args, **kwargs):
         Segment.panels = [
@@ -56,11 +100,16 @@ class Segment(ClusterableModel):
                     FieldPanel('persistent'),
                 ]),
                 FieldPanel('match_any'),
+                FieldPanel('type', widget=forms.RadioSelect),
+                FieldPanel('count', classname='count_field'),
             ], heading="Segment"),
             MultiFieldPanel([
                 InlinePanel(
                     "{}_related".format(rule_model._meta.db_table),
-                    label=rule_model._meta.verbose_name,
+                    label='{}{}'.format(
+                        rule_model._meta.verbose_name,
+                        ' ({})'.format(_('Static compatible')) if rule_model.static else ''
+                    ),
                 ) for rule_model in AbstractBaseRule.__subclasses__()
             ], heading=_("Rules")),
         ]
@@ -69,6 +118,23 @@ class Segment(ClusterableModel):
 
     def __str__(self):
         return self.name
+
+    @property
+    def is_static(self):
+        return self.type == self.TYPE_STATIC
+
+    @classmethod
+    def all_static(cls, rules):
+       return all(rule.static for rule in rules)
+
+    @property
+    def all_rules_static(self):
+        rules = self.get_rules()
+        return rules and self.all_static(rules)
+
+    @property
+    def is_full(self):
+        return self.static_users.count() >= self.count
 
     def encoded_name(self):
         """Return a string with a slug for the segment."""
