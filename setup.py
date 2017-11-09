@@ -1,7 +1,6 @@
 import re
 from setuptools import find_packages, setup
 
-
 install_requires = [
     'wagtail>=1.9,<1.11',
     'user-agents>=1.0.1',
@@ -32,12 +31,12 @@ with open('README.rst') as fh:
         '^.. start-no-pypi.*^.. end-no-pypi', '', fh.read(), flags=re.M | re.S)
 
 setup(
-    name='wagtail-personalisation',
-    version='0.10.0beta1',
-    description='A Wagtail add-on for showing personalized content',
-    author='Lab Digital BV',
-    author_email='opensource@labdigital.nl',
-    url='http://labdigital.nl',
+    name='wagtail-personalisation-molo',
+    version='0.10.0',
+    description='A forked version of Wagtail add-on for showing personalized content',
+    author='Praekelt.org',
+    author_email='dev@praekeltfoundation.org',
+    url='https://github.com/praekeltfoundation/wagtail-personalisation/',
     install_requires=install_requires,
     tests_require=tests_require,
     extras_require={
