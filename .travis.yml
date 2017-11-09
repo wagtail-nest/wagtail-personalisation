@@ -41,3 +41,13 @@ script:
 after_success:
   - tox -e coverage-report
   - codecov
+
+deploy:
+  provider: pypi
+  distributions: sdist bdist_wheel
+  user: praekelt.org
+  password:
+    secure: KEY_GOES_HERE
+  on:
+    tags: true
+    all_branches: true
