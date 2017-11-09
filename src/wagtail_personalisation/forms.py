@@ -87,7 +87,7 @@ class SegmentAdminForm(WagtailAdminModelForm):
             for session in take_session:
                 session_data = session.get_decoded()
                 user = user_from_data(session_data.get('_auth_user_id'))
-                if user.is_authenticated:
+                if user.is_authenticated():
                     request.user = user
                     request.session = SessionStore(session_key=session.session_key)
                     passes = adapter._test_rules(instance.get_rules(), request, instance.match_any)
