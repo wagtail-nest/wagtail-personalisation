@@ -1,3 +1,6 @@
 include README.rst
 
-recursive-include src
+recursive-include src *
+
+recursive-exclude src __pycache__
+recursive-exclude src *.py[co]
