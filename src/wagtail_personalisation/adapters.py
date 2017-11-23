@@ -133,12 +133,13 @@ class SessionSegmentsAdapter(BaseSegmentsAdapter):
         if page_visits:
             for page_visit in page_visits:
                 page_visit['count'] += 1
+                page_visit['path'] = page.url_path if page else self.request.path
             self.request.session.modified = True
         else:
             visit_count.append({
                 'slug': page.slug,
                 'id': page.pk,
-                'path': self.request.path,
+                'path': page.url_path if page else self.request.path,
                 'count': 1,
             })
 
