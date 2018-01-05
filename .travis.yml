@@ -4,9 +4,8 @@ language: python
 
 matrix:
   include:
-    # Django 1.9, Wagtail 1.9
     - python: 2.7
-      env: TOXENV=py27-django19-wagtail19
+      env: TOXENV=py27-django111-wagtail113
 
 install:
   - pip install tox codecov

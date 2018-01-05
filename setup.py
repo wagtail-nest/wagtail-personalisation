@@ -2,7 +2,7 @@ import re
 from setuptools import find_packages, setup
 
 install_requires = [
-    'wagtail>=1.9,<1.11',
+    'wagtail>=1.10,<1.14',
     'user-agents>=1.0.1',
     'wagtailfontawesome>=1.0.6',
 ]
@@ -32,7 +32,7 @@ with open('README.rst') as fh:
 
 setup(
     name='wagtail-personalisation-molo',
-    version='0.10.2',
+    version='0.10.3',
     description='A forked version of Wagtail add-on for showing personalized content',
     author='Praekelt.org',
     author_email='dev@praekeltfoundation.org',
