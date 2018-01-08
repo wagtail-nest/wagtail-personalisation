@@ -1,4 +1,5 @@
-from wagtail_personalisation.utils import impersonate_other_page, exclude_variants
+from wagtail_personalisation.utils import (
+    exclude_variants, impersonate_other_page)
 
 
 class Page(object):

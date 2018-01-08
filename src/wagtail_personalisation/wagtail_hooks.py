@@ -7,7 +7,7 @@ from django.core.urlresolvers import reverse
 from django.template.defaultfilters import pluralize
 from django.utils.safestring import mark_safe
 from django.utils.translation import ugettext_lazy as _
-from wagtail.wagtailadmin.site_summary import SummaryItem, PagesSummaryItem
+from wagtail.wagtailadmin.site_summary import PagesSummaryItem, SummaryItem
 from wagtail.wagtailadmin.widgets import Button, ButtonWithDropdownFromHook
 from wagtail.wagtailcore import hooks
 from wagtail.wagtailcore.models import Page

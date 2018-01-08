@@ -2,14 +2,13 @@ from __future__ import absolute_import, unicode_literals
 
 import datetime
 
-from django.forms.models import model_to_dict
-from django.contrib.sessions.backends.db import SessionStore
 import pytest
+from django.forms.models import model_to_dict
+
+from tests.factories.segment import SegmentFactory
 from wagtail_personalisation.forms import SegmentAdminForm
 from wagtail_personalisation.models import Segment
 from wagtail_personalisation.rules import TimeRule, VisitCountRule
-
-from tests.factories.segment import SegmentFactory
 
 
 def form_with_data(segment, *rules):
@@ -62,6 +61,7 @@ def test_anonymous_user_not_added_to_static_segment_at_creation(site, client):
     instance = form.save()
 
     assert not instance.static_users.all()
+
 
 @pytest.mark.django_db
 def test_match_any_correct_populates(site, client, django_user_model):

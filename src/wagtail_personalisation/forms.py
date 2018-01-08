@@ -8,14 +8,10 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.models import AnonymousUser
 from django.contrib.sessions.models import Session
 from django.contrib.staticfiles.templatetags.staticfiles import static
-from django.core.exceptions import ValidationError
 from django.test.client import RequestFactory
-from django.utils import timezone
 from django.utils.lru_cache import lru_cache
 from django.utils.translation import ugettext_lazy as _
 from wagtail.wagtailadmin.forms import WagtailAdminModelForm
-
-
 
 SessionStore = import_module(settings.SESSION_ENGINE).SessionStore
 
@@ -27,7 +23,6 @@ def user_from_data(user_id):
         return User.objects.get(id=user_id)
     except User.DoesNotExist:
         return AnonymousUser()
-
 
 
 class SegmentAdminForm(WagtailAdminModelForm):
@@ -61,7 +56,6 @@ class SegmentAdminForm(WagtailAdminModelForm):
         for field in form.changed_data:
             if field not in excluded:
                 form.add_error(field, _('Cannot update a static segment'))
-
 
     def save(self, *args, **kwargs):
         is_new = not self.instance.id
