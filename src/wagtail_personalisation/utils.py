@@ -103,9 +103,17 @@ def exclude_variants(pages):
     :return: List of pages that aren't variants
     :rtype: list
     """
-    return [page for page in pages
-            if (hasattr(page, 'personalisation_metadata') is False)
-            or (hasattr(page, 'personalisation_metadata')
-                and page.personalisation_metadata is None)
-            or (hasattr(page, 'personalisation_metadata')
-                and page.personalisation_metadata.is_canonical)]
+    return [
+        page for page in pages
+        if (
+            (
+                hasattr(page, 'personalisation_metadata') is False
+            ) or
+            (
+                hasattr(page, 'personalisation_metadata') and page.personalisation_metadata is None
+            ) or
+            (
+                hasattr(page, 'personalisation_metadata') and page.personalisation_metadata.is_canonical
+            )
+        )
+    ]
