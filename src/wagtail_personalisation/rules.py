@@ -261,6 +261,7 @@ class QueryRule(AbstractBaseRule):
 
     """
     icon = 'fa-link'
+    static = True
 
     parameter = models.SlugField(_("The query parameter to search for"),
                                  max_length=20)
