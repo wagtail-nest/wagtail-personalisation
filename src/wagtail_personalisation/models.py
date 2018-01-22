@@ -2,7 +2,6 @@ from __future__ import absolute_import, unicode_literals
 
 from django import forms
 from django.conf import settings
-from django.contrib.sessions.models import Session
 from django.db import models, transaction
 from django.template.defaultfilters import slugify
 from django.utils.encoding import python_2_unicode_compatible
@@ -11,11 +10,7 @@ from django.utils.safestring import mark_safe
 from django.utils.translation import ugettext_lazy as _
 from modelcluster.models import ClusterableModel
 from wagtail.wagtailadmin.edit_handlers import (
-    FieldPanel,
-    FieldRowPanel,
-    InlinePanel,
-    MultiFieldPanel,
-)
+    FieldPanel, FieldRowPanel, InlinePanel, MultiFieldPanel)
 from wagtail.wagtailcore.models import Page
 
 from wagtail_personalisation.rules import AbstractBaseRule
@@ -125,7 +120,7 @@ class Segment(ClusterableModel):
 
     @classmethod
     def all_static(cls, rules):
-       return all(rule.static for rule in rules)
+        return all(rule.static for rule in rules)
 
     @property
     def all_rules_static(self):
