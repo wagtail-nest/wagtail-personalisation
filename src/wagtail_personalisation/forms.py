@@ -26,6 +26,29 @@ def user_from_data(user_id):
 
 
 class SegmentAdminForm(WagtailAdminModelForm):
+
+    def count_matching_users(self, rules, match_any):
+        """ Calculates how many users match the given static rules
+        """
+        count = 0
+
+        static_rules = [rule for rule in rules if rule.static]
+
+        if not static_rules:
+            return count
+
+        User = get_user_model()
+        users = User.objects.all()
+
+        for user in users.iterator():
+            if match_any:
+                if any(rule.test_user(None, user) for rule in static_rules):
+                    count += 1
+            elif all(rule.test_user(None, user) for rule in static_rules):
+                count += 1
+
+        return count
+
     def clean(self):
         cleaned_data = super(SegmentAdminForm, self).clean()
         Segment = self._meta.model
