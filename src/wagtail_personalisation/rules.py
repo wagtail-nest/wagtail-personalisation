@@ -220,7 +220,12 @@ class VisitCountRule(AbstractBaseRule):
     class Meta:
         verbose_name = _('Visit count Rule')
 
-    def test_user(self, request):
+    def test_user(self, request, user=None):
+        if user:
+            # This rule currently does not support testing a user directly
+            # TODO: Make this test a user directly when the rule uses
+            # historical data
+            return False
         operator = self.operator
         segment_count = self.count
 
@@ -276,7 +281,13 @@ class QueryRule(AbstractBaseRule):
     class Meta:
         verbose_name = _('Query Rule')
 
-    def test_user(self, request):
+    def test_user(self, request, user=None):
+        if user:
+            # This rule currently does not support testing a user directly
+            # TODO: Make this test a user directly if/when the rule uses
+            # historical data
+            return False
+
         return request.GET.get(self.parameter, '') == self.value
 
     def description(self):
