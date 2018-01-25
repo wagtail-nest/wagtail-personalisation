@@ -4,8 +4,10 @@ import datetime
 
 import pytest
 from django.forms.models import model_to_dict
+# from unittest.mock import patch
 
 from tests.factories.segment import SegmentFactory
+# from wagtail import wagtailadmin
 from wagtail_personalisation.forms import SegmentAdminForm
 from wagtail_personalisation.models import Segment
 from wagtail_personalisation.rules import (AbstractBaseRule, TimeRule,
@@ -250,6 +252,22 @@ def test_dynamic_segment_with_non_static_rules_have_a_count():
 
 
 @pytest.mark.django_db
+def test_matched_user_count_added_to_segment_at_creation(site, client, mocker, django_user_model):
+    django_user_model.objects.create(username='first')
+    django_user_model.objects.create(username='second')
+
+    segment = SegmentFactory.build(type=Segment.TYPE_STATIC)
+    rule = VisitCountRule()
+
+    form = form_with_data(segment, rule)
+    mock_test_user = mocker.patch('wagtail_personalisation.rules.VisitCountRule.test_user', return_value=True)
+    instance = form.save()
+
+    assert mock_test_user.call_count == 2
+    instance.matched_users_count = 2
+
+
+@pytest.mark.django_db
 def test_count_users_matching_static_rules(site, client, django_user_model):
     class TestStaticRule(AbstractBaseRule):
         static = True
@@ -357,25 +375,3 @@ def test_count_matching_users_handles_match_all(site, client, django_user_model)
     form = form_with_data(segment, first_rule, s_rule)
 
     assert form.count_matching_users([first_rule, s_rule], False) is 1
-
-
-@pytest.mark.django_db
-def test_matched_user_count_added_to_segment_at_creation(site, client, django_user_model):
-    class TestStaticRule(AbstractBaseRule):
-        static = True
-
-        class Meta:
-            app_label = 'wagtail_personalisation'
-
-        def test_user(self, request, user):
-            return True
-
-    django_user_model.objects.create(username='first')
-    django_user_model.objects.create(username='second')
-
-    segment = SegmentFactory.build(type=Segment.TYPE_STATIC)
-    rule = TestStaticRule()
-    form = form_with_data(segment, rule)
-    instance = form.save()
-
-    assert instance.matched_users_count is 2
