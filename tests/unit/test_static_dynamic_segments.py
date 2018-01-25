@@ -4,10 +4,8 @@ import datetime
 
 import pytest
 from django.forms.models import model_to_dict
-# from unittest.mock import patch
 
 from tests.factories.segment import SegmentFactory
-# from wagtail import wagtailadmin
 from wagtail_personalisation.forms import SegmentAdminForm
 from wagtail_personalisation.models import Segment
 from wagtail_personalisation.rules import (AbstractBaseRule, TimeRule,
