@@ -1,5 +1,6 @@
 from __future__ import absolute_import, unicode_literals
 
+from datetime import datetime
 from importlib import import_module
 from itertools import takewhile
 
@@ -85,6 +86,16 @@ class SegmentAdminForm(WagtailAdminModelForm):
 
         if not self.instance.is_static:
             self.instance.count = 0
+
+        if is_new:
+            rules = [
+                form.instance for formset in self.formsets.values()
+                for form in formset
+                if form not in formset.deleted_forms
+            ]
+            self.instance.matched_users_count = self.count_matching_users(
+                rules, self.instance.match_any)
+            self.instance.matched_count_updated_at = datetime.now()
 
         instance = super(SegmentAdminForm, self).save(*args, **kwargs)
 

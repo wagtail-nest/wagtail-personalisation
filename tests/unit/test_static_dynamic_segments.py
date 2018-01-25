@@ -357,3 +357,25 @@ def test_count_matching_users_handles_match_all(site, client, django_user_model)
     form = form_with_data(segment, first_rule, s_rule)
 
     assert form.count_matching_users([first_rule, s_rule], False) is 1
+
+
+@pytest.mark.django_db
+def test_matched_user_count_added_to_segment_at_creation(site, client, django_user_model):
+    class TestStaticRule(AbstractBaseRule):
+        static = True
+
+        class Meta:
+            app_label = 'wagtail_personalisation'
+
+        def test_user(self, request, user):
+            return True
+
+    django_user_model.objects.create(username='first')
+    django_user_model.objects.create(username='second')
+
+    segment = SegmentFactory.build(type=Segment.TYPE_STATIC)
+    rule = TestStaticRule()
+    form = form_with_data(segment, rule)
+    instance = form.save()
+
+    assert instance.matched_users_count is 2
