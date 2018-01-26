@@ -1,5 +1,6 @@
 from __future__ import absolute_import, unicode_literals
 
+from datetime import datetime
 from importlib import import_module
 from itertools import takewhile
 
@@ -26,6 +27,29 @@ def user_from_data(user_id):
 
 
 class SegmentAdminForm(WagtailAdminModelForm):
+
+    def count_matching_users(self, rules, match_any):
+        """ Calculates how many users match the given static rules
+        """
+        count = 0
+
+        static_rules = [rule for rule in rules if rule.static]
+
+        if not static_rules:
+            return count
+
+        User = get_user_model()
+        users = User.objects.all()
+
+        for user in users.iterator():
+            if match_any:
+                if any(rule.test_user(None, user) for rule in static_rules):
+                    count += 1
+            elif all(rule.test_user(None, user) for rule in static_rules):
+                count += 1
+
+        return count
+
     def clean(self):
         cleaned_data = super(SegmentAdminForm, self).clean()
         Segment = self._meta.model
@@ -62,6 +86,16 @@ class SegmentAdminForm(WagtailAdminModelForm):
 
         if not self.instance.is_static:
             self.instance.count = 0
+
+        if is_new:
+            rules = [
+                form.instance for formset in self.formsets.values()
+                for form in formset
+                if form not in formset.deleted_forms
+            ]
+            self.instance.matched_users_count = self.count_matching_users(
+                rules, self.instance.match_any)
+            self.instance.matched_count_updated_at = datetime.now()
 
         instance = super(SegmentAdminForm, self).save(*args, **kwargs)
 

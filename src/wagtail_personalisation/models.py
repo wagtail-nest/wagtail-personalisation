@@ -82,6 +82,9 @@ class Segment(ClusterableModel):
         settings.AUTH_USER_MODEL,
     )
 
+    matched_users_count = models.PositiveIntegerField(default=0, editable=False)
+    matched_count_updated_at = models.DateTimeField(null=True, editable=False)
+
     objects = SegmentQuerySet.as_manager()
 
     base_form_class = SegmentAdminForm
