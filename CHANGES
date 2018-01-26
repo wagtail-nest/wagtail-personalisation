@@ -1,3 +1,9 @@
+0.10.5
+==================
+ - Count how many users match a segments rules before saving the segment
+ - Stores count on the segment and displays in the dashboard
+ - Enables testing users against rules if there isn't an active request
+
 0.10.0
 ==================
  - Adds static and dynamic segments
