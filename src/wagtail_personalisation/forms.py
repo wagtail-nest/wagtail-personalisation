@@ -39,7 +39,7 @@ class SegmentAdminForm(WagtailAdminModelForm):
             return count
 
         User = get_user_model()
-        users = User.objects.all()
+        users = User.objects.filter(is_active=True, is_staff=False)
 
         for user in users.iterator():
             if match_any:

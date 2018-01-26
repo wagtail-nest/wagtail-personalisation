@@ -287,6 +287,48 @@ def test_count_users_matching_static_rules(site, client, django_user_model):
 
 
 @pytest.mark.django_db
+def test_count_matching_users_excludes_staff(site, client, django_user_model):
+    class TestStaticRule(AbstractBaseRule):
+        static = True
+
+        class Meta:
+            app_label = 'wagtail_personalisation'
+
+        def test_user(self, request, user):
+            return True
+
+    django_user_model.objects.create(username='first')
+    django_user_model.objects.create(username='second', is_staff=True)
+
+    segment = SegmentFactory.build(type=Segment.TYPE_STATIC)
+    rule = TestStaticRule()
+    form = form_with_data(segment, rule)
+
+    assert form.count_matching_users([rule], True) is 1
+
+
+@pytest.mark.django_db
+def test_count_matching_users_excludes_inactive(site, client, django_user_model):
+    class TestStaticRule(AbstractBaseRule):
+        static = True
+
+        class Meta:
+            app_label = 'wagtail_personalisation'
+
+        def test_user(self, request, user):
+            return True
+
+    django_user_model.objects.create(username='first')
+    django_user_model.objects.create(username='second', is_active=False)
+
+    segment = SegmentFactory.build(type=Segment.TYPE_STATIC)
+    rule = TestStaticRule()
+    form = form_with_data(segment, rule)
+
+    assert form.count_matching_users([rule], True) is 1
+
+
+@pytest.mark.django_db
 def test_count_matching_users_only_counts_static_rules(site, client, django_user_model):
     class TestStaticRule(AbstractBaseRule):
         class Meta:
