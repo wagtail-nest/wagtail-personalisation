@@ -2,6 +2,7 @@ from __future__ import absolute_import, unicode_literals
 
 from django import forms
 from django.conf import settings
+from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models, transaction
 from django.template.defaultfilters import slugify
 from django.utils.encoding import python_2_unicode_compatible
@@ -85,6 +86,16 @@ class Segment(ClusterableModel):
     matched_users_count = models.PositiveIntegerField(default=0, editable=False)
     matched_count_updated_at = models.DateTimeField(null=True, editable=False)
 
+    randomisation_percent = models.PositiveSmallIntegerField(
+        null=True, blank=True, default=None,
+        help_text=_(
+            "If this number is set each user matching the rules will "
+            "have this percentage chance of being placed in the segment."
+        ), validators=[
+            MaxValueValidator(100),
+            MinValueValidator(0)
+        ])
+
     objects = SegmentQuerySet.as_manager()
 
     base_form_class = SegmentAdminForm
@@ -100,6 +111,7 @@ class Segment(ClusterableModel):
                 FieldPanel('match_any'),
                 FieldPanel('type', widget=forms.RadioSelect),
                 FieldPanel('count', classname='count_field'),
+                FieldPanel('randomisation_percent', classname='percent_field'),
             ], heading="Segment"),
             MultiFieldPanel([
                 InlinePanel(
