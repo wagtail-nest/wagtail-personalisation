@@ -13,7 +13,7 @@ from wagtail_personalisation.rules import (AbstractBaseRule, TimeRule,
 
 
 def form_with_data(segment, *rules):
-    model_fields = ['type', 'status', 'count', 'name', 'match_any']
+    model_fields = ['type', 'status', 'count', 'name', 'match_any', 'randomisation_percent']
 
     class TestSegmentAdminForm(SegmentAdminForm):
         class Meta:
@@ -247,6 +247,38 @@ def test_dynamic_segment_with_non_static_rules_have_a_count():
     )
     form = form_with_data(segment, rule)
     assert form.is_valid(), form.errors
+
+
+@pytest.mark.django_db
+def test_randomisation_percentage_added_to_segment_at_creation(site, client, mocker, django_user_model):
+    segment = SegmentFactory.build(type=Segment.TYPE_STATIC)
+    segment.randomisation_percent = 80
+    rule = VisitCountRule()
+
+    form = form_with_data(segment, rule)
+    instance = form.save()
+
+    assert instance.randomisation_percent == 80
+
+
+@pytest.mark.django_db
+def test_randomisation_percentage_min_zero(site, client, mocker, django_user_model):
+    segment = SegmentFactory.build(type=Segment.TYPE_STATIC)
+    segment.randomisation_percent = -1
+    rule = VisitCountRule()
+
+    form = form_with_data(segment, rule)
+    assert not form.is_valid()
+
+
+@pytest.mark.django_db
+def test_randomisation_percentage_max_100(site, client, mocker, django_user_model):
+    segment = SegmentFactory.build(type=Segment.TYPE_STATIC)
+    segment.randomisation_percent = 101
+    rule = VisitCountRule()
+
+    form = form_with_data(segment, rule)
+    assert not form.is_valid()
 
 
 @pytest.mark.django_db
