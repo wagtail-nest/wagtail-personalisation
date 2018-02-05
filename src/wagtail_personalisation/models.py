@@ -1,4 +1,5 @@
 from __future__ import absolute_import, unicode_literals
+import random
 
 from django import forms
 from django.conf import settings
@@ -181,6 +182,19 @@ class Segment(ClusterableModel):
             else self.STATUS_DISABLED)
         if save:
             self.save()
+
+    def randomise_into_segment(self):
+        """ Returns True if randomisation_percent is not set or it generates
+        a random number less than the randomisation_percent
+        This is so there is some randomisation in which users are added to the
+        segment
+        """
+        if self.randomisation_percent is None:
+            return True
+
+        if random.randint(1, 100) <= self.randomisation_percent:
+            return True
+        return False
 
 
 class PersonalisablePageMetadata(ClusterableModel):
