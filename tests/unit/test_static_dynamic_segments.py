@@ -282,6 +282,72 @@ def test_randomisation_percentage_max_100(site, client, mocker, django_user_mode
 
 
 @pytest.mark.django_db
+def test_in_segment_if_random_is_below_percentage(site, client, mocker, user):
+    segment = SegmentFactory.build(type=Segment.TYPE_STATIC, count=1,
+                                   randomisation_percent=40)
+    rule = VisitCountRule(counted_page=site.root_page)
+    form = form_with_data(segment, rule)
+    instance = form.save()
+
+    mocker.patch('random.randint', return_value=39)
+    session = client.session
+    session.save()
+    client.force_login(user)
+    client.get(site.root_page.url)
+
+    assert user in instance.static_users.all()
+
+
+@pytest.mark.django_db
+def test_not_in_segment_if_random_is_above_percentage(site, client, mocker, user):
+    segment = SegmentFactory.build(type=Segment.TYPE_STATIC, count=1,
+                                   randomisation_percent=40)
+    rule = VisitCountRule(counted_page=site.root_page)
+    form = form_with_data(segment, rule)
+    instance = form.save()
+
+    mocker.patch('random.randint', return_value=41)
+    session = client.session
+    session.save()
+    client.force_login(user)
+    client.get(site.root_page.url)
+
+    assert user not in instance.static_users.all()
+
+
+@pytest.mark.django_db
+def test_not_in_segment_if_percentage_is_0(site, client, mocker, user):
+    segment = SegmentFactory.build(type=Segment.TYPE_STATIC, count=1,
+                                   randomisation_percent=0)
+    rule = VisitCountRule(counted_page=site.root_page)
+    form = form_with_data(segment, rule)
+    instance = form.save()
+
+    session = client.session
+    session.save()
+    client.force_login(user)
+    client.get(site.root_page.url)
+
+    assert user not in instance.static_users.all()
+
+
+@pytest.mark.django_db
+def test_always_in_segment_if_percentage_is_100(site, client, mocker, user):
+    segment = SegmentFactory.build(type=Segment.TYPE_STATIC, count=1,
+                                   randomisation_percent=100)
+    rule = VisitCountRule(counted_page=site.root_page)
+    form = form_with_data(segment, rule)
+    instance = form.save()
+
+    session = client.session
+    session.save()
+    client.force_login(user)
+    client.get(site.root_page.url)
+
+    assert user in instance.static_users.all()
+
+
+@pytest.mark.django_db
 def test_matched_user_count_added_to_segment_at_creation(site, client, mocker, django_user_model):
     django_user_model.objects.create(username='first')
     django_user_model.objects.create(username='second')
