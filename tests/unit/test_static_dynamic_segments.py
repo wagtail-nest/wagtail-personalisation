@@ -8,11 +8,12 @@ from django.forms.models import model_to_dict
 from tests.factories.segment import SegmentFactory
 from wagtail_personalisation.forms import SegmentAdminForm
 from wagtail_personalisation.models import Segment
-from wagtail_personalisation.rules import TimeRule, VisitCountRule
+from wagtail_personalisation.rules import (AbstractBaseRule, TimeRule,
+                                           VisitCountRule)
 
 
 def form_with_data(segment, *rules):
-    model_fields = ['type', 'status', 'count', 'name', 'match_any']
+    model_fields = ['type', 'status', 'count', 'name', 'match_any', 'randomisation_percent']
 
     class TestSegmentAdminForm(SegmentAdminForm):
         class Meta:
@@ -246,3 +247,301 @@ def test_dynamic_segment_with_non_static_rules_have_a_count():
     )
     form = form_with_data(segment, rule)
     assert form.is_valid(), form.errors
+
+
+@pytest.mark.django_db
+def test_randomisation_percentage_added_to_segment_at_creation(site, client, mocker, django_user_model):
+    segment = SegmentFactory.build(type=Segment.TYPE_STATIC)
+    segment.randomisation_percent = 80
+    rule = VisitCountRule()
+
+    form = form_with_data(segment, rule)
+    instance = form.save()
+
+    assert instance.randomisation_percent == 80
+
+
+@pytest.mark.django_db
+def test_randomisation_percentage_min_zero(site, client, mocker, django_user_model):
+    segment = SegmentFactory.build(type=Segment.TYPE_STATIC)
+    segment.randomisation_percent = -1
+    rule = VisitCountRule()
+
+    form = form_with_data(segment, rule)
+    assert not form.is_valid()
+
+
+@pytest.mark.django_db
+def test_randomisation_percentage_max_100(site, client, mocker, django_user_model):
+    segment = SegmentFactory.build(type=Segment.TYPE_STATIC)
+    segment.randomisation_percent = 101
+    rule = VisitCountRule()
+
+    form = form_with_data(segment, rule)
+    assert not form.is_valid()
+
+
+@pytest.mark.django_db
+def test_in_segment_if_random_is_below_percentage(site, client, mocker, user):
+    segment = SegmentFactory.build(type=Segment.TYPE_STATIC, count=1,
+                                   randomisation_percent=40)
+    rule = VisitCountRule(counted_page=site.root_page)
+    form = form_with_data(segment, rule)
+    instance = form.save()
+
+    mocker.patch('random.randint', return_value=39)
+    session = client.session
+    session.save()
+    client.force_login(user)
+    client.get(site.root_page.url)
+
+    assert user in instance.static_users.all()
+
+
+@pytest.mark.django_db
+def test_not_in_segment_if_random_is_above_percentage(site, client, mocker, user):
+    segment = SegmentFactory.build(type=Segment.TYPE_STATIC, count=1,
+                                   randomisation_percent=40)
+    rule = VisitCountRule(counted_page=site.root_page)
+    form = form_with_data(segment, rule)
+    instance = form.save()
+
+    mocker.patch('random.randint', return_value=41)
+    session = client.session
+    session.save()
+    client.force_login(user)
+    client.get(site.root_page.url)
+
+    assert user not in instance.static_users.all()
+
+
+@pytest.mark.django_db
+def test_not_in_segment_if_percentage_is_0(site, client, mocker, user):
+    segment = SegmentFactory.build(type=Segment.TYPE_STATIC, count=1,
+                                   randomisation_percent=0)
+    rule = VisitCountRule(counted_page=site.root_page)
+    form = form_with_data(segment, rule)
+    instance = form.save()
+
+    session = client.session
+    session.save()
+    client.force_login(user)
+    client.get(site.root_page.url)
+
+    assert user not in instance.static_users.all()
+
+
+@pytest.mark.django_db
+def test_always_in_segment_if_percentage_is_100(site, client, mocker, user):
+    segment = SegmentFactory.build(type=Segment.TYPE_STATIC, count=1,
+                                   randomisation_percent=100)
+    rule = VisitCountRule(counted_page=site.root_page)
+    form = form_with_data(segment, rule)
+    instance = form.save()
+
+    session = client.session
+    session.save()
+    client.force_login(user)
+    client.get(site.root_page.url)
+
+    assert user in instance.static_users.all()
+
+
+@pytest.mark.django_db
+def test_not_added_to_static_segment_at_creation_if_random_above_percent(site, client, mocker, user):
+    session = client.session
+    session.save()
+    client.force_login(user)
+    client.get(site.root_page.url)
+
+    mocker.patch('random.randint', return_value=41)
+    segment = SegmentFactory.build(type=Segment.TYPE_STATIC, randomisation_percent=40)
+    rule = VisitCountRule(counted_page=site.root_page)
+    form = form_with_data(segment, rule)
+    instance = form.save()
+
+    assert user not in instance.static_users.all()
+
+
+@pytest.mark.django_db
+def test_added_to_static_segment_at_creation_if_random_below_percent(site, client, mocker, user):
+    session = client.session
+    session.save()
+    client.force_login(user)
+    client.get(site.root_page.url)
+
+    mocker.patch('random.randint', return_value=39)
+    segment = SegmentFactory.build(type=Segment.TYPE_STATIC, randomisation_percent=40)
+    rule = VisitCountRule(counted_page=site.root_page)
+    form = form_with_data(segment, rule)
+    instance = form.save()
+
+    assert user in instance.static_users.all()
+
+
+@pytest.mark.django_db
+def test_matched_user_count_added_to_segment_at_creation(site, client, mocker, django_user_model):
+    django_user_model.objects.create(username='first')
+    django_user_model.objects.create(username='second')
+
+    segment = SegmentFactory.build(type=Segment.TYPE_STATIC)
+    rule = VisitCountRule()
+
+    form = form_with_data(segment, rule)
+    mock_test_user = mocker.patch('wagtail_personalisation.rules.VisitCountRule.test_user', return_value=True)
+    instance = form.save()
+
+    assert mock_test_user.call_count == 2
+    instance.matched_users_count = 2
+
+
+@pytest.mark.django_db
+def test_count_users_matching_static_rules(site, client, django_user_model):
+    class TestStaticRule(AbstractBaseRule):
+        static = True
+
+        class Meta:
+            app_label = 'wagtail_personalisation'
+
+        def test_user(self, request, user):
+            return True
+
+    django_user_model.objects.create(username='first')
+    django_user_model.objects.create(username='second')
+
+    segment = SegmentFactory.build(type=Segment.TYPE_STATIC)
+    rule = TestStaticRule()
+    form = form_with_data(segment, rule)
+
+    assert form.count_matching_users([rule], True) is 2
+
+
+@pytest.mark.django_db
+def test_count_matching_users_excludes_staff(site, client, django_user_model):
+    class TestStaticRule(AbstractBaseRule):
+        static = True
+
+        class Meta:
+            app_label = 'wagtail_personalisation'
+
+        def test_user(self, request, user):
+            return True
+
+    django_user_model.objects.create(username='first')
+    django_user_model.objects.create(username='second', is_staff=True)
+
+    segment = SegmentFactory.build(type=Segment.TYPE_STATIC)
+    rule = TestStaticRule()
+    form = form_with_data(segment, rule)
+
+    assert form.count_matching_users([rule], True) is 1
+
+
+@pytest.mark.django_db
+def test_count_matching_users_excludes_inactive(site, client, django_user_model):
+    class TestStaticRule(AbstractBaseRule):
+        static = True
+
+        class Meta:
+            app_label = 'wagtail_personalisation'
+
+        def test_user(self, request, user):
+            return True
+
+    django_user_model.objects.create(username='first')
+    django_user_model.objects.create(username='second', is_active=False)
+
+    segment = SegmentFactory.build(type=Segment.TYPE_STATIC)
+    rule = TestStaticRule()
+    form = form_with_data(segment, rule)
+
+    assert form.count_matching_users([rule], True) is 1
+
+
+@pytest.mark.django_db
+def test_count_matching_users_only_counts_static_rules(site, client, django_user_model):
+    class TestStaticRule(AbstractBaseRule):
+        class Meta:
+            app_label = 'wagtail_personalisation'
+
+        def test_user(self, request, user):
+            return True
+
+    django_user_model.objects.create(username='first')
+    django_user_model.objects.create(username='second')
+
+    segment = SegmentFactory.build(type=Segment.TYPE_STATIC)
+    rule = TestStaticRule()
+    form = form_with_data(segment, rule)
+
+    assert form.count_matching_users([rule], True) is 0
+
+
+@pytest.mark.django_db
+def test_count_matching_users_handles_match_any(site, client, django_user_model):
+    class TestStaticRuleFirst(AbstractBaseRule):
+        static = True
+
+        class Meta:
+            app_label = 'wagtail_personalisation'
+
+        def test_user(self, request, user):
+            if user.username == 'first':
+                return True
+            return False
+
+    class TestStaticRuleSecond(AbstractBaseRule):
+        static = True
+
+        class Meta:
+            app_label = 'wagtail_personalisation'
+
+        def test_user(self, request, user):
+            if user.username == 'second':
+                return True
+            return False
+
+    django_user_model.objects.create(username='first')
+    django_user_model.objects.create(username='second')
+
+    segment = SegmentFactory.build(type=Segment.TYPE_STATIC)
+    first_rule = TestStaticRuleFirst()
+    second_rule = TestStaticRuleSecond()
+    form = form_with_data(segment, first_rule, second_rule)
+
+    assert form.count_matching_users([first_rule, second_rule], True) is 2
+
+
+@pytest.mark.django_db
+def test_count_matching_users_handles_match_all(site, client, django_user_model):
+    class TestStaticRuleFirst(AbstractBaseRule):
+        static = True
+
+        class Meta:
+            app_label = 'wagtail_personalisation'
+
+        def test_user(self, request, user):
+            if user.username == 'first':
+                return True
+            return False
+
+    class TestStaticRuleContainsS(AbstractBaseRule):
+        static = True
+
+        class Meta:
+            app_label = 'wagtail_personalisation'
+
+        def test_user(self, request, user):
+            if 's' in user.username:
+                return True
+            return False
+
+    django_user_model.objects.create(username='first')
+    django_user_model.objects.create(username='second')
+
+    segment = SegmentFactory.build(type=Segment.TYPE_STATIC)
+    first_rule = TestStaticRuleFirst()
+    s_rule = TestStaticRuleContainsS()
+    form = form_with_data(segment, first_rule, s_rule)
+
+    assert form.count_matching_users([first_rule, s_rule], False) is 1

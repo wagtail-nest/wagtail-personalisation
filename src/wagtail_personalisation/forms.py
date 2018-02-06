@@ -1,5 +1,6 @@
 from __future__ import absolute_import, unicode_literals
 
+from datetime import datetime
 from importlib import import_module
 from itertools import takewhile
 
@@ -26,6 +27,29 @@ def user_from_data(user_id):
 
 
 class SegmentAdminForm(WagtailAdminModelForm):
+
+    def count_matching_users(self, rules, match_any):
+        """ Calculates how many users match the given static rules
+        """
+        count = 0
+
+        static_rules = [rule for rule in rules if rule.static]
+
+        if not static_rules:
+            return count
+
+        User = get_user_model()
+        users = User.objects.filter(is_active=True, is_staff=False)
+
+        for user in users.iterator():
+            if match_any:
+                if any(rule.test_user(None, user) for rule in static_rules):
+                    count += 1
+            elif all(rule.test_user(None, user) for rule in static_rules):
+                count += 1
+
+        return count
+
     def clean(self):
         cleaned_data = super(SegmentAdminForm, self).clean()
         Segment = self._meta.model
@@ -63,6 +87,16 @@ class SegmentAdminForm(WagtailAdminModelForm):
         if not self.instance.is_static:
             self.instance.count = 0
 
+        if is_new:
+            rules = [
+                form.instance for formset in self.formsets.values()
+                for form in formset
+                if form not in formset.deleted_forms
+            ]
+            self.instance.matched_users_count = self.count_matching_users(
+                rules, self.instance.match_any)
+            self.instance.matched_count_updated_at = datetime.now()
+
         instance = super(SegmentAdminForm, self).save(*args, **kwargs)
 
         if is_new and instance.is_static and instance.all_rules_static:
@@ -85,7 +119,7 @@ class SegmentAdminForm(WagtailAdminModelForm):
                     request.user = user
                     request.session = SessionStore(session_key=session.session_key)
                     passes = adapter._test_rules(instance.get_rules(), request, instance.match_any)
-                    if passes:
+                    if passes and instance.randomise_into_segment():
                         users_to_add.append(user)
 
             instance.static_users.add(*users_to_add)

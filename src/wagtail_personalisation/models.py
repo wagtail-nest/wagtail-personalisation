@@ -1,7 +1,9 @@
 from __future__ import absolute_import, unicode_literals
+import random
 
 from django import forms
 from django.conf import settings
+from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models, transaction
 from django.template.defaultfilters import slugify
 from django.utils.encoding import python_2_unicode_compatible
@@ -82,6 +84,19 @@ class Segment(ClusterableModel):
         settings.AUTH_USER_MODEL,
     )
 
+    matched_users_count = models.PositiveIntegerField(default=0, editable=False)
+    matched_count_updated_at = models.DateTimeField(null=True, editable=False)
+
+    randomisation_percent = models.PositiveSmallIntegerField(
+        null=True, blank=True, default=None,
+        help_text=_(
+            "If this number is set each user matching the rules will "
+            "have this percentage chance of being placed in the segment."
+        ), validators=[
+            MaxValueValidator(100),
+            MinValueValidator(0)
+        ])
+
     objects = SegmentQuerySet.as_manager()
 
     base_form_class = SegmentAdminForm
@@ -97,6 +112,7 @@ class Segment(ClusterableModel):
                 FieldPanel('match_any'),
                 FieldPanel('type', widget=forms.RadioSelect),
                 FieldPanel('count', classname='count_field'),
+                FieldPanel('randomisation_percent', classname='percent_field'),
             ], heading="Segment"),
             MultiFieldPanel([
                 InlinePanel(
@@ -166,6 +182,19 @@ class Segment(ClusterableModel):
             else self.STATUS_DISABLED)
         if save:
             self.save()
+
+    def randomise_into_segment(self):
+        """ Returns True if randomisation_percent is not set or it generates
+        a random number less than the randomisation_percent
+        This is so there is some randomisation in which users are added to the
+        segment
+        """
+        if self.randomisation_percent is None:
+            return True
+
+        if random.randint(1, 100) <= self.randomisation_percent:
+            return True
+        return False
 
 
 class PersonalisablePageMetadata(ClusterableModel):

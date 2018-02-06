@@ -70,6 +70,13 @@
                                                     {% endif %}
                                                 </li>
 
+                                                {% if segment.randomisation_percent is not None %}
+                                                    <li class="stat_card">
+                                                        <span>{{ segment.randomisation_percent }} %</span>
+                                                        {% trans "Chance that visitors matching the rules are added to the segment" %}
+                                                    </li>
+                                                {% endif %}
+
                                                 {% for rule in segment.get_rules %}
                                                     <li class="stat_card {{ rule.encoded_name }}">
                                                         {{ rule.description.title }}
@@ -80,6 +87,11 @@
                                                         {% endif %}
                                                     </li>
                                                 {% endfor %}
+                                                {% if segment.matched_users_count > 0 %}
+                                                    <li class="stat_card">
+                                                        <span class="icon icon-fa-user"> {{ segment.matched_users_count }} {% trans "user" %}{{ segment.matched_users_count|pluralize }}</span>  {% trans "were possible matches for this segment at creation" %}
+                                                    </li>
+                                                {% endif %}
                                             </ul>
                                         </div>
 
