@@ -119,7 +119,7 @@ class SegmentAdminForm(WagtailAdminModelForm):
                     request.user = user
                     request.session = SessionStore(session_key=session.session_key)
                     passes = adapter._test_rules(instance.get_rules(), request, instance.match_any)
-                    if passes:
+                    if passes and instance.randomise_into_segment():
                         users_to_add.append(user)
 
             instance.static_users.add(*users_to_add)
