@@ -282,7 +282,7 @@ def test_randomisation_percentage_max_100(site, client, mocker, django_user_mode
 
 
 @pytest.mark.django_db
-def test_in_segment_if_random_is_below_percentage(site, client, mocker, user):
+def test_in_static_segment_if_random_is_below_percentage(site, client, mocker, user):
     segment = SegmentFactory.build(type=Segment.TYPE_STATIC, count=1,
                                    randomisation_percent=40)
     rule = VisitCountRule(counted_page=site.root_page)
@@ -295,11 +295,12 @@ def test_in_segment_if_random_is_below_percentage(site, client, mocker, user):
     client.force_login(user)
     client.get(site.root_page.url)
 
+    assert instance.id == client.session['segments'][0]['id']
     assert user in instance.static_users.all()
 
 
 @pytest.mark.django_db
-def test_not_in_segment_if_random_is_above_percentage(site, client, mocker, user):
+def test_not_in_static_segment_if_random_is_above_percentage(site, client, mocker, user):
     segment = SegmentFactory.build(type=Segment.TYPE_STATIC, count=1,
                                    randomisation_percent=40)
     rule = VisitCountRule(counted_page=site.root_page)
@@ -312,7 +313,40 @@ def test_not_in_segment_if_random_is_above_percentage(site, client, mocker, user
     client.force_login(user)
     client.get(site.root_page.url)
 
+    assert len(client.session['segments']) == 0
     assert user not in instance.static_users.all()
+
+
+@pytest.mark.django_db
+def test_offered_dynamic_segment_if_random_is_below_percentage(site, client, mocker):
+    segment = SegmentFactory.build(type=Segment.TYPE_DYNAMIC,
+                                   randomisation_percent=40)
+    rule = VisitCountRule(counted_page=site.root_page)
+    form = form_with_data(segment, rule)
+    instance = form.save()
+
+    mocker.patch('random.randint', return_value=39)
+    session = client.session
+    session.save()
+    client.get(site.root_page.url)
+
+    assert instance.id == client.session['segments'][0]['id']
+
+
+@pytest.mark.django_db
+def test_not_offered_dynamic_segment_if_random_is_above_percentage(site, client, mocker):
+    segment = SegmentFactory.build(type=Segment.TYPE_DYNAMIC,
+                                   randomisation_percent=40)
+    rule = VisitCountRule(counted_page=site.root_page)
+    form = form_with_data(segment, rule)
+    form.save()
+
+    mocker.patch('random.randint', return_value=41)
+    session = client.session
+    session.save()
+    client.get(site.root_page.url)
+
+    assert len(client.session['segments']) == 0
 
 
 @pytest.mark.django_db
@@ -328,6 +362,7 @@ def test_not_in_segment_if_percentage_is_0(site, client, mocker, user):
     client.force_login(user)
     client.get(site.root_page.url)
 
+    assert len(client.session['segments']) == 0
     assert user not in instance.static_users.all()
 
 
@@ -344,6 +379,7 @@ def test_always_in_segment_if_percentage_is_100(site, client, mocker, user):
     client.force_login(user)
     client.get(site.root_page.url)
 
+    assert instance.id == client.session['segments'][0]['id']
     assert user in instance.static_users.all()
 
 
