@@ -184,12 +184,12 @@ class SessionSegmentsAdapter(BaseSegmentsAdapter):
 
                 result = self._test_rules(segment_rules, self.request,
                                           match_any=segment.match_any)
+
                 if result and segment.randomise_into_segment():
                     if segment.is_static and not segment.is_full:
                         if self.request.user.is_authenticated():
                             segment.static_users.add(self.request.user)
-                    else:
-                        additional_segments.append(segment)
+                    additional_segments.append(segment)
 
         self.set_segments(current_segments + additional_segments)
         self.update_visit_count()
