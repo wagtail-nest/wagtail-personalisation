@@ -107,6 +107,7 @@ class SegmentAdminForm(WagtailAdminModelForm):
             adapter = get_segment_adapter(request)
 
             users_to_add = []
+            users_to_exclude = []
             sessions = Session.objects.iterator()
             take_session = takewhile(
                 lambda x: instance.count == 0 or len(users_to_add) <= instance.count,
@@ -121,8 +122,11 @@ class SegmentAdminForm(WagtailAdminModelForm):
                     passes = adapter._test_rules(instance.get_rules(), request, instance.match_any)
                     if passes and instance.randomise_into_segment():
                         users_to_add.append(user)
+                    elif passes:
+                        users_to_exclude.append(user)
 
             instance.static_users.add(*users_to_add)
+            instance.excluded_users.add(*users_to_exclude)
 
         return instance
 
