@@ -190,6 +190,9 @@ class SessionSegmentsAdapter(BaseSegmentsAdapter):
                         if self.request.user.is_authenticated():
                             segment.static_users.add(self.request.user)
                     additional_segments.append(segment)
+                elif result:
+                    if self.request.user.is_authenticated():
+                        segment.excluded_users.add(self.request.user)
 
         self.set_segments(current_segments + additional_segments)
         self.update_visit_count()
