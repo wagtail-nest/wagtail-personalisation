@@ -83,6 +83,12 @@ class Segment(ClusterableModel):
     static_users = models.ManyToManyField(
         settings.AUTH_USER_MODEL,
     )
+    excluded_users = models.ManyToManyField(
+        settings.AUTH_USER_MODEL,
+        help_text=_("Users that matched the rules but were excluded from the "
+                    "segment for some reason e.g. randomisation"),
+        related_name="excluded_segments"
+    )
 
     matched_users_count = models.PositiveIntegerField(default=0, editable=False)
     matched_count_updated_at = models.DateTimeField(null=True, editable=False)
