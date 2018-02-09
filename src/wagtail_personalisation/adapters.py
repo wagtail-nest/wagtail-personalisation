@@ -177,6 +177,8 @@ class SessionSegmentsAdapter(BaseSegmentsAdapter):
         for segment in enabled_segments:
             if segment.is_static and segment.static_users.filter(id=self.request.user.id).exists():
                 additional_segments.append(segment)
+            elif segment.excluded_users.filter(id=self.request.user.id).exists():
+                continue
             elif not segment.is_static or not segment.is_full:
                 segment_rules = []
                 for rule_model in rule_models:
@@ -190,6 +192,9 @@ class SessionSegmentsAdapter(BaseSegmentsAdapter):
                         if self.request.user.is_authenticated():
                             segment.static_users.add(self.request.user)
                     additional_segments.append(segment)
+                elif result:
+                    if self.request.user.is_authenticated():
+                        segment.excluded_users.add(self.request.user)
 
         self.set_segments(current_segments + additional_segments)
         self.update_visit_count()

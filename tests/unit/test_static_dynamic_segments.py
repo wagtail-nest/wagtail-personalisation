@@ -297,6 +297,7 @@ def test_in_static_segment_if_random_is_below_percentage(site, client, mocker, u
 
     assert instance.id == client.session['segments'][0]['id']
     assert user in instance.static_users.all()
+    assert user not in instance.excluded_users.all()
 
 
 @pytest.mark.django_db
@@ -315,6 +316,7 @@ def test_not_in_static_segment_if_random_is_above_percentage(site, client, mocke
 
     assert len(client.session['segments']) == 0
     assert user not in instance.static_users.all()
+    assert user in instance.excluded_users.all()
 
 
 @pytest.mark.django_db
@@ -364,6 +366,7 @@ def test_not_in_segment_if_percentage_is_0(site, client, mocker, user):
 
     assert len(client.session['segments']) == 0
     assert user not in instance.static_users.all()
+    assert user in instance.excluded_users.all()
 
 
 @pytest.mark.django_db
@@ -381,6 +384,7 @@ def test_always_in_segment_if_percentage_is_100(site, client, mocker, user):
 
     assert instance.id == client.session['segments'][0]['id']
     assert user in instance.static_users.all()
+    assert user not in instance.excluded_users.all()
 
 
 @pytest.mark.django_db
@@ -397,6 +401,7 @@ def test_not_added_to_static_segment_at_creation_if_random_above_percent(site, c
     instance = form.save()
 
     assert user not in instance.static_users.all()
+    assert user in instance.excluded_users.all()
 
 
 @pytest.mark.django_db
@@ -413,6 +418,31 @@ def test_added_to_static_segment_at_creation_if_random_below_percent(site, clien
     instance = form.save()
 
     assert user in instance.static_users.all()
+    assert user not in instance.excluded_users.all()
+
+
+@pytest.mark.django_db
+def test_rules_check_skipped_if_user_in_excluded(site, client, mocker, user):
+    segment = SegmentFactory.build(type=Segment.TYPE_STATIC, count=1,
+                                   randomisation_percent=100)
+    rule = VisitCountRule(counted_page=site.root_page)
+    form = form_with_data(segment, rule)
+    instance = form.save()
+    instance.excluded_users.add(user)
+    instance.save
+
+    mock_test_rule = mocker.patch(
+        'wagtail_personalisation.adapters.SessionSegmentsAdapter._test_rules')
+
+    session = client.session
+    session.save()
+    client.force_login(user)
+    client.get(site.root_page.url)
+
+    assert mock_test_rule.call_count == 0
+    assert len(client.session['segments']) == 0
+    assert user not in instance.static_users.all()
+    assert user in instance.excluded_users.all()
 
 
 @pytest.mark.django_db
