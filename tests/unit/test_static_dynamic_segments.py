@@ -448,6 +448,30 @@ def test_rules_check_skipped_if_user_in_excluded(site, client, mocker, user):
 
 
 @pytest.mark.django_db
+def test_rules_check_skipped_if_dynamic_segment_in_excluded(site, client, mocker, user):
+    segment = SegmentFactory.build(type=Segment.TYPE_DYNAMIC,
+                                   randomisation_percent=100)
+    rule = VisitCountRule(counted_page=site.root_page)
+    form = form_with_data(segment, rule)
+    instance = form.save()
+    instance.persistent = True
+    instance.save()
+
+    session = client.session
+    session['excluded_segments'] = [{'id': instance.pk}]
+    session.save()
+
+    mock_test_rule = mocker.patch(
+        'wagtail_personalisation.adapters.SessionSegmentsAdapter._test_rules')
+
+    client.force_login(user)
+    client.get(site.root_page.url)
+
+    assert mock_test_rule.call_count == 0
+    assert len(client.session['segments']) == 0
+
+
+@pytest.mark.django_db
 def test_matched_user_count_added_to_segment_at_creation(site, client, mocker, django_user_model):
     django_user_model.objects.create(username='first')
     django_user_model.objects.create(username='second')
