@@ -89,11 +89,13 @@ class SessionSegmentsAdapter(BaseSegmentsAdapter):
         self._segment_cache = retval
         return retval
 
-    def set_segments(self, segments):
+    def set_segments(self, segments, key="segments"):
         """Set the currently active segments
 
         :param segments: The segments to set for the current request
         :type segments: list of wagtail_personalisation.models.Segment
+        :param key: The key under which to store the segments. Optional
+        :type key: String
 
         """
         cache_segments = []
@@ -108,8 +110,9 @@ class SessionSegmentsAdapter(BaseSegmentsAdapter):
             serialized_segments.append(serialized)
             segment_ids.add(segment.pk)
 
-        self.request.session['segments'] = serialized_segments
-        self._segment_cache = cache_segments
+        self.request.session[key] = serialized_segments
+        if key == "segments":
+            self._segment_cache = cache_segments
 
     def get_segment_by_id(self, segment_id):
         """Find and return a single segment from the request session.
@@ -171,6 +174,7 @@ class SessionSegmentsAdapter(BaseSegmentsAdapter):
         rule_models = AbstractBaseRule.get_descendant_models()
 
         current_segments = self.get_segments()
+        excluded_segments = []
 
         # Run tests on all remaining enabled segments to verify applicability.
         additional_segments = []
@@ -195,8 +199,11 @@ class SessionSegmentsAdapter(BaseSegmentsAdapter):
                 elif result:
                     if segment.is_static and self.request.user.is_authenticated():
                         segment.excluded_users.add(self.request.user)
+                    else:
+                        excluded_segments += [segment]
 
         self.set_segments(current_segments + additional_segments)
+        self.set_segments(excluded_segments, "excluded_segments")
         self.update_visit_count()
 
 
