@@ -332,6 +332,7 @@ def test_offered_dynamic_segment_if_random_is_below_percentage(site, client, moc
     session.save()
     client.get(site.root_page.url)
 
+    assert len(client.session['excluded_segments']) == 0
     assert instance.id == client.session['segments'][0]['id']
 
 
@@ -341,7 +342,7 @@ def test_not_offered_dynamic_segment_if_random_is_above_percentage(site, client,
                                    randomisation_percent=40)
     rule = VisitCountRule(counted_page=site.root_page)
     form = form_with_data(segment, rule)
-    form.save()
+    instance = form.save()
 
     mocker.patch('random.randint', return_value=41)
     session = client.session
@@ -349,6 +350,7 @@ def test_not_offered_dynamic_segment_if_random_is_above_percentage(site, client,
     client.get(site.root_page.url)
 
     assert len(client.session['segments']) == 0
+    assert instance.id == client.session['excluded_segments'][0]['id']
 
 
 @pytest.mark.django_db
