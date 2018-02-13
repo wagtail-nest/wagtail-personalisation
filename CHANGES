@@ -1,3 +1,8 @@
+0.10.8
+==================
+ - Don't add users to exclude list for dynamic segments
+ - Store segments a user is excluded from in the session
+
 0.10.7
 ==================
  - Bug Fix: Ensure static segment members are show the survey immediately
