@@ -38,11 +38,11 @@
                                                 <li class="stat_card">
                                                     {% trans "This segment is Static" %}
                                                     <span class="icon icon-fa-user">
-                                                        {{ segment.sessions.count|localize }}
-                                                        {% if segment.sessions.count < segment.count %}
+                                                        {{ segment.static_users.count|localize }}
+                                                        {% if segment.static_users.count < segment.count %}
                                                         / {{ segment.count }} {% trans "member" %}{{ segment.count|pluralize }}
                                                         {% else %}
-                                                            {% trans "member" %}{{ segment.sessions.count|pluralize }}
+                                                            {% trans "member" %}{{ segment.count|pluralize }}
                                                         {% endif %}
                                                     </span>
                                                 </li>
