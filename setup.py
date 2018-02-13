@@ -32,7 +32,7 @@ with open('README.rst') as fh:
 
 setup(
     name='wagtail-personalisation-molo',
-    version='0.10.7',
+    version='0.10.8',
     description='A forked version of Wagtail add-on for showing personalized content',
     author='Praekelt.org',
     author_email='dev@praekeltfoundation.org',
