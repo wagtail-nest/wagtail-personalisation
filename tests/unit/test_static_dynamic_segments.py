@@ -332,6 +332,7 @@ def test_offered_dynamic_segment_if_random_is_below_percentage(site, client, moc
     session.save()
     client.get(site.root_page.url)
 
+    assert len(client.session['excluded_segments']) == 0
     assert instance.id == client.session['segments'][0]['id']
 
 
@@ -341,7 +342,7 @@ def test_not_offered_dynamic_segment_if_random_is_above_percentage(site, client,
                                    randomisation_percent=40)
     rule = VisitCountRule(counted_page=site.root_page)
     form = form_with_data(segment, rule)
-    form.save()
+    instance = form.save()
 
     mocker.patch('random.randint', return_value=41)
     session = client.session
@@ -349,6 +350,7 @@ def test_not_offered_dynamic_segment_if_random_is_above_percentage(site, client,
     client.get(site.root_page.url)
 
     assert len(client.session['segments']) == 0
+    assert instance.id == client.session['excluded_segments'][0]['id']
 
 
 @pytest.mark.django_db
@@ -443,6 +445,30 @@ def test_rules_check_skipped_if_user_in_excluded(site, client, mocker, user):
     assert len(client.session['segments']) == 0
     assert user not in instance.static_users.all()
     assert user in instance.excluded_users.all()
+
+
+@pytest.mark.django_db
+def test_rules_check_skipped_if_dynamic_segment_in_excluded(site, client, mocker, user):
+    segment = SegmentFactory.build(type=Segment.TYPE_DYNAMIC,
+                                   randomisation_percent=100)
+    rule = VisitCountRule(counted_page=site.root_page)
+    form = form_with_data(segment, rule)
+    instance = form.save()
+    instance.persistent = True
+    instance.save()
+
+    session = client.session
+    session['excluded_segments'] = [{'id': instance.pk}]
+    session.save()
+
+    mock_test_rule = mocker.patch(
+        'wagtail_personalisation.adapters.SessionSegmentsAdapter._test_rules')
+
+    client.force_login(user)
+    client.get(site.root_page.url)
+
+    assert mock_test_rule.call_count == 0
+    assert len(client.session['segments']) == 0
 
 
 @pytest.mark.django_db
