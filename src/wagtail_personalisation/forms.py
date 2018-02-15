@@ -108,22 +108,22 @@ class SegmentAdminForm(WagtailAdminModelForm):
 
             users_to_add = []
             users_to_exclude = []
-            sessions = Session.objects.iterator()
-            take_session = takewhile(
+            # sessions = Session.objects.iterator()
+
+            User = get_user_model()
+            users = User.objects.filter(is_active=True, is_staff=False)
+
+            take_user = takewhile(
                 lambda x: instance.count == 0 or len(users_to_add) <= instance.count,
-                sessions
+                users
             )
-            for session in take_session:
-                session_data = session.get_decoded()
-                user = user_from_data(session_data.get('_auth_user_id'))
-                if user.is_authenticated():
-                    request.user = user
-                    request.session = SessionStore(session_key=session.session_key)
-                    passes = adapter._test_rules(instance.get_rules(), request, instance.match_any)
-                    if passes and instance.randomise_into_segment():
-                        users_to_add.append(user)
-                    elif passes:
-                        users_to_exclude.append(user)
+            for user in take_user:
+                request.user = user
+                passes = adapter._test_rules(instance.get_rules(), request, instance.match_any)
+                if passes and instance.randomise_into_segment():
+                    users_to_add.append(user)
+                elif passes:
+                    users_to_exclude.append(user)
 
             instance.static_users.add(*users_to_add)
             instance.excluded_users.add(*users_to_exclude)
