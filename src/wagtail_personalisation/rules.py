@@ -282,6 +282,28 @@ class VisitCountRule(AbstractBaseRule):
             ),
         }
 
+    def get_column_header(self):
+        return "Visit count - %s" % self.counted_page
+
+    def get_user_info_string(self, user):
+        # Local import for cyclic import
+        from wagtail_personalisation.adapters import (
+            get_segment_adapter, SessionSegmentsAdapter, SEGMENT_ADAPTER_CLASS)
+
+        # Create a fake request so we can use the adapter
+        request = RequestFactory().get('/')
+        request.user = user
+
+        # If we're using the session adapter check for an active session
+        if SEGMENT_ADAPTER_CLASS == SessionSegmentsAdapter:
+            request.session = self._get_user_session(user)
+        else:
+            request.session = SessionStore()
+
+        adapter = get_segment_adapter(request)
+        visit_count = adapter.get_visit_count(self.counted_page)
+        return str(visit_count)
+
 
 class QueryRule(AbstractBaseRule):
     """Query rule to segment users based on matching queries.

@@ -49,3 +49,24 @@ def test_visit_count_call_test_user_with_user_or_request_fails(site, client, use
     client.force_login(user)
 
     assert not rule.test_user(None)
+
+
+@pytest.mark.django_db
+def test_get_column_header(site):
+    segment = SegmentFactory(name='VisitCount')
+    rule = VisitCountRuleFactory(counted_page=site.root_page, segment=segment)
+
+    assert rule.get_column_header() == 'Visit count - Test page'
+
+
+@pytest.mark.django_db
+def test_get_user_info_string_returns_count(site, client, user):
+    segment = SegmentFactory(name='VisitCount')
+    rule = VisitCountRuleFactory(counted_page=site.root_page, segment=segment)
+
+    session = client.session
+    session['visit_count'] = [{'path': '/', 'count': 2}]
+    session.save()
+    client.force_login(user)
+
+    assert rule.get_user_info_string(user) == '2'
