@@ -2,16 +2,22 @@ from __future__ import absolute_import, unicode_literals
 
 import re
 from datetime import datetime
+from importlib import import_module
 
 from django.apps import apps
+from django.conf import settings
+from django.contrib.sessions.models import Session
 from django.db import models
 from django.template.defaultfilters import slugify
 from django.utils.encoding import force_text, python_2_unicode_compatible
 from django.utils.translation import ugettext_lazy as _
+from django.test.client import RequestFactory
 from modelcluster.fields import ParentalKey
 from user_agents import parse
 from wagtail.wagtailadmin.edit_handlers import (
     FieldPanel, FieldRowPanel, PageChooserPanel)
+
+SessionStore = import_module(settings.SESSION_ENGINE).SessionStore
 
 
 @python_2_unicode_compatible
@@ -221,16 +227,32 @@ class VisitCountRule(AbstractBaseRule):
         verbose_name = _('Visit count Rule')
 
     def test_user(self, request, user=None):
+        # Local import for cyclic import
+        from wagtail_personalisation.adapters import (
+            get_segment_adapter, SessionSegmentsAdapter, SEGMENT_ADAPTER_CLASS)
+
         if user:
-            # This rule currently does not support testing a user directly
-            # TODO: Make this test a user directly when the rule uses
-            # historical data
+            # Create a fake request so we can use the adapter
+            request = RequestFactory().get('/')
+            request.session = SessionStore()
+
+            # If we're using the session adapter check for an active session
+            if SEGMENT_ADAPTER_CLASS == SessionSegmentsAdapter:
+                sessions = Session.objects.iterator()
+                for session in sessions:
+                    session_data = session.get_decoded()
+                    if session_data.get('_auth_user_id') == str(user.id):
+                        request.session = SessionStore(
+                            session_key=session.session_key)
+                        break
+
+            request.user = user
+        elif not request:
+            # Return false if we don't have a user or a request
             return False
+
         operator = self.operator
         segment_count = self.count
-
-        # Local import for cyclic import
-        from wagtail_personalisation.adapters import get_segment_adapter
 
         adapter = get_segment_adapter(request)
 
