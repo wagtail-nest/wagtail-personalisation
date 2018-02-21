@@ -226,6 +226,14 @@ class VisitCountRule(AbstractBaseRule):
     class Meta:
         verbose_name = _('Visit count Rule')
 
+    def _get_user_session(self, user):
+        sessions = Session.objects.iterator()
+        for session in sessions:
+            session_data = session.get_decoded()
+            if session_data.get('_auth_user_id') == str(user.id):
+                return SessionStore(session_key=session.session_key)
+        return SessionStore()
+
     def test_user(self, request, user=None):
         # Local import for cyclic import
         from wagtail_personalisation.adapters import (
@@ -234,19 +242,14 @@ class VisitCountRule(AbstractBaseRule):
         if user:
             # Create a fake request so we can use the adapter
             request = RequestFactory().get('/')
-            request.session = SessionStore()
+            request.user = user
 
             # If we're using the session adapter check for an active session
             if SEGMENT_ADAPTER_CLASS == SessionSegmentsAdapter:
-                sessions = Session.objects.iterator()
-                for session in sessions:
-                    session_data = session.get_decoded()
-                    if session_data.get('_auth_user_id') == str(user.id):
-                        request.session = SessionStore(
-                            session_key=session.session_key)
-                        break
+                request.session = self._get_user_session(user)
+            else:
+                request.session = SessionStore()
 
-            request.user = user
         elif not request:
             # Return false if we don't have a user or a request
             return False
