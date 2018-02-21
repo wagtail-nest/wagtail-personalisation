@@ -266,7 +266,6 @@ class QueryRule(AbstractBaseRule):
 
     """
     icon = 'fa-link'
-    static = True
 
     parameter = models.SlugField(_("The query parameter to search for"),
                                  max_length=20)
@@ -281,13 +280,7 @@ class QueryRule(AbstractBaseRule):
     class Meta:
         verbose_name = _('Query Rule')
 
-    def test_user(self, request, user=None):
-        if user:
-            # This rule currently does not support testing a user directly
-            # TODO: Make this test a user directly if/when the rule uses
-            # historical data
-            return False
-
+    def test_user(self, request):
         return request.GET.get(self.parameter, '') == self.value
 
     def description(self):

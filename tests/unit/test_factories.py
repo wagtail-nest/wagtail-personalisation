@@ -45,4 +45,3 @@ def test_query_rule_create():
 
     assert query_rule.parameter == 'query'
     assert query_rule.value == 'value'
-    assert query_rule.static
