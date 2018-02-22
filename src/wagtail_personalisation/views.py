@@ -149,7 +149,7 @@ def segment_user_data(request, segment_id):
 
         response = HttpResponse(content_type='text/csv; charset=utf-8')
         response['Content-Disposition'] = \
-                'attachment;filename=segment-%s-users.csv' % str(segment_id)
+            'attachment;filename=segment-%s-users.csv' % str(segment_id)
 
         headers = ['Username']
         for rule in segment.get_rules():
