@@ -488,152 +488,97 @@ def test_matched_user_count_added_to_segment_at_creation(site, client, mocker, d
 
 
 @pytest.mark.django_db
-def test_count_users_matching_static_rules(site, client, django_user_model):
-    class TestStaticRule(AbstractBaseRule):
-        static = True
-
-        class Meta:
-            app_label = 'wagtail_personalisation'
-
-        def test_user(self, request, user):
-            return True
-
+def test_count_users_matching_static_rules(site, client, mocker, django_user_model):
     django_user_model.objects.create(username='first')
     django_user_model.objects.create(username='second')
 
     segment = SegmentFactory.build(type=Segment.TYPE_STATIC)
-    rule = TestStaticRule()
+    rule = VisitCountRule(counted_page=site.root_page)
     form = form_with_data(segment, rule)
+    mocker.patch('wagtail_personalisation.rules.VisitCountRule.test_user', return_value=True)
 
     assert form.count_matching_users([rule], True) is 2
 
 
 @pytest.mark.django_db
-def test_count_matching_users_excludes_staff(site, client, django_user_model):
-    class TestStaticRule(AbstractBaseRule):
-        static = True
-
-        class Meta:
-            app_label = 'wagtail_personalisation'
-
-        def test_user(self, request, user):
-            return True
-
+def test_count_matching_users_excludes_staff(site, client, mocker, django_user_model):
     django_user_model.objects.create(username='first')
     django_user_model.objects.create(username='second', is_staff=True)
 
     segment = SegmentFactory.build(type=Segment.TYPE_STATIC)
-    rule = TestStaticRule()
+    rule = VisitCountRule(counted_page=site.root_page)
     form = form_with_data(segment, rule)
+    mock_test_user = mocker.patch('wagtail_personalisation.rules.VisitCountRule.test_user', return_value=True)
 
     assert form.count_matching_users([rule], True) is 1
+    assert mock_test_user.call_count == 1
 
 
 @pytest.mark.django_db
-def test_count_matching_users_excludes_inactive(site, client, django_user_model):
-    class TestStaticRule(AbstractBaseRule):
-        static = True
-
-        class Meta:
-            app_label = 'wagtail_personalisation'
-
-        def test_user(self, request, user):
-            return True
-
+def test_count_matching_users_excludes_inactive(site, client, mocker, django_user_model):
     django_user_model.objects.create(username='first')
     django_user_model.objects.create(username='second', is_active=False)
 
     segment = SegmentFactory.build(type=Segment.TYPE_STATIC)
-    rule = TestStaticRule()
+    rule = VisitCountRule(counted_page=site.root_page)
     form = form_with_data(segment, rule)
+    mock_test_user = mocker.patch('wagtail_personalisation.rules.VisitCountRule.test_user', return_value=True)
 
     assert form.count_matching_users([rule], True) is 1
+    assert mock_test_user.call_count == 1
 
 
 @pytest.mark.django_db
-def test_count_matching_users_only_counts_static_rules(site, client, django_user_model):
-    class TestStaticRule(AbstractBaseRule):
-        class Meta:
-            app_label = 'wagtail_personalisation'
-
-        def test_user(self, request, user):
-            return True
-
+def test_count_matching_users_only_counts_static_rules(site, client, mocker, django_user_model):
     django_user_model.objects.create(username='first')
     django_user_model.objects.create(username='second')
 
     segment = SegmentFactory.build(type=Segment.TYPE_STATIC)
-    rule = TestStaticRule()
+    rule = TimeRule(
+        start_time=datetime.time(0, 0, 0),
+        end_time=datetime.time(23, 59, 59),
+        segment=segment,
+    )
     form = form_with_data(segment, rule)
+    mock_test_user = mocker.patch('wagtail_personalisation.rules.TimeRule.test_user')
 
     assert form.count_matching_users([rule], True) is 0
+    assert mock_test_user.call_count == 0
 
 
 @pytest.mark.django_db
-def test_count_matching_users_handles_match_any(site, client, django_user_model):
-    class TestStaticRuleFirst(AbstractBaseRule):
-        static = True
-
-        class Meta:
-            app_label = 'wagtail_personalisation'
-
-        def test_user(self, request, user):
-            if user.username == 'first':
-                return True
-            return False
-
-    class TestStaticRuleSecond(AbstractBaseRule):
-        static = True
-
-        class Meta:
-            app_label = 'wagtail_personalisation'
-
-        def test_user(self, request, user):
-            if user.username == 'second':
-                return True
-            return False
-
+def test_count_matching_users_handles_match_any(site, client, mocker, django_user_model):
     django_user_model.objects.create(username='first')
     django_user_model.objects.create(username='second')
 
     segment = SegmentFactory.build(type=Segment.TYPE_STATIC)
-    first_rule = TestStaticRuleFirst()
-    second_rule = TestStaticRuleSecond()
+    first_rule = VisitCountRule(counted_page=site.root_page)
+    other_page = site.root_page.get_last_child()
+    second_rule = VisitCountRule(counted_page=other_page)
     form = form_with_data(segment, first_rule, second_rule)
 
+    mock_test_user = mocker.patch(
+        'wagtail_personalisation.rules.VisitCountRule.test_user',
+        side_effect=[True, False, True, False])
+
     assert form.count_matching_users([first_rule, second_rule], True) is 2
+    mock_test_user.call_count == 4
 
 
 @pytest.mark.django_db
-def test_count_matching_users_handles_match_all(site, client, django_user_model):
-    class TestStaticRuleFirst(AbstractBaseRule):
-        static = True
-
-        class Meta:
-            app_label = 'wagtail_personalisation'
-
-        def test_user(self, request, user):
-            if user.username == 'first':
-                return True
-            return False
-
-    class TestStaticRuleContainsS(AbstractBaseRule):
-        static = True
-
-        class Meta:
-            app_label = 'wagtail_personalisation'
-
-        def test_user(self, request, user):
-            if 's' in user.username:
-                return True
-            return False
-
+def test_count_matching_users_handles_match_all(site, client, mocker, django_user_model):
     django_user_model.objects.create(username='first')
     django_user_model.objects.create(username='second')
 
     segment = SegmentFactory.build(type=Segment.TYPE_STATIC)
-    first_rule = TestStaticRuleFirst()
-    s_rule = TestStaticRuleContainsS()
-    form = form_with_data(segment, first_rule, s_rule)
+    first_rule = VisitCountRule(counted_page=site.root_page)
+    other_page = site.root_page.get_last_child()
+    second_rule = VisitCountRule(counted_page=other_page)
+    form = form_with_data(segment, first_rule, second_rule)
 
-    assert form.count_matching_users([first_rule, s_rule], False) is 1
+    mock_test_user = mocker.patch(
+        'wagtail_personalisation.rules.VisitCountRule.test_user',
+        side_effect=[True, True, False, True])
+
+    assert form.count_matching_users([first_rule, second_rule], False) is 1
+    mock_test_user.call_count == 4
