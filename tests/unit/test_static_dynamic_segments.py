@@ -8,8 +8,7 @@ from django.forms.models import model_to_dict
 from tests.factories.segment import SegmentFactory
 from wagtail_personalisation.forms import SegmentAdminForm
 from wagtail_personalisation.models import Segment
-from wagtail_personalisation.rules import (AbstractBaseRule, TimeRule,
-                                           VisitCountRule)
+from wagtail_personalisation.rules import TimeRule, VisitCountRule
 
 
 def form_with_data(segment, *rules):
