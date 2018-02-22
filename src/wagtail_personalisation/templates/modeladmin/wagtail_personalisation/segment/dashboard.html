@@ -103,6 +103,9 @@
                                                 <li><a href="{% url 'segment:toggle' segment.pk %}" title="{% trans "Disable this segment" %}">disable</a></li>
                                             {% endif %}
                                             <li><a href="{% url 'wagtail_personalisation_segment_modeladmin_edit' segment.pk %}" title="{% trans "Configure this segment" %}">configure this</a></li>
+                                            {% if segment.is_static %}
+                                                <li><a href="{% url 'segment:segment_user_data' segment.pk %}" title="{% trans "Download user info" %}">download users csv</a></li>
+                                            {% endif %}
                                         </ul>
                                         {% endif %}
                                     </div>
