@@ -1,3 +1,8 @@
+0.11.0
+==================
+ - Bug Fix: Query rule should not be static
+ - Enable retrieval of user data for static rules through csv download
+
 0.10.9
 ==================
  - Bug Fix: Display the number of users in a static segment on dashboard
