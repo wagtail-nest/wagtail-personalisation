@@ -2,16 +2,22 @@ from __future__ import absolute_import, unicode_literals
 
 import re
 from datetime import datetime
+from importlib import import_module
 
 from django.apps import apps
+from django.conf import settings
+from django.contrib.sessions.models import Session
 from django.db import models
 from django.template.defaultfilters import slugify
 from django.utils.encoding import force_text, python_2_unicode_compatible
 from django.utils.translation import ugettext_lazy as _
+from django.test.client import RequestFactory
 from modelcluster.fields import ParentalKey
 from user_agents import parse
 from wagtail.wagtailadmin.edit_handlers import (
     FieldPanel, FieldRowPanel, PageChooserPanel)
+
+SessionStore = import_module(settings.SESSION_ENGINE).SessionStore
 
 
 @python_2_unicode_compatible
@@ -220,17 +226,36 @@ class VisitCountRule(AbstractBaseRule):
     class Meta:
         verbose_name = _('Visit count Rule')
 
+    def _get_user_session(self, user):
+        sessions = Session.objects.iterator()
+        for session in sessions:
+            session_data = session.get_decoded()
+            if session_data.get('_auth_user_id') == str(user.id):
+                return SessionStore(session_key=session.session_key)
+        return SessionStore()
+
     def test_user(self, request, user=None):
+        # Local import for cyclic import
+        from wagtail_personalisation.adapters import (
+            get_segment_adapter, SessionSegmentsAdapter, SEGMENT_ADAPTER_CLASS)
+
         if user:
-            # This rule currently does not support testing a user directly
-            # TODO: Make this test a user directly when the rule uses
-            # historical data
+            # Create a fake request so we can use the adapter
+            request = RequestFactory().get('/')
+            request.user = user
+
+            # If we're using the session adapter check for an active session
+            if SEGMENT_ADAPTER_CLASS == SessionSegmentsAdapter:
+                request.session = self._get_user_session(user)
+            else:
+                request.session = SessionStore()
+
+        elif not request:
+            # Return false if we don't have a user or a request
             return False
+
         operator = self.operator
         segment_count = self.count
-
-        # Local import for cyclic import
-        from wagtail_personalisation.adapters import get_segment_adapter
 
         adapter = get_segment_adapter(request)
 
@@ -257,6 +282,28 @@ class VisitCountRule(AbstractBaseRule):
             ),
         }
 
+    def get_column_header(self):
+        return "Visit count - %s" % self.counted_page
+
+    def get_user_info_string(self, user):
+        # Local import for cyclic import
+        from wagtail_personalisation.adapters import (
+            get_segment_adapter, SessionSegmentsAdapter, SEGMENT_ADAPTER_CLASS)
+
+        # Create a fake request so we can use the adapter
+        request = RequestFactory().get('/')
+        request.user = user
+
+        # If we're using the session adapter check for an active session
+        if SEGMENT_ADAPTER_CLASS == SessionSegmentsAdapter:
+            request.session = self._get_user_session(user)
+        else:
+            request.session = SessionStore()
+
+        adapter = get_segment_adapter(request)
+        visit_count = adapter.get_visit_count(self.counted_page)
+        return str(visit_count)
+
 
 class QueryRule(AbstractBaseRule):
     """Query rule to segment users based on matching queries.
@@ -266,7 +313,6 @@ class QueryRule(AbstractBaseRule):
 
     """
     icon = 'fa-link'
-    static = True
 
     parameter = models.SlugField(_("The query parameter to search for"),
                                  max_length=20)
@@ -281,13 +327,7 @@ class QueryRule(AbstractBaseRule):
     class Meta:
         verbose_name = _('Query Rule')
 
-    def test_user(self, request, user=None):
-        if user:
-            # This rule currently does not support testing a user directly
-            # TODO: Make this test a user directly if/when the rule uses
-            # historical data
-            return False
-
+    def test_user(self, request):
         return request.GET.get(self.parameter, '') == self.value
 
     def description(self):
