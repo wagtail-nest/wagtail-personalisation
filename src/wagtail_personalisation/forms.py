@@ -2,12 +2,10 @@ from __future__ import absolute_import, unicode_literals
 
 from datetime import datetime
 from importlib import import_module
-from itertools import takewhile
 
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import AnonymousUser
-from django.contrib.sessions.models import Session
 from django.contrib.staticfiles.templatetags.staticfiles import static
 from django.test.client import RequestFactory
 from django.utils.lru_cache import lru_cache
@@ -108,7 +106,6 @@ class SegmentAdminForm(WagtailAdminModelForm):
 
             users_to_add = []
             users_to_exclude = []
-            # sessions = Session.objects.iterator()
 
             User = get_user_model()
             users = User.objects.filter(is_active=True, is_staff=False)
@@ -119,7 +116,7 @@ class SegmentAdminForm(WagtailAdminModelForm):
                 passes = adapter._test_rules(instance.get_rules(), request, instance.match_any)
                 if passes:
                     matched_count += 1
-                    if len(users_to_add) <= instance.count:
+                    if instance.count == 0 or len(users_to_add) <= instance.count:
                         if instance.randomise_into_segment():
                             users_to_add.append(user)
                         else:
