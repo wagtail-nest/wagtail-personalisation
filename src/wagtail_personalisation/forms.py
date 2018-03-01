@@ -2,12 +2,10 @@ from __future__ import absolute_import, unicode_literals
 
 from datetime import datetime
 from importlib import import_module
-from itertools import takewhile
 
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import AnonymousUser
-from django.contrib.sessions.models import Session
 from django.contrib.staticfiles.templatetags.staticfiles import static
 from django.test.client import RequestFactory
 from django.utils.lru_cache import lru_cache
@@ -87,7 +85,7 @@ class SegmentAdminForm(WagtailAdminModelForm):
         if not self.instance.is_static:
             self.instance.count = 0
 
-        if is_new:
+        if is_new and self.instance.is_static and not self.instance.all_rules_static:
             rules = [
                 form.instance for formset in self.formsets.values()
                 for form in formset
@@ -108,23 +106,24 @@ class SegmentAdminForm(WagtailAdminModelForm):
 
             users_to_add = []
             users_to_exclude = []
-            sessions = Session.objects.iterator()
-            take_session = takewhile(
-                lambda x: instance.count == 0 or len(users_to_add) <= instance.count,
-                sessions
-            )
-            for session in take_session:
-                session_data = session.get_decoded()
-                user = user_from_data(session_data.get('_auth_user_id'))
-                if user.is_authenticated():
-                    request.user = user
-                    request.session = SessionStore(session_key=session.session_key)
-                    passes = adapter._test_rules(instance.get_rules(), request, instance.match_any)
-                    if passes and instance.randomise_into_segment():
-                        users_to_add.append(user)
-                    elif passes:
-                        users_to_exclude.append(user)
 
+            User = get_user_model()
+            users = User.objects.filter(is_active=True, is_staff=False)
+
+            matched_count = 0
+            for user in users.iterator():
+                request.user = user
+                passes = adapter._test_rules(instance.get_rules(), request, instance.match_any)
+                if passes:
+                    matched_count += 1
+                    if instance.count == 0 or len(users_to_add) <= instance.count:
+                        if instance.randomise_into_segment():
+                            users_to_add.append(user)
+                        else:
+                            users_to_exclude.append(user)
+
+            instance.matched_users_count = matched_count
+            instance.matched_count_updated_at = datetime.now()
             instance.static_users.add(*users_to_add)
             instance.excluded_users.add(*users_to_exclude)
 

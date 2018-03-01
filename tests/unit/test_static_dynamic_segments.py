@@ -35,22 +35,18 @@ def form_with_data(segment, *rules):
 
 
 @pytest.mark.django_db
-def test_session_added_to_static_segment_at_creation(site, client, user):
-    session = client.session
-    session.save()
-    client.force_login(user)
-    client.get(site.root_page.url)
-
+def test_user_added_to_static_segment_at_creation(site, user, mocker):
     segment = SegmentFactory.build(type=Segment.TYPE_STATIC)
     rule = VisitCountRule(counted_page=site.root_page)
     form = form_with_data(segment, rule)
+    mocker.patch('wagtail_personalisation.rules.VisitCountRule.test_user', return_value=True)
     instance = form.save()
 
     assert user in instance.static_users.all()
 
 
 @pytest.mark.django_db
-def test_anonymous_user_not_added_to_static_segment_at_creation(site, client):
+def test_anonymous_user_not_added_to_static_segment_at_creation(site, client, mocker):
     session = client.session
     session.save()
     client.get(site.root_page.url)
@@ -58,43 +54,32 @@ def test_anonymous_user_not_added_to_static_segment_at_creation(site, client):
     segment = SegmentFactory.build(type=Segment.TYPE_STATIC)
     rule = VisitCountRule(counted_page=site.root_page)
     form = form_with_data(segment, rule)
+    mock_test_rule = mocker.patch('wagtail_personalisation.adapters.SessionSegmentsAdapter._test_rules')
     instance = form.save()
 
     assert not instance.static_users.all()
+    assert mock_test_rule.call_count == 0
 
 
 @pytest.mark.django_db
-def test_match_any_correct_populates(site, client, django_user_model):
+def test_match_any_correct_populates(site, django_user_model, mocker):
     user = django_user_model.objects.create(username='first')
-    session = client.session
-    client.force_login(user)
-    client.get(site.root_page.url)
-
     other_user = django_user_model.objects.create(username='second')
-    client.cookies.clear()
-    second_session = client.session
     other_page = site.root_page.get_last_child()
-    client.force_login(other_user)
-    client.get(other_page.url)
 
     segment = SegmentFactory.build(type=Segment.TYPE_STATIC, match_any=True)
     rule_1 = VisitCountRule(counted_page=site.root_page)
     rule_2 = VisitCountRule(counted_page=other_page)
     form = form_with_data(segment, rule_1, rule_2)
+    mocker.patch('wagtail_personalisation.rules.VisitCountRule.test_user', side_effect=[True, False, True, False])
     instance = form.save()
 
-    assert session.session_key != second_session.session_key
     assert user in instance.static_users.all()
     assert other_user in instance.static_users.all()
 
 
 @pytest.mark.django_db
-def test_mixed_static_dynamic_session_doesnt_generate_at_creation(site, client, user):
-    session = client.session
-    session.save()
-    client.force_login(user)
-    client.get(site.root_page.url)
-
+def test_mixed_static_dynamic_session_doesnt_generate_at_creation(site, mocker):
     segment = SegmentFactory.build(type=Segment.TYPE_STATIC, count=1)
     static_rule = VisitCountRule(counted_page=site.root_page)
     non_static_rule = TimeRule(
@@ -102,9 +87,12 @@ def test_mixed_static_dynamic_session_doesnt_generate_at_creation(site, client, 
         end_time=datetime.time(23, 59, 59),
     )
     form = form_with_data(segment, static_rule, non_static_rule)
+
+    mock_test_rule = mocker.patch('wagtail_personalisation.adapters.SessionSegmentsAdapter._test_rules')
     instance = form.save()
 
     assert not instance.static_users.all()
+    assert mock_test_rule.call_count == 0
 
 
 @pytest.mark.django_db
@@ -180,12 +168,7 @@ def test_session_not_added_to_static_segment_after_full(site, client, django_use
 
 
 @pytest.mark.django_db
-def test_sessions_not_added_to_static_segment_if_rule_not_static(client, site, user):
-    session = client.session
-    session.save()
-    client.force_login(user)
-    client.get(site.root_page.url)
-
+def test_sessions_not_added_to_static_segment_if_rule_not_static(mocker):
     segment = SegmentFactory.build(type=Segment.TYPE_STATIC, count=1)
     rule = TimeRule(
         start_time=datetime.time(0, 0, 0),
@@ -193,26 +176,27 @@ def test_sessions_not_added_to_static_segment_if_rule_not_static(client, site, u
         segment=segment,
     )
     form = form_with_data(segment, rule)
+    mock_test_rule = mocker.patch('wagtail_personalisation.adapters.SessionSegmentsAdapter._test_rules')
     instance = form.save()
 
     assert not instance.static_users.all()
+    assert mock_test_rule.call_count == 0
 
 
 @pytest.mark.django_db
 def test_does_not_calculate_the_segment_again(site, client, mocker, user):
-    session = client.session
-    session.save()
-    client.force_login(user)
-    client.get(site.root_page.url)
-
     segment = SegmentFactory.build(type=Segment.TYPE_STATIC, count=2)
     rule = VisitCountRule(counted_page=site.root_page, segment=segment)
     form = form_with_data(segment, rule)
+    mocker.patch('wagtail_personalisation.rules.VisitCountRule.test_user', return_value=True)
     instance = form.save()
 
     assert user in instance.static_users.all()
 
     mock_test_rule = mocker.patch('wagtail_personalisation.adapters.SessionSegmentsAdapter._test_rules')
+    session = client.session
+    session.save()
+    client.force_login(user)
     client.get(site.root_page.url)
     assert mock_test_rule.call_count == 0
 
@@ -389,16 +373,12 @@ def test_always_in_segment_if_percentage_is_100(site, client, mocker, user):
 
 
 @pytest.mark.django_db
-def test_not_added_to_static_segment_at_creation_if_random_above_percent(site, client, mocker, user):
-    session = client.session
-    session.save()
-    client.force_login(user)
-    client.get(site.root_page.url)
-
+def test_not_added_to_static_segment_at_creation_if_random_above_percent(site, mocker, user):
     mocker.patch('random.randint', return_value=41)
     segment = SegmentFactory.build(type=Segment.TYPE_STATIC, randomisation_percent=40)
     rule = VisitCountRule(counted_page=site.root_page)
     form = form_with_data(segment, rule)
+    mocker.patch('wagtail_personalisation.rules.VisitCountRule.test_user', return_value=True)
     instance = form.save()
 
     assert user not in instance.static_users.all()
@@ -406,16 +386,12 @@ def test_not_added_to_static_segment_at_creation_if_random_above_percent(site, c
 
 
 @pytest.mark.django_db
-def test_added_to_static_segment_at_creation_if_random_below_percent(site, client, mocker, user):
-    session = client.session
-    session.save()
-    client.force_login(user)
-    client.get(site.root_page.url)
-
+def test_added_to_static_segment_at_creation_if_random_below_percent(site, mocker, user):
     mocker.patch('random.randint', return_value=39)
     segment = SegmentFactory.build(type=Segment.TYPE_STATIC, randomisation_percent=40)
     rule = VisitCountRule(counted_page=site.root_page)
     form = form_with_data(segment, rule)
+    mocker.patch('wagtail_personalisation.rules.VisitCountRule.test_user', return_value=True)
     instance = form.save()
 
     assert user in instance.static_users.all()
@@ -471,7 +447,7 @@ def test_rules_check_skipped_if_dynamic_segment_in_excluded(site, client, mocker
 
 
 @pytest.mark.django_db
-def test_matched_user_count_added_to_segment_at_creation(site, client, mocker, django_user_model):
+def test_matched_user_count_added_to_segment_at_creation(site, mocker, django_user_model):
     django_user_model.objects.create(username='first')
     django_user_model.objects.create(username='second')
 
@@ -479,6 +455,7 @@ def test_matched_user_count_added_to_segment_at_creation(site, client, mocker, d
     rule = VisitCountRule()
 
     form = form_with_data(segment, rule)
+    form.instance.type = Segment.TYPE_STATIC
     mock_test_user = mocker.patch('wagtail_personalisation.rules.VisitCountRule.test_user', return_value=True)
     instance = form.save()
 
