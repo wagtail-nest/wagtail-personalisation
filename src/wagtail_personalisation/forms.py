@@ -116,7 +116,7 @@ class SegmentAdminForm(WagtailAdminModelForm):
                 passes = adapter._test_rules(instance.get_rules(), request, instance.match_any)
                 if passes:
                     matched_count += 1
-                    if instance.count == 0 or len(users_to_add) <= instance.count:
+                    if instance.count == 0 or len(users_to_add) < instance.count:
                         if instance.randomise_into_segment():
                             users_to_add.append(user)
                         else:
