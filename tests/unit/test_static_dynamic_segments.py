@@ -46,6 +46,20 @@ def test_user_added_to_static_segment_at_creation(site, user, mocker):
 
 
 @pytest.mark.django_db
+def test_user_not_added_to_full_static_segment_at_creation(site, django_user_model, mocker):
+    django_user_model.objects.create(username='first')
+    django_user_model.objects.create(username='second')
+    segment = SegmentFactory.build(type=Segment.TYPE_STATIC, count=1)
+    rule = VisitCountRule(counted_page=site.root_page)
+    form = form_with_data(segment, rule)
+    mocker.patch('wagtail_personalisation.rules.VisitCountRule.test_user',
+                 side_effect=[True, True])
+    instance = form.save()
+
+    assert len(instance.static_users.all()) == 1
+
+
+@pytest.mark.django_db
 def test_anonymous_user_not_added_to_static_segment_at_creation(site, client, mocker):
     session = client.session
     session.save()
