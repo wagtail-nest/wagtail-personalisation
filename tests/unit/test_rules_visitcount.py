@@ -2,6 +2,7 @@ import pytest
 
 from tests.factories.rule import VisitCountRuleFactory
 from tests.factories.segment import SegmentFactory
+from wagtail_personalisation.rules import VisitCountRule
 
 
 @pytest.mark.django_db
@@ -23,6 +24,12 @@ def test_visit_count(site, client):
     visit_count = client.session['visit_count']
     assert visit_count[0]['count'] == 2
     assert visit_count[1]['count'] == 1
+
+
+@pytest.mark.django_db
+def test_call_test_user_on_invalid_rule_fails(site, user, mocker):
+    rule = VisitCountRule()
+    assert not (rule.test_user(None, user))
 
 
 @pytest.mark.django_db
