@@ -6,6 +6,7 @@ from importlib import import_module
 
 from django.apps import apps
 from django.conf import settings
+from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.sessions.models import Session
 from django.db import models
 from django.template.defaultfilters import slugify
@@ -238,6 +239,12 @@ class VisitCountRule(AbstractBaseRule):
         # Local import for cyclic import
         from wagtail_personalisation.adapters import (
             get_segment_adapter, SessionSegmentsAdapter, SEGMENT_ADAPTER_CLASS)
+
+        # Django formsets don't honour 'required' fields so check rule is valid
+        try:
+            self.counted_page
+        except ObjectDoesNotExist:
+            return False
 
         if user:
             # Create a fake request so we can use the adapter
