@@ -7,7 +7,7 @@ default: develop
 clean:
 	find src -name '*.pyc' -delete
 	find tests -name '*.pyc' -delete
-	find . -name '*.egg-info' -delete
+	find . -name '*.egg-info' |xargs rm -rf
 
 requirements:
 	pip install --upgrade -e .[docs,test]
@@ -38,14 +38,15 @@ isort:
 	isort --recursive src tests
 
 dist:
-	./setup.py sdist bdist_wheel
+	pip install wheel
+	python ./setup.py sdist bdist_wheel
 
 sandbox:
 	pip install -r sandbox/requirements.txt
 	sandbox/manage.py migrate
 	sandbox/manage.py loaddata sandbox/exampledata/users.json
 	sandbox/manage.py loaddata sandbox/exampledata/personalisation.json
-	sandbox/manage.py runserver
+	#sandbox/manage.py runserver
 
 release:
 	pip install twine wheel
