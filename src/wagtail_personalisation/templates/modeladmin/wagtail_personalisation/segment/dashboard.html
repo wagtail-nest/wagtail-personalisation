@@ -22,8 +22,9 @@
                         <div class="nice-padding block_container">
                             {% if all_count %}
                                 {% for segment in object_list %}
-                                    <div class="block block--{{ segment.status }}" onclick="location.href = 'edit/{{ segment.pk }}'">
+                                    <div class="block block--{{ segment.status }}" onclick="location.href = 'edit/{{ segment.pk }}/'">
                                         <h2>{{ segment }}</h2>
+
                                         <div class="inspect_container">
                                             <ul class="inspect segment_stats">
                                                 <li class="visit_stat">
@@ -77,7 +78,7 @@
                                             {% elif segment.status == segment.STATUS_ENABLED %}
                                                 <li><a href="{% url 'segment:toggle' segment.pk %}" title="{% trans "Disable this segment" %}">disable</a></li>
                                             {% endif %}
-                                            <li><a href="edit/{{ segment.pk }}" title="{% trans "Configure this segment" %}">configure this</a></li>
+                                            <li><a href="edit/{{ segment.pk }}/" title="{% trans "Configure this segment" %}">configure this</a></li>
                                         </ul>
                                         {% endif %}
                                     </div>
