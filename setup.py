@@ -20,7 +20,7 @@ tests_require = [
     'pytest-pythonpath==0.7.2',
     'pytest-sugar==0.9.1',
     'pytest==3.4.2',
-    'wagtail_factories==0.3.0',
+    'wagtail_factories==git+https://github.com/mvantellingen/wagtail-factories.git@master',
 ]
 
 docs_require = [

@@ -56,24 +56,16 @@ TEMPLATES = [
     },
 ]
 
-def get_middleware_settings():
-    return (
+MIDDLEWARE = (
         'django.middleware.common.CommonMiddleware',
         'django.contrib.sessions.middleware.SessionMiddleware',
         'django.middleware.csrf.CsrfViewMiddleware',
         'django.contrib.auth.middleware.AuthenticationMiddleware',
-        'django.contrib.auth.middleware.SessionAuthenticationMiddleware',
         'django.contrib.messages.middleware.MessageMiddleware',
         'django.middleware.clickjacking.XFrameOptionsMiddleware',
 
         'wagtail.core.middleware.SiteMiddleware',
     )
-
-# Django 1.10 started to use "MIDDLEWARE" instead of "MIDDLEWARE_CLASSES".
-if V(django.get_version()) < V('1.10'):
-    MIDDLEWARE_CLASSES = get_middleware_settings()
-else:
-    MIDDLEWARE = get_middleware_settings()
 
 INSTALLED_APPS = (
     'wagtail_personalisation',
