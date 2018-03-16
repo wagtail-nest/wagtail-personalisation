@@ -66,7 +66,7 @@ def get_middleware_settings():
         'django.contrib.messages.middleware.MessageMiddleware',
         'django.middleware.clickjacking.XFrameOptionsMiddleware',
 
-        'wagtail.wagtailcore.middleware.SiteMiddleware',
+        'wagtail.core.middleware.SiteMiddleware',
     )
 
 # Django 1.10 started to use "MIDDLEWARE" instead of "MIDDLEWARE_CLASSES".
@@ -79,13 +79,13 @@ INSTALLED_APPS = (
     'wagtail_personalisation',
 
     'wagtail.contrib.modeladmin',
-    'wagtail.wagtailsearch',
-    'wagtail.wagtailsites',
-    'wagtail.wagtailusers',
-    'wagtail.wagtailimages',
-    'wagtail.wagtaildocs',
-    'wagtail.wagtailadmin',
-    'wagtail.wagtailcore',
+    'wagtail.search',
+    'wagtail.sites',
+    'wagtail.users',
+    'wagtail.images',
+    'wagtail.documents',
+    'wagtail.admin',
+    'wagtail.core',
 
     'taggit',
 
