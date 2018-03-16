@@ -46,7 +46,7 @@ sandbox:
 	sandbox/manage.py migrate
 	sandbox/manage.py loaddata sandbox/exampledata/users.json
 	sandbox/manage.py loaddata sandbox/exampledata/personalisation.json
-	#sandbox/manage.py runserver
+	sandbox/manage.py runserver
 
 release:
 	pip install twine wheel
