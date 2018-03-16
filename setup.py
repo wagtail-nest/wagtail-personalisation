@@ -10,13 +10,14 @@ install_requires = [
 
 tests_require = [
     'factory_boy==2.8.1',
-    'flake8',
     'flake8-blind-except',
     'flake8-debugger',
     'flake8-imports',
+    'flake8',
     'freezegun==0.3.8',
     'pytest-cov==2.4.0',
     'pytest-django==3.1.2',
+    'pytest-pythonpath==0.7.2',
     'pytest-sugar==0.7.1',
     'pytest==3.1.0',
     'wagtail_factories==0.3.0',
