@@ -3,7 +3,7 @@
 from __future__ import unicode_literals
 
 from django.db import migrations
-import wagtail.wagtailcore.fields
+import wagtail.core.fields
 import wagtail_personalisation
 
 
@@ -17,14 +17,14 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='homepage',
             name='intro',
-            field=wagtail.wagtailcore.fields.RichTextField(
+            field=wagtail.core.fields.RichTextField(
                 default='<p>Thank you for trying <a href="http://wagxperience.io" target="_blank">Wagxperience</a>!</p>'),
             preserve_default=False,
         ),
         migrations.AddField(
             model_name='homepage',
             name='body',
-            field=wagtail.wagtailcore.fields.StreamField((('personalisable_paragraph', wagtail.wagtailcore.blocks.StructBlock((('segment', wagtail.wagtailcore.blocks.ChoiceBlock(choices=wagtail_personalisation.blocks.list_segment_choices, help_text='Only show this content block for users in this segment', label='Personalisation segment', required=False)), ('paragraph', wagtail.wagtailcore.blocks.RichTextBlock())), icon='pilcrow')),), default=''),
+            field=wagtail.core.fields.StreamField((('personalisable_paragraph', wagtail.core.blocks.StructBlock((('segment', wagtail.core.blocks.ChoiceBlock(choices=wagtail_personalisation.blocks.list_segment_choices, help_text='Only show this content block for users in this segment', label='Personalisation segment', required=False)), ('paragraph', wagtail.core.blocks.RichTextBlock())), icon='pilcrow')),), default=''),
             preserve_default=False,
         ),
     ]

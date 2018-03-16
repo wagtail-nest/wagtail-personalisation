@@ -74,7 +74,7 @@
         "body": "[]"
     }
 }, {
-    "model": "wagtailcore.page",
+    "model": "wagtail.core.page",
     "pk": 1,
     "fields": {
         "path": "0001",

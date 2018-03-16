@@ -3,9 +3,9 @@ from setuptools import find_packages, setup
 
 
 install_requires = [
-    'wagtail>=1.9,<1.11',
+    'wagtail>=2.0,<2.1',
     'user-agents>=1.0.1',
-    'wagtailfontawesome>=1.0.6',
+    'wagtailfontawesome>=1.1.3',
 ]
 
 tests_require = [
@@ -15,11 +15,11 @@ tests_require = [
     'flake8-imports',
     'flake8',
     'freezegun==0.3.8',
-    'pytest-cov==2.4.0',
+    'pytest-cov==2.5.1',
     'pytest-django==3.1.2',
     'pytest-pythonpath==0.7.2',
-    'pytest-sugar==0.7.1',
-    'pytest==3.1.0',
+    'pytest-sugar==0.9.1',
+    'pytest==3.4.2',
     'wagtail_factories==0.3.0',
 ]
 

@@ -1,13 +1,13 @@
 from __future__ import absolute_import, unicode_literals
 
 from django import forms
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from django.http import HttpResponseForbidden, HttpResponseRedirect
 from django.shortcuts import get_object_or_404
 from django.utils.translation import ugettext_lazy as _
 from wagtail.contrib.modeladmin.options import ModelAdmin, modeladmin_register
 from wagtail.contrib.modeladmin.views import IndexView
-from wagtail.wagtailcore.models import Page
+from wagtail.core.models import Page
 
 from wagtail_personalisation.models import Segment
 

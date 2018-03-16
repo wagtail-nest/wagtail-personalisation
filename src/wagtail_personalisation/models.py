@@ -6,9 +6,9 @@ from django.utils.encoding import python_2_unicode_compatible
 from django.utils.functional import cached_property
 from django.utils.translation import ugettext_lazy as _
 from modelcluster.models import ClusterableModel
-from wagtail.wagtailadmin.edit_handlers import (
+from wagtail.admin.edit_handlers import (
     FieldPanel, FieldRowPanel, InlinePanel, MultiFieldPanel)
-from wagtail.wagtailcore.models import Page
+from wagtail.core.models import Page
 
 from wagtail_personalisation.rules import AbstractBaseRule
 from wagtail_personalisation.utils import count_active_days
@@ -119,10 +119,13 @@ class PersonalisablePageMetadata(ClusterableModel):
     )
 
     variant = models.OneToOneField(
-        Page, related_name='_personalisable_page_metadata')
+        Page, related_name='_personalisable_page_metadata',
+        on_delete=models.CASCADE)
 
     segment = models.ForeignKey(
-        Segment, related_name='page_metadata', null=True, blank=True)
+        Segment, related_name='page_metadata',
+        on_delete=models.SET_NULL,
+        null=True, blank=True)
 
     @cached_property
     def has_variants(self):
