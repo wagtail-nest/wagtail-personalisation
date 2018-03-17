@@ -16,13 +16,17 @@ install: develop
 
 develop: clean requirements
 
-test:
+
+src/wagtail-factories:
+	pip install -e git+https://github.com/mvantellingen/wagtail-factories.git@master#egg=wagtail_factories-0.3.0
+
+test: src/wagtail-factories
 	py.test --nomigrations --reuse-db tests/
 
-retest:
+retest: src/wagtail-factories
 	py.test --nomigrations --reuse-db tests/ -vvv
 
-coverage:
+coverage: src/wagtail-factories
 	py.test --nomigrations --reuse-db tests/ --cov=wagtail_personalisation --cov-report=term-missing --cov-report=html
 
 docs:
