@@ -1,8 +1,8 @@
 .PHONY: all clean requirements develop test lint flake8 isort dist sandbox docs
 
-all: clean requirements dist
-
 default: develop
+
+all: clean requirements dist
 
 clean:
 	find src -name '*.pyc' -delete
