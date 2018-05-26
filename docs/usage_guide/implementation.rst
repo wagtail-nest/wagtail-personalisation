@@ -27,12 +27,6 @@ All you need is the ``PersonalisablePageMixin`` mixin and a Wagtail ``Page``
 class of your liking.
 
 
-Migrating an existing page to be personalisable
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-Coming soon...
-
-
 .. _implementing_streamfield_blocks:
 
 Adding personalisable StreamField blocks
