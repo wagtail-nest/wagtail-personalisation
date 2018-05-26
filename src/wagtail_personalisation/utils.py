@@ -1,5 +1,6 @@
 import time
 
+from django.db.models import F
 from django.template.base import FilterExpression, kwarg_re
 from django.utils import timezone
 
@@ -103,4 +104,6 @@ def exclude_variants(pages):
     :return: Queryset of pages that aren't variants
     :rtype: QuerySet
     """
-    return pages.canonicals()
+    return pages.filter(
+        personalisable_canonical_metadata__canonical_page_id=F(
+            'personalisable_canonical_metadata__variant__id'))

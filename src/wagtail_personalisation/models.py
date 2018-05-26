@@ -1,12 +1,9 @@
-from __future__ import absolute_import, unicode_literals
-
 import random
 
 from django import forms
 from django.conf import settings
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models, transaction
-from django.db.models import F
 from django.template.defaultfilters import slugify
 from django.utils.encoding import python_2_unicode_compatible
 from django.utils.functional import cached_property
@@ -201,16 +198,6 @@ class Segment(ClusterableModel):
         return False
 
 
-class PersonalisablePageManager(models.Manager):
-
-    def canonicals(self):
-        return (
-            self.filter(
-                personalisable_canonical_metadata__canonical_page_id=F(
-                    'personalisable_canonical_metadata__variant__id'))
-        )
-
-
 class PersonalisablePageMetadata(ClusterableModel):
     """The personalisable page model. Allows creation of variants with linked
     segments.
@@ -230,8 +217,6 @@ class PersonalisablePageMetadata(ClusterableModel):
         Segment, related_name='page_metadata',
         on_delete=models.SET_NULL,
         null=True, blank=True)
-
-    objects = PersonalisablePageManager()
 
     @cached_property
     def has_variants(self):

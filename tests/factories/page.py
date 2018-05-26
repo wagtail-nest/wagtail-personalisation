@@ -8,6 +8,7 @@ from tests.site.pages import models
 
 
 class ContentPageFactory(PageFactory):
+    parent = None
     title = 'Test page'
     slug = factory.LazyAttribute(lambda obj: slugify(obj.title))
 
