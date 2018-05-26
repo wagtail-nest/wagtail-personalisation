@@ -1,9 +1,12 @@
 from __future__ import absolute_import, unicode_literals
 
+import csv
+
 from django import forms
-from django.urls import reverse
-from django.http import HttpResponseForbidden, HttpResponseRedirect
+from django.http import (
+    HttpResponse, HttpResponseForbidden, HttpResponseRedirect)
 from django.shortcuts import get_object_or_404
+from django.urls import reverse
 from django.utils.translation import ugettext_lazy as _
 from wagtail.contrib.modeladmin.options import ModelAdmin, modeladmin_register
 from wagtail.contrib.modeladmin.views import IndexView
@@ -137,5 +140,34 @@ def copy_page_view(request, page_id, segment_id):
         edit_url = reverse('wagtailadmin_pages:edit', args=[variant.id])
 
         return HttpResponseRedirect(edit_url)
+
+    return HttpResponseForbidden()
+
+
+# CSV download views
+def segment_user_data(request, segment_id):
+    if request.user.has_perm('wagtailadmin.access_admin'):
+        segment = get_object_or_404(Segment, pk=segment_id)
+
+        response = HttpResponse(content_type='text/csv; charset=utf-8')
+        response['Content-Disposition'] = \
+            'attachment;filename=segment-%s-users.csv' % str(segment_id)
+
+        headers = ['Username']
+        for rule in segment.get_rules():
+            if rule.static:
+                headers.append(rule.get_column_header())
+
+        writer = csv.writer(response)
+        writer.writerow(headers)
+
+        for user in segment.static_users.all():
+            row = [user.username]
+            for rule in segment.get_rules():
+                if rule.static:
+                    row.append(rule.get_user_info_string(user))
+            writer.writerow(row)
+
+        return response
 
     return HttpResponseForbidden()

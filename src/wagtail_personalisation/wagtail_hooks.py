@@ -3,11 +3,11 @@ from __future__ import absolute_import, unicode_literals
 import logging
 
 from django.conf.urls import include, url
-from django.urls import reverse
 from django.template.defaultfilters import pluralize
+from django.urls import reverse
 from django.utils.safestring import mark_safe
 from django.utils.translation import ugettext_lazy as _
-from wagtail.admin.site_summary import SummaryItem, PagesSummaryItem
+from wagtail.admin.site_summary import PagesSummaryItem, SummaryItem
 from wagtail.admin.widgets import Button, ButtonWithDropdownFromHook
 from wagtail.core import hooks
 from wagtail.core.models import Page

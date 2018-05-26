@@ -1,9 +1,6 @@
 from __future__ import absolute_import, unicode_literals
 
 import os
-from pkg_resources import parse_version as V
-
-import django
 
 
 DATABASES = {
@@ -57,15 +54,15 @@ TEMPLATES = [
 ]
 
 MIDDLEWARE = (
-        'django.middleware.common.CommonMiddleware',
-        'django.contrib.sessions.middleware.SessionMiddleware',
-        'django.middleware.csrf.CsrfViewMiddleware',
-        'django.contrib.auth.middleware.AuthenticationMiddleware',
-        'django.contrib.messages.middleware.MessageMiddleware',
-        'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'django.middleware.common.CommonMiddleware',
+    'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.middleware.csrf.CsrfViewMiddleware',
+    'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'django.contrib.messages.middleware.MessageMiddleware',
+    'django.middleware.clickjacking.XFrameOptionsMiddleware',
 
-        'wagtail.core.middleware.SiteMiddleware',
-    )
+    'wagtail.core.middleware.SiteMiddleware',
+)
 
 INSTALLED_APPS = (
     'wagtail_personalisation',

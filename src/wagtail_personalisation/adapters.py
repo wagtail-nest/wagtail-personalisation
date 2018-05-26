@@ -66,17 +66,21 @@ class SessionSegmentsAdapter(BaseSegmentsAdapter):
         self.request.session.setdefault('segments', [])
         self._segment_cache = None
 
-    def get_segments(self):
+    def get_segments(self, key="segments"):
         """Return the persistent segments stored in the request session.
 
+        :param key: The key under which the segments are stored
+        :type key: String
         :returns: The segments in the request session
         :rtype: list of wagtail_personalisation.models.Segment or empty list
 
         """
-        if self._segment_cache is not None:
+        if key == "segments" and self._segment_cache is not None:
             return self._segment_cache
 
-        raw_segments = self.request.session['segments']
+        if key not in self.request.session:
+            return []
+        raw_segments = self.request.session[key]
         segment_ids = [segment['id'] for segment in raw_segments]
 
         segments = (
@@ -86,14 +90,17 @@ class SessionSegmentsAdapter(BaseSegmentsAdapter):
             .in_bulk(segment_ids))
 
         retval = [segments[pk] for pk in segment_ids if pk in segments]
-        self._segment_cache = retval
+        if key == "segments":
+            self._segment_cache = retval
         return retval
 
-    def set_segments(self, segments):
+    def set_segments(self, segments, key="segments"):
         """Set the currently active segments
 
         :param segments: The segments to set for the current request
         :type segments: list of wagtail_personalisation.models.Segment
+        :param key: The key under which to store the segments. Optional
+        :type key: String
 
         """
         cache_segments = []
@@ -108,8 +115,9 @@ class SessionSegmentsAdapter(BaseSegmentsAdapter):
             serialized_segments.append(serialized)
             segment_ids.add(segment.pk)
 
-        self.request.session['segments'] = serialized_segments
-        self._segment_cache = cache_segments
+        self.request.session[key] = serialized_segments
+        if key == "segments":
+            self._segment_cache = cache_segments
 
     def get_segment_by_id(self, segment_id):
         """Find and return a single segment from the request session.
@@ -132,18 +140,19 @@ class SessionSegmentsAdapter(BaseSegmentsAdapter):
         if page_visits:
             for page_visit in page_visits:
                 page_visit['count'] += 1
+                page_visit['path'] = page.url_path if page else self.request.path
             self.request.session.modified = True
         else:
             visit_count.append({
                 'slug': page.slug,
                 'id': page.pk,
-                'path': self.request.path,
+                'path': page.url_path if page else self.request.path,
                 'count': 1,
             })
 
     def get_visit_count(self, page=None):
         """Return the number of visits on the current request or given page"""
-        path = page.path if page else self.request.path
+        path = page.url_path if page else self.request.path
         visit_count = self.request.session.setdefault('visit_count', [])
         for visit in visit_count:
             if visit['path'] == path:
@@ -170,21 +179,37 @@ class SessionSegmentsAdapter(BaseSegmentsAdapter):
         rule_models = AbstractBaseRule.get_descendant_models()
 
         current_segments = self.get_segments()
+        excluded_segments = self.get_segments("excluded_segments")
 
         # Run tests on all remaining enabled segments to verify applicability.
         additional_segments = []
         for segment in enabled_segments:
-            segment_rules = []
-            for rule_model in rule_models:
-                segment_rules.extend(rule_model.objects.filter(segment=segment))
-
-            result = self._test_rules(segment_rules, self.request,
-                                      match_any=segment.match_any)
-
-            if result:
+            if segment.is_static and segment.static_users.filter(id=self.request.user.id).exists():
                 additional_segments.append(segment)
+            elif (segment.excluded_users.filter(id=self.request.user.id).exists() or
+                    segment in excluded_segments):
+                continue
+            elif not segment.is_static or not segment.is_full:
+                segment_rules = []
+                for rule_model in rule_models:
+                    segment_rules.extend(rule_model.objects.filter(segment=segment))
+
+                result = self._test_rules(segment_rules, self.request,
+                                          match_any=segment.match_any)
+
+                if result and segment.randomise_into_segment():
+                    if segment.is_static and not segment.is_full:
+                        if self.request.user.is_authenticated():
+                            segment.static_users.add(self.request.user)
+                    additional_segments.append(segment)
+                elif result:
+                    if segment.is_static and self.request.user.is_authenticated():
+                        segment.excluded_users.add(self.request.user)
+                    else:
+                        excluded_segments += [segment]
 
         self.set_segments(current_segments + additional_segments)
+        self.set_segments(excluded_segments, "excluded_segments")
         self.update_visit_count()
 
 

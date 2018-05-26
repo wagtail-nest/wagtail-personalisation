@@ -1,7 +1,6 @@
 import re
 from setuptools import find_packages, setup
 
-
 install_requires = [
     'wagtail>=2.0,<2.1',
     'user-agents>=1.0.1',
@@ -21,6 +20,7 @@ tests_require = [
     'pytest-sugar==0.9.1',
     'pytest==3.4.2',
     'wagtail_factories==1.0.0',
+    'pytest-mock==1.6.3',
 ]
 
 docs_require = [
@@ -33,11 +33,11 @@ with open('README.rst') as fh:
 
 setup(
     name='wagtail-personalisation',
-    version='0.9.1',
+    version='0.12.0',
     description='A Wagtail add-on for showing personalized content',
-    author='Lab Digital BV',
+    author='Lab Digital BV and others',
     author_email='opensource@labdigital.nl',
-    url='http://labdigital.nl',
+    url='https://labdigital.nl/',
     install_requires=install_requires,
     tests_require=tests_require,
     extras_require={
@@ -55,16 +55,10 @@ setup(
         'Intended Audience :: Developers',
         'License :: OSI Approved :: BSD License',
         'Operating System :: OS Independent',
-        'Programming Language :: Python :: 2',
-        'Programming Language :: Python :: 2.7',
         'Programming Language :: Python :: 3',
-        'Programming Language :: Python :: 3.4',
-        'Programming Language :: Python :: 3.5',
         'Programming Language :: Python :: 3.6',
         'Framework :: Django',
-        'Framework :: Django :: 1.9',
-        'Framework :: Django :: 1.10',
-        'Framework :: Django :: 1.11',
+        'Framework :: Django :: 2',
         'Topic :: Internet :: WWW/HTTP :: Site Management',
     ],
 )

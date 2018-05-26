@@ -1,9 +1,14 @@
 from __future__ import absolute_import, unicode_literals
+import random
 
+from django import forms
+from django.conf import settings
+from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models, transaction
 from django.template.defaultfilters import slugify
 from django.utils.encoding import python_2_unicode_compatible
 from django.utils.functional import cached_property
+from django.utils.safestring import mark_safe
 from django.utils.translation import ugettext_lazy as _
 from modelcluster.models import ClusterableModel
 from wagtail.admin.edit_handlers import (
@@ -12,6 +17,8 @@ from wagtail.core.models import Page
 
 from wagtail_personalisation.rules import AbstractBaseRule
 from wagtail_personalisation.utils import count_active_days
+
+from .forms import SegmentAdminForm
 
 
 class SegmentQuerySet(models.QuerySet):
@@ -30,6 +37,14 @@ class Segment(ClusterableModel):
         (STATUS_DISABLED, _('Disabled')),
     )
 
+    TYPE_DYNAMIC = 'dynamic'
+    TYPE_STATIC = 'static'
+
+    TYPE_CHOICES = (
+        (TYPE_DYNAMIC, _('Dynamic')),
+        (TYPE_STATIC, _('Static')),
+    )
+
     name = models.CharField(max_length=255)
     create_date = models.DateTimeField(auto_now_add=True)
     edit_date = models.DateTimeField(auto_now=True)
@@ -44,8 +59,53 @@ class Segment(ClusterableModel):
         default=False,
         help_text=_("Should the segment match all the rules or just one of them?")
     )
+    type = models.CharField(
+        max_length=20,
+        choices=TYPE_CHOICES,
+        default=TYPE_DYNAMIC,
+        help_text=mark_safe(_("""
+            </br></br><strong>Dynamic:</strong> Users in this segment will change
+            as more or less meet the rules specified in the segment.
+            </br><strong>Static:</strong> If the segment contains only static
+            compatible rules the segment will contain the members that pass
+            those rules when the segment is created. Mixed static segments or
+            those containing entirely non static compatible rules will be
+            populated using the count variable.
+        """))
+    )
+    count = models.PositiveSmallIntegerField(
+        default=0,
+        help_text=_(
+            "If this number is set for a static segment users will be added to the "
+            "set until the number is reached. After this no more users will be added."
+        )
+    )
+    static_users = models.ManyToManyField(
+        settings.AUTH_USER_MODEL,
+    )
+    excluded_users = models.ManyToManyField(
+        settings.AUTH_USER_MODEL,
+        help_text=_("Users that matched the rules but were excluded from the "
+                    "segment for some reason e.g. randomisation"),
+        related_name="excluded_segments"
+    )
+
+    matched_users_count = models.PositiveIntegerField(default=0, editable=False)
+    matched_count_updated_at = models.DateTimeField(null=True, editable=False)
+
+    randomisation_percent = models.PositiveSmallIntegerField(
+        null=True, blank=True, default=None,
+        help_text=_(
+            "If this number is set each user matching the rules will "
+            "have this percentage chance of being placed in the segment."
+        ), validators=[
+            MaxValueValidator(100),
+            MinValueValidator(0)
+        ])
 
     objects = SegmentQuerySet.as_manager()
+
+    base_form_class = SegmentAdminForm
 
     def __init__(self, *args, **kwargs):
         Segment.panels = [
@@ -56,11 +116,17 @@ class Segment(ClusterableModel):
                     FieldPanel('persistent'),
                 ]),
                 FieldPanel('match_any'),
+                FieldPanel('type', widget=forms.RadioSelect),
+                FieldPanel('count', classname='count_field'),
+                FieldPanel('randomisation_percent', classname='percent_field'),
             ], heading="Segment"),
             MultiFieldPanel([
                 InlinePanel(
                     "{}_related".format(rule_model._meta.db_table),
-                    label=rule_model._meta.verbose_name,
+                    label='{}{}'.format(
+                        rule_model._meta.verbose_name,
+                        ' ({})'.format(_('Static compatible')) if rule_model.static else ''
+                    ),
                 ) for rule_model in AbstractBaseRule.__subclasses__()
             ], heading=_("Rules")),
         ]
@@ -69,6 +135,23 @@ class Segment(ClusterableModel):
 
     def __str__(self):
         return self.name
+
+    @property
+    def is_static(self):
+        return self.type == self.TYPE_STATIC
+
+    @classmethod
+    def all_static(cls, rules):
+        return all(rule.static for rule in rules)
+
+    @property
+    def all_rules_static(self):
+        rules = self.get_rules()
+        return rules and self.all_static(rules)
+
+    @property
+    def is_full(self):
+        return self.static_users.count() >= self.count
 
     def encoded_name(self):
         """Return a string with a slug for the segment."""
@@ -101,6 +184,19 @@ class Segment(ClusterableModel):
             else self.STATUS_DISABLED)
         if save:
             self.save()
+
+    def randomise_into_segment(self):
+        """ Returns True if randomisation_percent is not set or it generates
+        a random number less than the randomisation_percent
+        This is so there is some randomisation in which users are added to the
+        segment
+        """
+        if self.randomisation_percent is None:
+            return True
+
+        if random.randint(1, 100) <= self.randomisation_percent:
+            return True
+        return False
 
 
 class PersonalisablePageMetadata(ClusterableModel):

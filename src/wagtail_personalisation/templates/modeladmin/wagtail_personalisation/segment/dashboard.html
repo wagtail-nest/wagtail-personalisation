@@ -22,25 +22,38 @@
                         <div class="nice-padding block_container">
                             {% if all_count %}
                                 {% for segment in object_list %}
-                                    <div class="block block--{{ segment.status }}" onclick="location.href = 'edit/{{ segment.pk }}/'">
+                                    <div class="block block--{{ segment.status }}" onclick="location.href = '{% url 'wagtail_personalisation_segment_modeladmin_edit' segment.pk %}'">
                                         <h2>{{ segment }}</h2>
 
                                         <div class="inspect_container">
                                             <ul class="inspect segment_stats">
-                                                <li class="visit_stat">
+                                                <li class="stat_card">
                                                     {% trans "This segment has been visited" %}
                                                     <span class="icon icon-fa-rocket">{{ segment.visit_count|localize }} {% trans "time" %}{{ segment.visit_count|pluralize }}</span>
                                                 </li>
-                                                <li class="days_stat">
+                                                <li class="stat_card">
                                                     {% trans "This segment has been active for" %}
                                                     <span class="icon icon-fa-calendar">{{ segment.enable_date|days_since:segment.disable_date }} {% trans "day" %}{{ segment.enable_date|days_since:segment.disable_date|pluralize }}</span>
                                                 </li>
+                                            {% if segment.is_static %}
+                                                <li class="stat_card">
+                                                    {% trans "This segment is Static" %}
+                                                    <span class="icon icon-fa-user">
+                                                        {{ segment.static_users.count|localize }}
+                                                        {% if segment.static_users.count < segment.count %}
+                                                        / {{ segment.count }} {% trans "member" %}{{ segment.count|pluralize }}
+                                                        {% else %}
+                                                            {% trans "member" %}{{ segment.count|pluralize }}
+                                                        {% endif %}
+                                                    </span>
+                                                </li>
+                                            {% endif %}
                                             </ul>
 
                                             <hr />
 
                                             <ul class="inspect segment_rules">
-                                                <li class="match_state {{ segment.match_any|yesno:"any,all" }}">
+                                                <li class="stat_card {{ segment.match_any|yesno:"any,all" }}">
                                                     {% trans "The visitor must match" %}
                                                     {% if segment.match_any %}
                                                         <span class="icon icon-fa-cube">{% trans "Any rule" %}</span>
@@ -49,7 +62,7 @@
                                                     {% endif %}
                                                 </li>
 
-                                                <li class="persistent_state {{ segment.persistent|yesno:"persistent,fleeting" }}">
+                                                <li class="stat_card {{ segment.persistent|yesno:"persistent,fleeting" }}">
                                                     {% trans "The persistence of this segment is" %}
                                                     {% if segment.persistent %}
                                                         <span class="icon icon-fa-bookmark" title="{% trans "This segment persists in between visits" %}">{% trans "Persistent" %}</span>
@@ -58,8 +71,15 @@
                                                     {% endif %}
                                                 </li>
 
+                                                {% if segment.randomisation_percent is not None %}
+                                                    <li class="stat_card">
+                                                        <span>{{ segment.randomisation_percent }} %</span>
+                                                        {% trans "Chance that visitors matching the rules are added to the segment" %}
+                                                    </li>
+                                                {% endif %}
+
                                                 {% for rule in segment.get_rules %}
-                                                    <li class="{{ rule.encoded_name }}">
+                                                    <li class="stat_card {{ rule.encoded_name }}">
                                                         {{ rule.description.title }}
                                                         {% if rule.description.code %}
                                                             <pre>{{ rule.description.value }}</pre>
@@ -68,6 +88,11 @@
                                                         {% endif %}
                                                     </li>
                                                 {% endfor %}
+                                                {% if segment.matched_users_count > 0 %}
+                                                    <li class="stat_card">
+                                                        <span class="icon icon-fa-user"> {{ segment.matched_users_count }} {% trans "user" %}{{ segment.matched_users_count|pluralize }}</span>  {% trans "were possible matches for this segment at creation" %}
+                                                    </li>
+                                                {% endif %}
                                             </ul>
                                         </div>
 
@@ -78,7 +103,10 @@
                                             {% elif segment.status == segment.STATUS_ENABLED %}
                                                 <li><a href="{% url 'segment:toggle' segment.pk %}" title="{% trans "Disable this segment" %}">disable</a></li>
                                             {% endif %}
-                                            <li><a href="edit/{{ segment.pk }}/" title="{% trans "Configure this segment" %}">configure this</a></li>
+                                            <li><a href="{% url 'wagtail_personalisation_segment_modeladmin_edit' segment.pk %}" title="{% trans "Configure this segment" %}">configure this</a></li>
+                                            {% if segment.is_static %}
+                                                <li><a href="{% url 'segment:segment_user_data' segment.pk %}" title="{% trans "Download user info" %}">download users csv</a></li>
+                                            {% endif %}
                                         </ul>
                                         {% endif %}
                                     </div>
