@@ -302,7 +302,7 @@ class PersonalisablePageMetadata(ClusterableModel):
         return Segment.objects.none()
 
 
-class PersonalisablePageMixin(object):
+class PersonalisablePageMixin:
     """The personalisable page model. Allows creation of variants with linked
     segments.
 

@@ -9,7 +9,7 @@ from wagtail_personalisation.rules import AbstractBaseRule
 from wagtail_personalisation.utils import create_segment_dictionary
 
 
-class BaseSegmentsAdapter(object):
+class BaseSegmentsAdapter:
     """Base segments adapter."""
 
     def __init__(self, request):
