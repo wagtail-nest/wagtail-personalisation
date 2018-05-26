@@ -2,22 +2,30 @@ from __future__ import absolute_import, unicode_literals
 
 import re
 from datetime import datetime
+from importlib import import_module
 
 from django.apps import apps
+from django.conf import settings
+from django.contrib.sessions.models import Session
+from django.core.exceptions import ObjectDoesNotExist
 from django.db import models
 from django.template.defaultfilters import slugify
+from django.test.client import RequestFactory
 from django.utils.encoding import force_text, python_2_unicode_compatible
 from django.utils.translation import ugettext_lazy as _
 from modelcluster.fields import ParentalKey
 from user_agents import parse
-from wagtail.wagtailadmin.edit_handlers import (
+from wagtail.admin.edit_handlers import (
     FieldPanel, FieldRowPanel, PageChooserPanel)
+
+SessionStore = import_module(settings.SESSION_ENGINE).SessionStore
 
 
 @python_2_unicode_compatible
 class AbstractBaseRule(models.Model):
     """Base for creating rules to segment users with."""
     icon = 'fa-circle-o'
+    static = False
 
     segment = ParentalKey(
         'wagtail_personalisation.Segment',
@@ -190,6 +198,7 @@ class VisitCountRule(AbstractBaseRule):
 
     """
     icon = 'fa-calculator'
+    static = True
 
     OPERATOR_CHOICES = (
         ('more_than', _("More than")),
@@ -218,16 +227,46 @@ class VisitCountRule(AbstractBaseRule):
     class Meta:
         verbose_name = _('Visit count Rule')
 
-    def test_user(self, request):
+    def _get_user_session(self, user):
+        sessions = Session.objects.iterator()
+        for session in sessions:
+            session_data = session.get_decoded()
+            if session_data.get('_auth_user_id') == str(user.id):
+                return SessionStore(session_key=session.session_key)
+        return SessionStore()
+
+    def test_user(self, request, user=None):
+        # Local import for cyclic import
+        from wagtail_personalisation.adapters import (
+            get_segment_adapter, SessionSegmentsAdapter, SEGMENT_ADAPTER_CLASS)
+
+        # Django formsets don't honour 'required' fields so check rule is valid
+        try:
+            self.counted_page
+        except ObjectDoesNotExist:
+            return False
+
+        if user:
+            # Create a fake request so we can use the adapter
+            request = RequestFactory().get('/')
+            request.user = user
+
+            # If we're using the session adapter check for an active session
+            if SEGMENT_ADAPTER_CLASS == SessionSegmentsAdapter:
+                request.session = self._get_user_session(user)
+            else:
+                request.session = SessionStore()
+
+        elif not request:
+            # Return false if we don't have a user or a request
+            return False
+
         operator = self.operator
         segment_count = self.count
 
-        # Local import for cyclic import
-        from wagtail_personalisation.adapters import get_segment_adapter
-
         adapter = get_segment_adapter(request)
 
-        visit_count = adapter.get_visit_count()
+        visit_count = adapter.get_visit_count(self.counted_page)
         if visit_count and operator == "more_than":
             if visit_count > segment_count:
                 return True
@@ -249,6 +288,28 @@ class VisitCountRule(AbstractBaseRule):
                 self.count
             ),
         }
+
+    def get_column_header(self):
+        return "Visit count - %s" % self.counted_page
+
+    def get_user_info_string(self, user):
+        # Local import for cyclic import
+        from wagtail_personalisation.adapters import (
+            get_segment_adapter, SessionSegmentsAdapter, SEGMENT_ADAPTER_CLASS)
+
+        # Create a fake request so we can use the adapter
+        request = RequestFactory().get('/')
+        request.user = user
+
+        # If we're using the session adapter check for an active session
+        if SEGMENT_ADAPTER_CLASS == SessionSegmentsAdapter:
+            request.session = self._get_user_session(user)
+        else:
+            request.session = SessionStore()
+
+        adapter = get_segment_adapter(request)
+        visit_count = adapter.get_visit_count(self.counted_page)
+        return str(visit_count)
 
 
 class QueryRule(AbstractBaseRule):

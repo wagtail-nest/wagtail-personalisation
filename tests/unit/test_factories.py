@@ -4,15 +4,13 @@ import datetime
 
 import pytest
 
-from tests.factories.page import ContentPageFactory
-from tests.factories.rule import (
-    DayRuleFactory, DeviceRuleFactory, ReferralRuleFactory, TimeRuleFactory)
+from tests.factories.rule import QueryRuleFactory, ReferralRuleFactory
 from tests.factories.segment import SegmentFactory
-from tests.factories.site import SiteFactory
 from wagtail_personalisation.models import Segment
 from wagtail_personalisation.rules import TimeRule
 
 # Factory tests
+
 
 @pytest.mark.django_db
 def test_segment_create():
@@ -27,8 +25,6 @@ def test_segment_create():
     assert factoried_segment.status == segment.status
 
 
-
-
 @pytest.mark.django_db
 def test_referral_rule_create():
     segment = SegmentFactory(name='Referral')
@@ -37,3 +33,15 @@ def test_referral_rule_create():
         segment=segment)
 
     assert referral_rule.regex_string == 'test.test'
+
+
+@pytest.mark.django_db
+def test_query_rule_create():
+    segment = SegmentFactory(name='Query')
+    query_rule = QueryRuleFactory(
+        parameter="query",
+        value="value",
+        segment=segment)
+
+    assert query_rule.parameter == 'query'
+    assert query_rule.value == 'value'

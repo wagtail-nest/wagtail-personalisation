@@ -21,6 +21,23 @@ def test_get_segments(rf):
 
 
 @pytest.mark.django_db
+def test_get_segments_session(rf):
+    request = rf.get('/')
+
+    adapter = adapters.SessionSegmentsAdapter(request)
+
+    segment_1 = SegmentFactory(name='segment-1', persistent=True)
+    segment_2 = SegmentFactory(name='segment-2', persistent=True)
+
+    adapter.set_segments([segment_1, segment_2])
+    assert len(request.session['segments']) == 2
+
+    adapter._segment_cache = None
+    segments = adapter.get_segments()
+    assert segments == [segment_1, segment_2]
+
+
+@pytest.mark.django_db
 def test_get_segment_by_id(rf):
     request = rf.get('/')
 

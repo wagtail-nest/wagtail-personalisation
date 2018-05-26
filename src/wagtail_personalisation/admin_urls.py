@@ -13,4 +13,6 @@ urlpatterns = [
         views.copy_page_view, name='copy_page'),
     url(r'^segment/toggle_segment_view/$',
         views.toggle_segment_view, name='toggle_segment_view'),
+    url(r'^segment/users/(?P<segment_id>[0-9]+)$',
+        views.segment_user_data, name='segment_user_data'),
 ]

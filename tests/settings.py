@@ -1,10 +1,6 @@
 from __future__ import absolute_import, unicode_literals
 
 import os
-from pkg_resources import parse_version as V
-
-import django
-
 
 DATABASES = {
     'default': {
@@ -56,36 +52,28 @@ TEMPLATES = [
     },
 ]
 
-def get_middleware_settings():
-    return (
-        'django.middleware.common.CommonMiddleware',
-        'django.contrib.sessions.middleware.SessionMiddleware',
-        'django.middleware.csrf.CsrfViewMiddleware',
-        'django.contrib.auth.middleware.AuthenticationMiddleware',
-        'django.contrib.auth.middleware.SessionAuthenticationMiddleware',
-        'django.contrib.messages.middleware.MessageMiddleware',
-        'django.middleware.clickjacking.XFrameOptionsMiddleware',
+MIDDLEWARE = (
+    'django.middleware.common.CommonMiddleware',
+    'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.middleware.csrf.CsrfViewMiddleware',
+    'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'django.contrib.messages.middleware.MessageMiddleware',
+    'django.middleware.clickjacking.XFrameOptionsMiddleware',
 
-        'wagtail.wagtailcore.middleware.SiteMiddleware',
-    )
-
-# Django 1.10 started to use "MIDDLEWARE" instead of "MIDDLEWARE_CLASSES".
-if V(django.get_version()) < V('1.10'):
-    MIDDLEWARE_CLASSES = get_middleware_settings()
-else:
-    MIDDLEWARE = get_middleware_settings()
+    'wagtail.core.middleware.SiteMiddleware',
+)
 
 INSTALLED_APPS = (
     'wagtail_personalisation',
 
     'wagtail.contrib.modeladmin',
-    'wagtail.wagtailsearch',
-    'wagtail.wagtailsites',
-    'wagtail.wagtailusers',
-    'wagtail.wagtailimages',
-    'wagtail.wagtaildocs',
-    'wagtail.wagtailadmin',
-    'wagtail.wagtailcore',
+    'wagtail.search',
+    'wagtail.sites',
+    'wagtail.users',
+    'wagtail.images',
+    'wagtail.documents',
+    'wagtail.admin',
+    'wagtail.core',
 
     'taggit',
 

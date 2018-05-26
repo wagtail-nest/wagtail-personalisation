@@ -1,3 +1,50 @@
+0.11.3
+==================
+ - Bugfix: Handle errors when testing an invalid visit count rule
+
+0.11.2
+==================
+ - Bugfix: Stop populating static segments when the count is reached
+
+0.11.1
+==================
+ - Populate entirely static segments from registered Users not active Sessions
+
+0.11.0
+==================
+ - Bug Fix: Query rule should not be static
+ - Enable retrieval of user data for static rules through csv download
+
+0.10.9
+==================
+ - Bug Fix: Display the number of users in a static segment on dashboard
+
+0.10.8
+==================
+ - Don't add users to exclude list for dynamic segments
+ - Store segments a user is excluded from in the session
+
+0.10.7
+==================
+ - Bug Fix: Ensure static segment members are show the survey immediately
+ - Records users excluded by randomisation on the segment
+ - Don't re-check excluded users
+
+0.10.6
+==================
+ - Accepts and stores randomisation percentage for segment
+ - Adds users to segment based on random number relative to percentage
+
+0.10.5
+==================
+ - Count how many users match a segments rules before saving the segment
+ - Stores count on the segment and displays in the dashboard
+ - Enables testing users against rules if there isn't an active request
+
+0.10.0
+==================
+ - Adds static and dynamic segments
+
 0.9.1 (tbd)
 ==================
 

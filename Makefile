@@ -1,13 +1,13 @@
 .PHONY: all clean requirements develop test lint flake8 isort dist sandbox docs
 
-all: clean requirements dist
-
 default: develop
+
+all: clean requirements dist
 
 clean:
 	find src -name '*.pyc' -delete
 	find tests -name '*.pyc' -delete
-	find . -name '*.egg-info' -delete
+	find . -name '*.egg-info' |xargs rm -rf
 
 requirements:
 	pip install --upgrade -e .[docs,test]
@@ -38,7 +38,8 @@ isort:
 	isort --recursive src tests
 
 dist:
-	./setup.py sdist bdist_wheel
+	pip install wheel
+	python ./setup.py sdist bdist_wheel
 
 sandbox:
 	pip install -r sandbox/requirements.txt

@@ -44,3 +44,8 @@ class RequestFactory(BaseRequestFactory):
         request.session = SessionStore()
         request._messages = FallbackStorage(request)
         return request
+
+
+@pytest.fixture
+def user(django_user_model):
+    return django_user_model.objects.create(username='user')
