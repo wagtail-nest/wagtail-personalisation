@@ -4,11 +4,11 @@ language: python
 
 matrix:
   include:
-    - python: 2.7
+    - python: 3.6
       env: lint
 
-    - python: 2.7
-      env: TOXENV=py27-django111-wagtail113
+    - python: 3.6
+      env: TOXENV=py36-django20-wagtail20
 
 install:
   - pip install tox codecov
@@ -28,4 +28,4 @@ deploy:
     secure: IxPnc95OFNQsl7kFfLlLc38KfHh/W79VXnhEkdb2x1GZznOsG167QlhpAnyXIJysCQxgMMwLMuPOOdk1WIxOpGNM1/M80hNzPAfxMYWPuwposDdwoIc8SyREPJt16BXWAY+rAH8SHxld9p1YdRbOEPSSglODe4dCmQWsCbKjV3aKv+gZxBvf6pMxUglp2fBIlCwrE77MyMYh9iW0AGzD6atC2xN9NgAm4f+2WFlKCUL/MztLhNWdvWEiibQav6Tts7p8tWrsBVzywDW2IOy3O0ihPgRdISZ7QrxhiJTjlHYPAy4eRGOnYSQXvp6Dy8ONE5a6Uv5g3Xw2UmQo85sSMUs2VxR0G7d+PQgL0A7ENBQ5i7eSAFHYs8EswiGilW2A7mM4qRXwg9URLelYSdkM+aNXvR+25dCsXakiO4NjCz/BPgNzxPeQLlBdxR5vHugeM/XYuhy6CHlZrR/uueaO0X8RyhJcqeDjBy58IrwYS3Mpj7QCfBpQ9PqsqXEWV9BKwKiBXM2+3hkhawFDWa0GW2PDbORKtSLy/ORfGLx5Y9qxQYKEGvFQA3iqkTjrLj+KeUziKtuvEAcvsdBIJVIxeoHwdl+qqxEm8A7YuRBnWVxWc3jE6wBXboeFP92gVe/ueoXmY22riK9Ja0pli3TyNga8by9WM8Qp4D2ZqkVXHwg=
   on:
     tags: true
-    condition: $TOXENV = py27-django111-wagtail113
+    condition: $TOXENV = py36-django20-wagtail20
