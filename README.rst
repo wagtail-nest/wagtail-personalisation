@@ -14,6 +14,11 @@
 
 .. end-no-pypi
 
+.. image:: logo.png
+   :scale: 50 %
+   :alt: Wagxperience
+   :align: center
+
 Wagtail Personalisation
 =======================
 
@@ -23,11 +28,6 @@ Wagtail Personalisation is a fully-featured personalisation module for
 in the admin interface.
 
 .. _Wagtail CMS: http://wagtail.io/
-
-.. image:: logo.png
-   :scale: 50 %
-   :alt: Wagxperience
-   :align: center
 
 
 .. image:: screenshot.png
