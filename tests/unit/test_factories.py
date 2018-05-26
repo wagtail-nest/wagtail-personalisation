@@ -4,16 +4,13 @@ import datetime
 
 import pytest
 
-from tests.factories.page import ContentPageFactory
-from tests.factories.rule import (
-    DayRuleFactory, DeviceRuleFactory, ReferralRuleFactory, TimeRuleFactory)
+from tests.factories.rule import ReferralRuleFactory
 from tests.factories.segment import SegmentFactory
-from tests.factories.site import SiteFactory
 from wagtail_personalisation.models import Segment
 from wagtail_personalisation.rules import TimeRule
 
-# Factory tests
 
+# Factory tests
 @pytest.mark.django_db
 def test_segment_create():
     factoried_segment = SegmentFactory()
@@ -25,8 +22,6 @@ def test_segment_create():
 
     assert factoried_segment.name == segment.name
     assert factoried_segment.status == segment.status
-
-
 
 
 @pytest.mark.django_db
