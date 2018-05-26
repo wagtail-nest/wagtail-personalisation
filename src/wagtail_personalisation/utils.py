@@ -1,6 +1,5 @@
 import time
 
-from django.db.models import F
 from django.template.base import FilterExpression, kwarg_re
 from django.utils import timezone
 
@@ -99,13 +98,9 @@ def parse_tag(token, parser):
 def exclude_variants(pages):
     """Checks if page is not a variant
 
-    :param pages: List of pages to check
-    :type pages: list
-    :return: List of pages that aren't variants
-    :rtype: list
+    :param pages: Set of pages to check
+    :type pages: QuerySet
+    :return: Queryset of pages that aren't variants
+    :rtype: QuerySet
     """
-    return (
-        pages.filter(
-            personalisable_canonical_metadata__canonical_page_id=F(
-                'personalisable_canonical_metadata__variant__id'))
-    )
+    return pages.canonicals()
