@@ -4,10 +4,10 @@ import datetime
 
 import pytest
 
-from tests.factories.segment import SegmentFactory
 from tests.factories.page import ContentPageFactory
-from wagtail_personalisation.rules import TimeRule
+from tests.factories.segment import SegmentFactory
 from tests.site.pages import models
+from wagtail_personalisation.rules import TimeRule
 
 
 @pytest.mark.django_db

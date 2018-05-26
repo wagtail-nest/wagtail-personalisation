@@ -6,9 +6,10 @@ matrix:
   include:
     - python: 3.6
       env: lint
-
     - python: 3.6
       env: TOXENV=py36-django20-wagtail20
+    - python: 3.6
+      env: TOXENV=py36-django20-wagtail21
 
 install:
   - pip install tox codecov
