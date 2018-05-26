@@ -55,6 +55,30 @@ def segment_user(page, request, serve_args, serve_kwargs):
     adapter = get_segment_adapter(request)
     adapter.refresh()
 
+    forced_segment = request.GET.get('segment', None)
+    if request.user.is_superuser and forced_segment is not None:
+        segment = Segment.objects.filter(pk=forced_segment).first()
+        if segment:
+            adapter.set_segments([segment])
+
+
+class UserbarSegmentedLinkItem:
+    def __init__(self, segment):
+        self.segment = segment
+
+    def render(self, request):
+        return f"""<div class="wagtail-userbar__item">
+            <a href="{request.path}?segment={self.segment.pk}"
+                class="wagtail-action">
+                    Show as segment: {self.segment.name}</a></div>"""
+
+
+@hooks.register('construct_wagtail_userbar')
+def add_segment_link_items(request, items):
+    for item in Segment.objects.enabled():
+        items.append(UserbarSegmentedLinkItem(item))
+    return items
+
 
 @hooks.register('before_serve_page')
 def serve_variant(page, request, serve_args, serve_kwargs):
