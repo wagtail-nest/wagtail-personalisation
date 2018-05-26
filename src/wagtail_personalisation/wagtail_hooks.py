@@ -14,6 +14,7 @@ from wagtail.wagtailcore.models import Page
 
 from wagtail_personalisation import admin_urls, models, utils
 from wagtail_personalisation.adapters import get_segment_adapter
+from wagtail_personalisation.models import SegmentVisit
 
 logger = logging.getLogger(__name__)
 
@@ -85,6 +86,7 @@ def serve_variant(page, request, serve_args, serve_kwargs):
         metadata = metadata.metadata_for_segments(user_segments)
         if metadata:
             variant = metadata.first().variant.specific
+            SegmentVisit.create_segment_visit(page, request, metadata)
             return variant.serve(request, *serve_args, **serve_kwargs)
 
 

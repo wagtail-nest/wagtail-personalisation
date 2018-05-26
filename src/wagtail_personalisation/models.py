@@ -1,17 +1,43 @@
 from __future__ import absolute_import, unicode_literals
 
+from django.conf import settings
+from django.contrib.auth.signals import user_logged_in
 from django.db import models, transaction
 from django.template.defaultfilters import slugify
 from django.utils.encoding import python_2_unicode_compatible
 from django.utils.functional import cached_property
 from django.utils.translation import ugettext_lazy as _
 from modelcluster.models import ClusterableModel
+from wagtail.contrib.settings.models import BaseSetting, register_setting
 from wagtail.wagtailadmin.edit_handlers import (
     FieldPanel, FieldRowPanel, InlinePanel, MultiFieldPanel)
 from wagtail.wagtailcore.models import Page
 
 from wagtail_personalisation.rules import AbstractBaseRule
 from wagtail_personalisation.utils import count_active_days
+
+
+@register_setting(icon='fa-magic')
+class PersonalisationSettings(BaseSetting):
+    detailed_visits = models.BooleanField(
+        default=False,
+        help_text=_('Enable to gather more detailed metadata about the visits '
+                    'to your segments and the rules that matched. '
+                    'Please note that this will create additional load on your '
+                    'database. Usage of caching is recommended.'))
+    reverse_match = models.BooleanField(
+        default=False,
+        help_text=_('Enable to reverse match past visits with users as soon as '
+                    'a user logs in. This will ensure your data is as complete '
+                    'as possible.'))
+
+    panels = [
+        MultiFieldPanel([
+            FieldPanel('detailed_visits'),
+            FieldPanel('reverse_match'),
+        ], heading='Analytics'
+        )
+    ]
 
 
 class SegmentQuerySet(models.QuerySet):
@@ -35,7 +61,6 @@ class Segment(ClusterableModel):
     edit_date = models.DateTimeField(auto_now=True)
     enable_date = models.DateTimeField(null=True, editable=False)
     disable_date = models.DateTimeField(null=True, editable=False)
-    visit_count = models.PositiveIntegerField(default=0, editable=False)
     status = models.CharField(
         max_length=20, choices=STATUS_CHOICES, default=STATUS_ENABLED)
     persistent = models.BooleanField(
@@ -74,9 +99,26 @@ class Segment(ClusterableModel):
         """Return a string with a slug for the segment."""
         return slugify(self.name.lower())
 
-    def get_active_days(self):
+    @property
+    def active_days(self):
         """Return the amount of days the segment has been active."""
         return count_active_days(self.enable_date, self.disable_date)
+
+    def get_visits(self):
+        """Return the segment visits."""
+        return SegmentVisit.objects.filter(segments=self)
+
+    @property
+    def visit_count(self):
+        """Returns the total amount of segment visits."""
+        return self.get_visits().count()
+
+    def get_serves(self):
+        return SegmentVisit.objects.filter(served_segment=self)
+
+    @property
+    def serve_count(self):
+        return self.get_serves().count()
 
     def get_used_pages(self):
         """Return the pages that have variants using this segment."""
@@ -105,6 +147,98 @@ class Segment(ClusterableModel):
             else self.STATUS_DISABLED)
         if save:
             self.save()
+
+
+class SegmentVisitMetadata(models.Model):
+    visit = models.ForeignKey(
+        'wagtail_personalisation.SegmentVisit', on_delete=models.CASCADE)
+    segment = models.ForeignKey(
+        'wagtail_personalisation.Segment', on_delete=models.SET_NULL, null=True)
+    matched_rules = models.CharField(max_length=2048)
+
+
+class SegmentVisit(models.Model):
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True)
+    page = models.ForeignKey(Page, on_delete=models.SET_NULL, null=True)
+    segments = models.ManyToManyField(Segment, through=SegmentVisitMetadata)
+    served_segment = models.ForeignKey(
+        Segment, on_delete=models.CASCADE,
+        related_name='served_segment', null=True)
+    served_variant = models.ForeignKey(
+        Page, on_delete=models.SET_NULL,
+        related_name='served_variant', null=True)
+    session = models.CharField(
+        max_length=64, editable=False, null=True, db_index=True)
+    visit_date = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['-visit_date']
+
+    @classmethod
+    def create_segment_visit(cls, page, request, metadata=None):
+        """Create a segment visit object.
+        :param page: The page being visited
+        :type page: wagtail.wagtailcore.models.Page
+        :param request: The http request
+        :type request: django.http.HttpRequest
+        :param metadata: A list of personalisable page metadata
+        :type page: wagtail_personalisation.models.PersonalisablePageMetadata
+        :returns: A committed Segment Visit object
+        :rtype: wagtail_personalisation.models.SegmentVisit
+        """
+        from wagtail_personalisation.adapters import get_segment_adapter
+        wxp_settings = PersonalisationSettings.for_site(request.site)
+
+        if wxp_settings.detailed_visits:
+            adapter = get_segment_adapter(request)
+            user_segments = adapter.get_segments()
+
+            if not metadata:
+                metadata = page.personalisation_metadata
+                metadata = metadata.metadata_for_segments(user_segments)
+
+            user = request.user if request.user.is_authenticated else None
+            visit = cls.objects.create(
+                user=user,
+                page=page,
+                served_segment=metadata.first().segment,
+                served_variant=metadata.first().variant,
+                session=request.session.session_key
+            )
+
+            for segment in user_segments:
+                rules = [
+                    rule for rule in segment.get_rules() if rule.unique_encoded_name
+                    in request.matched_rules
+                ]
+
+                SegmentVisitMetadata.objects.create(
+                    visit=visit,
+                    segment=segment,
+                    matched_rules=','.join(
+                        rule.unique_encoded_name for rule in rules)
+                )
+
+            return visit
+
+    @classmethod
+    def reverse_match(cls, user):
+        user_visits = cls.objects.filter(user=user)
+
+        for visit in user_visits:
+            cls.objects.filter(
+                session=visit.session,
+                user__isnull=True
+            ).update(user=user)
+
+
+def reverse_match(sender, request, user, **kwargs):
+    wxp_settings = PersonalisationSettings.for_site(request.site)
+    if wxp_settings.detailed_visits and wxp_settings.reverse_match:
+        SegmentVisit.reverse_match(user)
+
+user_logged_in.connect(reverse_match)
 
 
 class PersonalisablePageMetadata(ClusterableModel):

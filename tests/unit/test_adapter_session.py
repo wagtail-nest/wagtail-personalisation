@@ -67,36 +67,3 @@ def test_add_page_visit(rf, site):
     assert request.session['visit_count'][0]['count'] == 2
 
     assert adapter.get_visit_count() == 2
-
-
-@pytest.mark.django_db
-def test_update_visit_count(rf, site):
-    request = rf.get('/')
-
-    adapter = adapters.SessionSegmentsAdapter(request)
-
-    segment_1 = SegmentFactory(name='segment-1', persistent=True, visit_count=0)
-    segment_2 = SegmentFactory(name='segment-2', persistent=True, visit_count=0)
-
-    adapter.set_segments([segment_1, segment_2])
-    adapter.update_visit_count()
-
-    segment_1.refresh_from_db()
-    segment_2.refresh_from_db()
-
-    assert segment_1.visit_count == 1
-    assert segment_2.visit_count == 1
-
-
-@pytest.mark.django_db
-def test_update_visit_count_deleted_segment(rf, site):
-    request = rf.get('/')
-
-    adapter = adapters.SessionSegmentsAdapter(request)
-
-    segment_1 = SegmentFactory(name='segment-1', persistent=True, visit_count=0)
-    segment_2 = SegmentFactory(name='segment-2', persistent=True, visit_count=0)
-
-    adapter.set_segments([segment_1, segment_2])
-    segment_2.delete()
-    adapter.update_visit_count()

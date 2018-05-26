@@ -22,13 +22,13 @@
                         <div class="nice-padding block_container">
                             {% if all_count %}
                                 {% for segment in object_list %}
-                                    <div class="block block--{{ segment.status }}" onclick="location.href = 'edit/{{ segment.pk }}'">
+                                    <div class="block block--{{ segment.status }}" onclick="location.href = 'inspect/{{ segment.pk }}'">
                                         <h2>{{ segment }}</h2>
                                         <div class="inspect_container">
                                             <ul class="inspect segment_stats">
                                                 <li class="visit_stat">
                                                     {% trans "This segment has been visited" %}
-                                                    <span class="icon icon-fa-rocket">{{ segment.visit_count|localize }} {% trans "time" %}{{ segment.visit_count|pluralize }}</span>
+                                                    <span class="icon icon-fa-rocket">{{ segment.visit_count }} {% trans "time" %}{{ segment.visit_count|pluralize }}</span>
                                                 </li>
                                                 <li class="days_stat">
                                                     {% trans "This segment has been active for" %}
@@ -77,7 +77,7 @@
                                             {% elif segment.status == segment.STATUS_ENABLED %}
                                                 <li><a href="{% url 'segment:toggle' segment.pk %}" title="{% trans "Disable this segment" %}">disable</a></li>
                                             {% endif %}
-                                            <li><a href="edit/{{ segment.pk }}" title="{% trans "Configure this segment" %}">configure this</a></li>
+                                            <li><a href="edit/{{ segment.pk }}" title="{% trans "Configure this segment" %}">configure</a></li>
                                         </ul>
                                         {% endif %}
                                     </div>
