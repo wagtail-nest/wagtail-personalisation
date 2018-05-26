@@ -1,7 +1,6 @@
 import pytest
-
-from django.contrib.auth.models import Permission
 from django.urls import reverse
+
 from wagtail_personalisation.models import Segment
 from wagtail_personalisation.rules import VisitCountRule
 

@@ -2,7 +2,6 @@ from __future__ import absolute_import, unicode_literals
 
 import os
 
-
 DATABASES = {
     'default': {
         'ENGINE': os.environ.get('DATABASE_ENGINE', 'django.db.backends.sqlite3'),

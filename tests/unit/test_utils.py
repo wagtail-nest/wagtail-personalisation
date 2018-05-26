@@ -1,7 +1,7 @@
 import pytest
+
 from tests.factories.page import ContentPageFactory
-from wagtail_personalisation.utils import (
-    impersonate_other_page)
+from wagtail_personalisation.utils import impersonate_other_page
 
 
 @pytest.fixture

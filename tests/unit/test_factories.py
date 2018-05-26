@@ -4,7 +4,7 @@ import datetime
 
 import pytest
 
-from tests.factories.rule import ReferralRuleFactory, QueryRuleFactory
+from tests.factories.rule import QueryRuleFactory, ReferralRuleFactory
 from tests.factories.segment import SegmentFactory
 from wagtail_personalisation.models import Segment
 from wagtail_personalisation.rules import TimeRule

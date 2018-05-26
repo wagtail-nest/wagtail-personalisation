@@ -6,13 +6,13 @@ from importlib import import_module
 
 from django.apps import apps
 from django.conf import settings
-from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.sessions.models import Session
+from django.core.exceptions import ObjectDoesNotExist
 from django.db import models
 from django.template.defaultfilters import slugify
+from django.test.client import RequestFactory
 from django.utils.encoding import force_text, python_2_unicode_compatible
 from django.utils.translation import ugettext_lazy as _
-from django.test.client import RequestFactory
 from modelcluster.fields import ParentalKey
 from user_agents import parse
 from wagtail.admin.edit_handlers import (
