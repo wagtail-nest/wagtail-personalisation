@@ -57,7 +57,7 @@ def segment_user(page, request, serve_args, serve_kwargs):
 
     forced_segment = request.GET.get('segment', None)
     if request.user.is_superuser and forced_segment is not None:
-        segment = Segment.objects.filter(pk=forced_segment).first()
+        segment = models.Segment.objects.filter(pk=forced_segment).first()
         if segment:
             adapter.set_segments([segment])
 
@@ -75,7 +75,7 @@ class UserbarSegmentedLinkItem:
 
 @hooks.register('construct_wagtail_userbar')
 def add_segment_link_items(request, items):
-    for item in Segment.objects.enabled():
+    for item in models.Segment.objects.enabled():
         items.append(UserbarSegmentedLinkItem(item))
     return items
 
