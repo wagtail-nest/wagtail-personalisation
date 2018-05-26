@@ -1,7 +1,7 @@
 import pytest
 
 from django.contrib.auth.models import Permission
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from wagtail_personalisation.models import Segment
 from wagtail_personalisation.rules import VisitCountRule
 
@@ -25,9 +25,8 @@ def test_segment_user_data_view_requires_admin_access(site, client, django_user_
 def test_segment_user_data_view(site, client, mocker, django_user_model):
     user1 = django_user_model.objects.create(username='first')
     user2 = django_user_model.objects.create(username='second')
-    admin_user = django_user_model.objects.create(username='admin')
-    permission = Permission.objects.get(codename='access_admin')
-    admin_user.user_permissions.add(permission)
+    admin_user = django_user_model.objects.create(
+        username='admin', is_superuser=True)
 
     segment = Segment(type=Segment.TYPE_STATIC, count=1)
     segment.save()
