@@ -42,12 +42,12 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/LabD/wagtail-personalisation.git"
+    "url": "git+https://github.com/wagtail/wagtail-personalisation.git"
   },
   "author": "Lab Digital",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/LabD/wagtail-personalisation/issues"
+    "url": "https://github.com/wagtail/wagtail-personalisation/issues"
   },
-  "homepage": "https://github.com/LabD/wagtail-personalisation#readme"
+  "homepage": "https://github.com/wagtail/wagtail-personalisation#readme"
 }
