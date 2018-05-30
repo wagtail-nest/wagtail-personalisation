@@ -104,6 +104,8 @@ def exclude_variants(pages):
     :return: Queryset of pages that aren't variants
     :rtype: QuerySet
     """
-    return pages.filter(
-        personalisable_canonical_metadata__canonical_page_id=F(
-            'personalisable_canonical_metadata__variant__id'))
+    from wagtail_personalisation.models import PersonalisablePageMetadata
+    excluded_variant_pages = PersonalisablePageMetadata.objects.exclude(
+        canonical_page_id=F('variant_id')
+    ).values_list('variant_id')
+    return pages.exclude(pk__in=excluded_variant_pages)
