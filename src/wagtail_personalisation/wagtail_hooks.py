@@ -173,8 +173,11 @@ class CorrectedPagesSummaryPanel(PagesSummaryItem):
         context = super(CorrectedPagesSummaryPanel, self).get_context()
 
         pages = utils.exclude_variants(Page.objects.all().specific())
-
-        context['total_pages'] = len(pages) - 1
+        context['total_pages'] = len(pages)
+        # Perform the same check as Wagtail to get the correct count.
+        # https://github.com/wagtail/wagtail/blob/5c9ff23e229acabad406c42c4e13cbaea32e6c15/wagtail/admin/site_summary.py#L38
+        if context.get('root_page') and context['root_page'].is_root():
+            context['total_pages'] -= 1
         return context
 
 
