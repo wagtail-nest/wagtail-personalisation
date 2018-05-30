@@ -121,7 +121,7 @@ class Segment(ClusterableModel):
             ], heading="Segment"),
             MultiFieldPanel([
                 InlinePanel(
-                    "{}_related".format(rule_model._meta.db_table),
+                    "{}s".format(rule_model._meta.db_table),
                     label='{}{}'.format(
                         rule_model._meta.verbose_name,
                         ' ({})'.format(_('Static compatible')) if rule_model.static else ''
