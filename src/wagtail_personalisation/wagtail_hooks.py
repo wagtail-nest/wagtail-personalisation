@@ -172,6 +172,8 @@ class CorrectedPagesSummaryItem(PagesSummaryItem):
     def get_context(self):
         context = super().get_context()
 
+        # Only correct the count when a root page is available to the user.
+        # The `PagesSummaryItem` will return a page count of 0 otherwise.
         root_page = context.get('root_page', None)
         if root_page:
             pages = utils.exclude_variants(
