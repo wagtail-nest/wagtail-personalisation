@@ -8,7 +8,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('wagtail_personalisation', '0012_remove_personalisablepagemetadata_is_segmented'),
+        ('wagtail_personalisation', '0020_rules_delete_relatedqueryname'),
     ]
 
     operations = [
