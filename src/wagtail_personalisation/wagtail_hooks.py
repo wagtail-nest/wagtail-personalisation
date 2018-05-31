@@ -168,16 +168,24 @@ def page_listing_more_buttons(page, page_perms, is_parent=False):
                  priority=200)
 
 
-class CorrectedPagesSummaryPanel(PagesSummaryItem):
+class CorrectedPagesSummaryItem(PagesSummaryItem):
     def get_context(self):
-        context = super(CorrectedPagesSummaryPanel, self).get_context()
-
-        pages = utils.exclude_variants(Page.objects.all().specific())
-        context['total_pages'] = len(pages)
         # Perform the same check as Wagtail to get the correct count.
+        # Only correct the count when a root page is available to the user.
+        # The `PagesSummaryItem` will return a page count of 0 otherwise.
         # https://github.com/wagtail/wagtail/blob/5c9ff23e229acabad406c42c4e13cbaea32e6c15/wagtail/admin/site_summary.py#L38
-        if context.get('root_page') and context['root_page'].is_root():
-            context['total_pages'] -= 1
+        context = super().get_context()
+        root_page = context.get('root_page', None)
+        if root_page:
+            pages = utils.exclude_variants(
+                Page.objects.descendant_of(root_page, inclusive=True))
+            page_count = pages.count()
+
+            if root_page.is_root():
+                page_count -= 1
+
+            context['total_pages'] = page_count
+
         return context
 
 
@@ -186,7 +194,7 @@ def add_corrected_pages_summary_panel(request, items):
     """Replaces the Pages summary panel to hide variants."""
     for index, item in enumerate(items):
         if item.__class__ is PagesSummaryItem:
-            items[index] = CorrectedPagesSummaryPanel(request)
+            items[index] = CorrectedPagesSummaryItem(request)
 
 
 class SegmentSummaryPanel(SummaryItem):
