@@ -22,7 +22,6 @@ class AbstractBaseRule(models.Model):
     segment = ParentalKey(
         'wagtail_personalisation.Segment',
         related_name="%(app_label)s_%(class)s_related",
-        related_query_name="%(app_label)s_%(class)ss"
     )
 
     class Meta:
