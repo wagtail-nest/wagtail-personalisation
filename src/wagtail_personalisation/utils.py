@@ -109,3 +109,10 @@ def exclude_variants(pages):
         canonical_page_id=F('variant_id')
     ).values_list('variant_id')
     return pages.exclude(pk__in=excluded_variant_pages)
+
+
+def can_delete_pages(pages, user):
+    for variant in pages:
+        if not variant.permissions_for_user(user).can_delete():
+            return False
+    return True

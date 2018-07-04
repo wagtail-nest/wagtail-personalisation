@@ -1,8 +1,12 @@
 import pytest
+from django.core.exceptions import PermissionDenied
 from django.urls import reverse
+from wagtail.core.models import Page
 
 from wagtail_personalisation.models import Segment
 from wagtail_personalisation.rules import VisitCountRule
+from wagtail_personalisation.views import (
+    SegmentModelDeleteView, SegmentModelAdmin)
 
 
 @pytest.mark.django_db
@@ -51,3 +55,56 @@ def test_segment_user_data_view(site, client, mocker, django_user_model):
     assert data_lines[0] == 'Username,Visit count - Test page,Visit count - Regular page\r'
     assert data_lines[1] == 'first,3,9\r'
     assert data_lines[2] == 'second,0,1\r'
+
+
+@pytest.mark.django_db
+def test_segment_delete_view_delete_instance(rf, segmented_page, user):
+    user.is_superuser = True
+    user.save()
+    segment = segmented_page.personalisation_metadata.segment
+    canonical_page = segmented_page.personalisation_metadata.canonical_page
+    variants_metadata = segment.get_used_pages()
+    page_variants = Page.objects.filter(pk__in=(
+        variants_metadata.values_list('variant_id', flat=True)
+    ))
+
+    # Make sure all canonical page, variants and variants metadata exist
+    assert canonical_page
+    assert page_variants
+    assert variants_metadata
+
+    # Delete the segment via the method on the view.
+    request = rf.get('/'.format(segment.pk))
+    request.user = user
+    view = SegmentModelDeleteView(
+        instance_pk=str(segment.pk),
+        model_admin=SegmentModelAdmin()
+    )
+    view.request = request
+    view.delete_instance()
+
+    # Segment has been deleted.
+    with pytest.raises(segment.DoesNotExist):
+        segment.refresh_from_db()
+
+    # Canonical page stayed intact.
+    canonical_page.refresh_from_db()
+
+    # Variant pages and their metadata have been deleted.
+    assert not page_variants.all()
+    assert not variants_metadata.all()
+
+
+@pytest.mark.django_db
+def test_segment_delete_view_raises_permission_denied(rf, segmented_page, user):
+    segment = segmented_page.personalisation_metadata.segment
+    request = rf.get('/'.format(segment.pk))
+    request.user = user
+    view = SegmentModelDeleteView(
+        instance_pk=str(segment.pk),
+        model_admin=SegmentModelAdmin()
+    )
+    view.request = request
+    message = 'User have no permission to delete variant page objects.'
+    with pytest.raises(PermissionDenied, message=message):
+        view.delete_instance()

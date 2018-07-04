@@ -216,10 +216,8 @@ class PersonalisablePageMetadata(ClusterableModel):
         null=True
     )
 
-    segment = models.ForeignKey(
-        Segment, related_name='page_metadata',
-        on_delete=models.SET_NULL,
-        null=True, blank=True)
+    segment = models.ForeignKey(Segment, models.PROTECT, null=True,
+                                related_name='page_metadata')
 
     @cached_property
     def has_variants(self):
