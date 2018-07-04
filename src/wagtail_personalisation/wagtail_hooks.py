@@ -3,11 +3,15 @@ from __future__ import absolute_import, unicode_literals
 import logging
 
 from django.conf.urls import include, url
+from django.db import transaction
+from django.shortcuts import redirect, render
 from django.template.defaultfilters import pluralize
 from django.urls import reverse
 from django.utils.safestring import mark_safe
 from django.utils.translation import ugettext_lazy as _
+from wagtail.admin import messages
 from wagtail.admin.site_summary import PagesSummaryItem, SummaryItem
+from wagtail.admin.views.pages import get_valid_next_url_from_request
 from wagtail.admin.widgets import Button, ButtonWithDropdownFromHook
 from wagtail.core import hooks
 from wagtail.core.models import Page
@@ -250,3 +254,54 @@ def add_personalisation_summary_panels(request, items):
     items.append(SegmentSummaryPanel(request))
     items.append(PersonalisedPagesSummaryPanel(request))
     items.append(VariantPagesSummaryPanel(request))
+
+
+@hooks.register('before_delete_page')
+def delete_related_variants(request, page):
+    if not isinstance(page, models.PersonalisablePageMixin) \
+            or not page.personalisation_metadata.is_canonical:
+        return
+    # Get a list of related personalisation metadata for all the related
+    # variants.
+    variants_metadata = (
+        page.personalisation_metadata.variants_metadata
+                                     .select_related('variant')
+    )
+    next_url = get_valid_next_url_from_request(request)
+
+    if request.method == 'POST':
+        parent_id = page.get_parent().id
+        variants_metadata = variants_metadata.select_related('variant')
+        with transaction.atomic():
+            for metadata in variants_metadata.iterator():
+                # Call delete() on objects to trigger any signals or hooks.
+                metadata.variant.delete()
+            # Delete the page's main variant and the page itself.
+            page.personalisation_metadata.delete()
+            page.delete()
+        msg = _("Page '{0}' and its variants deleted.")
+        messages.success(
+            request,
+            msg.format(page.get_admin_display_title())
+        )
+
+        for fn in hooks.get_hooks('after_delete_page'):
+            result = fn(request, page)
+            if hasattr(result, 'status_code'):
+                return result
+
+        if next_url:
+            return redirect(next_url)
+        return redirect('wagtailadmin_explore', parent_id)
+
+    return render(
+        request,
+        'wagtailadmin/pages/wagtail_personalisation/confirm_delete.html', {
+            'page': page,
+            'descendant_count': page.get_descendant_count(),
+            'next': next_url,
+            'variants': Page.objects.filter(
+                pk__in=variants_metadata.values_list('variant_id')
+            )
+        }
+    )

@@ -3,10 +3,12 @@ from __future__ import absolute_import, unicode_literals
 import datetime
 
 import pytest
+from django.db.models import ProtectedError
 
 from tests.factories.page import ContentPageFactory
 from tests.factories.segment import SegmentFactory
 from tests.site.pages import models
+from wagtail_personalisation.models import PersonalisablePageMetadata
 from wagtail_personalisation.rules import TimeRule
 
 
@@ -34,3 +36,19 @@ def test_content_page_model():
     page = ContentPageFactory()
     qs = models.ContentPage.objects.all()
     assert page in qs
+
+
+@pytest.mark.django_db
+def test_variant_can_be_deleted_without_error(segmented_page):
+    segmented_page.delete()
+    # Make sure the metadata gets deleted because of models.CASCADE.
+    with pytest.raises(PersonalisablePageMetadata.DoesNotExist):
+        segmented_page._personalisable_page_metadata.refresh_from_db()
+
+
+@pytest.mark.django_db
+def test_canonical_page_deletion_is_protected(segmented_page):
+    # When deleting canonical page without deleting variants, it should return
+    # an error. All variants should be deleted beforehand.
+    with pytest.raises(ProtectedError):
+        segmented_page.personalisation_metadata.canonical_page.delete()
