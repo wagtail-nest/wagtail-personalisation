@@ -1,4 +1,5 @@
 import pytest
+from wagtail.core.models import Page
 
 from tests.factories.segment import SegmentFactory
 from wagtail_personalisation import adapters, wagtail_hooks
@@ -60,3 +61,54 @@ def test_page_listing_more_buttons(site, rf, segmented_page):
     result = wagtail_hooks.page_listing_more_buttons(page, [])
     items = list(result)
     assert len(items) == 3
+
+
+@pytest.mark.django_db
+def test_custom_delete_page_view_does_not_trigger_for_variants(
+    rf,
+    segmented_page
+):
+    assert (
+        wagtail_hooks.delete_related_variants(rf.get('/'), segmented_page)
+    ) is None
+
+
+@pytest.mark.django_db
+def test_custom_delete_page_view_triggers_for_canonical_pages(
+    rf,
+    segmented_page
+):
+    assert (
+        wagtail_hooks.delete_related_variants(
+            rf.get('/'),
+            segmented_page.personalisation_metadata.canonical_page
+        )
+    ) is not None
+
+
+@pytest.mark.django_db
+def test_custom_delete_page_view_deletes_variants(rf, segmented_page, user):
+    post_request = rf.post('/')
+    user.is_superuser = True
+    rf.user = user
+    canonical_page = segmented_page.personalisation_metadata.canonical_page
+    canonical_page_variant = canonical_page.personalisation_metadata
+    assert canonical_page_variant
+
+    variants = Page.objects.filter(pk__in=(
+        canonical_page.personalisation_metadata.variants_metadata.values_list('variant_id', flat=True)
+    ))
+    variants_metadata = canonical_page.personalisation_metadata.variants_metadata
+    # Make sure there are variants that exist in the database.
+    assert len(variants.all())
+    assert len(variants_metadata.all())
+    wagtail_hooks.delete_related_variants(
+        post_request, segmented_page.personalisation_metadata.canonical_page
+    )
+    with pytest.raises(canonical_page.DoesNotExist):
+        canonical_page.refresh_from_db()
+    with pytest.raises(canonical_page_variant.DoesNotExist):
+        canonical_page_variant.refresh_from_db()
+    # Make sure all the variant pages have been deleted.
+    assert not len(variants.all())
+    assert not len(variants_metadata.all())

@@ -203,15 +203,18 @@ class PersonalisablePageMetadata(ClusterableModel):
     segments.
 
     """
+    # Canonical pages should not ever be deleted if they have variants
+    # because the variants will be orphaned.
     canonical_page = models.ForeignKey(
-        Page, related_name='personalisable_canonical_metadata',
-        on_delete=models.SET_NULL,
-        blank=True, null=True
+        Page, models.PROTECT, related_name='personalisable_canonical_metadata',
+        null=True
     )
 
+    # Delete metadata of the variant if its page gets deleted.
     variant = models.OneToOneField(
-        Page, related_name='_personalisable_page_metadata',
-        on_delete=models.CASCADE)
+        Page, models.CASCADE, related_name='_personalisable_page_metadata',
+        null=True
+    )
 
     segment = models.ForeignKey(
         Segment, related_name='page_metadata',

@@ -1,0 +1,57 @@
+{% extends "wagtailadmin/base.html" %}
+
+{% load i18n wagtailadmin_tags %}
+
+{% block content %}
+    {% trans "Delete" as del_str %}
+    {% include "wagtailadmin/shared/header.html" with title=del_str subtitle=page.get_admin_display_title icon="doc-empty-inverse" %}
+
+    <div class="nice-padding">
+        <p>
+            {% trans 'Are you sure you want to delete this page?' %}
+            {% if descendant_count %}
+                {% blocktrans count counter=descendant_count %}
+                    This will also delete one more subpage.
+                {% plural %}
+                    This will also delete {{ descendant_count }} more subpages.
+                {% endblocktrans %}
+            {% endif %}
+        </p>
+        {% if variants %}
+            <p>
+                {% blocktrans count counter=variants|length %}
+                    This page is personalisable. Deleting it will delete its variant:
+                {% plural %}
+                    This page is personalisable. Deleting it will delete all of its variants:
+                {% endblocktrans %}
+            </p>
+            <ul>
+                {% for variant in variants %}
+                    <li>
+                        <a href="{% url 'wagtailadmin_explore' variant.pk %}">
+                            {{ variant }}
+                        </a>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+
+        <form action="{% url 'wagtailadmin_pages:delete' page.id %}" method="POST">
+            {% csrf_token %}
+            <input type="hidden" name="next" value="{{ next }}">
+            {% if variants %}
+                {% trans 'Yes, delete the page and its variants' as submit_button_value %}
+            {% else %}
+                {% trans 'Yes, delete it' as submit_button_value %}
+            {% endif %}
+            <input type="submit" value="{{ submit_button_value }}" class="button serious">
+            <a href="{% if next %}{{ next }}{% else %}{% url 'wagtailadmin_explore' page.get_parent.id %}{% endif %}" class="button button-secondary">{% trans "No, don't delete it" %}</a>
+        </form>
+
+        {% page_permissions page as page_perms %}
+        {% if page_perms.can_unpublish %}
+            {% url 'wagtailadmin_pages:unpublish' page.id as unpublish_url %}
+            <p style="margin-top: 1em">{% blocktrans %}Alternatively you can <a href="{{ unpublish_url }}">unpublish the page</a>. This removes the page from public view and you can edit or publish it again later.{% endblocktrans %}</p>
+        {% endif %}
+    </div>
+{% endblock %}
