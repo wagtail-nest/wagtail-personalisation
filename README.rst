@@ -15,7 +15,9 @@
 .. end-no-pypi
 
 .. image:: logo.png
-   :scale: 50 %
+   :height: 261
+   :width: 300
+   :scale: 50
    :alt: Wagxperience
    :align: center
 
