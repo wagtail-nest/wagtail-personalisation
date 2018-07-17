@@ -24,7 +24,8 @@ tests_require = [
 ]
 
 docs_require = [
-    'sphinx>=1.4.0',
+    'sphinx>=1.7.6',
+    'sphinx_rtd_theme>=0.4.0',
 ]
 
 with open('README.rst') as fh:

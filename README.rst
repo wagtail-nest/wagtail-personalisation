@@ -35,9 +35,11 @@ in the admin interface.
 
 Instructions
 ------------
-Wagtail Personalisation requires Wagtail 1.9 or 1.10 and Django 1.9, 1.10 or 1.11.
+Wagtail Personalisation requires Wagtail 2.0 or 2.1 and Django 1.11 or 2.0.
 
-To install the package with pip::
+To install the package with pip:
+
+.. code-block:: console
 
     pip install wagtail-personalisation
 
@@ -63,6 +65,16 @@ been added in first, this is a prerequisite for this project.
         'django.contrib.sessions.middleware.SessionMiddleware',
         # ...
     ]
+
+
+Documentation
+-------------
+
+You can find more information about installing, extending and using this module
+on `Read the Docs`_.
+
+.. _Read the Docs: http://wagtail-personalisation.readthedocs.io
+
 
 Sandbox
 -------
