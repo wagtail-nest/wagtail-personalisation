@@ -9,11 +9,11 @@ Welcome to the Wagxperience documentation
 .. image:: https://readthedocs.org/projects/wagtail-personalisation/badge/?version=latest
      :target: http://wagtail-personalisation.readthedocs.io/en/latest/?badge=latest
 
-.. image:: https://travis-ci.org/LabD/wagtail-personalisation.svg?branch=master
-    :target: https://travis-ci.org/LabD/wagtail-personalisation
+.. image:: https://travis-ci.org/wagtail/wagtail-personalisation.svg?branch=master
+    :target: https://travis-ci.org/wagtail/wagtail-personalisation
 
-.. image:: http://codecov.io/github/LabD/wagtail-personalisation/coverage.svg?branch=master
-    :target: http://codecov.io/github/LabD/wagtail-personalisation?branch=master
+.. image:: http://codecov.io/github/wagtail/wagtail-personalisation/coverage.svg?branch=master
+    :target: http://codecov.io/github/wagtail/wagtail-personalisation?branch=master
 
 .. image:: https://img.shields.io/pypi/v/wagtail-personalisation.svg
     :target: https://pypi.python.org/pypi/wagtail-personalisation/

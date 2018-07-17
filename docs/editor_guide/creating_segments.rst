@@ -19,7 +19,7 @@ Set segment specific options
 .. figure:: ../_static/images/edit_segment_specifics.png
    :alt: The form that allows you to configure specific segment options.
 
-1. Enter a name for your segment.
+1. Enter a name for your segment
 
     Choose something meaningful like "Newsletter campaign visitors". This will
     ensure you'll have a general idea which visitors are in this segment in
@@ -41,6 +41,25 @@ Set segment specific options
     your rules matches the visitor. When **match all** is selected, all rules
     must match before the segment is applied.
 
+5. The segment type *Required*
+
+    **Dynamic**: Users in this segment will change as more or less meet the
+    rules specified in the segment.
+
+    **Static**: If the segment contains only static compatible rules the segment
+    will contain the members that pass those rules when the segment is created.
+    Mixed static segments or those containing entirely non static compatible
+    rules will be populated using the count variable.
+
+6. The segment count *Optional*
+
+    If this number is set for a static segment users will be added to the set
+    until the number is reached. After this no more users will be added.
+
+7. Randomisation percentage *Optional*
+
+    If this number is set each user matching the rules will have this percentage
+    chance of being placed in the segment.
 
 Defining rules
 ^^^^^^^^^^^^^^
