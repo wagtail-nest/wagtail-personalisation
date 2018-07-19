@@ -54,7 +54,7 @@ class SegmentModelDeleteView(DeleteView):
         page_variants = self.get_affected_page_objects()
         if not can_delete_pages(page_variants, self.request.user):
             raise PermissionDenied(
-                'User have no permission to delete variant page objects.'
+                'User has no permission to delete variant page objects.'
             )
         # Deleting page objects triggers deletion of the personalisation
         # metadata too because of models.CASCADE.
