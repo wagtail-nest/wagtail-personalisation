@@ -12,11 +12,11 @@ def check_status_change(sender, instance, *args, **kwargs):
         original_status = None
 
     if original_status != instance.enabled:
-        if instance.enabled == True:
+        if instance.enabled is True:
             instance.enable_date = timezone.now()
             instance.visit_count = 0
             return instance
-        if instance.enabled == False:
+        if instance.enabled is False:
             instance.disable_date = timezone.now()
 
 
