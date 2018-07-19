@@ -13,6 +13,18 @@ def forward(apps, schema_editor):
         segment.save()
 
 
+def backward(apps, schema_editor):
+    Segment = apps.get_model('wagtail_personalisation', 'Segment')
+
+    for segment in Segment.objects.all():
+        if segment.enabled:
+            segment.status = 'enabled'
+        else:
+            segment.status = 'disabled'
+
+        segment.save()
+
+
 class Migration(migrations.Migration):
 
     dependencies = [
@@ -25,7 +37,7 @@ class Migration(migrations.Migration):
             name='enabled',
             field=models.BooleanField(default=True, help_text='Should the segment be active?'),
         ),
-        migrations.RunPython(forward),
+        migrations.RunPython(forward, reverse_code=backward),
         migrations.RemoveField(
             model_name='segment',
             name='status',
