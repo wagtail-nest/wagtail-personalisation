@@ -16,9 +16,4 @@ class Migration(migrations.Migration):
             name='canonical_page',
             field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.PROTECT, related_name='personalisable_canonical_metadata', to='wagtailcore.Page'),
         ),
-        migrations.AlterField(
-            model_name='personalisablepagemetadata',
-            name='variant',
-            field=models.OneToOneField(null=True, on_delete=django.db.models.deletion.CASCADE, related_name='_personalisable_page_metadata', to='wagtailcore.Page'),
-        ),
     ]
