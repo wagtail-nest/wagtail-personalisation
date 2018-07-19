@@ -61,7 +61,6 @@ class BasePersonalisedStructBlock(blocks.StructBlock):
             raise ValueError('"render_fields" has to be set to None when using '
                              'template.')
 
-
     def is_visible(self, value, request):
         """Check whether user should see the block based on their segments.
 
@@ -103,8 +102,7 @@ class BasePersonalisedStructBlock(blocks.StructBlock):
             render_value = ''
             for field_name in self.meta.render_fields:
                 if hasattr(value.bound_blocks[field_name], 'render_as_block'):
-                    block_value = value.bound_blocks[field_name] \
-                                         .render_as_block(context=context)
+                    block_value = value.bound_blocks[field_name].render_as_block(context=context)
                 else:
                     block_value = force_text(value[field_name])
 
@@ -170,4 +168,3 @@ class PersonalisedImageChooserBlock(BasePersonalisedStructBlock):
         icon = ImageChooserBlock._meta_class.icon
         label = _('Personalised Image')
         render_fields = ['image']
-
