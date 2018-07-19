@@ -52,3 +52,11 @@ def test_canonical_page_deletion_is_protected(segmented_page):
     # an error. All variants should be deleted beforehand.
     with pytest.raises(ProtectedError):
         segmented_page.personalisation_metadata.canonical_page.delete()
+
+
+@pytest.mark.django_db
+def test_page_protection_when_deleting_segment(segmented_page):
+    segment = segmented_page.personalisation_metadata.segment
+    assert len(segment.get_used_pages())
+    with pytest.raises(ProtectedError):
+        segment.delete()

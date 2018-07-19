@@ -7,7 +7,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('wagtail_personalisation', '0020_rules_delete_relatedqueryname'),
+        ('wagtail_personalisation', '0021_personalisablepagemetadata_segment_set_on_delete_protect'),
     ]
 
     operations = [
@@ -15,10 +15,5 @@ class Migration(migrations.Migration):
             model_name='personalisablepagemetadata',
             name='canonical_page',
             field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.PROTECT, related_name='personalisable_canonical_metadata', to='wagtailcore.Page'),
-        ),
-        migrations.AlterField(
-            model_name='personalisablepagemetadata',
-            name='variant',
-            field=models.OneToOneField(null=True, on_delete=django.db.models.deletion.CASCADE, related_name='_personalisable_page_metadata', to='wagtailcore.Page'),
         ),
     ]

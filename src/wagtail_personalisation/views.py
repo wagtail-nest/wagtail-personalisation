@@ -3,16 +3,19 @@ from __future__ import absolute_import, unicode_literals
 import csv
 
 from django import forms
+from django.core.exceptions import PermissionDenied
+from django.db import transaction
 from django.http import (
     HttpResponse, HttpResponseForbidden, HttpResponseRedirect)
 from django.shortcuts import get_object_or_404
 from django.urls import reverse
 from django.utils.translation import ugettext_lazy as _
 from wagtail.contrib.modeladmin.options import ModelAdmin, modeladmin_register
-from wagtail.contrib.modeladmin.views import IndexView
+from wagtail.contrib.modeladmin.views import DeleteView, IndexView
 from wagtail.core.models import Page
 
 from wagtail_personalisation.models import Segment
+from wagtail_personalisation.utils import can_delete_pages
 
 
 class SegmentModelIndexView(IndexView):
@@ -35,12 +38,49 @@ class SegmentModelDashboardView(IndexView):
         ]
 
 
+class SegmentModelDeleteView(DeleteView):
+    def get_affected_page_objects(self):
+        return Page.objects.filter(pk__in=(
+            self.instance.get_used_pages().values_list('variant_id', flat=True)
+        ))
+
+    def get_template_names(self):
+        return [
+            'modeladmin/wagtail_personalisation/segment/delete.html',
+            'modeladmin/delete.html',
+        ]
+
+    def delete_instance(self):
+        page_variants = self.get_affected_page_objects()
+        if not can_delete_pages(page_variants, self.request.user):
+            raise PermissionDenied(
+                'User has no permission to delete variant page objects.'
+            )
+        # Deleting page objects triggers deletion of the personalisation
+        # metadata too because of models.CASCADE.
+        with transaction.atomic():
+            for variant in page_variants.iterator():
+                # Delete each one separately so signals are called.
+                variant.delete()
+            super().delete_instance()
+
+    def post(self, request, *args, **kwargs):
+        if not can_delete_pages(self.get_affected_page_objects(),
+                                self.request.user):
+            context = self.get_context_data(
+                cannot_delete_page_variants_error=True,
+            )
+            return self.render_to_response(context)
+        return super().post(request, *args, **kwargs)
+
+
 @modeladmin_register
 class SegmentModelAdmin(ModelAdmin):
     """The model admin for the Segments administration interface."""
     model = Segment
     index_view_class = SegmentModelIndexView
     dashboard_view_class = SegmentModelDashboardView
+    delete_view_class = SegmentModelDeleteView
     menu_icon = 'fa-snowflake-o'
     add_to_settings_menu = False
     list_display = ('name', 'persistent', 'match_any', 'status',

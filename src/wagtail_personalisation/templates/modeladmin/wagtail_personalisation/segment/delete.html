@@ -1,0 +1,49 @@
+{% extends "modeladmin/delete.html" %}
+
+{% load i18n modeladmin_tags %}
+
+{% block content_main %}
+    <div class="nice-padding">
+        {% if protected_error %}
+            <h2>{% blocktrans with view.verbose_name|capfirst as model_name %}{{ model_name }} could not be deleted{% endblocktrans %}</h2>
+            <p>{% blocktrans with instance as instance_name %}'{{ instance_name }}' is currently referenced by other objects, and cannot be deleted without jeopardising data integrity. To delete it successfully, first remove references from the following objects, then try again:{% endblocktrans %}</p>
+            <ul>
+                {% for obj in linked_objects %}<li><b>{{ obj|get_content_type_for_obj|title }}:</b> {{ obj }}</li>{% endfor %}
+            </ul>
+            <p><a href="{{ view.index_url }}" class="button">{% trans 'Go back to listing' %}</a></p>
+        {% elif cannot_delete_page_variants_error %}
+            <h2>{% blocktrans %}Cannot delete all the page variants{% endblocktrans %}</h2>
+            <p>{% blocktrans %}You need to have permissions to delete the page variants associated with this segment.{% endblocktrans %}
+        {% else %}
+            {% with page_variants=view.get_affected_page_objects %}
+                {% if page_variants %}
+                    <p>
+                        {% blocktrans %}Deleting the segment will also mean deleting all the page variants associated with it. Do you want to continue?{% endblocktrans %}
+                    </p>
+                    <p>
+                        {% blocktrans %}The page objects that <strong>will be deleted</strong> are:{% endblocktrans %}
+                    </p>
+                    <ul>
+                    {% for variant in page_variants %}
+                        <li>
+                            <a href="{% url 'wagtailadmin_explore' variant.pk %}">
+                                {{ variant }}
+                            </a>
+                        </li>
+                    {% endfor %}
+                    </ul>
+                    {% trans 'Yes, delete the segment and associated page variants' as submit_button_value %}
+                {% else %}
+                    <p>
+                        {% blocktrans %}Do you want to continue deleting this segment?{% endblocktrans %}
+                    </p>
+                    {% trans 'Yes, delete the segment' as submit_button_value %}
+                {% endif %}
+                <form action="{{ view.delete_url }}" method="POST">
+                    {% csrf_token %}
+                    <input type="submit" value="{{ submit_button_value }}" class="button serious" />
+                </form>
+            {% endwith %}
+        {% endif %}
+    </div>
+{% endblock %}
