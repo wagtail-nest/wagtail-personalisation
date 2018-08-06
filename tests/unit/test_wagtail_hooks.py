@@ -1,4 +1,7 @@
 import pytest
+
+from django.http import Http404
+
 from wagtail.core.models import Page
 
 from tests.factories.segment import SegmentFactory
@@ -14,6 +17,15 @@ def test_serve_variant_no_variant(site, rf):
 
     result = wagtail_hooks.serve_variant(page, request, args, kwargs)
     assert result is None
+
+
+@pytest.mark.django_db
+def test_variant_accessed_directly_returns_404(segmented_page, rf):
+    request = rf.get('/')
+    args = tuple()
+    kwargs = {}
+    with pytest.raises(Http404):
+        wagtail_hooks.serve_variant(segmented_page, request, args, kwargs)
 
 
 @pytest.mark.django_db

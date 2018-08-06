@@ -4,6 +4,7 @@ import logging
 
 from django.conf.urls import include, url
 from django.db import transaction
+from django.http import Http404
 from django.shortcuts import redirect, render
 from django.template.defaultfilters import pluralize
 from django.urls import reverse
@@ -104,9 +105,13 @@ def serve_variant(page, request, serve_args, serve_kwargs):
     adapter = get_segment_adapter(request)
     user_segments = adapter.get_segments()
 
-    if user_segments:
-        metadata = page.personalisation_metadata
+    metadata = page.personalisation_metadata
 
+    # If page is not canonical, don't serve it.
+    if not metadata.is_canonical:
+        raise Http404
+
+    if user_segments:
         # TODO: This is never more then one page? (fix query count)
         metadata = metadata.metadata_for_segments(user_segments)
         if metadata:
