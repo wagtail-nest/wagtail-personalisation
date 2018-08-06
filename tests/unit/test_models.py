@@ -60,3 +60,16 @@ def test_page_protection_when_deleting_segment(segmented_page):
     assert len(segment.get_used_pages())
     with pytest.raises(ProtectedError):
         segment.delete()
+
+
+@pytest.mark.django_db
+def test_sitemap_generation_for_canonical_pages_is_enabled(segmented_page):
+    canonical = segmented_page.personalisation_metadata.canonical_page
+    assert canonical.personalisation_metadata.is_canonical
+    assert canonical.get_sitemap_urls()
+
+
+@pytest.mark.django_db
+def test_sitemap_generation_for_variants_is_disabled(segmented_page):
+    assert not segmented_page.personalisation_metadata.is_canonical
+    assert not segmented_page.get_sitemap_urls()

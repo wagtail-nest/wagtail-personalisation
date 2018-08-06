@@ -10,6 +10,7 @@ from django.utils.functional import cached_property
 from django.utils.safestring import mark_safe
 from django.utils.translation import ugettext_lazy as _
 from modelcluster.models import ClusterableModel
+import wagtail
 from wagtail.admin.edit_handlers import (
     FieldPanel, FieldRowPanel, InlinePanel, MultiFieldPanel)
 from wagtail.core.models import Page
@@ -302,3 +303,15 @@ class PersonalisablePageMixin:
             metadata = PersonalisablePageMetadata.objects.create(
                 canonical_page=self, variant=self)
         return metadata
+
+    def get_sitemap_urls(self, request=None):
+        # Do not generate sitemap entries for variants.
+        if not self.personalisation_metadata.is_canonical:
+            return []
+        if wagtail.VERSION >= (2, 2):
+            # Since Wagtail 2.2 you can pass request to the get_sitemap_urls
+            # method.
+            return super(PersonalisablePageMixin, self).get_sitemap_urls(
+                request=request
+            )
+        return super(PersonalisablePageMixin, self).get_sitemap_urls()
