@@ -1,8 +1,10 @@
 import pytest
 
+from django.test import override_settings
+
 from tests.factories.page import ContentPageFactory
 from wagtail_personalisation.utils import (
-    can_delete_pages, impersonate_other_page)
+    can_delete_pages, get_client_ip, impersonate_other_page)
 
 
 @pytest.fixture
@@ -36,3 +38,29 @@ def test_can_delete_pages_with_superuser(rf, user, segmented_page):
 @pytest.mark.django_db
 def test_cannot_delete_pages_with_standard_user(user, segmented_page):
     assert not can_delete_pages([segmented_page], user)
+
+
+def test_get_client_ip_with_remote_addr(rf):
+    request = rf.get('/', REMOTE_ADDR='173.231.235.87')
+    assert get_client_ip(request) == '173.231.235.87'
+
+
+def test_get_client_ip_with_x_forwarded_for(rf):
+    request = rf.get('/', HTTP_X_FORWARDED_FOR='173.231.235.87',
+                     REMOTE_ADDR='10.0.23.24')
+    assert get_client_ip(request) == '173.231.235.87'
+
+
+@override_settings(
+    WAGTAIL_PERSONALISATION_IP_FUNCTION='some.non.existent.path'
+)
+def test_get_client_ip_custom_get_client_ip_function_does_not_exist(rf):
+    with pytest.raises(ImportError):
+        get_client_ip(rf.get('/'))
+
+
+@override_settings(
+    WAGTAIL_PERSONALISATION_IP_FUNCTION='tests.utils.get_custom_ip'
+)
+def test_get_client_ip_custom_get_client_ip_used(rf):
+    assert get_client_ip(rf.get('/')) == '123.123.123.123'

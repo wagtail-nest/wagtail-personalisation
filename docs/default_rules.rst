@@ -131,3 +131,47 @@ Is logged in        Whether the user is logged in or logged out.
 ==================  ==========================================================
 
 ``wagtail_personalisation.rules.UserIsLoggedInRule``
+
+
+Origin country rule
+-------------------
+
+The origin country rule allows you to match visitors based on the origin
+country of their request. This rule requires to have set up a way to detect
+countries beforehand.
+
+==================  ==========================================================
+Option              Description
+==================  ==========================================================
+Country             What country user's request comes from.
+==================  ==========================================================
+
+You must have one of the following configurations set up in order to
+make it work.
+
+- Cloudflare IP Geolocation - ``cf-ipcountry`` HTTP header set with a value of
+  the alpha-2 country format.
+- CloudFront Geo-Targeting - ``cloudfront-viewer-country`` header set with a
+  value of the alpha-2 country format.
+- The last fallback is to use GeoIP2 module that is included with Django. This
+  requires setting up an IP database beforehand, see the Django's
+  `GeoIP2 instructions <https://docs.djangoproject.com/en/stable/ref/contrib/gis/geoip2/>`_
+  for more information. It will use IP of the request, using HTTP header
+  the ``x-forwarded-for`` HTTP header and ``REMOTE_ADDR`` server value as a
+  fallback. If you want to use a custom logic when obtaining IP address, please
+  set the ``WAGTAIL_PERSONALISATION_IP_FUNCTION`` setting to the function that takes a
+  request as an argument, e.g.
+
+  .. code-block:: python
+
+     # settings.py
+
+     WAGTAIL_PERSONALISATION_IP_FUNCTION = 'yourproject.utils.get_client_ip'
+
+
+     # yourproject/utils.py
+
+     def get_client_ip(request):
+         return request['HTTP_CF_CONNECTING_IP']
+
+``wagtail_personalisation.rules.OriginCountryRule``
