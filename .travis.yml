@@ -5,7 +5,7 @@ language: python
 matrix:
   include:
     - python: 3.6
-      env: lint
+      env: TOXENV=lint
     - python: 3.6
       env: TOXENV=py36-django20-wagtail20
     - python: 3.6
