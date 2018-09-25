@@ -1,9 +1,11 @@
 from __future__ import absolute_import, unicode_literals
+import logging
 
 import re
 from datetime import datetime
 from importlib import import_module
 
+import pycountry
 from django.apps import apps
 from django.conf import settings
 from django.contrib.sessions.models import Session
@@ -18,7 +20,27 @@ from user_agents import parse
 from wagtail.admin.edit_handlers import (
     FieldPanel, FieldRowPanel, PageChooserPanel)
 
+from wagtail_personalisation.utils import get_client_ip
+
 SessionStore = import_module(settings.SESSION_ENGINE).SessionStore
+
+logger = logging.getLogger(__name__)
+
+
+def get_geoip_module():
+    try:
+        from django.contrib.gis.geoip2 import GeoIP2
+        return GeoIP2
+    except ImportError:
+        logger.exception(
+            'GeoIP module is disabled. To use GeoIP for the origin\n'
+            'country personaliastion rule please set it up as per '
+            'documentation:\n'
+            'https://docs.djangoproject.com/en/stable/ref/contrib/gis/'
+            'geoip2/.\n'
+            'Wagtail-personalisation also works with Cloudflare and\n'
+            'CloudFront country detection, so you should not see this\n'
+            'warning if you use one of those.')
 
 
 @python_2_unicode_compatible
@@ -408,3 +430,65 @@ class UserIsLoggedInRule(AbstractBaseRule):
             'title': _('These visitors are'),
             'value': _('Logged in') if self.is_logged_in else _('Not logged in'),
         }
+
+
+COUNTRY_CHOICES = [(country.alpha_2.lower(), country.name)
+                   for country in pycountry.countries]
+
+
+class OriginCountryRule(AbstractBaseRule):
+    """
+    Test user against the country or origin of their request.
+
+    Using this rule requires setting up GeoIP2 on Django or using
+    CloudFlare or CloudFront geolocation detection.
+    """
+    country = models.CharField(
+        max_length=2, choices=COUNTRY_CHOICES,
+        help_text=_("Select origin country of the request that this rule will "
+                    "match against. This rule will only work if you use "
+                    "Cloudflare or CloudFront IP geolocation or if GeoIP2 "
+                    "module is configured.")
+    )
+
+    class Meta:
+        verbose_name = _("origin country rule")
+
+    def get_cloudflare_country(self, request):
+        """
+        Get country code that has been detected by Cloudflare.
+
+        Guide to the functionality:
+        https://support.cloudflare.com/hc/en-us/articles/200168236-What-does-Cloudflare-IP-Geolocation-do-
+        """
+        try:
+            return request.META['HTTP_CF_IPCOUNTRY'].lower()
+        except KeyError:
+            pass
+
+    def get_cloudfront_country(self, request):
+        try:
+            return request.META['HTTP_CLOUDFRONT_VIEWER_COUNTRY'].lower()
+        except KeyError:
+            pass
+
+    def get_geoip_country(self, request):
+        GeoIP2 = get_geoip_module()
+        if GeoIP2 is None:
+            return False
+        return GeoIP2().country_code(get_client_ip(request)).lower()
+
+    def get_country(self, request):
+        # Prioritise CloudFlare and CloudFront country detection over GeoIP.
+        functions = (
+            self.get_cloudflare_country,
+            self.get_cloudfront_country,
+            self.get_geoip_country,
+        )
+        for function in functions:
+            result = function(request)
+            if result:
+                return result
+
+    def test_user(self, request=None):
+        return (self.get_country(request) or '') == self.country.lower()

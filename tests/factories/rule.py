@@ -46,3 +46,8 @@ class VisitCountRuleFactory(factory.DjangoModelFactory):
 
     class Meta:
         model = rules.VisitCountRule
+
+
+class OriginCountryRuleFactory(factory.DjangoModelFactory):
+    class Meta:
+        model = rules.OriginCountryRule

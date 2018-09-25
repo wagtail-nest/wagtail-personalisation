@@ -5,6 +5,7 @@ install_requires = [
     'wagtail>=2.0,<2.2',
     'user-agents>=1.1.0',
     'wagtailfontawesome>=1.1.3',
+    'pycountry',
 ]
 
 tests_require = [

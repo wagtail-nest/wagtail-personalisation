@@ -1,8 +1,10 @@
 import time
 
+from django.conf import settings
 from django.db.models import F
 from django.template.base import FilterExpression, kwarg_re
 from django.utils import timezone
+from django.utils.module_loading import import_string
 
 
 def impersonate_other_page(page, other_page):
@@ -116,3 +118,17 @@ def can_delete_pages(pages, user):
         if not variant.permissions_for_user(user).can_delete():
             return False
     return True
+
+
+def get_client_ip(request):
+    try:
+        func = import_string(settings.WAGTAIL_PERSONALISATION_IP_FUNCTION)
+    except AttributeError:
+        pass
+    else:
+        return func(request)
+    try:
+        x_forwarded_for = request.META['HTTP_X_FORWARDED_FOR']
+        return x_forwarded_for.split(',')[-1].strip()
+    except KeyError:
+        return request.META['REMOTE_ADDR']
