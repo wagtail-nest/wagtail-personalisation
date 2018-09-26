@@ -1,3 +1,21 @@
+0.12.0
+==================
+ - Merged forks of Torchbox and Praekelt
+ - Wagtail 2 compatibility
+ - Makefile adjustments for portability
+ - Adds simple segment forcing for superusers
+ - Fix excluding pages without variant
+ - Fix bug on visiting a segment page in the admin
+ - Use Wagtail's logic in the page count in the dash
+ - Prevent corrected summary item from counting the root page
+ - Delete variants of a page that is being deleted
+ - Add end user and developer documentation
+ - Add an option to show a personalised block to everyone
+ - Add origin country rule (#190)
+ - Return 404 if variant page is accessed directly (#188)
+ - Do not generate sitemap entries for variants (#187)
+ - Remove restrictive wagtail dependency version constraint (#192)
+
 0.11.3
 ==================
  - Bugfix: Handle errors when testing an invalid visit count rule
