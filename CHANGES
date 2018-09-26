@@ -1,5 +1,9 @@
 0.12.0
 ==================
+ - Fix Django version classifier in setup.py
+
+0.12.0
+==================
  - Merged forks of Torchbox and Praekelt
  - Wagtail 2 compatibility
  - Makefile adjustments for portability
