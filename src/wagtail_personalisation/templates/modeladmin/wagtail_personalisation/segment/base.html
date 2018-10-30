@@ -1,17 +1,6 @@
 {% extends "modeladmin/index.html" %}
 {% load i18n l10n staticfiles modeladmin_tags %}
 
-{% block titletag %}{{ view.get_meta_title }}{% endblock %}
-
-{% block css %}
-    {{ block.super }}
-    {{ view.media.css }}
-{% endblock %}
-
-{% block extra_js %}
-    {{ view.media.js }}
-{% endblock %}
-
 {% block header %}
     <header class="nice-padding hasform">
         <div class="row">
