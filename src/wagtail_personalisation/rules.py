@@ -2,7 +2,6 @@ from __future__ import absolute_import, unicode_literals
 import logging
 
 import re
-from datetime import datetime
 from importlib import import_module
 
 import pycountry
@@ -13,6 +12,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.db import models
 from django.template.defaultfilters import slugify
 from django.test.client import RequestFactory
+from django.utils import timezone
 from django.utils.encoding import force_text, python_2_unicode_compatible
 from django.utils.translation import ugettext_lazy as _
 from modelcluster.fields import ParentalKey
@@ -113,7 +113,7 @@ class TimeRule(AbstractBaseRule):
         verbose_name = _('Time Rule')
 
     def test_user(self, request=None):
-        return self.start_time <= datetime.now().time() <= self.end_time
+        return self.start_time <= timezone.now().time() <= self.end_time
 
     def description(self):
         return {
@@ -157,7 +157,7 @@ class DayRule(AbstractBaseRule):
 
     def test_user(self, request=None):
         return [self.mon, self.tue, self.wed, self.thu,
-                self.fri, self.sat, self.sun][datetime.today().weekday()]
+                self.fri, self.sat, self.sun][timezone.now().date().weekday()]
 
     def description(self):
         days = (
@@ -244,6 +244,7 @@ class VisitCountRule(AbstractBaseRule):
             FieldPanel('count'),
         ]),
     ]
+
 
     class Meta:
         verbose_name = _('Visit count Rule')
@@ -492,3 +493,4 @@ class OriginCountryRule(AbstractBaseRule):
 
     def test_user(self, request=None):
         return (self.get_country(request) or '') == self.country.lower()
+
