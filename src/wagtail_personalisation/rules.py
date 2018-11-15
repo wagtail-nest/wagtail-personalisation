@@ -245,7 +245,6 @@ class VisitCountRule(AbstractBaseRule):
         ]),
     ]
 
-
     class Meta:
         verbose_name = _('Visit count Rule')
 
@@ -493,4 +492,3 @@ class OriginCountryRule(AbstractBaseRule):
 
     def test_user(self, request=None):
         return (self.get_country(request) or '') == self.country.lower()
-
