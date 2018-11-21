@@ -4,6 +4,7 @@ import logging
 
 from django.conf.urls import include, url
 from django.db import transaction
+from django.db.models import F
 from django.http import Http404
 from django.shortcuts import redirect, render
 from django.template.defaultfilters import pluralize
@@ -19,6 +20,7 @@ from wagtail.core.models import Page
 
 from wagtail_personalisation import admin_urls, models, utils
 from wagtail_personalisation.adapters import get_segment_adapter
+from wagtail_personalisation.models import PersonalisablePageMetadata
 
 logger = logging.getLogger(__name__)
 
@@ -276,14 +278,22 @@ def delete_related_variants(request, page):
 
     if request.method == 'POST':
         parent_id = page.get_parent().id
-        variants_metadata = variants_metadata.select_related('variant')
         with transaction.atomic():
-            for metadata in variants_metadata.iterator():
-                # Call delete() on objects to trigger any signals or hooks.
-                metadata.variant.delete()
-            # Delete the page's main variant and the page itself.
-            page.personalisation_metadata.delete()
-            page.delete()
+            # To ensure variants are deleted for all descendants, start with
+            # the deepest ones, and explicitly delete variants and metadata
+            # for all of them, including the page itself. Otherwise protected
+            # foreign key constraints are violated. Only consider canonical
+            # pages.
+            for metadata in PersonalisablePageMetadata.objects.filter(
+                canonical_page__in=page.get_descendants(inclusive=True),
+                variant=F("canonical_page"),
+            ).order_by('-canonical_page__depth'):
+                for variant_metadata in metadata.variants_metadata.select_related('variant'):
+                    # Call delete() on objects to trigger any signals or hooks.
+                    variant_metadata.variant.delete()
+                metadata.delete()
+                metadata.canonical_page.delete()
+
         msg = _("Page '{0}' and its variants deleted.")
         messages.success(
             request,
