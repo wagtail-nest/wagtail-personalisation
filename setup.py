@@ -2,9 +2,9 @@ import re
 from setuptools import find_packages, setup
 
 install_requires = [
-    'wagtail>=1.10,<1.14',
+    'wagtail>=2.0,<2.1',
     'user-agents>=1.0.1',
-    'wagtailfontawesome>=1.0.6',
+    'wagtailfontawesome>=1.1.3',
 ]
 
 tests_require = [
@@ -19,7 +19,7 @@ tests_require = [
     'pytest-sugar==0.7.1',
     'pytest-mock==1.6.3',
     'pytest==3.1.0',
-    'wagtail_factories==0.3.0',
+    'wagtail_factories==1.1.0',
 ]
 
 docs_require = [
