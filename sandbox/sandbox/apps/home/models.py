@@ -1,9 +1,9 @@
 from __future__ import absolute_import, unicode_literals
 
-from wagtail.wagtailadmin.edit_handlers import RichTextFieldPanel, StreamFieldPanel
-from wagtail.wagtailcore import blocks
-from wagtail.wagtailcore.fields import RichTextField, StreamField
-from wagtail.wagtailcore.models import Page
+from wagtail.admin.edit_handlers import RichTextFieldPanel, StreamFieldPanel
+from wagtail.core import blocks
+from wagtail.core.fields import RichTextField, StreamField
+from wagtail.core.models import Page
 
 from wagtail_personalisation.models import PersonalisablePageMixin
 from wagtail_personalisation.blocks import PersonalisedStructBlock
