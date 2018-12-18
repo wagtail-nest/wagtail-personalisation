@@ -2,9 +2,9 @@ import re
 from setuptools import find_packages, setup
 
 install_requires = [
-    'wagtail>=1.10,<1.14',
+    'wagtail>=2.0,<2.1',
     'user-agents>=1.0.1',
-    'wagtailfontawesome>=1.0.6',
+    'wagtailfontawesome>=1.1.3',
 ]
 
 tests_require = [
@@ -19,7 +19,7 @@ tests_require = [
     'pytest-sugar==0.7.1',
     'pytest-mock==1.6.3',
     'pytest==3.1.0',
-    'wagtail_factories==0.3.0',
+    'wagtail_factories==1.1.0',
 ]
 
 docs_require = [
@@ -32,7 +32,7 @@ with open('README.rst') as fh:
 
 setup(
     name='wagtail-personalisation-molo',
-    version='0.11.3',
+    version='1.0.0',
     description='A forked version of Wagtail add-on for showing personalized content',
     author='Praekelt.org',
     author_email='dev@praekeltfoundation.org',
@@ -49,13 +49,11 @@ setup(
     license='MIT',
     long_description=long_description,
     classifiers=[
-        'Development Status :: 2 - Pre-Alpha',
+        'Development Status :: 5 - Production/Stable',
         'Environment :: Web Environment',
         'Intended Audience :: Developers',
         'License :: OSI Approved :: BSD License',
         'Operating System :: OS Independent',
-        'Programming Language :: Python :: 2',
-        'Programming Language :: Python :: 2.7',
         'Programming Language :: Python :: 3',
         'Programming Language :: Python :: 3.4',
         'Programming Language :: Python :: 3.5',

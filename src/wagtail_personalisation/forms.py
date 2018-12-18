@@ -10,7 +10,7 @@ from django.contrib.staticfiles.templatetags.staticfiles import static
 from django.test.client import RequestFactory
 from django.utils.lru_cache import lru_cache
 from django.utils.translation import ugettext_lazy as _
-from wagtail.wagtailadmin.forms import WagtailAdminModelForm
+from wagtail.admin.forms import WagtailAdminModelForm
 
 SessionStore = import_module(settings.SESSION_ENGINE).SessionStore
 

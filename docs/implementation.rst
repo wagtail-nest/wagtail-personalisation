@@ -37,7 +37,7 @@ Rules consist of two important elements, the model's fields and the ``test_user`
 A very simple example of a rule would look something like this::
 
     from django.db import models
-    from wagtail.wagtailadmin.edit_handlers import FieldPanel
+    from wagtail.admin.edit_handlers import FieldPanel
     from personalisation import AbstractBaseRule
     
     class MyNewRule(AbstractBaseRule):

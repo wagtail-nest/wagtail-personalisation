@@ -7,10 +7,10 @@ from django.core.urlresolvers import reverse
 from django.template.defaultfilters import pluralize
 from django.utils.safestring import mark_safe
 from django.utils.translation import ugettext_lazy as _
-from wagtail.wagtailadmin.site_summary import PagesSummaryItem, SummaryItem
-from wagtail.wagtailadmin.widgets import Button, ButtonWithDropdownFromHook
-from wagtail.wagtailcore import hooks
-from wagtail.wagtailcore.models import Page
+from wagtail.admin.site_summary import PagesSummaryItem, SummaryItem
+from wagtail.admin.widgets import Button, ButtonWithDropdownFromHook
+from wagtail.core import hooks
+from wagtail.core.models import Page
 
 from wagtail_personalisation import admin_urls, models, utils
 from wagtail_personalisation.adapters import get_segment_adapter
@@ -35,7 +35,7 @@ def set_visit_count(page, request, serve_args, serve_kwargs):
     to a segment.
 
     :param page: The page being served
-    :type page: wagtail.wagtailcore.models.Page
+    :type page: wagtail.core.models.Page
     :param request: The http request
     :type request: django.http.HttpRequest
 
@@ -49,7 +49,7 @@ def segment_user(page, request, serve_args, serve_kwargs):
     """Apply a segment to a visitor before serving the page.
 
     :param page: The page being served
-    :type page: wagtail.wagtailcore.models.Page
+    :type page: wagtail.core.models.Page
     :param request: The http request
     :type request: django.http.HttpRequest
 
@@ -63,12 +63,12 @@ def serve_variant(page, request, serve_args, serve_kwargs):
     """Apply a segment to a visitor before serving the page.
 
     :param page: The page being served
-    :type page: wagtail.wagtailcore.models.Page
+    :type page: wagtail.core.models.Page
     :param request: The http request
     :type request: django.http.HttpRequest
     :returns: A variant if one is available for the visitor's segment,
               otherwise the original page
-    :rtype: wagtail.wagtailcore.models.Page
+    :rtype: wagtail.core.models.Page
 
     """
     user_segments = []

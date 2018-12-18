@@ -15,7 +15,7 @@ from django.utils.translation import ugettext_lazy as _
 from django.test.client import RequestFactory
 from modelcluster.fields import ParentalKey
 from user_agents import parse
-from wagtail.wagtailadmin.edit_handlers import (
+from wagtail.admin.edit_handlers import (
     FieldPanel, FieldRowPanel, PageChooserPanel)
 
 SessionStore = import_module(settings.SESSION_ENGINE).SessionStore
