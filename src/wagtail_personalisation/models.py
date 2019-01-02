@@ -21,6 +21,14 @@ from wagtail_personalisation.utils import count_active_days
 from .forms import SegmentAdminForm
 
 
+class RulePanel(InlinePanel):
+    def on_model_bound(self):
+        self.db_field = self.model._meta.get_field(
+            self.relation_name.replace('_related', 's'))
+        manager = getattr(self.model, self.relation_name)
+        self.related = manager.rel
+
+
 class SegmentQuerySet(models.QuerySet):
     def enabled(self):
         return self.filter(status=self.model.STATUS_ENABLED)
@@ -121,7 +129,7 @@ class Segment(ClusterableModel):
                 FieldPanel('randomisation_percent', classname='percent_field'),
             ], heading="Segment"),
             MultiFieldPanel([
-                InlinePanel(
+                RulePanel(
                     "{}_related".format(rule_model._meta.db_table),
                     label='{}{}'.format(
                         rule_model._meta.verbose_name,
