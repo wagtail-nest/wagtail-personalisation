@@ -2,7 +2,7 @@ import re
 from setuptools import find_packages, setup
 
 install_requires = [
-    'wagtail>=2.0,<2.1',
+    'wagtail>=2.2,<2.3',
     'user-agents>=1.0.1',
     'wagtailfontawesome>=1.1.3',
 ]
