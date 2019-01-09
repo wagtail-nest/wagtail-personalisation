@@ -65,8 +65,9 @@ def test_exclude_variants_with_pages_querysets():
     '''
     Test that excludes variant works for querysets too
     '''
-    page1 = WagtailPage(path="/", depth=0, url_path="/", title="Hoi")
-    page2 = WagtailPage(path="/", depth=0, url_path="/", title="Hoi")
+    for i in range(5):
+        page = WagtailPage(path="/" + str(i), depth=0, url_path="/", title="Hoi " + str(i))
+        page.save()
     pages = WagtailPage.objects.all().order_by('id')
     result = exclude_variants(pages)
     assert result == pages
