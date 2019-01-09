@@ -1,6 +1,8 @@
 from wagtail_personalisation.utils import (
     exclude_variants, impersonate_other_page)
 
+from wagtail.core.models import Page as WagtailPage
+
 
 class Page(object):
     def __init__(self, path, depth, url_path, title):
@@ -57,3 +59,15 @@ def test_exclude_variants_excludes_pages_with_metadata_not_canonical():
     page.personalisation_metadata.is_canonical = False
     result = exclude_variants([page])
     assert result == []
+
+
+def test_exclude_variants_with_pages_querysets():
+    '''
+    Test that excludes variant works for querysets too
+    '''
+    page1 = WagtailPage(path="/", depth=0, url_path="/", title="Hoi")
+    page2 = WagtailPage(path="/", depth=0, url_path="/", title="Hoi")
+    pages = WagtailPage.objects.all().order_by('id')
+    print(pages)
+    result = exclude_variants(pages)
+    assert result == pages
