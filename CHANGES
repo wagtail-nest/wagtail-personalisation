@@ -1,3 +1,7 @@
+1.0.2
+==================
+ - Upgrade to Wagtail 2.2
+
 1.0.1
 ==================
  - Added RulePanel, a subclass of InlinePanel, for Rules
