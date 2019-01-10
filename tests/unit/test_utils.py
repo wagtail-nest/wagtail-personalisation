@@ -63,7 +63,7 @@ def test_exclude_variants_excludes_pages_with_metadata_not_canonical():
 
 def test_exclude_variants_with_pages_querysets():
     '''
-    Test that excludes variant works for querysets too
+    Test that excludes variant works for querysets
     '''
     for i in range(5):
         page = WagtailPage(path="/" + str(i), depth=0, url_path="/", title="Hoi " + str(i))
@@ -77,7 +77,8 @@ def test_exclude_variants_with_pages_querysets():
 
 def test_exclude_variants_with_pages_querysets_not_canonical():
     '''
-    Test that excludes variant works for querysets too
+    Test that excludes variant works for querysets with
+    personalisation_metadata canonical False
     '''
     for i in range(5):
         page = WagtailPage(path="/" + str(i), depth=0, url_path="/", title="Hoi " + str(i))
@@ -95,7 +96,7 @@ def test_exclude_variants_with_pages_querysets_not_canonical():
 
 def test_exclude_variants_with_pages_querysets_meta_none():
     '''
-    Test that excludes variant works for querysets too
+    Test that excludes variant works for querysets with meta as none
     '''
     for i in range(5):
         page = WagtailPage(path="/" + str(i), depth=0, url_path="/", title="Hoi " + str(i))
