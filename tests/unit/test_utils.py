@@ -69,5 +69,10 @@ def test_exclude_variants_with_pages_querysets():
         page = WagtailPage(path="/" + str(i), depth=0, url_path="/", title="Hoi " + str(i))
         page.save()
     pages = WagtailPage.objects.all().order_by('id')
+    # add variants
+    for page in pages:
+        page.personalisation_metadata = Metadata(is_canonical=False)
+    pages = WagtailPage.objects.all().order_by('id')
     result = exclude_variants(pages)
-    assert result == pages
+    assert type(result) == type(pages)
+    assert result != pages
