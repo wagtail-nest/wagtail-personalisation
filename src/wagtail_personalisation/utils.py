@@ -103,7 +103,6 @@ def exclude_variants(pages):
     :return: List|Queryset of pages that aren't variants
     :rtype: list or queryset (depending on the param type)
     """
-
     for page in pages:
         if hasattr(page, 'personalisation_metadata') is not False and \
            page.personalisation_metadata is not None and \
@@ -111,5 +110,5 @@ def exclude_variants(pages):
                 if (type(pages) == list):
                     pages.remove(page)
                 else:
-                    pages.exclude(pk=page.pk)
+                    pages = pages.exclude(pk=page.pk)
     return pages
