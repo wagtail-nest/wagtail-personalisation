@@ -1,6 +1,8 @@
 from wagtail_personalisation.utils import (
     exclude_variants, impersonate_other_page)
 
+from wagtail.core.models import Page as WagtailPage
+
 
 class Page(object):
     def __init__(self, path, depth, url_path, title):
@@ -57,3 +59,54 @@ def test_exclude_variants_excludes_pages_with_metadata_not_canonical():
     page.personalisation_metadata.is_canonical = False
     result = exclude_variants([page])
     assert result == []
+
+
+def test_exclude_variants_with_pages_querysets():
+    '''
+    Test that excludes variant works for querysets
+    '''
+    for i in range(5):
+        page = WagtailPage(path="/" + str(i), depth=0, url_path="/", title="Hoi " + str(i))
+        page.save()
+    pages = WagtailPage.objects.all().order_by('id')
+
+    result = exclude_variants(pages)
+    assert type(result) == type(pages)
+    assert result == pages
+
+
+def test_exclude_variants_with_pages_querysets_not_canonical():
+    '''
+    Test that excludes variant works for querysets with
+    personalisation_metadata canonical False
+    '''
+    for i in range(5):
+        page = WagtailPage(path="/" + str(i), depth=0, url_path="/", title="Hoi " + str(i))
+        page.save()
+    pages = WagtailPage.objects.all().order_by('id')
+    # add variants
+    for page in pages:
+        page.personalisation_metadata = Metadata(is_canonical=False)
+        page.save()
+
+    result = exclude_variants(pages)
+    assert type(result) == type(pages)
+    assert result.count() == 0
+
+
+def test_exclude_variants_with_pages_querysets_meta_none():
+    '''
+    Test that excludes variant works for querysets with meta as none
+    '''
+    for i in range(5):
+        page = WagtailPage(path="/" + str(i), depth=0, url_path="/", title="Hoi " + str(i))
+        page.save()
+    pages = WagtailPage.objects.all().order_by('id')
+    # add variants
+    for page in pages:
+        page.personalisation_metadata = None
+        page.save()
+
+    result = exclude_variants(pages)
+    assert type(result) == type(pages)
+    assert result == pages

@@ -98,22 +98,17 @@ def parse_tag(token, parser):
 def exclude_variants(pages):
     """Checks if page is not a variant
 
-    :param pages: List of pages to check
-    :type pages: list
-    :return: List of pages that aren't variants
-    :rtype: list
+    :param pages: List | Queryset of pages to check
+    :type pages: list or querset
+    :return: List|Queryset of pages that aren't variants
+    :rtype: list or queryset (depending on the param type)
     """
-    return [
-        page for page in pages
-        if (
-            (
-                hasattr(page, 'personalisation_metadata') is False
-            ) or
-            (
-                hasattr(page, 'personalisation_metadata') and page.personalisation_metadata is None
-            ) or
-            (
-                hasattr(page, 'personalisation_metadata') and page.personalisation_metadata.is_canonical
-            )
-        )
-    ]
+    for page in pages:
+        if hasattr(page, 'personalisation_metadata') is not False and \
+           page.personalisation_metadata is not None and \
+           page.personalisation_metadata.is_canonical is not True:
+                if (type(pages) == list):
+                    pages.remove(page)
+                else:
+                    pages = pages.exclude(pk=page.pk)
+    return pages
