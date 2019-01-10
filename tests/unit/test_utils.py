@@ -69,10 +69,43 @@ def test_exclude_variants_with_pages_querysets():
         page = WagtailPage(path="/" + str(i), depth=0, url_path="/", title="Hoi " + str(i))
         page.save()
     pages = WagtailPage.objects.all().order_by('id')
+
+    result = exclude_variants(pages)
+    assert type(result) == type(pages)
+    assert result == pages
+
+
+def test_exclude_variants_with_pages_querysets_not_canonical():
+    '''
+    Test that excludes variant works for querysets too
+    '''
+    for i in range(5):
+        page = WagtailPage(path="/" + str(i), depth=0, url_path="/", title="Hoi " + str(i))
+        page.save()
+    pages = WagtailPage.objects.all().order_by('id')
     # add variants
     for page in pages:
         page.personalisation_metadata = Metadata(is_canonical=False)
-    pages = WagtailPage.objects.all().order_by('id')
+        page.save()
+
     result = exclude_variants(pages)
     assert type(result) == type(pages)
-    assert result != pages
+    assert result.count() == 0
+
+
+def test_exclude_variants_with_pages_querysets_meta_none():
+    '''
+    Test that excludes variant works for querysets too
+    '''
+    for i in range(5):
+        page = WagtailPage(path="/" + str(i), depth=0, url_path="/", title="Hoi " + str(i))
+        page.save()
+    pages = WagtailPage.objects.all().order_by('id')
+    # add variants
+    for page in pages:
+        page.personalisation_metadata = None
+        page.save()
+
+    result = exclude_variants(pages)
+    assert type(result) == type(pages)
+    assert result == pages
