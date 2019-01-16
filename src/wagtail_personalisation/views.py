@@ -45,7 +45,10 @@ class SegmentModelAdmin(ModelAdmin):
                     'page_count', 'variant_count', 'statistics')
     index_view_extra_js = ['js/commons.js', 'js/index.js']
     index_view_extra_css = ['css/index.css']
-    form_view_extra_js = ['js/commons.js', 'js/form.js']
+    form_view_extra_js = ['js/commons.js', 'js/form.js',
+                          'js/segment_form_control.js',
+                          'wagtailadmin/js/page-chooser-modal.js',
+                          'wagtailadmin/js/page-chooser.js']
     form_view_extra_css = ['css/form.css']
 
     def index_view(self, request):
