@@ -196,8 +196,10 @@ class SessionSegmentsAdapter(BaseSegmentsAdapter):
         for segment in enabled_segments:
             if segment.is_static and segment.static_users.filter(id=self.request.user.id).exists():
                 additional_segments.append(segment)
-            elif (segment.excluded_users.filter(id=self.request.user.id).exists() or
-                    segment in excluded_segments):
+            elif any((
+                segment.excluded_users.filter(id=self.request.user.id).exists(),
+                segment in excluded_segments
+            )):
                 continue
             elif not segment.is_static or not segment.is_full:
                 segment_rules = []
