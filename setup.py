@@ -2,7 +2,7 @@ import re
 from setuptools import find_packages, setup
 
 install_requires = [
-    'wagtail>=2.0',
+    'wagtail>=2.0,<2.3',
     'user-agents>=1.1.0',
     'wagtailfontawesome>=1.1.3',
     'pycountry',
@@ -20,7 +20,7 @@ tests_require = [
     'pytest-pythonpath==0.7.2',
     'pytest-sugar==0.9.1',
     'pytest==3.4.2',
-    'wagtail_factories==1.0.0',
+    'wagtail_factories==1.1.0',
     'pytest-mock==1.6.3',
 ]
 
@@ -52,7 +52,7 @@ setup(
     license='MIT',
     long_description=long_description,
     classifiers=[
-        'Development Status :: 2 - Pre-Alpha',
+        'Development Status :: 5 - Production/Stable',
         'Environment :: Web Environment',
         'Intended Audience :: Developers',
         'License :: OSI Approved :: BSD License',

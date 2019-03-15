@@ -54,7 +54,7 @@ master_doc = 'index'
 
 # General information about the project.
 project = 'wagtail-personalisation'
-copyright = '2018, Lab Digital BV'
+copyright = '2019, Lab Digital BV'
 author = 'Lab Digital BV'
 
 # The version info for the project you're documenting, acts as replacement for

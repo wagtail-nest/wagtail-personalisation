@@ -3,8 +3,14 @@ import pytest
 from django.test import override_settings
 
 from tests.factories.page import ContentPageFactory
+from wagtail.core.models import Page as WagtailPage
 from wagtail_personalisation.utils import (
-    can_delete_pages, get_client_ip, impersonate_other_page)
+    can_delete_pages, get_client_ip, impersonate_other_page, exclude_variants)
+
+
+class Metadata:
+    def __init__(self, is_canonical=True):
+        self.is_canonical = is_canonical
 
 
 @pytest.fixture
@@ -64,3 +70,54 @@ def test_get_client_ip_custom_get_client_ip_function_does_not_exist(rf):
 )
 def test_get_client_ip_custom_get_client_ip_used(rf):
     assert get_client_ip(rf.get('/')) == '123.123.123.123'
+
+
+def test_exclude_variants_with_pages_querysets():
+    '''
+    Test that excludes variant works for querysets
+    '''
+    for i in range(5):
+        page = WagtailPage(path="/" + str(i), depth=0, url_path="/", title="Hoi " + str(i))
+        page.save()
+    pages = WagtailPage.objects.all().order_by('id')
+
+    result = exclude_variants(pages)
+    assert type(result) == type(pages)
+    assert result == pages
+
+
+def test_exclude_variants_with_pages_querysets_not_canonical():
+    '''
+    Test that excludes variant works for querysets with
+    personalisation_metadata canonical False
+    '''
+    for i in range(5):
+        page = WagtailPage(path="/" + str(i), depth=0, url_path="/", title="Hoi " + str(i))
+        page.save()
+    pages = WagtailPage.objects.all().order_by('id')
+    # add variants
+    for page in pages:
+        page.personalisation_metadata = Metadata(is_canonical=False)
+        page.save()
+
+    result = exclude_variants(pages)
+    assert type(result) == type(pages)
+    assert result.count() == 0
+
+
+def test_exclude_variants_with_pages_querysets_meta_none():
+    '''
+    Test that excludes variant works for querysets with meta as none
+    '''
+    for i in range(5):
+        page = WagtailPage(path="/" + str(i), depth=0, url_path="/", title="Hoi " + str(i))
+        page.save()
+    pages = WagtailPage.objects.all().order_by('id')
+    # add variants
+    for page in pages:
+        page.personalisation_metadata = None
+        page.save()
+
+    result = exclude_variants(pages)
+    assert type(result) == type(pages)
+    assert result == pages

@@ -1,5 +1,3 @@
-from __future__ import absolute_import, unicode_literals
-
 import datetime
 
 import pytest
@@ -8,7 +6,7 @@ from django.db.models import ProtectedError
 from tests.factories.page import ContentPageFactory
 from tests.factories.segment import SegmentFactory
 from tests.site.pages import models
-from wagtail_personalisation.models import PersonalisablePageMetadata
+from wagtail_personalisation.models import PersonalisablePageMetadata, Segment
 from wagtail_personalisation.rules import TimeRule
 
 
@@ -73,3 +71,10 @@ def test_sitemap_generation_for_canonical_pages_is_enabled(segmented_page):
 def test_sitemap_generation_for_variants_is_disabled(segmented_page):
     assert not segmented_page.personalisation_metadata.is_canonical
     assert not segmented_page.get_sitemap_urls()
+
+
+@pytest.mark.django_db
+def test_segment_edit_view(site, client, django_user_model):
+    test_segment = Segment()
+    new_panel = test_segment.panels[1].children[0].bind_to_model(Segment)
+    assert new_panel.related.name == "wagtail_personalisation_timerules"

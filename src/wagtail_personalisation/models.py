@@ -1,16 +1,15 @@
 import random
 
+import wagtail
 from django import forms
 from django.conf import settings
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models, transaction
 from django.template.defaultfilters import slugify
-from django.utils.encoding import python_2_unicode_compatible
 from django.utils.functional import cached_property
 from django.utils.safestring import mark_safe
 from django.utils.translation import ugettext_lazy as _
 from modelcluster.models import ClusterableModel
-import wagtail
 from wagtail.admin.edit_handlers import (
     FieldPanel, FieldRowPanel, InlinePanel, MultiFieldPanel)
 from wagtail.core.models import Page
@@ -21,12 +20,19 @@ from wagtail_personalisation.utils import count_active_days
 from .forms import SegmentAdminForm
 
 
+class RulePanel(InlinePanel):
+    def on_model_bound(self):
+        self.db_field = self.model._meta.get_field(
+            self.relation_name.replace('_related', 's'))
+        manager = getattr(self.model, self.relation_name)
+        self.related = manager.rel
+
+
 class SegmentQuerySet(models.QuerySet):
     def enabled(self):
         return self.filter(status=self.model.STATUS_ENABLED)
 
 
-@python_2_unicode_compatible
 class Segment(ClusterableModel):
     """The segment model."""
     STATUS_ENABLED = 'enabled'
@@ -121,8 +127,8 @@ class Segment(ClusterableModel):
                 FieldPanel('randomisation_percent', classname='percent_field'),
             ], heading="Segment"),
             MultiFieldPanel([
-                InlinePanel(
-                    "{}s".format(rule_model._meta.db_table),
+                RulePanel(
+                    "{}_related".format(rule_model._meta.db_table),
                     label='{}{}'.format(
                         rule_model._meta.verbose_name,
                         ' ({})'.format(_('Static compatible')) if rule_model.static else ''
