@@ -5,6 +5,7 @@ from django.utils.text import slugify
 from wagtail_factories.factories import PageFactory
 
 from tests.site.pages import models
+from wagtail_personalisation.models import PersonalisablePageMetadata
 
 
 class ContentPageFactory(PageFactory):
@@ -22,3 +23,9 @@ class RegularPageFactory(PageFactory):
 
     class Meta:
         model = models.RegularPage
+
+
+class PersonalisablePageMetadataFactory(factory.DjangoModelFactory):
+
+    class Meta:
+        model = PersonalisablePageMetadata

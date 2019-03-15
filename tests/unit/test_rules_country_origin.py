@@ -1,12 +1,11 @@
 from importlib.util import find_spec
-from unittest.mock import call, MagicMock, patch
+from unittest.mock import MagicMock, call, patch
 
 import pytest
 
 from tests.factories.rule import OriginCountryRuleFactory
 from tests.factories.segment import SegmentFactory
 from wagtail_personalisation.rules import get_geoip_module
-
 
 skip_if_geoip2_installed = pytest.mark.skipif(
     find_spec('geoip2'), reason='requires GeoIP2 to be not installed'

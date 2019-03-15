@@ -6,7 +6,7 @@ from wagtail.core.models import Page
 from wagtail_personalisation.models import Segment
 from wagtail_personalisation.rules import VisitCountRule
 from wagtail_personalisation.views import (
-    SegmentModelDeleteView, SegmentModelAdmin)
+    SegmentModelAdmin, SegmentModelDeleteView)
 
 
 @pytest.mark.django_db
