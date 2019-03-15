@@ -75,6 +75,6 @@ def test_sitemap_generation_for_variants_is_disabled(segmented_page):
 
 @pytest.mark.django_db
 def test_segment_edit_view(site, client, django_user_model):
-    test_segment = Segment()
+    test_segment = SegmentFactory()
     new_panel = test_segment.panels[1].children[0].bind_to_model(Segment)
     assert new_panel.related.name == "wagtail_personalisation_timerules"

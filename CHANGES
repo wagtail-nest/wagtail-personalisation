@@ -1,6 +1,6 @@
 0.13.0
 =================
- - Merged Praekolt fork
+ - Merged Praekelt fork
  - Add custom javascript to segment forms
  - bugfix:exclude variant returns queryset when params is queryset
  - Added RulePanel, a subclass of InlinePanel, for Rules
@@ -12,7 +12,7 @@
 
 0.12.0
 ==================
- - Merged forks of Torchbox and Praekolt
+ - Merged forks of Torchbox and Praekelt
  - Wagtail 2 compatibility
  - Makefile adjustments for portability
  - Adds simple segment forcing for superusers

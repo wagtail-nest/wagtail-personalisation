@@ -22,8 +22,8 @@ from .forms import SegmentAdminForm
 
 class RulePanel(InlinePanel):
     def on_model_bound(self):
-        self.db_field = self.model._meta.get_field(
-            self.relation_name.replace('_related', 's'))
+        self.relation_name = self.relation_name.replace('_related', 's')
+        self.db_field = self.model._meta.get_field(self.relation_name)
         manager = getattr(self.model, self.relation_name)
         self.related = manager.rel
 
