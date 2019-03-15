@@ -11,9 +11,9 @@ from wagtail.documents import urls as wagtaildocs_urls
 from sandbox.apps.search import views as search_views
 
 urlpatterns = [
-    url(r'^admin/', admin.site.urls),
+    url(r'^django-admin/', admin.site.urls),
 
-    url(r'^cms/', include(wagtailadmin_urls)),
+    url(r'^admin/', include(wagtailadmin_urls)),
     url(r'^documents/', include(wagtaildocs_urls)),
 
     url(r'^search/$', search_views.search, name='search'),
