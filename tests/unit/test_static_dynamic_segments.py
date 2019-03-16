@@ -487,7 +487,7 @@ def test_count_users_matching_static_rules(site, client, mocker, django_user_mod
     form = form_with_data(segment, rule)
     mocker.patch('wagtail_personalisation.rules.VisitCountRule.test_user', return_value=True)
 
-    assert form.count_matching_users([rule], True) is 2
+    assert form.count_matching_users([rule], True) == 2
 
 
 @pytest.mark.django_db
@@ -500,7 +500,7 @@ def test_count_matching_users_excludes_staff(site, client, mocker, django_user_m
     form = form_with_data(segment, rule)
     mock_test_user = mocker.patch('wagtail_personalisation.rules.VisitCountRule.test_user', return_value=True)
 
-    assert form.count_matching_users([rule], True) is 1
+    assert form.count_matching_users([rule], True) == 1
     assert mock_test_user.call_count == 1
 
 
@@ -514,7 +514,7 @@ def test_count_matching_users_excludes_inactive(site, client, mocker, django_use
     form = form_with_data(segment, rule)
     mock_test_user = mocker.patch('wagtail_personalisation.rules.VisitCountRule.test_user', return_value=True)
 
-    assert form.count_matching_users([rule], True) is 1
+    assert form.count_matching_users([rule], True) == 1
     assert mock_test_user.call_count == 1
 
 
@@ -532,7 +532,7 @@ def test_count_matching_users_only_counts_static_rules(site, client, mocker, dja
     form = form_with_data(segment, rule)
     mock_test_user = mocker.patch('wagtail_personalisation.rules.TimeRule.test_user')
 
-    assert form.count_matching_users([rule], True) is 0
+    assert form.count_matching_users([rule], True) == 0
     assert mock_test_user.call_count == 0
 
 
@@ -551,7 +551,7 @@ def test_count_matching_users_handles_match_any(site, client, mocker, django_use
         'wagtail_personalisation.rules.VisitCountRule.test_user',
         side_effect=[True, False, True, False])
 
-    assert form.count_matching_users([first_rule, second_rule], True) is 2
+    assert form.count_matching_users([first_rule, second_rule], True) == 2
     mock_test_user.call_count == 4
 
 
@@ -570,5 +570,5 @@ def test_count_matching_users_handles_match_all(site, client, mocker, django_use
         'wagtail_personalisation.rules.VisitCountRule.test_user',
         side_effect=[True, True, False, True])
 
-    assert form.count_matching_users([first_rule, second_rule], False) is 1
+    assert form.count_matching_users([first_rule, second_rule], False) == 1
     mock_test_user.call_count == 4
