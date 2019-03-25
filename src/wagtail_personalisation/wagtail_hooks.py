@@ -1,5 +1,3 @@
-from __future__ import absolute_import, unicode_literals
-
 import logging
 
 from django.conf.urls import include, url
@@ -227,8 +225,7 @@ class PersonalisedPagesSummaryPanel(PagesSummaryItem):
     order = 2100
 
     def render(self):
-        page_count = models.PersonalisablePageMetadata.objects.filter(
-            segment__isnull=True).count()
+        page_count = models.PersonalisablePageMetadata.objects.filter(segment__isnull=True).count()
         title = _("Personalised Page")
         return mark_safe("""
             <li class="icon icon-fa-file-o">

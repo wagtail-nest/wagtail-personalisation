@@ -13,6 +13,7 @@
 .vscode/
 
 build/
+ve/
 dist/
 htmlcov/
 docs/_build

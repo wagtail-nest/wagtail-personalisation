@@ -1,6 +1,4 @@
-from __future__ import absolute_import, unicode_literals
 import logging
-
 import re
 from importlib import import_module
 
@@ -13,7 +11,6 @@ from django.db import models
 from django.template.defaultfilters import slugify
 from django.test.client import RequestFactory
 from django.utils import timezone
-from django.utils.encoding import force_text, python_2_unicode_compatible
 from django.utils.translation import ugettext_lazy as _
 from modelcluster.fields import ParentalKey
 from user_agents import parse
@@ -43,7 +40,6 @@ def get_geoip_module():
             'warning if you use one of those.')
 
 
-@python_2_unicode_compatible
 class AbstractBaseRule(models.Model):
     """Base for creating rules to segment users with."""
     icon = 'fa-circle-o'
@@ -59,7 +55,7 @@ class AbstractBaseRule(models.Model):
         verbose_name = 'Abstract segmentation rule'
 
     def __str__(self):
-        return force_text(self._meta.verbose_name)
+        return str(self._meta.verbose_name)
 
     def test_user(self):
         """Test if the user matches this rule."""
@@ -67,7 +63,7 @@ class AbstractBaseRule(models.Model):
 
     def encoded_name(self):
         """Return a string with a slug for the rule."""
-        return slugify(force_text(self).lower())
+        return slugify(str(self).lower())
 
     def description(self):
         """Return a description explaining the functionality of the rule.

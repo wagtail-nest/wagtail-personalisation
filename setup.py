@@ -20,7 +20,7 @@ tests_require = [
     'pytest-pythonpath==0.7.2',
     'pytest-sugar==0.9.1',
     'pytest==3.4.2',
-    'wagtail_factories==1.0.0',
+    'wagtail_factories==1.1.0',
     'pytest-mock==1.6.3',
 ]
 
@@ -35,7 +35,7 @@ with open('README.rst') as fh:
 
 setup(
     name='wagtail-personalisation',
-    version='0.12.1',
+    version='0.13.0',
     description='A Wagtail add-on for showing personalized content',
     author='Lab Digital BV and others',
     author_email='opensource@labdigital.nl',
@@ -52,7 +52,7 @@ setup(
     license='MIT',
     long_description=long_description,
     classifiers=[
-        'Development Status :: 2 - Pre-Alpha',
+        'Development Status :: 5 - Production/Stable',
         'Environment :: Web Environment',
         'Intended Audience :: Developers',
         'License :: OSI Approved :: BSD License',

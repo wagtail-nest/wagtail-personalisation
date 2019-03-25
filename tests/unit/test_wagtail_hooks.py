@@ -1,7 +1,5 @@
 import pytest
-
 from django.http import Http404
-
 from wagtail.core.models import Page
 
 from tests.factories.segment import SegmentFactory

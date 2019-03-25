@@ -1,10 +1,11 @@
 import pytest
-
 from django.test import override_settings
+from wagtail.core.models import Page as WagtailPage
 
-from tests.factories.page import ContentPageFactory
+from tests.factories.page import (
+    ContentPageFactory, PersonalisablePageMetadataFactory)
 from wagtail_personalisation.utils import (
-    can_delete_pages, get_client_ip, impersonate_other_page)
+    can_delete_pages, exclude_variants, get_client_ip, impersonate_other_page)
 
 
 @pytest.fixture
@@ -64,3 +65,57 @@ def test_get_client_ip_custom_get_client_ip_function_does_not_exist(rf):
 )
 def test_get_client_ip_custom_get_client_ip_used(rf):
     assert get_client_ip(rf.get('/')) == '123.123.123.123'
+
+
+def test_exclude_variants_with_pages_querysets():
+    '''
+    Test that excludes variant works for querysets
+    '''
+    for i in range(5):
+        page = ContentPageFactory(path="/" + str(i), depth=0, url_path="/", title="Hoi " + str(i))
+        page.save()
+    pages = WagtailPage.objects.all().specific().order_by('id')
+
+    result = exclude_variants(pages)
+    assert type(result) == type(pages)
+    assert set(result.values_list('pk', flat=True)) == set(pages.values_list('pk', flat=True))
+
+
+def test_exclude_variants_with_pages_querysets_not_canonical():
+    '''
+    Test that excludes variant works for querysets with
+    personalisation_metadata canonical False
+    '''
+    for i in range(5):
+        page = ContentPageFactory(path="/" + str(i), depth=0, url_path="/", title="Hoi " + str(i))
+        page.save()
+    pages = WagtailPage.objects.all().specific().order_by('id')
+    # add variants
+    for page in pages:
+        variant = ContentPageFactory(title='variant %d' % page.pk)
+        page.personalisation_metadata = PersonalisablePageMetadataFactory(canonical_page=page, variant=variant)
+        page.save()
+
+    pages = WagtailPage.objects.all().specific()
+    result = exclude_variants(pages)
+    assert type(result) == type(pages)
+    assert result.count() < pages.count()
+
+
+def test_exclude_variants_with_pages_querysets_meta_none():
+    '''
+    Test that excludes variant works for querysets with meta as none
+    '''
+    for i in range(5):
+        page = ContentPageFactory(path="/" + str(i), depth=0, url_path="/", title="Hoi " + str(i))
+        page.save()
+    pages = WagtailPage.objects.all().specific().order_by('id')
+    # add variants
+    for page in pages:
+        page.personalisation_metadata = PersonalisablePageMetadataFactory(canonical_page=page, variant=page)
+        page.save()
+
+    pages = WagtailPage.objects.all().specific()
+    result = exclude_variants(pages)
+    assert type(result) == type(pages)
+    assert set(result.values_list('pk', flat=True)) == set(pages.values_list('pk', flat=True))
