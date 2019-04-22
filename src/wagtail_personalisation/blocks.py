@@ -16,6 +16,7 @@ class PersonalisedStructBlock(blocks.StructBlock):
 
     segment = blocks.ChoiceBlock(
         choices=list_segment_choices,
+        default=-1, # default Show to Everyone
         required=False, label=_("Personalisation segment"),
         help_text=_("Only show this content block for users in this segment"))
 
