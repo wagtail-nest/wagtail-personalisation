@@ -419,7 +419,7 @@ class UserIsLoggedInRule(AbstractBaseRule):
         verbose_name = _('Logged in Rule')
 
     def test_user(self, request=None):
-        return request.user.is_authenticated() == self.is_logged_in
+        return request.user.is_authenticated == self.is_logged_in
 
     def description(self):
         return {
