@@ -2,6 +2,7 @@ import pytest
 from django.http import Http404
 from wagtail.core.models import Page
 
+from tests.factories.page import ContentPageFactory
 from tests.factories.segment import SegmentFactory
 from wagtail_personalisation import adapters, wagtail_hooks
 
@@ -122,3 +123,21 @@ def test_custom_delete_page_view_deletes_variants(rf, segmented_page, user):
     # Make sure all the variant pages have been deleted.
     assert not len(variants.all())
     assert not len(variants_metadata.all())
+
+
+@pytest.mark.django_db
+def test_custom_delete_page_view_deletes_variants_of_child_pages(rf, segmented_page, user):
+    """
+    Regression test for deleting pages that have children with variants
+    """
+    post_request = rf.post('/')
+    user.is_superuser = True
+    rf.user = user
+    canonical_page = segmented_page.personalisation_metadata.canonical_page
+    # Create a child with a variant
+    child_page = ContentPageFactory(parent=canonical_page, slug='personalised-child')
+    child_page.personalisation_metadata.copy_for_segment(segmented_page.personalisation_metadata.segment)
+    # A ProtectedError would be raised if the bug persists
+    wagtail_hooks.delete_related_variants(
+        post_request, canonical_page
+    )

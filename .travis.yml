@@ -15,6 +15,26 @@ matrix:
     - python: 3.6
       env: TOXENV=py36-django20-wagtail21-geoip2
     - python: 3.6
+      env: TOXENV=py36-django20-wagtail22
+    - python: 3.6
+      env: TOXENV=py36-django20-wagtail22-geoip2
+    - python: 3.6
+      env: TOXENV=py36-django21-wagtail23
+    - python: 3.6
+      env: TOXENV=py36-django21-wagtail23-geoip2
+    - python: 3.6
+      env: TOXENV=py36-django21-wagtail24
+    - python: 3.6
+      env: TOXENV=py36-django21-wagtail24-geoip2
+    - python: 3.6
+      env: TOXENV=py36-django22-wagtail25
+    - python: 3.6
+      env: TOXENV=py36-django22-wagtail25-geoip2
+    - python: 3.6
+      env: TOXENV=py36-django22-wagtail26
+    - python: 3.6
+      env: TOXENV=py36-django22-wagtail26-geoip2
+    - python: 3.6
       env: TOXENV=py36-django111-wagtail22
 
 install:
