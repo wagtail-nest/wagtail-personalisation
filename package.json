@@ -18,7 +18,7 @@
     "imagemin-webpack-plugin": "^1.4.4",
     "jshint": "^2.9.4",
     "mocha": "^3.4.1",
-    "node-sass": "^4.5.3",
+    "node-sass": "^4.13.1",
     "postcss-loader": "^2.0.5",
     "sass-loader": "^6.0.5",
     "style-loader": "^0.18.0",
