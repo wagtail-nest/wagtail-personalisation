@@ -162,12 +162,3 @@ BASE_URL = 'http://example.com'
 
 
 INTERNAL_IPS = ['127.0.0.1']
-
-
-# Wagtail
-WAGTAIL_I18N_ENABLED = True
-
-WAGTAIL_CONTENT_LANGUAGES = LANGUAGES = [
-    ("en", "English"),
-    ("nl", "Dutch"),
-]

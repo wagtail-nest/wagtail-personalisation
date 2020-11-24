@@ -91,18 +91,3 @@ PASSWORD_HASHERS = (
 )
 
 WAGTAIL_SITE_NAME = 'wagtail-personalisation test'
-
-
-# LANGUAGE_CODE = "en"
-# TIME_ZONE = "UTC"
-# USE_I18N = True
-# USE_L10N = True
-# USE_TZ = True
-
-# # Wagtail
-# WAGTAIL_I18N_ENABLED = True
-
-# WAGTAIL_CONTENT_LANGUAGES = LANGUAGES = [
-#     ("en", "English"),
-#     ("nl", "Dutch"),
-# ]
