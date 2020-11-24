@@ -79,7 +79,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 
-    'wagtail.core.middleware.SiteMiddleware',
+    'tail.contrib.legacy.sitemiddleware.SiteMiddleware',
     'wagtail.contrib.redirects.middleware.RedirectMiddleware',
 ]
 
@@ -162,3 +162,12 @@ BASE_URL = 'http://example.com'
 
 
 INTERNAL_IPS = ['127.0.0.1']
+
+
+# Wagtail
+WAGTAIL_I18N_ENABLED = True
+
+WAGTAIL_CONTENT_LANGUAGES = LANGUAGES = [
+    ("en", "English"),
+    ("nl", "Dutch"),
+]

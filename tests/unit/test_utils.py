@@ -3,13 +3,14 @@ from django.test import override_settings
 from wagtail.core.models import Page as WagtailPage
 
 from tests.factories.page import (
-    ContentPageFactory, PersonalisablePageMetadataFactory)
+    ContentPageFactory, LocaleFactory, PersonalisablePageMetadataFactory)
 from wagtail_personalisation.utils import (
     can_delete_pages, exclude_variants, get_client_ip, impersonate_other_page)
 
 
 @pytest.fixture
 def rootpage():
+    LocaleFactory()
     return ContentPageFactory(parent=None, path='/', depth=0, title='root')
 
 
@@ -71,6 +72,7 @@ def test_exclude_variants_with_pages_querysets():
     '''
     Test that excludes variant works for querysets
     '''
+    LocaleFactory()
     for i in range(5):
         page = ContentPageFactory(path="/" + str(i), depth=0, url_path="/", title="Hoi " + str(i))
         page.save()
@@ -86,6 +88,7 @@ def test_exclude_variants_with_pages_querysets_not_canonical():
     Test that excludes variant works for querysets with
     personalisation_metadata canonical False
     '''
+    LocaleFactory()
     for i in range(5):
         page = ContentPageFactory(path="/" + str(i), depth=0, url_path="/", title="Hoi " + str(i))
         page.save()
@@ -106,6 +109,7 @@ def test_exclude_variants_with_pages_querysets_meta_none():
     '''
     Test that excludes variant works for querysets with meta as none
     '''
+    LocaleFactory()
     for i in range(5):
         page = ContentPageFactory(path="/" + str(i), depth=0, url_path="/", title="Hoi " + str(i))
         page.save()

@@ -3,7 +3,7 @@ import datetime
 import pytest
 from django.db.models import ProtectedError
 
-from tests.factories.page import ContentPageFactory
+from tests.factories.page import ContentPageFactory, LocaleFactory
 from tests.factories.segment import SegmentFactory
 from tests.site.pages import models
 from wagtail_personalisation.models import PersonalisablePageMetadata, Segment
@@ -31,6 +31,7 @@ def test_metadata_page_has_variants(segmented_page):
 
 @pytest.mark.django_db
 def test_content_page_model():
+    LocaleFactory()
     page = ContentPageFactory()
     qs = models.ContentPage.objects.all()
     assert page in qs
@@ -76,5 +77,5 @@ def test_sitemap_generation_for_variants_is_disabled(segmented_page):
 @pytest.mark.django_db
 def test_segment_edit_view(site, client, django_user_model):
     test_segment = SegmentFactory()
-    new_panel = test_segment.panels[1].children[0].bind_to_model(Segment)
+    new_panel = test_segment.panels[1].children[0].bind_to(model=Segment)
     assert new_panel.related.name == "wagtail_personalisation_timerules"

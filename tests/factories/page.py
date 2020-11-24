@@ -2,11 +2,18 @@ from __future__ import absolute_import, unicode_literals
 
 import factory
 from django.utils.text import slugify
+from wagtail.core.models import Locale
 from wagtail_factories.factories import PageFactory
 
 from tests.site.pages import models
 from wagtail_personalisation.models import PersonalisablePageMetadata
 
+
+class LocaleFactory(factory.django.DjangoModelFactory):
+    language_code = "en"
+
+    class Meta:
+        model = Locale
 
 class ContentPageFactory(PageFactory):
     parent = None
