@@ -16,7 +16,7 @@ tests_require = [
     'flake8',
     'freezegun==0.3.8',
     'pytest-cov==2.5.1',
-    'pytest-django==3.1.2',
+    'pytest-django==4.1.0',
     'pytest-pythonpath==0.7.2',
     'pytest-sugar==0.9.1',
     'pytest==6.1.2',

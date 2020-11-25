@@ -34,8 +34,8 @@ matrix:
       env: TOXENV=py36-django22-wagtail26
     - python: 3.6
       env: TOXENV=py36-django22-wagtail26-geoip2
-    - python: 3.6
-      env: TOXENV=py36-django111-wagtail22
+    # - python: 3.6
+    #   env: TOXENV=py36-django111-wagtail22
 
 install:
   - pip install tox codecov

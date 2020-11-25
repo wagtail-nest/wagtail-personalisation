@@ -28,14 +28,14 @@ def site():
     return site
 
 
-@pytest.fixture
+@pytest.fixture(autouse=True)
 def segmented_page(site):
     page = ContentPageFactory(parent=site.root_page, slug='personalised')
     segment = SegmentFactory()
     return page.personalisation_metadata.copy_for_segment(segment)
 
 
-@pytest.fixture()
+@pytest.fixture(autouse=True)
 def rf():
     """RequestFactory instance"""
     return RequestFactory()
@@ -51,6 +51,6 @@ class RequestFactory(BaseRequestFactory):
         return request
 
 
-@pytest.fixture
+@pytest.fixture(autouse=True)
 def user(django_user_model):
     return django_user_model.objects.create(username='user')
