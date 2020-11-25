@@ -3,7 +3,7 @@ import datetime
 import pytest
 from django.db.models import ProtectedError
 
-from tests.factories.page import ContentPageFactory, LocaleFactory
+from tests.factories.page import ContentPageFactory
 from tests.factories.segment import SegmentFactory
 from tests.site.pages import models
 from wagtail_personalisation.models import PersonalisablePageMetadata, Segment
@@ -31,7 +31,11 @@ def test_metadata_page_has_variants(segmented_page):
 
 @pytest.mark.django_db
 def test_content_page_model():
-    LocaleFactory()
+    try:
+        from tests.factories.page import LocaleFactory
+        LocaleFactory()
+    except ImportError:
+        pass
     page = ContentPageFactory()
     qs = models.ContentPage.objects.all()
     assert page in qs

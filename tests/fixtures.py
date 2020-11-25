@@ -4,14 +4,18 @@ from django.contrib.messages.storage.fallback import FallbackStorage
 from django.contrib.sessions.backends.db import SessionStore
 from django.test.client import RequestFactory as BaseRequestFactory
 
-from tests.factories.page import ContentPageFactory, LocaleFactory, RegularPageFactory
+from tests.factories.page import ContentPageFactory, RegularPageFactory
 from tests.factories.segment import SegmentFactory
 from tests.factories.site import SiteFactory
 
 
 @pytest.fixture(scope='function')
 def site():
-    LocaleFactory()
+    try:
+        from tests.factories.page import LocaleFactory
+        LocaleFactory()
+    except ImportError:
+        pass
     root_page = ContentPageFactory(parent=None, slug='')
     site = SiteFactory(is_default_site=True, root_page=root_page)
 

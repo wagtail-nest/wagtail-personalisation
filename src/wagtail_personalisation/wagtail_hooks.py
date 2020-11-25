@@ -11,7 +11,12 @@ from django.utils.safestring import mark_safe
 from django.utils.translation import ugettext_lazy as _
 from wagtail.admin import messages
 from wagtail.admin.site_summary import PagesSummaryItem, SummaryItem
-from wagtail.admin.views.pages.utils import get_valid_next_url_from_request
+
+try:
+    from wagtail.admin.views.pages.utils import get_valid_next_url_from_request
+except ModuleNotFoundError:
+    from wagtail.admin.views.pages import get_valid_next_url_from_request  # noqa
+
 from wagtail.admin.widgets import Button, ButtonWithDropdownFromHook
 from wagtail.core import hooks
 from wagtail.core.models import Page
@@ -21,6 +26,8 @@ from wagtail_personalisation.adapters import get_segment_adapter
 from wagtail_personalisation.models import PersonalisablePageMetadata
 
 logger = logging.getLogger(__name__)
+
+
 
 
 @hooks.register('register_admin_urls')

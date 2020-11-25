@@ -19,7 +19,7 @@ tests_require = [
     'pytest-django==3.1.2',
     'pytest-pythonpath==0.7.2',
     'pytest-sugar==0.9.1',
-    'pytest==3.4.2',
+    'pytest==6.1.2',
     'wagtail_factories==1.1.0',
     'pytest-mock==1.6.3',
 ]
