@@ -12,12 +12,10 @@ from django.utils.translation import ugettext_lazy as _
 from wagtail import VERSION as WAGTAIL_VERSION
 from wagtail.admin import messages
 from wagtail.admin.site_summary import PagesSummaryItem, SummaryItem
-
 try:
     from wagtail.admin.views.pages.utils import get_valid_next_url_from_request
 except ModuleNotFoundError:
     from wagtail.admin.views.pages import get_valid_next_url_from_request  # noqa
-
 from wagtail.admin.widgets import Button, ButtonWithDropdownFromHook
 from wagtail.core import hooks
 from wagtail.core.models import Page
