@@ -11,7 +11,7 @@ from django.utils.safestring import mark_safe
 from django.utils.translation import ugettext_lazy as _
 from wagtail.admin import messages
 from wagtail.admin.site_summary import PagesSummaryItem, SummaryItem
-from wagtail.admin.views.pages import get_valid_next_url_from_request
+from wagtail.admin.views.pages.utils import get_valid_next_url_from_request
 from wagtail.admin.widgets import Button, ButtonWithDropdownFromHook
 from wagtail.core import hooks
 from wagtail.core.models import Page
