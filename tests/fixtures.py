@@ -11,11 +11,6 @@ from tests.factories.site import SiteFactory
 
 @pytest.fixture(scope='function')
 def site():
-    try:
-        from tests.factories.page import LocaleFactory
-        LocaleFactory()
-    except ImportError:
-        pass
     root_page = ContentPageFactory(parent=None, slug='')
     site = SiteFactory(is_default_site=True, root_page=root_page)
 
@@ -28,14 +23,14 @@ def site():
     return site
 
 
-@pytest.fixture(autouse=True)
+@pytest.fixture()
 def segmented_page(site):
     page = ContentPageFactory(parent=site.root_page, slug='personalised')
     segment = SegmentFactory()
     return page.personalisation_metadata.copy_for_segment(segment)
 
 
-@pytest.fixture(autouse=True)
+@pytest.fixture()
 def rf():
     """RequestFactory instance"""
     return RequestFactory()
@@ -51,6 +46,6 @@ class RequestFactory(BaseRequestFactory):
         return request
 
 
-@pytest.fixture(autouse=True)
+@pytest.fixture()
 def user(django_user_model):
     return django_user_model.objects.create(username='user')
