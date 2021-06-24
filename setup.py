@@ -12,7 +12,7 @@ tests_require = [
     'factory_boy==2.8.1',
     'flake8-blind-except',
     'flake8-debugger',
-    'flake8-imports',
+    'flake8-isort',
     'flake8',
     'freezegun==0.3.8',
     'pytest-cov==2.5.1',
