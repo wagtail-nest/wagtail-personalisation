@@ -7,6 +7,16 @@ from wagtail_factories.factories import PageFactory
 from tests.site.pages import models
 from wagtail_personalisation.models import PersonalisablePageMetadata
 
+try:
+    from wagtail.core.models import Locale
+
+    class LocaleFactory(factory.DjangoModelFactory):
+        language_code = "en"
+
+        class Meta:
+            model = Locale
+except ImportError:
+    pass
 
 class ContentPageFactory(PageFactory):
     parent = None

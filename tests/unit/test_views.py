@@ -106,5 +106,5 @@ def test_segment_delete_view_raises_permission_denied(rf, segmented_page, user):
     )
     view.request = request
     message = 'User have no permission to delete variant page objects.'
-    with pytest.raises(PermissionDenied, message=message):
+    with pytest.raises(PermissionDenied):
         view.delete_instance()
