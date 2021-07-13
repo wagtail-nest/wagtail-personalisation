@@ -28,18 +28,18 @@ from wagtail_personalisation.models import PersonalisablePageMetadata
 logger = logging.getLogger(__name__)
 
 
-
-
-@hooks.register('register_admin_urls')
+@hooks.register("register_admin_urls")
 def register_admin_urls():
     """Adds the administration urls for the personalisation apps."""
     return [
-        url(r'^personalisation/', include(
-            admin_urls, namespace='wagtail_personalisation')),
+        url(
+            r"^personalisation/",
+            include(admin_urls, namespace="wagtail_personalisation"),
+        )
     ]
 
 
-@hooks.register('before_serve_page')
+@hooks.register("before_serve_page")
 def set_visit_count(page, request, serve_args, serve_kwargs):
     """Tests the provided rules to see if the request still belongs
     to a segment.
@@ -54,7 +54,7 @@ def set_visit_count(page, request, serve_args, serve_kwargs):
     adapter.add_page_visit(page)
 
 
-@hooks.register('before_serve_page')
+@hooks.register("before_serve_page")
 def segment_user(page, request, serve_args, serve_kwargs):
     """Apply a segment to a visitor before serving the page.
 
@@ -67,7 +67,7 @@ def segment_user(page, request, serve_args, serve_kwargs):
     adapter = get_segment_adapter(request)
     adapter.refresh()
 
-    forced_segment = request.GET.get('segment', None)
+    forced_segment = request.GET.get("segment", None)
     if request.user.is_superuser and forced_segment is not None:
         segment = models.Segment.objects.filter(pk=forced_segment).first()
         if segment:
@@ -85,14 +85,14 @@ class UserbarSegmentedLinkItem:
                     Show as segment: {self.segment.name}</a></div>"""
 
 
-@hooks.register('construct_wagtail_userbar')
+@hooks.register("construct_wagtail_userbar")
 def add_segment_link_items(request, items):
     for item in models.Segment.objects.enabled():
         items.append(UserbarSegmentedLinkItem(item))
     return items
 
 
-@hooks.register('before_serve_page')
+@hooks.register("before_serve_page")
 def serve_variant(page, request, serve_args, serve_kwargs):
     """Apply a segment to a visitor before serving the page.
 
@@ -126,13 +126,13 @@ def serve_variant(page, request, serve_args, serve_kwargs):
             return variant.serve(request, *serve_args, **serve_kwargs)
 
 
-@hooks.register('construct_explorer_page_queryset')
+@hooks.register("construct_explorer_page_queryset")
 def dont_show_variant(parent_page, pages, request):
     return utils.exclude_variants(pages)
 
 
-@hooks.register('register_page_listing_buttons')
-def page_listing_variant_buttons(page, page_perms, is_parent=False):
+@hooks.register("register_page_listing_buttons")
+def page_listing_variant_buttons(page, page_perms, is_parent=False, *args):
     """Adds page listing buttons to personalisable pages. Shows variants for
     the page (if any) and a 'Create a new variant' button.
 
@@ -143,17 +143,18 @@ def page_listing_variant_buttons(page, page_perms, is_parent=False):
     metadata = page.personalisation_metadata
     if metadata.is_canonical:
         yield ButtonWithDropdownFromHook(
-            _('Variants'),
-            hook_name='register_page_listing_variant_buttons',
+            _("Variants"),
+            hook_name="register_page_listing_variant_buttons",
             page=page,
             page_perms=page_perms,
             is_parent=is_parent,
-            attrs={'target': '_blank', 'title': _('Create or edit a variant')},
-            priority=100)
+            attrs={"target": "_blank", "title": _("Create or edit a variant")},
+            priority=100,
+        )
 
 
-@hooks.register('register_page_listing_variant_buttons')
-def page_listing_more_buttons(page, page_perms, is_parent=False):
+@hooks.register("register_page_listing_variant_buttons")
+def page_listing_more_buttons(page, page_perms, is_parent=False, *args):
     """Adds a 'more' button to personalisable pages allowing users to quickly
     create a new variant for the selected segment.
 
@@ -164,24 +165,30 @@ def page_listing_more_buttons(page, page_perms, is_parent=False):
     metadata = page.personalisation_metadata
 
     for vm in metadata.variants_metadata:
-        yield Button('%s variant' % (vm.segment.name),
-                     reverse('wagtailadmin_pages:edit', args=[vm.variant_id]),
-                     attrs={"title": _('Edit this variant')},
-                     classes=("icon", "icon-fa-pencil"),
-                     priority=0)
+        yield Button(
+            "%s variant" % (vm.segment.name),
+            reverse("wagtailadmin_pages:edit", args=[vm.variant_id]),
+            attrs={"title": _("Edit this variant")},
+            classes=("icon", "icon-fa-pencil"),
+            priority=0,
+        )
 
     for segment in metadata.get_unused_segments():
-        yield Button('%s variant' % (segment.name),
-                     reverse('segment:copy_page', args=[page.pk, segment.pk]),
-                     attrs={"title": _('Create this variant')},
-                     classes=("icon", "icon-fa-plus"),
-                     priority=100)
+        yield Button(
+            "%s variant" % (segment.name),
+            reverse("segment:copy_page", args=[page.pk, segment.pk]),
+            attrs={"title": _("Create this variant")},
+            classes=("icon", "icon-fa-plus"),
+            priority=100,
+        )
 
-    yield Button(_('Create a new segment'),
-                 reverse('wagtail_personalisation_segment_modeladmin_create'),
-                 attrs={"title": _('Create a new segment')},
-                 classes=("icon", "icon-fa-snowflake-o"),
-                 priority=200)
+    yield Button(
+        _("Create a new segment"),
+        reverse("wagtail_personalisation_segment_modeladmin_create"),
+        attrs={"title": _("Create a new segment")},
+        classes=("icon", "icon-fa-snowflake-o"),
+        priority=200,
+    )
 
 
 class CorrectedPagesSummaryItem(PagesSummaryItem):
@@ -191,21 +198,22 @@ class CorrectedPagesSummaryItem(PagesSummaryItem):
         # The `PagesSummaryItem` will return a page count of 0 otherwise.
         # https://github.com/wagtail/wagtail/blob/5c9ff23e229acabad406c42c4e13cbaea32e6c15/wagtail/admin/site_summary.py#L38
         context = super().get_context()
-        root_page = context.get('root_page', None)
+        root_page = context.get("root_page", None)
         if root_page:
             pages = utils.exclude_variants(
-                Page.objects.descendant_of(root_page, inclusive=True))
+                Page.objects.descendant_of(root_page, inclusive=True)
+            )
             page_count = pages.count()
 
             if root_page.is_root():
                 page_count -= 1
 
-            context['total_pages'] = page_count
+            context["total_pages"] = page_count
 
         return context
 
 
-@hooks.register('construct_homepage_summary_items')
+@hooks.register("construct_homepage_summary_items")
 def add_corrected_pages_summary_panel(request, items):
     """Replaces the Pages summary panel to hide variants."""
     for index, item in enumerate(items):
@@ -218,28 +226,39 @@ class SegmentSummaryPanel(SummaryItem):
     site and allowing quick access to the Segment dashboard.
 
     """
+
     order = 2000
 
     def render(self):
         segment_count = models.Segment.objects.count()
-        target_url = reverse('wagtail_personalisation_segment_modeladmin_index')
+        target_url = reverse("wagtail_personalisation_segment_modeladmin_index")
         title = _("Segments")
-        return mark_safe("""
+        return mark_safe(
+            """
             <li class="icon icon-fa-snowflake-o">
                 <a href="{}"><span>{}</span>{}</a>
-            </li>""".format(target_url, segment_count, title))
+            </li>""".format(
+                target_url, segment_count, title
+            )
+        )
 
 
 class PersonalisedPagesSummaryPanel(PagesSummaryItem):
     order = 2100
 
     def render(self):
-        page_count = models.PersonalisablePageMetadata.objects.filter(segment__isnull=True).count()
+        page_count = models.PersonalisablePageMetadata.objects.filter(
+            segment__isnull=True
+        ).count()
         title = _("Personalised Page")
-        return mark_safe("""
+        return mark_safe(
+            """
             <li class="icon icon-fa-file-o">
                 <span>{}</span>{}{}
-            </li>""".format(page_count, title, pluralize(page_count)))
+            </li>""".format(
+                page_count, title, pluralize(page_count)
+            )
+        )
 
 
 class VariantPagesSummaryPanel(PagesSummaryItem):
@@ -247,15 +266,20 @@ class VariantPagesSummaryPanel(PagesSummaryItem):
 
     def render(self):
         page_count = models.PersonalisablePageMetadata.objects.filter(
-            segment__isnull=False).count()
+            segment__isnull=False
+        ).count()
         title = _("Variant")
-        return mark_safe("""
+        return mark_safe(
+            """
                 <li class="icon icon-fa-files-o">
                     <span>{}</span>{}{}
-                </li>""".format(page_count, title, pluralize(page_count)))
+                </li>""".format(
+                page_count, title, pluralize(page_count)
+            )
+        )
 
 
-@hooks.register('construct_homepage_summary_items')
+@hooks.register("construct_homepage_summary_items")
 def add_personalisation_summary_panels(request, items):
     """Adds a summary panel to the Wagtail dashboard showing the total amount
     of segments on the site and allowing quick access to the Segment
@@ -267,20 +291,21 @@ def add_personalisation_summary_panels(request, items):
     items.append(VariantPagesSummaryPanel(request))
 
 
-@hooks.register('before_delete_page')
+@hooks.register("before_delete_page")
 def delete_related_variants(request, page):
-    if not isinstance(page, models.PersonalisablePageMixin) \
-            or not page.personalisation_metadata.is_canonical:
+    if (
+        not isinstance(page, models.PersonalisablePageMixin)
+        or not page.personalisation_metadata.is_canonical
+    ):
         return
     # Get a list of related personalisation metadata for all the related
     # variants.
-    variants_metadata = (
-        page.personalisation_metadata.variants_metadata
-                                     .select_related('variant')
+    variants_metadata = page.personalisation_metadata.variants_metadata.select_related(
+        "variant"
     )
     next_url = get_valid_next_url_from_request(request)
 
-    if request.method == 'POST':
+    if request.method == "POST":
         parent_id = page.get_parent().id
         with transaction.atomic():
             # To ensure variants are deleted for all descendants, start with
@@ -291,36 +316,36 @@ def delete_related_variants(request, page):
             for metadata in PersonalisablePageMetadata.objects.filter(
                 canonical_page__in=page.get_descendants(inclusive=True),
                 variant=F("canonical_page"),
-            ).order_by('-canonical_page__depth'):
-                for variant_metadata in metadata.variants_metadata.select_related('variant'):
+            ).order_by("-canonical_page__depth"):
+                for variant_metadata in metadata.variants_metadata.select_related(
+                    "variant"
+                ):
                     # Call delete() on objects to trigger any signals or hooks.
                     variant_metadata.variant.delete()
                 metadata.delete()
                 metadata.canonical_page.delete()
 
         msg = _("Page '{0}' and its variants deleted.")
-        messages.success(
-            request,
-            msg.format(page.get_admin_display_title())
-        )
+        messages.success(request, msg.format(page.get_admin_display_title()))
 
-        for fn in hooks.get_hooks('after_delete_page'):
+        for fn in hooks.get_hooks("after_delete_page"):
             result = fn(request, page)
-            if hasattr(result, 'status_code'):
+            if hasattr(result, "status_code"):
                 return result
 
         if next_url:
             return redirect(next_url)
-        return redirect('wagtailadmin_explore', parent_id)
+        return redirect("wagtailadmin_explore", parent_id)
 
     return render(
         request,
-        'wagtailadmin/pages/wagtail_personalisation/confirm_delete.html', {
-            'page': page,
-            'descendant_count': page.get_descendant_count(),
-            'next': next_url,
-            'variants': Page.objects.filter(
-                pk__in=variants_metadata.values_list('variant_id')
-            )
-        }
+        "wagtailadmin/pages/wagtail_personalisation/confirm_delete.html",
+        {
+            "page": page,
+            "descendant_count": page.get_descendant_count(),
+            "next": next_url,
+            "variants": Page.objects.filter(
+                pk__in=variants_metadata.values_list("variant_id")
+            ),
+        },
     )
