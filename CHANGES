@@ -1,3 +1,24 @@
+0.15.2
+=================
+- Replace staticfiles tag with static
+
+0.15.1
+=================
+- Remove old versions from test matrix
+- Fix button support in wagtail admin for newer wagtail versions
+
+0.15.0
+=================
+ - Fix is_authenticated 'bool' object is not callable error
+ - Add wagtail <=2.11 support
+ - Use Github Actions to test package instead of Travis CI
+
+0.14.0
+=================
+ - Fix 'bool' object is not callable error
+ - Fix deleting descendants with variants when deleting a page
+ - Add wagtail 2.6 support
+
 0.13.0
 =================
  - Merged Praekelt fork
