@@ -9,6 +9,7 @@ from django.template.defaultfilters import pluralize
 from django.urls import reverse
 from django.utils.safestring import mark_safe
 from django.utils.translation import ugettext_lazy as _
+from wagtail import VERSION as WAGTAIL_VERSION
 from wagtail.admin import messages
 from wagtail.admin.site_summary import PagesSummaryItem, SummaryItem
 
@@ -192,12 +193,11 @@ def page_listing_more_buttons(page, page_perms, is_parent=False, *args):
 
 
 class CorrectedPagesSummaryItem(PagesSummaryItem):
-    def get_context(self):
+    def get_total_pages(self, context):
         # Perform the same check as Wagtail to get the correct count.
         # Only correct the count when a root page is available to the user.
         # The `PagesSummaryItem` will return a page count of 0 otherwise.
         # https://github.com/wagtail/wagtail/blob/5c9ff23e229acabad406c42c4e13cbaea32e6c15/wagtail/admin/site_summary.py#L38
-        context = super().get_context()
         root_page = context.get("root_page", None)
         if root_page:
             pages = utils.exclude_variants(
@@ -208,9 +208,18 @@ class CorrectedPagesSummaryItem(PagesSummaryItem):
             if root_page.is_root():
                 page_count -= 1
 
-            context["total_pages"] = page_count
+            return page_count
 
-        return context
+    if WAGTAIL_VERSION >= (2, 15):
+        def get_context_data(self, parent_context):
+            context = super().get_context_data(parent_context)
+            context["total_pages"] = self.get_total_pages(context)
+            return context
+    else:
+        def get_context(self):
+            context = super().get_context()
+            context["total_pages"] = self.get_total_pages(context)
+            return context
 
 
 @hooks.register("construct_homepage_summary_items")
