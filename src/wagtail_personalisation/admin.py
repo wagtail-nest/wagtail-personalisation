@@ -8,6 +8,7 @@ class UserIsLoggedInRuleAdminInline(admin.TabularInline):
     administration interface for segments.
 
     """
+
     model = rules.UserIsLoggedInRule
 
 
@@ -16,6 +17,7 @@ class TimeRuleAdminInline(admin.TabularInline):
     administration interface for segments.
 
     """
+
     model = rules.TimeRule
 
 
@@ -24,6 +26,7 @@ class ReferralRuleAdminInline(admin.TabularInline):
     administration interface for segments.
 
     """
+
     model = rules.ReferralRule
 
 
@@ -32,13 +35,19 @@ class VisitCountRuleAdminInline(admin.TabularInline):
     administration interface for segments.
 
     """
+
     model = rules.VisitCountRule
 
 
 class SegmentAdmin(admin.ModelAdmin):
     """Add the inline models to the Segment admin interface."""
-    inlines = (UserIsLoggedInRuleAdminInline, TimeRuleAdminInline,
-               ReferralRuleAdminInline, VisitCountRuleAdminInline)
+
+    inlines = (
+        UserIsLoggedInRuleAdminInline,
+        TimeRuleAdminInline,
+        ReferralRuleAdminInline,
+        VisitCountRuleAdminInline,
+    )
 
 
 admin.site.register(models.Segment, SegmentAdmin)

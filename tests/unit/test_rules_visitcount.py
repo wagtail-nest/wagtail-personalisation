@@ -7,23 +7,23 @@ from wagtail_personalisation.rules import VisitCountRule
 
 @pytest.mark.django_db
 def test_visit_count(site, client):
-    response = client.get('/')
+    response = client.get("/")
     assert response.status_code == 200
-    visit_count = client.session['visit_count']
-    assert visit_count[0]['path'] == '/'
-    assert visit_count[0]['count'] == 1
+    visit_count = client.session["visit_count"]
+    assert visit_count[0]["path"] == "/"
+    assert visit_count[0]["count"] == 1
 
-    response = client.get('/')
+    response = client.get("/")
     assert response.status_code == 200
-    visit_count = client.session['visit_count']
-    assert visit_count[0]['path'] == '/'
-    assert visit_count[0]['count'] == 2
+    visit_count = client.session["visit_count"]
+    assert visit_count[0]["path"] == "/"
+    assert visit_count[0]["count"] == 2
 
-    response = client.get('/page-1/')
+    response = client.get("/page-1/")
     assert response.status_code == 200
-    visit_count = client.session['visit_count']
-    assert visit_count[0]['count'] == 2
-    assert visit_count[1]['count'] == 1
+    visit_count = client.session["visit_count"]
+    assert visit_count[0]["count"] == 2
+    assert visit_count[1]["count"] == 1
 
 
 @pytest.mark.django_db
@@ -34,11 +34,11 @@ def test_call_test_user_on_invalid_rule_fails(site, user, mocker):
 
 @pytest.mark.django_db
 def test_visit_count_call_test_user_with_user(site, client, user):
-    segment = SegmentFactory(name='VisitCount')
+    segment = SegmentFactory(name="VisitCount")
     rule = VisitCountRuleFactory(counted_page=site.root_page, segment=segment)
 
     session = client.session
-    session['visit_count'] = [{'path': '/', 'count': 2}]
+    session["visit_count"] = [{"path": "/", "count": 2}]
     session.save()
     client.force_login(user)
 
@@ -47,11 +47,11 @@ def test_visit_count_call_test_user_with_user(site, client, user):
 
 @pytest.mark.django_db
 def test_visit_count_call_test_user_with_user_or_request_fails(site, client, user):
-    segment = SegmentFactory(name='VisitCount')
+    segment = SegmentFactory(name="VisitCount")
     rule = VisitCountRuleFactory(counted_page=site.root_page, segment=segment)
 
     session = client.session
-    session['visit_count'] = [{'path': '/', 'count': 2}]
+    session["visit_count"] = [{"path": "/", "count": 2}]
     session.save()
     client.force_login(user)
 
@@ -60,20 +60,20 @@ def test_visit_count_call_test_user_with_user_or_request_fails(site, client, use
 
 @pytest.mark.django_db
 def test_get_column_header(site):
-    segment = SegmentFactory(name='VisitCount')
+    segment = SegmentFactory(name="VisitCount")
     rule = VisitCountRuleFactory(counted_page=site.root_page, segment=segment)
 
-    assert rule.get_column_header() == 'Visit count - Test page'
+    assert rule.get_column_header() == "Visit count - Test page"
 
 
 @pytest.mark.django_db
 def test_get_user_info_string_returns_count(site, client, user):
-    segment = SegmentFactory(name='VisitCount')
+    segment = SegmentFactory(name="VisitCount")
     rule = VisitCountRuleFactory(counted_page=site.root_page, segment=segment)
 
     session = client.session
-    session['visit_count'] = [{'path': '/', 'count': 2}]
+    session["visit_count"] = [{"path": "/", "count": 2}]
     session.save()
     client.force_login(user)
 
-    assert rule.get_user_info_string(user) == '2'
+    assert rule.get_user_info_string(user) == "2"

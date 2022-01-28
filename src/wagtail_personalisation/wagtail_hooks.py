@@ -1,12 +1,13 @@
 import logging
+from re import template
 
-from django.conf.urls import include, url
+from django import VERSION as DJANGO_VERSION
 from django.db import transaction
 from django.db.models import F
 from django.http import Http404
 from django.shortcuts import redirect, render
 from django.template.defaultfilters import pluralize
-from django.urls import reverse
+from django.urls import include, re_path, reverse
 from django.utils.safestring import mark_safe
 from django.utils.translation import ugettext_lazy as _
 from wagtail import VERSION as WAGTAIL_VERSION
@@ -19,8 +20,13 @@ except ModuleNotFoundError:
     from wagtail.admin.views.pages import get_valid_next_url_from_request  # noqa
 
 from wagtail.admin.widgets import Button, ButtonWithDropdownFromHook
-from wagtail.core import hooks
-from wagtail.core.models import Page
+
+if WAGTAIL_VERSION >= (3, 0):
+    from wagtail import hooks
+    from wagtail.models import Page
+else:
+    from wagtail.core import hooks
+    from wagtail.core.models import Page
 
 from wagtail_personalisation import admin_urls, models, utils
 from wagtail_personalisation.adapters import get_segment_adapter
@@ -33,7 +39,7 @@ logger = logging.getLogger(__name__)
 def register_admin_urls():
     """Adds the administration urls for the personalisation apps."""
     return [
-        url(
+        re_path(
             r"^personalisation/",
             include(admin_urls, namespace="wagtail_personalisation"),
         )
@@ -210,16 +216,10 @@ class CorrectedPagesSummaryItem(PagesSummaryItem):
 
             return page_count
 
-    if WAGTAIL_VERSION >= (2, 15):
-        def get_context_data(self, parent_context):
-            context = super().get_context_data(parent_context)
-            context["total_pages"] = self.get_total_pages(context)
-            return context
-    else:
-        def get_context(self):
-            context = super().get_context()
-            context["total_pages"] = self.get_total_pages(context)
-            return context
+    def get_context_data(self, parent_context):
+        context = super().get_context_data(parent_context)
+        context["total_pages"] = self.get_total_pages(context)
+        return context
 
 
 @hooks.register("construct_homepage_summary_items")
@@ -236,20 +236,17 @@ class SegmentSummaryPanel(SummaryItem):
 
     """
 
+    template_name = "modeladmin/wagtail_personalisation/segment/summary.html"
     order = 2000
 
-    def render(self):
-        segment_count = models.Segment.objects.count()
-        target_url = reverse("wagtail_personalisation_segment_modeladmin_index")
-        title = _("Segments")
-        return mark_safe(
-            """
-            <li class="icon icon-fa-snowflake-o">
-                <a href="{}"><span>{}</span>{}</a>
-            </li>""".format(
-                target_url, segment_count, title
-            )
+    def get_context_data(self, parent_context):
+        context = super().get_context_data(parent_context)
+        context["segment_count"] = models.Segment.objects.count()
+        context["target_url"] = reverse(
+            "wagtail_personalisation_segment_modeladmin_index"
         )
+        context["title"] = _("Segments")
+        return context
 
 
 class PersonalisedPagesSummaryPanel(PagesSummaryItem):
@@ -304,7 +301,7 @@ def add_personalisation_summary_panels(request, items):
 def delete_related_variants(request, page):
     if (
         not isinstance(page, models.PersonalisablePageMixin)
-        or not page.personalisation_metadata.is_canonical
+        or not page.personalisation_metadata.is_canonical  # noqa
     ):
         return
     # Get a list of related personalisation metadata for all the related

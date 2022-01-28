@@ -9,13 +9,22 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('wagtail_personalisation', '0016_auto_20180125_0918'),
+        ("wagtail_personalisation", "0016_auto_20180125_0918"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='segment',
-            name='randomisation_percent',
-            field=models.PositiveSmallIntegerField(blank=True, default=None, help_text='If this number is set each user matching the rules will have this percentage chance of being placed in the segment.', null=True, validators=[django.core.validators.MaxValueValidator(100), django.core.validators.MinValueValidator(0)]),
+            model_name="segment",
+            name="randomisation_percent",
+            field=models.PositiveSmallIntegerField(
+                blank=True,
+                default=None,
+                help_text="If this number is set each user matching the rules will have this percentage chance of being placed in the segment.",
+                null=True,
+                validators=[
+                    django.core.validators.MaxValueValidator(100),
+                    django.core.validators.MinValueValidator(0),
+                ],
+            ),
         ),
     ]

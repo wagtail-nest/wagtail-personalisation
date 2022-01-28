@@ -23,9 +23,6 @@ jobs:
       max-parallel: 4
       matrix:
         tox_env:
-          - py36-dj22-wt211
-          - py36-dj22-wt212
-          - py36-dj22-wt213
           - py37-dj22-wt211
           - py37-dj22-wt212
           - py37-dj22-wt213
@@ -39,12 +36,6 @@ jobs:
           - py38-dj30-wt212
           - py38-dj30-wt213
         include:
-          - python-version: 3.6
-            tox_env: py36-dj22-wt211
-          - python-version: 3.6
-            tox_env: py36-dj22-wt212
-          - python-version: 3.6
-            tox_env: py36-dj22-wt213
           - python-version: 3.7
             tox_env: py37-dj22-wt211
           - python-version: 3.7
@@ -69,6 +60,22 @@ jobs:
             tox_env: py38-dj30-wt212
           - python-version: 3.8
             tox_env: py38-dj30-wt213
+          - python-version: 3.9
+            tox_env: py39-dj31-wt214
+          - python-version: 3.9
+            tox_env: py39-dj32-wt214
+          - python-version: 3.9
+            tox_env: py39-dj31-wt215
+          - python-version: 3.9
+            tox_env: py39-dj32-wt215
+          - python-version: 3.9
+            tox_env: py39-dj32-wt216
+          - python-version: 3.9
+            tox_env: py39-dj40-wt216
+          - python-version: 3.9
+            tox_env: py39-dj32-wt30
+          - python-version: 3.9
+            tox_env: py39-dj40-wt30
     steps:
       - uses: actions/checkout@v2
       - name: Set up Python ${{ matrix.python-version }}
