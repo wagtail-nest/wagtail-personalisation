@@ -35,7 +35,7 @@ with open('README.rst') as fh:
 
 setup(
     name='wagtail-personalisation',
-    version='0.15.2',
+    version='0.15.3',
     description='A Wagtail add-on for showing personalized content',
     author='Lab Digital BV and others',
     author_email='opensource@labdigital.nl',

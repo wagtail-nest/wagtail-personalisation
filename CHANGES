@@ -1,3 +1,7 @@
+0.15.3
+=================
+- Add wagtail >= 2.15 support with get_context_data override instead of get_context
+
 0.15.2
 =================
 - Replace staticfiles tag with static
