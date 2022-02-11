@@ -12,14 +12,14 @@ tests_require = [
     'factory_boy==2.8.1',
     'flake8-blind-except',
     'flake8-debugger',
-    'flake8-imports',
+    'flake8-isort',
     'flake8',
     'freezegun==0.3.8',
     'pytest-cov==2.5.1',
-    'pytest-django==3.1.2',
+    'pytest-django==4.1.0',
     'pytest-pythonpath==0.7.2',
     'pytest-sugar==0.9.1',
-    'pytest==3.4.2',
+    'pytest==6.1.2',
     'wagtail_factories==1.1.0',
     'pytest-mock==1.6.3',
 ]
@@ -35,7 +35,7 @@ with open('README.rst') as fh:
 
 setup(
     name='wagtail-personalisation',
-    version='0.14.0',
+    version='0.15.3',
     description='A Wagtail add-on for showing personalized content',
     author='Lab Digital BV and others',
     author_email='opensource@labdigital.nl',

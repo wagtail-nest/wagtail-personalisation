@@ -14,6 +14,7 @@ from __future__ import absolute_import, unicode_literals
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 import os
+from importlib.util import find_spec
 
 PROJECT_DIR = os.path.dirname(os.path.abspath(__file__))
 BASE_DIR = os.path.dirname(PROJECT_DIR)
@@ -78,10 +79,13 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-
-    'wagtail.core.middleware.SiteMiddleware',
     'wagtail.contrib.redirects.middleware.RedirectMiddleware',
 ]
+
+if find_spec('wagtail.contrib.legacy'):
+    MIDDLEWARE += ('wagtail.contrib.legacy.sitemiddleware.SiteMiddleware',)
+else:
+    MIDDLEWARE += ('wagtail.core.middleware.SiteMiddleware', )
 
 ROOT_URLCONF = 'sandbox.urls'
 
