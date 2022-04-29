@@ -12,7 +12,7 @@ from wagtail_personalisation.rules import TimeRule, VisitCountRule
 
 
 def form_with_data(segment, *rules):
-    model_fields = ['type', 'status', 'count', 'name', 'match_any', 'randomisation_percent']
+    model_fields = ['type', 'enabled', 'count', 'name', 'match_any', 'randomisation_percent']
 
     class TestSegmentAdminForm(SegmentAdminForm):
         class Meta:

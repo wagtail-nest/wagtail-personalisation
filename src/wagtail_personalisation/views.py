@@ -81,7 +81,7 @@ class SegmentModelAdmin(ModelAdmin):
     delete_view_class = SegmentModelDeleteView
     menu_icon = 'fa-snowflake-o'
     add_to_settings_menu = False
-    list_display = ('name', 'persistent', 'match_any', 'status',
+    list_display = ('name', 'persistent', 'match_any', 'enabled',
                     'page_count', 'variant_count', 'statistics')
     index_view_extra_js = ['js/commons.js', 'js/index.js']
     index_view_extra_css = ['css/index.css']

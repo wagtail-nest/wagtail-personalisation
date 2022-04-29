@@ -25,7 +25,7 @@
         "enable_date": "2017-06-02T10:58:39.389Z",
         "disable_date": "2017-06-02T10:34:51.722Z",
         "visit_count": 0,
-        "status": "enabled",
+        "enabled": true,
         "persistent": false,
         "match_any": false
     }
@@ -39,7 +39,7 @@
         "enable_date": "2017-06-02T10:57:44.497Z",
         "disable_date": "2017-06-02T10:57:39.984Z",
         "visit_count": 1,
-        "status": "enabled",
+        "enabled": true,
         "persistent": false,
         "match_any": false
     }
