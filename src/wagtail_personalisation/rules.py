@@ -18,7 +18,7 @@ from wagtail import VERSION as WAGTAIL_VERSION
 
 if WAGTAIL_VERSION>=(3,0):
     from wagtail.admin.panels import (
-        FieldPanel, FieldRowPanel, PageChooserPanel)
+        FieldPanel, FieldRowPanel)
 else:
     from wagtail.admin.edit_handlers import (
         FieldPanel, FieldRowPanel, PageChooserPanel)
@@ -240,12 +240,19 @@ class VisitCountRule(AbstractBaseRule):
     )
 
     panels = [
+        FieldPanel('counted_page'),
+        FieldRowPanel([
+            FieldPanel('operator'),
+            FieldPanel('count'),
+        ]),
+    ] if WAGTAIL_VERSION >= (3, 0) else [
         PageChooserPanel('counted_page'),
         FieldRowPanel([
             FieldPanel('operator'),
             FieldPanel('count'),
         ]),
     ]
+
 
     class Meta:
         verbose_name = _('Visit count Rule')

@@ -2,9 +2,9 @@ from __future__ import absolute_import, unicode_literals
 
 from wagtail import VERSION as WAGTAIL_VERSION
 
-if WAGTAIL_VERSION>=(3,0):
+if WAGTAIL_VERSION >= (3, 0):
     from wagtail import blocks
-    from wagtail.admin.panels import RichTextFieldPanel, StreamFieldPanel
+    from wagtail.admin.panels import FieldPanel, RichTextFieldPanel
     from wagtail.fields import RichTextField, StreamField
     from wagtail.models import Page
 else:
@@ -23,9 +23,16 @@ class HomePage(PersonalisablePageMixin, Page):
         ('personalisable_paragraph', PersonalisedStructBlock([
             ('paragraph', blocks.RichTextBlock()),
         ], icon='pilcrow'))
+    ], use_json_field=True) if WAGTAIL_VERSION >= (3, 0) else StreamField([
+        ('personalisable_paragraph', PersonalisedStructBlock([
+            ('paragraph', blocks.RichTextBlock()),
+        ], icon='pilcrow'))
     ])
 
     content_panels = Page.content_panels + [
         RichTextFieldPanel('intro'),
-        StreamFieldPanel('body'),
+        FieldPanel('body'),
+    ] if WAGTAIL_VERSION >= (3, 0) else Page.content_panels + [
+        StreamFieldPanel('intro'),
+        FieldPanel('body'),
     ]
