@@ -8,7 +8,12 @@ from tests.site.pages import models
 from wagtail_personalisation.models import PersonalisablePageMetadata
 
 try:
-    from wagtail.core.models import Locale
+    from wagtail import VERSION as WAGTAIL_VERSION
+
+    if WAGTAIL_VERSION >= (3, 0):
+        from wagtail.models import Locale
+    else:
+        from wagtail.core.models import Locale
 
     class LocaleFactory(factory.DjangoModelFactory):
         language_code = "en"

@@ -1,7 +1,14 @@
 from django.db import models
-from wagtail.admin.edit_handlers import FieldPanel
-from wagtail.core.fields import RichTextField
-from wagtail.core.models import Page
+from wagtail import VERSION as WAGTAIL_VERSION
+
+if WAGTAIL_VERSION>=(3,0):
+    from wagtail.admin.panels import FieldPanel
+    from wagtail.fields import RichTextField
+    from wagtail.models import Page
+else:
+    from wagtail.admin.edit_handlers import FieldPanel
+    from wagtail.core.fields import RichTextField
+    from wagtail.core.models import Page
 
 from wagtail_personalisation.models import PersonalisablePageMixin
 

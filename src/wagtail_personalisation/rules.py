@@ -14,8 +14,14 @@ from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
 from modelcluster.fields import ParentalKey
 from user_agents import parse
-from wagtail.admin.edit_handlers import (
-    FieldPanel, FieldRowPanel, PageChooserPanel)
+from wagtail import VERSION as WAGTAIL_VERSION
+
+if WAGTAIL_VERSION>=(3,0):
+    from wagtail.admin.panels import (
+        FieldPanel, FieldRowPanel, PageChooserPanel)
+else:
+    from wagtail.admin.edit_handlers import (
+        FieldPanel, FieldRowPanel, PageChooserPanel)
 
 from wagtail_personalisation.utils import get_client_ip
 
@@ -255,7 +261,7 @@ class VisitCountRule(AbstractBaseRule):
     def test_user(self, request, user=None):
         # Local import for cyclic import
         from wagtail_personalisation.adapters import (
-            get_segment_adapter, SessionSegmentsAdapter, SEGMENT_ADAPTER_CLASS)
+            SEGMENT_ADAPTER_CLASS, SessionSegmentsAdapter, get_segment_adapter)
 
         # Django formsets don't honour 'required' fields so check rule is valid
         try:
@@ -312,7 +318,7 @@ class VisitCountRule(AbstractBaseRule):
     def get_user_info_string(self, user):
         # Local import for cyclic import
         from wagtail_personalisation.adapters import (
-            get_segment_adapter, SessionSegmentsAdapter, SEGMENT_ADAPTER_CLASS)
+            SEGMENT_ADAPTER_CLASS, SessionSegmentsAdapter, get_segment_adapter)
 
         # Create a fake request so we can use the adapter
         request = RequestFactory().get('/')

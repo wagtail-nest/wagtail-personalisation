@@ -1,6 +1,8 @@
 import os
 from importlib.util import find_spec
 
+from wagtail import VERSION as WAGTAIL_VERSION
+
 DATABASES = {
     'default': {
         'ENGINE': os.environ.get('DATABASE_ENGINE', 'django.db.backends.sqlite3'),
@@ -64,7 +66,7 @@ MIDDLEWARE = (
 if find_spec('wagtail.contrib.legacy'):
     MIDDLEWARE += ('wagtail.contrib.legacy.sitemiddleware.SiteMiddleware',)
 else:
-    MIDDLEWARE += ('wagtail.core.middleware.SiteMiddleware', )
+    MIDDLEWARE += ('wagtail.middleware.SiteMiddleware' if WAGTAIL_VERSION >= (3.0) else "wagtail.core.middleware.SiteMiddleware",)
 
 
 INSTALLED_APPS = (
@@ -77,7 +79,7 @@ INSTALLED_APPS = (
     'wagtail.images',
     'wagtail.documents',
     'wagtail.admin',
-    'wagtail.core',
+    'wagtail' if WAGTAIL_VERSION>=(3.0) else "wagtail.core",
 
     'taggit',
 

@@ -16,6 +16,8 @@ from __future__ import absolute_import, unicode_literals
 import os
 from importlib.util import find_spec
 
+from wagtail import VERSION as WAGTAIL_VERSION
+
 PROJECT_DIR = os.path.dirname(os.path.abspath(__file__))
 BASE_DIR = os.path.dirname(PROJECT_DIR)
 
@@ -53,7 +55,7 @@ INSTALLED_APPS = [
     'wagtail.images',
     'wagtail.search',
     'wagtail.admin',
-    'wagtail.core',
+    'wagtail' if WAGTAIL_VERSION>=(3.0) else "wagtail.core",
     'wagtail.contrib.modeladmin',
 
     'wagtailfontawesome',
@@ -85,7 +87,7 @@ MIDDLEWARE = [
 if find_spec('wagtail.contrib.legacy'):
     MIDDLEWARE += ('wagtail.contrib.legacy.sitemiddleware.SiteMiddleware',)
 else:
-    MIDDLEWARE += ('wagtail.core.middleware.SiteMiddleware', )
+    MIDDLEWARE += ('wagtail.middleware.SiteMiddleware' if WAGTAIL_VERSION>=(3.0) else "wagtail.core.middleware.SiteMiddleware", )
 
 ROOT_URLCONF = 'sandbox.urls'
 
