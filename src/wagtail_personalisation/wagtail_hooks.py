@@ -1,6 +1,6 @@
 import logging
 
-from django.conf.urls import include, url
+from django.urls import include, path
 from django.db import transaction
 from django.db.models import F
 from django.http import Http404
@@ -38,10 +38,7 @@ logger = logging.getLogger(__name__)
 def register_admin_urls():
     """Adds the administration urls for the personalisation apps."""
     return [
-        url(
-            r"^personalisation/",
-            include(admin_urls, namespace="wagtail_personalisation"),
-        )
+        path("personalisation/",include(admin_urls, namespace="wagtail_personalisation"))
     ]
 
 
