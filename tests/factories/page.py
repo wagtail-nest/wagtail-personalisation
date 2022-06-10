@@ -23,6 +23,7 @@ try:
 except ImportError:
     pass
 
+
 class ContentPageFactory(PageFactory):
     parent = None
     title = 'Test page'

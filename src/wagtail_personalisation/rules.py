@@ -16,12 +16,10 @@ from modelcluster.fields import ParentalKey
 from user_agents import parse
 from wagtail import VERSION as WAGTAIL_VERSION
 
-if WAGTAIL_VERSION>=(3,0):
-    from wagtail.admin.panels import (
-        FieldPanel, FieldRowPanel)
+if WAGTAIL_VERSION >= (3, 0):
+    from wagtail.admin.panels import FieldPanel, FieldRowPanel
 else:
-    from wagtail.admin.edit_handlers import (
-        FieldPanel, FieldRowPanel, PageChooserPanel)
+    from wagtail.admin.edit_handlers import FieldPanel, FieldRowPanel, PageChooserPanel
 
 from wagtail_personalisation.utils import get_client_ip
 
@@ -252,7 +250,6 @@ class VisitCountRule(AbstractBaseRule):
             FieldPanel('count'),
         ]),
     ]
-
 
     class Meta:
         verbose_name = _('Visit count Rule')

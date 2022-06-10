@@ -26,7 +26,6 @@ DEBUG = True
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = '^anfvx$i7%wts8j=7u1h5ua$w6c76*333(@h)rrjlak1c&x0r+'
 
-
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
 # Quick-start development settings - unsuitable for production
@@ -55,7 +54,7 @@ INSTALLED_APPS = [
     'wagtail.images',
     'wagtail.search',
     'wagtail.admin',
-    'wagtail' if WAGTAIL_VERSION>=(3.0) else "wagtail.core",
+    'wagtail' if WAGTAIL_VERSION >= (3, 0) else "wagtail.core",
     'wagtail.contrib.modeladmin',
 
     'wagtailfontawesome',
@@ -84,11 +83,14 @@ MIDDLEWARE = [
     'wagtail.contrib.redirects.middleware.RedirectMiddleware',
 ]
 
-if find_spec('wagtail.contrib.legacy'):
-    MIDDLEWARE += ('wagtail.contrib.legacy.sitemiddleware.SiteMiddleware',)
+if find_spec("wagtail.contrib.legacy"):
+    MIDDLEWARE += ("wagtail.contrib.legacy.sitemiddleware.SiteMiddleware",)
 else:
-    MIDDLEWARE += ('wagtail.middleware.SiteMiddleware' if WAGTAIL_VERSION>=(3.0) else "wagtail.core.middleware.SiteMiddleware", )
-
+    MIDDLEWARE += (
+        "wagtail.middleware.SiteMiddleware"
+        if WAGTAIL_VERSION >= (3, 0)
+        else "wagtail.core.middleware.SiteMiddleware",
+    )
 ROOT_URLCONF = 'sandbox.urls'
 
 TEMPLATES = [
@@ -113,7 +115,6 @@ WSGI_APPLICATION = 'sandbox.wsgi.application'
 
 AUTH_USER_MODEL = 'user.User'
 
-
 # Database
 # https://docs.djangoproject.com/en/1.11/ref/settings/#databases
 
@@ -123,7 +124,6 @@ DATABASES = {
         'NAME': 'db.sqlite3',
     }
 }
-
 
 # Internationalization
 # https://docs.djangoproject.com/en/1.11/topics/i18n/
@@ -137,7 +137,6 @@ USE_I18N = True
 USE_L10N = True
 
 USE_TZ = True
-
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.11/howto/static-files/
@@ -157,7 +156,6 @@ STATIC_URL = '/static/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'
 
-
 # Wagtail settings
 
 WAGTAIL_SITE_NAME = "sandbox"
@@ -165,6 +163,5 @@ WAGTAIL_SITE_NAME = "sandbox"
 # Base URL to use when referring to full URLs within the Wagtail admin backend -
 # e.g. in notification emails. Don't include '/admin' or a trailing slash
 WAGTAILADMIN_BASE_URL = 'http://example.com'
-
 
 INTERNAL_IPS = ['127.0.0.1']

@@ -20,7 +20,7 @@ except ModuleNotFoundError:
 
 from wagtail.admin.widgets import Button, ButtonWithDropdownFromHook
 
-if WAGTAIL_VERSION>=(3,0):
+if WAGTAIL_VERSION >= (3, 0):
     from wagtail import hooks
     from wagtail.models import Page
 else:
@@ -51,7 +51,7 @@ def set_visit_count(page, request, serve_args, serve_kwargs):
     to a segment.
 
     :param page: The page being served
-    :type page: wagtail.models.Page
+    :type page: wagtail.models.Page / wagtail.core.models.Page depends on the Wagtail version
     :param request: The http request
     :type request: django.http.HttpRequest
 
@@ -65,7 +65,7 @@ def segment_user(page, request, serve_args, serve_kwargs):
     """Apply a segment to a visitor before serving the page.
 
     :param page: The page being served
-    :type page: wagtail.models.Page
+    :type page: wagtail.models.Page / wagtail.core.models.Page depends on the Wagtail version
     :param request: The http request
     :type request: django.http.HttpRequest
 
@@ -103,12 +103,12 @@ def serve_variant(page, request, serve_args, serve_kwargs):
     """Apply a segment to a visitor before serving the page.
 
     :param page: The page being served
-    :type page: wagtail.models.Page
+    :type page: wagtail.models.Page / wagtail.core.models.Page depends on the Wagtail version
     :param request: The http request
     :type request: django.http.HttpRequest
     :returns: A variant if one is available for the visitor's segment,
               otherwise the original page
-    :rtype: wagtail.models.Page
+    :rtype: wagtail.models.Page / wagtail.core.models.Page depends on the Wagtail version
 
     """
     user_segments = []
@@ -216,11 +216,14 @@ class CorrectedPagesSummaryItem(PagesSummaryItem):
             return page_count
 
     if WAGTAIL_VERSION >= (2, 15):
+
         def get_context_data(self, parent_context):
             context = super().get_context_data(parent_context)
             context["total_pages"] = self.get_total_pages(context)
             return context
+
     else:
+
         def get_context(self):
             context = super().get_context()
             context["total_pages"] = self.get_total_pages(context)

@@ -5,7 +5,7 @@ from __future__ import unicode_literals
 import django.db.models.deletion
 from wagtail import VERSION as WAGTAIL_VERSION
 
-if WAGTAIL_VERSION>=(3,0):
+if WAGTAIL_VERSION >= (3, 0):
     import wagtail.fields as wagtail_fields
 else:
     import wagtail.core.fields as wagtail_fields

@@ -19,7 +19,6 @@ def django_db_setup(django_db_setup, django_db_blocker):
     else:
         from wagtail.core.models import Page, Site
 
-
     with django_db_blocker.unblock():
         # Remove some initial data that is brought by the tests.site module
         Site.objects.all().delete()

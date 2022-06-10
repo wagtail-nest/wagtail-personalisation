@@ -1,7 +1,7 @@
 from django.db import models
 from wagtail import VERSION as WAGTAIL_VERSION
 
-if WAGTAIL_VERSION>=(3,0):
+if WAGTAIL_VERSION >= (3, 0):
     from wagtail.admin.panels import FieldPanel
     from wagtail.fields import RichTextField
     from wagtail.models import Page

@@ -53,7 +53,6 @@ TEMPLATES = [
     },
 ]
 
-
 MIDDLEWARE = (
     'django.middleware.common.CommonMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -63,11 +62,14 @@ MIDDLEWARE = (
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 )
 
-if find_spec('wagtail.contrib.legacy'):
-    MIDDLEWARE += ('wagtail.contrib.legacy.sitemiddleware.SiteMiddleware',)
+if find_spec("wagtail.contrib.legacy"):
+    MIDDLEWARE += ("wagtail.contrib.legacy.sitemiddleware.SiteMiddleware",)
 else:
-    MIDDLEWARE += ('wagtail.middleware.SiteMiddleware' if WAGTAIL_VERSION >= (3.0) else "wagtail.core.middleware.SiteMiddleware",)
-
+    MIDDLEWARE += (
+        "wagtail.middleware.SiteMiddleware"
+        if WAGTAIL_VERSION >= (3, 0)
+        else "wagtail.core.middleware.SiteMiddleware",
+    )
 
 INSTALLED_APPS = (
     'wagtail_personalisation',
@@ -79,7 +81,7 @@ INSTALLED_APPS = (
     'wagtail.images',
     'wagtail.documents',
     'wagtail.admin',
-    'wagtail' if WAGTAIL_VERSION>=(3.0) else "wagtail.core",
+    'wagtail' if WAGTAIL_VERSION >= (3, 0) else "wagtail.core",
 
     'taggit',
 
