@@ -8,7 +8,11 @@ if WAGTAIL_VERSION >= (3, 0):
     from wagtail.fields import RichTextField, StreamField
     from wagtail.models import Page
 else:
-    from wagtail.admin.edit_handlers import FieldPanel, RichTextFieldPanel, StreamFieldPanel
+    from wagtail.admin.edit_handlers import (
+        FieldPanel,
+        RichTextFieldPanel,
+        StreamFieldPanel,
+    )
     from wagtail.core import blocks
     from wagtail.core.fields import RichTextField, StreamField
     from wagtail.core.models import Page
