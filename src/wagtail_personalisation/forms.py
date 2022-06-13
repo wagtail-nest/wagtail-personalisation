@@ -7,7 +7,7 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.models import AnonymousUser
 from django.templatetags.static import static
 from django.test.client import RequestFactory
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 from wagtail.admin.forms import WagtailAdminModelForm
 
 SessionStore = import_module(settings.SESSION_ENGINE).SessionStore

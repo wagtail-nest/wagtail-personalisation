@@ -7,7 +7,7 @@ from django.http import (
     HttpResponse, HttpResponseForbidden, HttpResponseRedirect)
 from django.shortcuts import get_object_or_404
 from django.urls import reverse
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 from wagtail import VERSION as WAGTAIL_VERSION
 from wagtail.contrib.modeladmin.options import ModelAdmin, modeladmin_register
 from wagtail.contrib.modeladmin.views import DeleteView, IndexView
@@ -133,7 +133,7 @@ def toggle_segment_view(request):
         elif request.session['segment_view'] != 'dashboard':
             request.session['segment_view'] = 'dashboard'
 
-        return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
+        return HttpResponseRedirect(request.headers.get('Referer', '/'))
 
     return HttpResponseForbidden()
 
@@ -154,7 +154,7 @@ def toggle(request, segment_id):
 
         segment.toggle()
 
-        return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
+        return HttpResponseRedirect(request.headers.get('Referer', '/'))
 
     return HttpResponseForbidden()
 
