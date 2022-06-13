@@ -240,21 +240,15 @@ class SegmentSummaryPanel(SummaryItem):
     site and allowing quick access to the Segment dashboard.
 
     """
-
+    template_name="modeladmin/wagtail_personalisation/segment/summary.html"
     order = 2000
 
-    def render(self):
-        segment_count = models.Segment.objects.count()
-        target_url = reverse("wagtail_personalisation_segment_modeladmin_index")
-        title = _("Segments")
-        return mark_safe(
-            """
-            <li class="icon icon-fa-snowflake-o">
-                <a href="{}"><span>{}</span>{}</a>
-            </li>""".format(
-                target_url, segment_count, title
-            )
-        )
+    def get_context_data(self, parent_context):
+        context = super().get_context_data(parent_context)
+        context["segment_count"] = models.Segment.objects.count()
+        context["target_url"] = reverse("wagtail_personalisation_segment_modeladmin_index")
+        context["title"] = _("Segments")
+        return context
 
 
 class PersonalisedPagesSummaryPanel(PagesSummaryItem):
