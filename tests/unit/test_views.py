@@ -74,7 +74,7 @@ def test_segment_delete_view_delete_instance(rf, segmented_page, user):
     assert variants_metadata
 
     # Delete the segment via the method on the view.
-    request = rf.get('/'.format(segment.pk))
+    request = rf.get('/'.format(segment.pk))  # noqa
     request.user = user
     view = SegmentModelDeleteView(
         instance_pk=str(segment.pk),
@@ -98,13 +98,13 @@ def test_segment_delete_view_delete_instance(rf, segmented_page, user):
 @pytest.mark.django_db
 def test_segment_delete_view_raises_permission_denied(rf, segmented_page, user):
     segment = segmented_page.personalisation_metadata.segment
-    request = rf.get('/'.format(segment.pk))
+    request = rf.get('/'.format(segment.pk))  # noqa
     request.user = user
     view = SegmentModelDeleteView(
         instance_pk=str(segment.pk),
         model_admin=SegmentModelAdmin()
     )
     view.request = request
-    message = 'User have no permission to delete variant page objects.'
+    message = 'User have no permission to delete variant page objects.'  # noqa
     with pytest.raises(PermissionDenied):
         view.delete_instance()

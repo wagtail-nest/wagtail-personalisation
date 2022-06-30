@@ -2,16 +2,16 @@ import pytest
 from django.test import override_settings
 from wagtail.core.models import Page as WagtailPage
 
-from tests.factories.page import (ContentPageFactory, PersonalisablePageMetadataFactory)
+from tests.factories.page import (
+    ContentPageFactory, PersonalisablePageMetadataFactory)
 from wagtail_personalisation.utils import (
     can_delete_pages, exclude_variants, get_client_ip, impersonate_other_page)
-
 
 locale_factory = False
 
 try:
-    from tests.factories.page import LocaleFactory
-    locale_factory = True
+    from tests.factories.page import LocaleFactory  # noqa
+    locale_factory = True  # noqa
 except ImportError:
     pass
 

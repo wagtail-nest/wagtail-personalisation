@@ -255,7 +255,7 @@ class VisitCountRule(AbstractBaseRule):
     def test_user(self, request, user=None):
         # Local import for cyclic import
         from wagtail_personalisation.adapters import (
-            get_segment_adapter, SessionSegmentsAdapter, SEGMENT_ADAPTER_CLASS)
+            SEGMENT_ADAPTER_CLASS, SessionSegmentsAdapter, get_segment_adapter)
 
         # Django formsets don't honour 'required' fields so check rule is valid
         try:
@@ -312,7 +312,7 @@ class VisitCountRule(AbstractBaseRule):
     def get_user_info_string(self, user):
         # Local import for cyclic import
         from wagtail_personalisation.adapters import (
-            get_segment_adapter, SessionSegmentsAdapter, SEGMENT_ADAPTER_CLASS)
+            SEGMENT_ADAPTER_CLASS, SessionSegmentsAdapter, get_segment_adapter)
 
         # Create a fake request so we can use the adapter
         request = RequestFactory().get('/')

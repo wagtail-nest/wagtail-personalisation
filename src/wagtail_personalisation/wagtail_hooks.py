@@ -304,7 +304,7 @@ def add_personalisation_summary_panels(request, items):
 def delete_related_variants(request, page):
     if (
         not isinstance(page, models.PersonalisablePageMixin)
-        or not page.personalisation_metadata.is_canonical
+        or not page.personalisation_metadata.is_canonical  # noqa
     ):
         return
     # Get a list of related personalisation metadata for all the related
