@@ -24,7 +24,6 @@ try:
 except ModuleNotFoundError:
     from wagtail.admin.views.pages import get_valid_next_url_from_request  # noqa
 
-from wagtail import VERSION as WAGTAIL_VERSION
 from wagtail.admin.widgets import Button, ButtonWithDropdownFromHook
 
 if WAGTAIL_VERSION >= (3, 0):

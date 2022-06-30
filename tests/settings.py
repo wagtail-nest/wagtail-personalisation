@@ -1,4 +1,5 @@
 import os
+from wagtail import VERSION as WAGTAIL_VERSION
 
 DATABASES = {
     "default": {
@@ -50,8 +51,8 @@ TEMPLATES = [
 
 
 MIDDLEWARE = (
-    "django.middleware.common.CommonMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
+    "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
@@ -68,7 +69,7 @@ INSTALLED_APPS = (
     "wagtail.images",
     "wagtail.documents",
     "wagtail.admin",
-    "wagtail.core",
+    "wagtail" if WAGTAIL_VERSION >= (3, 0) else "wagtail.core",
     "taggit",
     "django.contrib.admin",
     "django.contrib.auth",

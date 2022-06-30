@@ -2,15 +2,19 @@ from __future__ import absolute_import, unicode_literals
 
 import factory
 from django.utils.text import slugify
+from wagtail import VERSION as WAGTAIL_VERSION
 from wagtail_factories.factories import PageFactory
 
 from tests.site.pages import models
 from wagtail_personalisation.models import PersonalisablePageMetadata
 
 try:
-    from wagtail.core.models import Locale
+    if WAGTAIL_VERSION >= (3, 0):
+        from wagtail.models import Locale
+    else:
+        from wagtail.core.models import Locale
 
-    class LocaleFactory(factory.DjangoModelFactory):
+    class LocaleFactory(factory.django.DjangoModelFactory):
         language_code = "en"
 
         class Meta:
@@ -37,6 +41,6 @@ class RegularPageFactory(PageFactory):
         model = models.RegularPage
 
 
-class PersonalisablePageMetadataFactory(factory.DjangoModelFactory):
+class PersonalisablePageMetadataFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = PersonalisablePageMetadata

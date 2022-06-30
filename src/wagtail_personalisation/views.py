@@ -18,7 +18,7 @@ from wagtail.contrib.modeladmin.options import ModelAdmin, modeladmin_register
 from wagtail.contrib.modeladmin.views import DeleteView, IndexView
 
 if WAGTAIL_VERSION >= (3, 0):
-    from wagtail.core.models import Page
+    from wagtail.models import Page
 else:
     from wagtail.core.models import Page
 
