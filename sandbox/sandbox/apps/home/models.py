@@ -5,19 +5,27 @@ from wagtail.core import blocks
 from wagtail.core.fields import RichTextField, StreamField
 from wagtail.core.models import Page
 
-from wagtail_personalisation.models import PersonalisablePageMixin
 from wagtail_personalisation.blocks import PersonalisedStructBlock
+from wagtail_personalisation.models import PersonalisablePageMixin
 
 
 class HomePage(PersonalisablePageMixin, Page):
     intro = RichTextField()
-    body = StreamField([
-        ('personalisable_paragraph', PersonalisedStructBlock([
-            ('paragraph', blocks.RichTextBlock()),
-        ], icon='pilcrow'))
-    ])
+    body = StreamField(
+        [
+            (
+                "personalisable_paragraph",
+                PersonalisedStructBlock(
+                    [
+                        ("paragraph", blocks.RichTextBlock()),
+                    ],
+                    icon="pilcrow",
+                ),
+            )
+        ]
+    )
 
     content_panels = Page.content_panels + [
-        RichTextFieldPanel('intro'),
-        StreamFieldPanel('body'),
+        RichTextFieldPanel("intro"),
+        StreamFieldPanel("body"),
     ]
