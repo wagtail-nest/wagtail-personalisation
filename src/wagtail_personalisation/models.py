@@ -1,6 +1,7 @@
 import random
 
 import wagtail
+from django import VERSION as DJANGO_VERSION
 from django import forms
 from django.conf import settings
 from django.core.validators import MaxValueValidator, MinValueValidator
@@ -8,7 +9,12 @@ from django.db import models, transaction
 from django.template.defaultfilters import slugify
 from django.utils.functional import cached_property
 from django.utils.safestring import mark_safe
-from django.utils.translation import ugettext_lazy as _
+
+if DJANGO_VERSION >= (3, 0):
+    from django.utils.translation import gettext_lazy as _
+else:
+    from django.utils.translation import ugettext_lazy as _
+
 from modelcluster.models import ClusterableModel
 from wagtail.admin.edit_handlers import (
     FieldPanel,

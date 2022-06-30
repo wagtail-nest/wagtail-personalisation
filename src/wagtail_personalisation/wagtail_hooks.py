@@ -1,14 +1,19 @@
 import logging
 
-from django.conf.urls import include, url
+from django import VERSION as DJANGO_VERSION
 from django.db import transaction
 from django.db.models import F
 from django.http import Http404
 from django.shortcuts import redirect, render
 from django.template.defaultfilters import pluralize
-from django.urls import reverse
+from django.urls import include, re_path, reverse
 from django.utils.safestring import mark_safe
-from django.utils.translation import ugettext_lazy as _
+
+if DJANGO_VERSION >= (3, 0):
+    from django.utils.translation import gettext_lazy as _
+else:
+    from django.utils.translation import ugettext_lazy as _
+
 from wagtail import VERSION as WAGTAIL_VERSION
 from wagtail.admin import messages
 from wagtail.admin.site_summary import PagesSummaryItem, SummaryItem
@@ -33,7 +38,7 @@ logger = logging.getLogger(__name__)
 def register_admin_urls():
     """Adds the administration urls for the personalisation apps."""
     return [
-        url(
+        re_path(
             r"^personalisation/",
             include(admin_urls, namespace="wagtail_personalisation"),
         )

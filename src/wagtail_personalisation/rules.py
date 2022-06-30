@@ -3,6 +3,7 @@ import re
 from importlib import import_module
 
 import pycountry
+from django import VERSION as DJANGO_VERSION
 from django.apps import apps
 from django.conf import settings
 from django.contrib.sessions.models import Session
@@ -11,7 +12,12 @@ from django.db import models
 from django.template.defaultfilters import slugify
 from django.test.client import RequestFactory
 from django.utils import timezone
-from django.utils.translation import ugettext_lazy as _
+
+if DJANGO_VERSION >= (3, 0):
+    from django.utils.translation import gettext_lazy as _
+else:
+    from django.utils.translation import ugettext_lazy as _
+
 from modelcluster.fields import ParentalKey
 from user_agents import parse
 from wagtail.admin.edit_handlers import FieldPanel, FieldRowPanel, PageChooserPanel
