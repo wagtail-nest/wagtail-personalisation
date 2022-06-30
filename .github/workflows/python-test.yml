@@ -23,9 +23,6 @@ jobs:
       max-parallel: 4
       matrix:
         tox_env:
-          - py36-dj22-wt211
-          - py36-dj22-wt212
-          - py36-dj22-wt213
           - py37-dj22-wt211
           - py37-dj22-wt212
           - py37-dj22-wt213
@@ -39,12 +36,6 @@ jobs:
           - py38-dj30-wt212
           - py38-dj30-wt213
         include:
-          - python-version: 3.6
-            tox_env: py36-dj22-wt211
-          - python-version: 3.6
-            tox_env: py36-dj22-wt212
-          - python-version: 3.6
-            tox_env: py36-dj22-wt213
           - python-version: 3.7
             tox_env: py37-dj22-wt211
           - python-version: 3.7
