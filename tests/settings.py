@@ -1,4 +1,5 @@
 import os
+
 from wagtail import VERSION as WAGTAIL_VERSION
 
 DATABASES = {
