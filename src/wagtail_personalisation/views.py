@@ -13,9 +13,14 @@ if DJANGO_VERSION >= (3, 0):
 else:
     from django.utils.translation import ugettext_lazy as _
 
+from wagtail import VERSION as WAGTAIL_VERSION
 from wagtail.contrib.modeladmin.options import ModelAdmin, modeladmin_register
 from wagtail.contrib.modeladmin.views import DeleteView, IndexView
-from wagtail.core.models import Page
+
+if WAGTAIL_VERSION >= (3, 0):
+    from wagtail.core.models import Page
+else:
+    from wagtail.core.models import Page
 
 from wagtail_personalisation.models import Segment
 from wagtail_personalisation.utils import can_delete_pages
