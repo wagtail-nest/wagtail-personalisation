@@ -15,13 +15,14 @@ try:
 
         class Meta:
             model = Locale
+
 except ImportError:
     pass
 
 
 class ContentPageFactory(PageFactory):
     parent = None
-    title = 'Test page'
+    title = "Test page"
     slug = factory.LazyAttribute(lambda obj: slugify(obj.title))
 
     class Meta:
@@ -29,7 +30,7 @@ class ContentPageFactory(PageFactory):
 
 
 class RegularPageFactory(PageFactory):
-    title = 'Regular page'
+    title = "Regular page"
     slug = factory.LazyAttribute(lambda obj: slugify(obj.title))
 
     class Meta:
@@ -37,6 +38,5 @@ class RegularPageFactory(PageFactory):
 
 
 class PersonalisablePageMetadataFactory(factory.DjangoModelFactory):
-
     class Meta:
         model = PersonalisablePageMetadata

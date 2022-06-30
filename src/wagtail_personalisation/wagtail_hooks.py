@@ -211,11 +211,14 @@ class CorrectedPagesSummaryItem(PagesSummaryItem):
             return page_count
 
     if WAGTAIL_VERSION >= (2, 15):
+
         def get_context_data(self, parent_context):
             context = super().get_context_data(parent_context)
             context["total_pages"] = self.get_total_pages(context)
             return context
+
     else:
+
         def get_context(self):
             context = super().get_context()
             context["total_pages"] = self.get_total_pages(context)

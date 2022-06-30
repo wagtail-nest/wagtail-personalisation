@@ -8,19 +8,16 @@ from wagtail_personalisation import rules
 
 
 class DayRuleFactory(factory.DjangoModelFactory):
-
     class Meta:
         model = rules.DayRule
 
 
 class DeviceRuleFactory(factory.DjangoModelFactory):
-
     class Meta:
         model = rules.DeviceRule
 
 
 class QueryRuleFactory(factory.DjangoModelFactory):
-
     class Meta:
         model = rules.QueryRule
 

@@ -8,12 +8,12 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('wagtail_personalisation', '0011_personalisablepagemetadata'),
+        ("wagtail_personalisation", "0011_personalisablepagemetadata"),
     ]
 
     operations = [
         migrations.RemoveField(
-            model_name='personalisablepagemetadata',
-            name='is_segmented',
+            model_name="personalisablepagemetadata",
+            name="is_segmented",
         ),
     ]

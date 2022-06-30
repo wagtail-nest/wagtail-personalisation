@@ -16,7 +16,8 @@ def test_segment_create():
     TimeRule(
         start_time=datetime.time(8, 0, 0),
         end_time=datetime.time(23, 0, 0),
-        segment=segment)
+        segment=segment,
+    )
 
 
 @pytest.mark.django_db
