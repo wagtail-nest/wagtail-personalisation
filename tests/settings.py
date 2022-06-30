@@ -1,5 +1,4 @@
 import os
-from importlib.util import find_spec
 
 DATABASES = {
     'default': {
@@ -60,11 +59,6 @@ MIDDLEWARE = (
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 )
-
-if find_spec('wagtail.contrib.legacy'):
-    MIDDLEWARE += ('wagtail.contrib.legacy.sitemiddleware.SiteMiddleware',)
-else:
-    MIDDLEWARE += ('wagtail.core.middleware.SiteMiddleware', )
 
 
 INSTALLED_APPS = (
