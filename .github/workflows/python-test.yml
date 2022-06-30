@@ -72,6 +72,10 @@ jobs:
             tox_env: py39-dj32-wt216
           - python-version: 3.9
             tox_env: py39-dj40-wt216
+          - python-version: 3.9
+            tox_env: py39-dj32-wt30
+          - python-version: 3.9
+            tox_env: py39-dj40-wt30
     steps:
       - uses: actions/checkout@v2
       - name: Set up Python ${{ matrix.python-version }}
