@@ -135,6 +135,12 @@ def serve_variant(page, request, serve_args, serve_kwargs):
 def dont_show_variant(parent_page, pages, request):
     return utils.exclude_variants(pages)
 
+if WAGTAIL_VERSION < (4, 0): 
+    # removed in Wagtail 4.0
+    # https://docs.wagtail.org/en/stable/releases/4.0.html#is-parent-removed-from-page-button-hooks
+    is_parent = {"is_parent": False}
+else:
+    is_parent = {}
 
 if WAGTAIL_VERSION < (4, 0):
     # removed in Wagtail 4.0
@@ -145,7 +151,7 @@ else:
 
 
 @hooks.register("register_page_listing_buttons")
-def page_listing_variant_buttons(page, page_perms, is_parent=False, *args):
+def page_listing_variant_buttons(page, page_perms, *args, **is_parent):
     """Adds page listing buttons to personalisable pages. Shows variants for
     the page (if any) and a 'Create a new variant' button.
 
@@ -154,16 +160,27 @@ def page_listing_variant_buttons(page, page_perms, is_parent=False, *args):
         return
 
     metadata = page.personalisation_metadata
-    if metadata.is_canonical:
-        yield ButtonWithDropdownFromHook(
-            _("Variants"),
-            hook_name="register_page_listing_variant_buttons",
-            page=page,
-            page_perms=page_perms,
-            is_parent=is_parent,
-            attrs={"target": "_blank", "title": _("Create or edit a variant")},
-            priority=100,
-        )
+    if WAGTAIL_VERSION < (4, 0):
+        if metadata.is_canonical:
+            yield ButtonWithDropdownFromHook(
+                _("Variants"),
+                hook_name="register_page_listing_variant_buttons",
+                page=page,
+                page_perms=page_perms,
+                is_parent=is_parent,
+                attrs={"target": "_blank", "title": _("Create or edit a variant")},
+                priority=100,
+            )
+    else:
+        if metadata.is_canonical:
+            yield ButtonWithDropdownFromHook(
+                _("Variants"),
+                hook_name="register_page_listing_variant_buttons",
+                page=page,
+                page_perms=page_perms,
+                attrs={"target": "_blank", "title": _("Create or edit a variant")},
+                priority=100,
+            )
 
 
 @hooks.register("register_page_listing_variant_buttons")
