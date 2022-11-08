@@ -53,3 +53,16 @@ release:
 	rm -rf dist/*
 	python setup.py sdist bdist_wheel
 	twine upload -s dist/*
+
+
+test-215:
+	tox -e py38-dj32-wt215
+
+test-30:
+	tox -e py38-dj40-wt30
+
+test-40:
+	tox -e py38-dj40-wt40
+
+test-41:
+	tox -e py38-dj41-wt41

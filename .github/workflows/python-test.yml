@@ -22,72 +22,20 @@ jobs:
     strategy:
       max-parallel: 4
       matrix:
-        tox_env:
-          - py37-dj22-wt211
-          - py37-dj22-wt212
-          - py37-dj22-wt213
-          - py38-dj22-wt211
-          - py38-dj22-wt212
-          - py38-dj22-wt213
-          - py37-dj30-wt211
-          - py37-dj30-wt212
-          - py37-dj30-wt213
-          - py38-dj30-wt211
-          - py38-dj30-wt212
-          - py38-dj30-wt213
-        include:
-          - python-version: 3.7
-            tox_env: py37-dj22-wt211
-          - python-version: 3.7
-            tox_env: py37-dj22-wt212
-          - python-version: 3.7
-            tox_env: py37-dj22-wt213
-          - python-version: 3.8
-            tox_env: py38-dj22-wt211
-          - python-version: 3.8
-            tox_env: py38-dj22-wt212
-          - python-version: 3.8
-            tox_env: py38-dj22-wt213
-          - python-version: 3.7
-            tox_env: py37-dj30-wt211
-          - python-version: 3.7
-            tox_env: py37-dj30-wt212
-          - python-version: 3.7
-            tox_env: py37-dj30-wt213
-          - python-version: 3.8
-            tox_env: py38-dj30-wt211
-          - python-version: 3.8
-            tox_env: py38-dj30-wt212
-          - python-version: 3.8
-            tox_env: py38-dj30-wt213
-          - python-version: 3.9
-            tox_env: py39-dj31-wt214
-          - python-version: 3.9
-            tox_env: py39-dj32-wt214
-          - python-version: 3.9
-            tox_env: py39-dj31-wt215
-          - python-version: 3.9
-            tox_env: py39-dj32-wt215
-          - python-version: 3.9
-            tox_env: py39-dj32-wt216
-          - python-version: 3.9
-            tox_env: py39-dj40-wt216
-          - python-version: 3.9
-            tox_env: py39-dj32-wt30
-          - python-version: 3.9
-            tox_env: py39-dj40-wt30
+        python: ["3.7", "3.8", "3.9", "3.10", "3.11"]
+
     steps:
-      - uses: actions/checkout@v2
-      - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v1
+      - uses: actions/checkout@v3
+      - name: Setup Python
+        uses: actions/setup-python@v4
         with:
-          python-version: ${{ matrix.python-version }}
+          python-version: ${{ matrix.python }}
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install tox tox-gh-actions
+          python -m pip install tox tox-gh-actions
       - name: Test with tox
-        run: tox -e ${{ matrix.tox_env }} --index-url=https://pypi.python.org/simple/
+        run: tox
       - name: Prepare artifacts
         run: mkdir -p .coverage-data && mv .coverage.* .coverage-data/
       - uses: actions/upload-artifact@master
