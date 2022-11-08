@@ -135,12 +135,6 @@ def serve_variant(page, request, serve_args, serve_kwargs):
 def dont_show_variant(parent_page, pages, request):
     return utils.exclude_variants(pages)
 
-if WAGTAIL_VERSION < (4, 0): 
-    # removed in Wagtail 4.0
-    # https://docs.wagtail.org/en/stable/releases/4.0.html#is-parent-removed-from-page-button-hooks
-    is_parent = {"is_parent": False}
-else:
-    is_parent = {}
 
 if WAGTAIL_VERSION < (4, 0):
     # removed in Wagtail 4.0
