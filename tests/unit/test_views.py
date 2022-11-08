@@ -1,7 +1,12 @@
 import pytest
 from django.core.exceptions import PermissionDenied
 from django.urls import reverse
-from wagtail.core.models import Page
+from wagtail import VERSION as WAGTAIL_VERSION
+
+if WAGTAIL_VERSION >= (3, 0):
+    from wagtail.models import Page
+else:
+    from wagtail.core.models import Page
 
 from wagtail_personalisation.models import Segment
 from wagtail_personalisation.rules import VisitCountRule

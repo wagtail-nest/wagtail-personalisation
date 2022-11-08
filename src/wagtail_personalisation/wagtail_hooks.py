@@ -1,5 +1,4 @@
 import logging
-from re import template
 
 from django.db import transaction
 from django.db.models import F
@@ -8,9 +7,7 @@ from django.shortcuts import redirect, render
 from django.template.defaultfilters import pluralize
 from django.urls import include, re_path, reverse
 from django.utils.safestring import mark_safe
-
 from django.utils.translation import gettext_lazy as _
-
 from wagtail import VERSION as WAGTAIL_VERSION
 from wagtail.admin import messages
 from wagtail.admin.site_summary import PagesSummaryItem, SummaryItem
@@ -137,6 +134,14 @@ def serve_variant(page, request, serve_args, serve_kwargs):
 @hooks.register("construct_explorer_page_queryset")
 def dont_show_variant(parent_page, pages, request):
     return utils.exclude_variants(pages)
+
+
+if WAGTAIL_VERSION < (4, 0):
+    # removed in Wagtail 4.0
+    # https://docs.wagtail.org/en/stable/releases/4.0.html#is-parent-removed-from-page-button-hooks
+    is_parent = {"is_parent": False}
+else:
+    is_parent = {}
 
 
 @hooks.register("register_page_listing_buttons")
