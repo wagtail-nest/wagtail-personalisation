@@ -1,6 +1,5 @@
 import csv
 
-from django import VERSION as DJANGO_VERSION
 from django import forms
 from django.core.exceptions import PermissionDenied
 from django.db import transaction
@@ -8,10 +7,7 @@ from django.http import HttpResponse, HttpResponseForbidden, HttpResponseRedirec
 from django.shortcuts import get_object_or_404
 from django.urls import reverse
 
-if DJANGO_VERSION >= (3, 0):
-    from django.utils.translation import gettext_lazy as _
-else:
-    from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 
 from wagtail import VERSION as WAGTAIL_VERSION
 from wagtail.contrib.modeladmin.options import ModelAdmin, modeladmin_register

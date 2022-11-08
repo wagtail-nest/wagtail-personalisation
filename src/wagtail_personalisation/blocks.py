@@ -1,9 +1,4 @@
-from django import VERSION as DJANGO_VERSION
-
-if DJANGO_VERSION >= (3, 0):
-    from django.utils.translation import gettext_lazy as _
-else:
-    from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 
 from wagtail import VERSION as WAGTAIL_VERSION
 

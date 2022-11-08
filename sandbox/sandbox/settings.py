@@ -15,7 +15,6 @@ from __future__ import absolute_import, unicode_literals
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 import os
 
-from django import VERSION as DJANGO_VERSION
 from wagtail import VERSION as WAGTAIL_VERSION
 
 PROJECT_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -162,5 +161,4 @@ else:
 
 INTERNAL_IPS = ["127.0.0.1"]
 
-if DJANGO_VERSION >= (3, 0):
-    DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"

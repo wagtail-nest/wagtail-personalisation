@@ -1,10 +1,6 @@
-from django import VERSION as DJANGO_VERSION
 from django.apps import AppConfig
 
-if DJANGO_VERSION >= (3, 0):
-    from django.utils.translation import gettext_lazy as _
-else:
-    from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 
 
 class WagtailPersonalisationConfig(AppConfig):
