@@ -54,9 +54,11 @@ release:
 	python setup.py sdist bdist_wheel
 	twine upload -s dist/*
 
-
 test-215:
 	tox -e py38-dj32-wt215
+
+test-216:
+	tox -e py38-dj32-wt216
 
 test-30:
 	tox -e py38-dj40-wt30
