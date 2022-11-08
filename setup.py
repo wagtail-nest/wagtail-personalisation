@@ -3,7 +3,7 @@ import re
 from setuptools import find_packages, setup
 
 install_requires = [
-    "wagtail>=2.9,<4.0",
+    "wagtail>=2.15,<4.2",
     "user-agents>=2.2.0",
     "wagtailfontawesome>=1.2.1",
     "pycountry",
@@ -36,12 +36,12 @@ with open("README.rst") as fh:
     )
 
 setup(
-    name='wagtail-personalisation',
-    version='0.15.3',
-    description='A Wagtail add-on for showing personalized content',
-    author='Lab Digital BV and others',
-    author_email='opensource@labdigital.nl',
-    url='https://labdigital.nl/',
+    name="wagtail-personalisation",
+    version="0.15.3",
+    description="A Wagtail add-on for showing personalized content",
+    author="Lab Digital BV and others",
+    author_email="opensource@labdigital.nl",
+    url="https://labdigital.nl/",
     install_requires=install_requires,
     tests_require=tests_require,
     extras_require={
@@ -64,10 +64,13 @@ setup(
         "Programming Language :: Python :: 3.8",
         "Programming Language :: Python :: 3.9",
         "Programming Language :: Python :: 3.10",
+        "Programming Language :: Python :: 3.11",
         "Framework :: Django",
-        "Framework :: Django :: 2.2",
-        "Framework :: Django :: 3.0",
-        "Framework :: Django :: 4.0",
+        "Framework :: Django :: 3",
+        "Framework :: Django :: 4",
+        "Framework :: Wagtail :: 2",
+        "Framework :: Wagtail :: 3",
+        "Framework :: Wagtail :: 4",
         "Topic :: Internet :: WWW/HTTP :: Site Management",
     ],
 )
