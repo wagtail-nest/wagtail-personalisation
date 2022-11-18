@@ -133,8 +133,16 @@ def dont_show_variant(parent_page, pages, request):
     return utils.exclude_variants(pages)
 
 
+if WAGTAIL_VERSION >= (4, 0):
+    # removed in Wagtail 4.0
+    # https://docs.wagtail.org/en/stable/releases/4.0.html#is-parent-removed-from-page-button-hooks
+    is_parent = {}
+else:
+    is_parent = {"is_parent": False}
+
+
 @hooks.register("register_page_listing_buttons")
-def page_listing_variant_buttons(page, page_perms, is_parent=False, *args):
+def page_listing_variant_buttons(page, page_perms, *args, **is_parent):
     """Adds page listing buttons to personalisable pages. Shows variants for
     the page (if any) and a 'Create a new variant' button.
 
@@ -143,16 +151,28 @@ def page_listing_variant_buttons(page, page_perms, is_parent=False, *args):
         return
 
     metadata = page.personalisation_metadata
-    if metadata.is_canonical:
-        yield ButtonWithDropdownFromHook(
-            _("Variants"),
-            hook_name="register_page_listing_variant_buttons",
-            page=page,
-            page_perms=page_perms,
-            is_parent=is_parent,
-            attrs={"target": "_blank", "title": _("Create or edit a variant")},
-            priority=100,
-        )
+
+    if WAGTAIL_VERSION >= (4, 0):
+        if metadata.is_canonical:
+            yield ButtonWithDropdownFromHook(
+                _("Variants"),
+                hook_name="register_page_listing_variant_buttons",
+                page=page,
+                page_perms=page_perms,
+                attrs={"target": "_blank", "title": _("Create or edit a variant")},
+                priority=100,
+            )
+    else:
+        if metadata.is_canonical:
+            yield ButtonWithDropdownFromHook(
+                _("Variants"),
+                hook_name="register_page_listing_variant_buttons",
+                page=page,
+                page_perms=page_perms,
+                is_parent=is_parent,
+                attrs={"target": "_blank", "title": _("Create or edit a variant")},
+                priority=100,
+            )
 
 
 @hooks.register("register_page_listing_variant_buttons")
@@ -212,11 +232,14 @@ class CorrectedPagesSummaryItem(PagesSummaryItem):
             return page_count
 
     if WAGTAIL_VERSION >= (2, 15):
+
         def get_context_data(self, parent_context):
             context = super().get_context_data(parent_context)
             context["total_pages"] = self.get_total_pages(context)
             return context
+
     else:
+
         def get_context(self):
             context = super().get_context()
             context["total_pages"] = self.get_total_pages(context)
@@ -243,14 +266,25 @@ class SegmentSummaryPanel(SummaryItem):
         segment_count = models.Segment.objects.count()
         target_url = reverse("wagtail_personalisation_segment_modeladmin_index")
         title = _("Segments")
-        return mark_safe(
-            """
-            <li class="icon icon-fa-snowflake-o">
-                <a href="{}"><span>{}</span>{}</a>
-            </li>""".format(
-                target_url, segment_count, title
+        if WAGTAIL_VERSION >= (4, 0):
+            return mark_safe(
+                """
+                <li>
+                    <svg class="icon icon-tag icon" aria-hidden="true"><use href="#icon-tag"></use></svg>
+                    <a href="{}"><span>{}</span>{}</a>
+                </li>""".format(
+                    target_url, segment_count, title
+                )
             )
-        )
+        else:
+            return mark_safe(
+                """
+                <li class="icon icon-fa-snowflake-o">
+                    <a href="{}"><span>{}</span>{}</a>
+                </li>""".format(
+                    target_url, segment_count, title
+                )
+            )
 
 
 class PersonalisedPagesSummaryPanel(PagesSummaryItem):
@@ -261,14 +295,25 @@ class PersonalisedPagesSummaryPanel(PagesSummaryItem):
             segment__isnull=True
         ).count()
         title = _("Personalised Page")
-        return mark_safe(
-            """
-            <li class="icon icon-fa-file-o">
-                <span>{}</span>{}{}
-            </li>""".format(
-                page_count, title, pluralize(page_count)
+        if WAGTAIL_VERSION >= (4, 0):
+            return mark_safe(
+                """
+                <li>
+                    <svg class="icon icon-doc-empty icon" aria-hidden="true"><use href="#icon-doc-empty"></use></svg>
+                    <a><span>{}</span>{}{}</a>
+                </li>""".format(
+                    page_count, title, pluralize(page_count)
+                )
             )
-        )
+        else:
+            return mark_safe(
+                """
+                <li class="icon icon-fa-file-o">
+                    <span>{}</span>{}{}
+                </li>""".format(
+                    page_count, title, pluralize(page_count)
+                )
+            )
 
 
 class VariantPagesSummaryPanel(PagesSummaryItem):
@@ -279,14 +324,25 @@ class VariantPagesSummaryPanel(PagesSummaryItem):
             segment__isnull=False
         ).count()
         title = _("Variant")
-        return mark_safe(
-            """
-                <li class="icon icon-fa-files-o">
-                    <span>{}</span>{}{}
-                </li>""".format(
-                page_count, title, pluralize(page_count)
+        if WAGTAIL_VERSION >= (4, 0):
+            return mark_safe(
+                """
+                    <li>
+                        <svg class="icon icon-doc-empty icon" aria-hidden="true"><use href="#icon-doc-empty"></use></svg>
+                        <a><span>{}</span>{}{}</a>
+                    </li>""".format(
+                    page_count, title, pluralize(page_count)
+                )
             )
-        )
+        else:
+            return mark_safe(
+                """
+                    <li class="icon icon-fa-files-o">
+                        <span>{}</span>{}{}
+                    </li>""".format(
+                    page_count, title, pluralize(page_count)
+                )
+            )
 
 
 @hooks.register("construct_homepage_summary_items")
