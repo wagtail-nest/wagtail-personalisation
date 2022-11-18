@@ -238,7 +238,7 @@ class SegmentSummaryPanel(SummaryItem):
 
     order = 2000
 
-    def render(self):
+    def render_html(self, parent_context):
         segment_count = models.Segment.objects.count()
         target_url = reverse("wagtail_personalisation_segment_modeladmin_index")
         title = _("Segments")
@@ -255,7 +255,7 @@ class SegmentSummaryPanel(SummaryItem):
 class PersonalisedPagesSummaryPanel(PagesSummaryItem):
     order = 2100
 
-    def render(self):
+    def render_html(self, parent_context):
         page_count = models.PersonalisablePageMetadata.objects.filter(
             segment__isnull=True
         ).count()
@@ -273,7 +273,7 @@ class PersonalisedPagesSummaryPanel(PagesSummaryItem):
 class VariantPagesSummaryPanel(PagesSummaryItem):
     order = 2200
 
-    def render(self):
+    def render_html(self, parent_context):
         page_count = models.PersonalisablePageMetadata.objects.filter(
             segment__isnull=False
         ).count()
