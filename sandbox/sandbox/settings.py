@@ -168,3 +168,5 @@ BASE_URL = 'http://example.com'
 INTERNAL_IPS = ['127.0.0.1']
 
 DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
+
+WAGTAILADMIN_BASE_URL = 'http://localhost:8000/admin'
