@@ -13,11 +13,22 @@ from wagtail_personalisation.rules import TimeRule, VisitCountRule
 
 def form_with_data(segment, *rules):
     model_fields = ['type', 'status', 'count', 'name', 'match_any', 'randomisation_percent']
+    model_formsets = [
+        "wagtail_personalisation_timerules",
+        "wagtail_personalisation_dayrules",
+        "wagtail_personalisation_referralrules",
+        "wagtail_personalisation_visitcountrules",
+        "wagtail_personalisation_queryrules",
+        "wagtail_personalisation_devicerules",
+        "wagtail_personalisation_userisloggedinrules",
+        "wagtail_personalisation_origincountryrules",
+    ]
 
     class TestSegmentAdminForm(SegmentAdminForm):
         class Meta:
             model = Segment
             fields = model_fields
+            formsets = model_formsets
 
     data = model_to_dict(segment, model_fields)
     for formset in TestSegmentAdminForm().formsets.values():

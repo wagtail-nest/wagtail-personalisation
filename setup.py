@@ -9,19 +9,19 @@ install_requires = [
 ]
 
 tests_require = [
-    'factory_boy==2.8.1',
+    "factory_boy==3.2.1",
     'flake8-blind-except',
     'flake8-debugger',
     'flake8-isort',
     'flake8',
-    'freezegun==0.3.8',
-    'pytest-cov==2.5.1',
-    'pytest-django==4.1.0',
-    'pytest-pythonpath==0.7.2',
-    'pytest-sugar==0.9.1',
-    'pytest==6.1.2',
-    'wagtail_factories==1.1.0',
-    'pytest-mock==1.6.3',
+    "freezegun==1.2.1",
+    "pytest-cov==3.0.0",
+    "pytest-django==4.5.2",
+    "pytest-pythonpath==0.7.4",
+    "pytest-sugar==0.9.4",
+    "pytest==6.2.5",
+    "wagtail_factories==2.0.1",
+    "pytest-mock==3.8.1",
 ]
 
 docs_require = [

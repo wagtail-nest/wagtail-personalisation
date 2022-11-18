@@ -10,7 +10,7 @@ from wagtail_personalisation.models import PersonalisablePageMetadata
 try:
     from wagtail.core.models import Locale
 
-    class LocaleFactory(factory.DjangoModelFactory):
+    class LocaleFactory(factory.django.DjangoModelFactory):
         language_code = "en"
 
         class Meta:
@@ -35,7 +35,7 @@ class RegularPageFactory(PageFactory):
         model = models.RegularPage
 
 
-class PersonalisablePageMetadataFactory(factory.DjangoModelFactory):
+class PersonalisablePageMetadataFactory(factory.django.DjangoModelFactory):
 
     class Meta:
         model = PersonalisablePageMetadata
