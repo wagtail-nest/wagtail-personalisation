@@ -6,7 +6,7 @@ from wagtail_personalisation import models
 
 
 class SegmentFactory(factory.django.DjangoModelFactory):
-    name = 'TestSegment'
+    name = "TestSegment"
     status = models.Segment.STATUS_ENABLED
 
     class Meta:

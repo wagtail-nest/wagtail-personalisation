@@ -10,25 +10,57 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('wagtail_personalisation', '0001_initial'),
+        ("wagtail_personalisation", "0001_initial"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='QueryRule',
+            name="QueryRule",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('query_parameter', models.TextField(verbose_name='The query parameter to search for')),
-                ('query_value', models.TextField(verbose_name='The value of the parameter to match')),
-                ('segment', modelcluster.fields.ParentalKey(on_delete=django.db.models.deletion.CASCADE, related_name='wagtail_personalisation_queryrule_related', related_query_name='wagtail_personalisation_queryrules', to='wagtail_personalisation.Segment')),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "query_parameter",
+                    models.TextField(verbose_name="The query parameter to search for"),
+                ),
+                (
+                    "query_value",
+                    models.TextField(
+                        verbose_name="The value of the parameter to match"
+                    ),
+                ),
+                (
+                    "segment",
+                    modelcluster.fields.ParentalKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="wagtail_personalisation_queryrule_related",
+                        related_query_name="wagtail_personalisation_queryrules",
+                        to="wagtail_personalisation.Segment",
+                    ),
+                ),
             ],
             options={
-                'abstract': False,
+                "abstract": False,
             },
         ),
         migrations.AlterField(
-            model_name='visitcountrule',
-            name='operator',
-            field=models.CharField(choices=[('more_than', 'More than'), ('less_than', 'Less than'), ('equal_to', 'Equal to')], default='more_than', max_length=20),
+            model_name="visitcountrule",
+            name="operator",
+            field=models.CharField(
+                choices=[
+                    ("more_than", "More than"),
+                    ("less_than", "Less than"),
+                    ("equal_to", "Equal to"),
+                ],
+                default="more_than",
+                max_length=20,
+            ),
         ),
     ]

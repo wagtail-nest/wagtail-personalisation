@@ -15,17 +15,17 @@ def do_segment(parser, token):
     tag_name, _, kwargs = parse_tag(token, parser)
 
     # If no segment is provided this block will raise an error
-    if set(kwargs.keys()) != {'name'}:
+    if set(kwargs.keys()) != {"name"}:
         usage = '{% segment name="segmentname" %} ... {% endsegment %}'
         raise TemplateSyntaxError("Usage: %s" % usage)
 
-    nodelist = parser.parse(('endsegment',))
+    nodelist = parser.parse(("endsegment",))
     parser.delete_first_token()
 
-    return SegmentNode(nodelist, name=kwargs['name'])
+    return SegmentNode(nodelist, name=kwargs["name"])
 
 
-register.tag('segment', do_segment)
+register.tag("segment", do_segment)
 
 
 class SegmentNode(template.Node):
@@ -36,6 +36,7 @@ class SegmentNode(template.Node):
     If not it will return nothing
 
     """
+
     def __init__(self, nodelist, name):
         self.nodelist = nodelist
         self.name = name
@@ -48,10 +49,10 @@ class SegmentNode(template.Node):
             return ""
 
         # Check if user has segment
-        adapter = get_segment_adapter(context['request'])
+        adapter = get_segment_adapter(context["request"])
         user_segment = adapter.get_segment_by_id(segment_id=segment.pk)
         if not user_segment:
-            return ''
+            return ""
 
         content = self.nodelist.render(context)
         content = mark_safe(content)

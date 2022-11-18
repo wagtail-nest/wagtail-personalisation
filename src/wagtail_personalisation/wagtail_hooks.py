@@ -1,12 +1,11 @@
 import logging
 
-from django.urls import include, re_path
 from django.db import transaction
 from django.db.models import F
 from django.http import Http404
 from django.shortcuts import redirect, render
 from django.template.defaultfilters import pluralize
-from django.urls import reverse
+from django.urls import include, re_path, reverse
 from django.utils.safestring import mark_safe
 from django.utils.translation import gettext_lazy as _
 from wagtail import VERSION as WAGTAIL_VERSION
@@ -328,7 +327,8 @@ class VariantPagesSummaryPanel(PagesSummaryItem):
             return mark_safe(
                 """
                     <li>
-                        <svg class="icon icon-doc-empty icon" aria-hidden="true"><use href="#icon-doc-empty"></use></svg>
+                        <svg class="icon icon-doc-empty icon" aria-hidden="true">\n
+                        <use href="#icon-doc-empty"></use></svg>
                         <a><span>{}</span>{}{}</a>
                     </li>""".format(
                     page_count, title, pluralize(page_count)
