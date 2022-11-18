@@ -3,7 +3,14 @@
 from __future__ import unicode_literals
 
 from django.db import migrations
-import wagtail.core.fields
+from wagtail import VERSION as WAGTAIL_VERSION
+
+if WAGTAIL_VERSION >= (3, 0):
+    import wagtail.fields as wagtail_fields
+    import wagtail.blocks as wagtail_blocks
+else:
+    import wagtail.core.fields as wagtail_fields
+    import wagtail.core.blocks as wagtail_blocks
 import wagtail_personalisation
 
 
@@ -17,14 +24,20 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='homepage',
             name='intro',
-            field=wagtail.core.fields.RichTextField(
+            field=wagtail_fields.RichTextField(
                 default='<p>Thank you for trying <a href="http://wagxperience.io" target="_blank">Wagxperience</a>!</p>'),
             preserve_default=False,
         ),
         migrations.AddField(
             model_name='homepage',
             name='body',
-            field=wagtail.core.fields.StreamField((('personalisable_paragraph', wagtail.core.blocks.StructBlock((('segment', wagtail.core.blocks.ChoiceBlock(choices=wagtail_personalisation.blocks.list_segment_choices, help_text='Only show this content block for users in this segment', label='Personalisation segment', required=False)), ('paragraph', wagtail.core.blocks.RichTextBlock())), icon='pilcrow')),), default=''),
+            field=wagtail_fields.StreamField((('personalisable_paragraph', wagtail_blocks.StructBlock((('segment', wagtail_blocks.ChoiceBlock(choices=wagtail_personalisation.blocks.list_segment_choices, help_text='Only show this content block for users in this segment', label='Personalisation segment', required=False)), ('paragraph', wagtail_blocks.RichTextBlock())), icon='pilcrow')),), default='', use_json_field=True),
             preserve_default=False,
-        ),
+        ) if WAGTAIL_VERSION >= (3, 0) else migrations.AddField(
+            model_name='homepage',
+            name='body',
+            field=wagtail_fields.StreamField((('personalisable_paragraph', wagtail_blocks.StructBlock((('segment', wagtail_blocks.ChoiceBlock(choices=wagtail_personalisation.blocks.list_segment_choices, help_text='Only show this content block for users in this segment', label='Personalisation segment', required=False)), ('paragraph', wagtail_blocks.RichTextBlock())), icon='pilcrow')),), default=''),
+            preserve_default=False,
+        )
+        
     ]
