@@ -11,7 +11,7 @@ from django.db import models
 from django.template.defaultfilters import slugify
 from django.test.client import RequestFactory
 from django.utils import timezone
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 from modelcluster.fields import ParentalKey
 from user_agents import parse
 from wagtail import VERSION as WAGTAIL_VERSION

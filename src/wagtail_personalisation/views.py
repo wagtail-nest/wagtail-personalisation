@@ -7,7 +7,7 @@ from django.http import (
     HttpResponse, HttpResponseForbidden, HttpResponseRedirect)
 from django.shortcuts import get_object_or_404
 from django.urls import reverse
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 from wagtail.contrib.modeladmin.options import ModelAdmin, modeladmin_register
 from wagtail.contrib.modeladmin.views import DeleteView, IndexView
 from wagtail import VERSION as WAGTAIL_VERSION
