@@ -6,7 +6,6 @@ from django.db import migrations
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("wagtail_personalisation", "0011_personalisablepagemetadata"),
     ]

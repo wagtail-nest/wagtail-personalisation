@@ -5,7 +5,6 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("wagtail_personalisation", "0020_rules_delete_relatedqueryname"),
     ]

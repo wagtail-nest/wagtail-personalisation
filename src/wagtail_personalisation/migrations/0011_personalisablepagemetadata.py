@@ -7,7 +7,6 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("wagtailcore", "0001_initial"),
         ("wagtail_personalisation", "0010_auto_20170531_1101"),
