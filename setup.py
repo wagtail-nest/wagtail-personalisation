@@ -3,7 +3,7 @@ import re
 from setuptools import find_packages, setup
 
 install_requires = [
-    "wagtail>=2.15,<4.2",
+    "wagtail>=4.1",
     "user-agents>=1.1.0",
     "wagtailfontawesome>=1.1.3",
     "pycountry",
@@ -66,10 +66,10 @@ setup(
         "Programming Language :: Python :: 3.10",
         "Programming Language :: Python :: 3.11",
         "Framework :: Django",
-        "Framework :: Django :: 3",
-        "Framework :: Django :: 4",
+        "Framework :: Django :: 3.2",
+        "Framework :: Django :: 4.0",
+        "Framework :: Django :: 4.1",
         "Framework :: Wagtail",
-        "Framework :: Wagtail :: 3",
         "Framework :: Wagtail :: 4",
         "Topic :: Internet :: WWW/HTTP :: Site Management",
     ],
