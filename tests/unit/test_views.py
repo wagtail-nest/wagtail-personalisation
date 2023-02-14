@@ -1,7 +1,7 @@
 import pytest
 from django.core.exceptions import PermissionDenied
 from django.urls import reverse
-from wagtail.core.models import Page
+from wagtail.models import Page
 
 from wagtail_personalisation.models import Segment
 from wagtail_personalisation.rules import VisitCountRule

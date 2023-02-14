@@ -1,5 +1,5 @@
 import factory
-from wagtail.core.models import Site
+from wagtail.models import Site
 
 from tests.factories.page import ContentPageFactory
 
