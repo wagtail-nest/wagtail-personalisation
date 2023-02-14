@@ -14,12 +14,7 @@ from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 from modelcluster.fields import ParentalKey
 from user_agents import parse
-from wagtail import VERSION as WAGTAIL_VERSION
-
-if WAGTAIL_VERSION >= (3, 0):
-    from wagtail.admin.panels import FieldPanel, FieldRowPanel
-else:
-    from wagtail.admin.edit_handlers import FieldPanel, FieldRowPanel, PageChooserPanel
+from wagtail.admin.panels import FieldPanel, FieldRowPanel
 
 from wagtail_personalisation.utils import get_client_ip
 
@@ -252,9 +247,7 @@ class VisitCountRule(AbstractBaseRule):
     )
 
     panels = [
-        FieldPanel("counted_page")
-        if WAGTAIL_VERSION >= (3, 0)
-        else PageChooserPanel("counted_page"),
+        FieldPanel("counted_page"),
         FieldRowPanel(
             [
                 FieldPanel("operator"),

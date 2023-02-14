@@ -10,24 +10,8 @@ from django.utils.functional import cached_property
 from django.utils.safestring import mark_safe
 from django.utils.translation import gettext_lazy as _
 from modelcluster.models import ClusterableModel
-from wagtail import VERSION as WAGTAIL_VERSION
-
-if WAGTAIL_VERSION >= (3, 0):
-    from wagtail.admin.panels import (
-        FieldPanel,
-        FieldRowPanel,
-        InlinePanel,
-        MultiFieldPanel,
-    )
-    from wagtail.models import Page
-else:
-    from wagtail.admin.edit_handlers import (
-        FieldPanel,
-        FieldRowPanel,
-        InlinePanel,
-        MultiFieldPanel,
-    )
-    from wagtail.core.models import Page
+from wagtail.admin.panels import FieldPanel, FieldRowPanel, InlinePanel, MultiFieldPanel
+from wagtail.models import Page
 
 from wagtail_personalisation.rules import AbstractBaseRule
 from wagtail_personalisation.utils import count_active_days

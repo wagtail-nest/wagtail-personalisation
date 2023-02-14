@@ -2,7 +2,6 @@ import datetime
 
 import pytest
 from django.db.models import ProtectedError
-from wagtail import VERSION as WAGTAIL_VERSION
 
 from tests.factories.page import ContentPageFactory
 from tests.factories.segment import SegmentFactory
@@ -78,8 +77,5 @@ def test_sitemap_generation_for_variants_is_disabled(segmented_page):
 @pytest.mark.django_db
 def test_segment_edit_view(site, client, django_user_model):
     test_segment = SegmentFactory()
-    if WAGTAIL_VERSION >= (3, 0):
-        new_panel = test_segment.panels[1].children[0].bind_to_model(Segment)
-    else:
-        new_panel = test_segment.panels[1].children[0].bind_to(model=Segment)
+    new_panel = test_segment.panels[1].children[0].bind_to_model(Segment)
     assert new_panel.related.name == "wagtail_personalisation_timerules"
