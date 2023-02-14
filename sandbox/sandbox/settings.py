@@ -16,8 +16,6 @@ from __future__ import absolute_import, unicode_literals
 import os
 from importlib.util import find_spec
 
-from wagtail import VERSION as WAGTAIL_VERSION
-
 PROJECT_DIR = os.path.dirname(os.path.abspath(__file__))
 BASE_DIR = os.path.dirname(PROJECT_DIR)
 
@@ -54,7 +52,7 @@ INSTALLED_APPS = [
     "wagtail.images",
     "wagtail.search",
     "wagtail.admin",
-    "wagtail" if WAGTAIL_VERSION >= (3, 0) else "wagtail.core",
+    "wagtail",
     "wagtail.contrib.modeladmin",
     "wagtailfontawesome",
     "modelcluster",
