@@ -5,7 +5,7 @@ from setuptools import find_packages, setup
 install_requires = [
     "wagtail>=4.1",
     "user-agents>=1.1.0",
-    "wagtail-font-awesome-svg>=0.0.3",
+    "wagtailfontawesome>=1.2.1",
     "pycountry",
 ]
 
