@@ -37,7 +37,7 @@ in the admin interface.
 
 Instructions
 ------------
-Wagtail Personalisation requires Wagtail 3.0+ and Django 3.2+
+Wagtail Personalisation requires Wagtail 4.1+ and Django 3.2+
 
 To install the package with pip:
 

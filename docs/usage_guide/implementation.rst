@@ -17,7 +17,7 @@ A very simple example for a personalisable homepage:
 
 .. code-block:: python
 
-    from wagtail.wagtailcore.models import Page
+    from wagtail.models import Page
     from wagtail_personalisation.models import PersonalisablePageMixin
 
     class HomePage(PersonalisablePageMixin, Page):
