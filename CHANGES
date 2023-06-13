@@ -1,3 +1,9 @@
+Unreleased
+=================
+- Upgrade to Wagtail 5.0, drop support for Wagtail < 4.1
+- Add Django 4.2 support, drop support for Django 4.0
+- Add Python 3.11 support, drop support for Python 3.7
+
 0.15.3
 =================
 - Add wagtail >= 2.15 support with get_context_data override instead of get_context
