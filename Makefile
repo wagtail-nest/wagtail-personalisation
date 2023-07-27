@@ -35,7 +35,7 @@ flake8:
 
 isort:
 	pip install isort
-	isort --recursive src tests
+	isort src tests
 
 dist:
 	pip install wheel
