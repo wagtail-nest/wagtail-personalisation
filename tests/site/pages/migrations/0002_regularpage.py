@@ -2,12 +2,11 @@
 from __future__ import unicode_literals
 
 import django.db.models.deletion
-import wagtail.core.fields
 from django.db import migrations, models
+from wagtail import fields
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("wagtailcore", "0001_initial"),
         ("pages", "0001_initial"),
@@ -29,7 +28,7 @@ class Migration(migrations.Migration):
                     ),
                 ),  # noqa: E501
                 ("subtitle", models.CharField(blank=True, default="", max_length=255)),
-                ("body", wagtail.core.fields.RichTextField(blank=True, default="")),
+                ("body", fields.RichTextField(blank=True, default="")),
             ],
             options={
                 "abstract": False,

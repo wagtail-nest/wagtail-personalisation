@@ -1,6 +1,6 @@
 import pytest
 from django.test import override_settings
-from wagtail.core.models import Page as WagtailPage
+from wagtail.models import Page as WagtailPage
 
 from tests.factories.page import ContentPageFactory, PersonalisablePageMetadataFactory
 from wagtail_personalisation.utils import (

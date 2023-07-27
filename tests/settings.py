@@ -1,5 +1,4 @@
 import os
-from importlib.util import find_spec
 
 DATABASES = {
     "default": {
@@ -59,11 +58,6 @@ MIDDLEWARE = (
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 )
 
-if find_spec("wagtail.contrib.legacy"):
-    MIDDLEWARE += ("wagtail.contrib.legacy.sitemiddleware.SiteMiddleware",)
-else:
-    MIDDLEWARE += ("wagtail.core.middleware.SiteMiddleware",)
-
 
 INSTALLED_APPS = (
     "wagtail_personalisation",
@@ -74,7 +68,7 @@ INSTALLED_APPS = (
     "wagtail.images",
     "wagtail.documents",
     "wagtail.admin",
-    "wagtail.core",
+    "wagtail",
     "taggit",
     "django.contrib.admin",
     "django.contrib.auth",
