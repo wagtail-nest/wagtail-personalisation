@@ -1,6 +1,11 @@
 import pytest
 from django.http import Http404
-from wagtail.core.models import Page
+from wagtail import VERSION as WAGTAIL_VERSION
+
+if WAGTAIL_VERSION >= (3, 0):
+    from wagtail.models import Page
+else:
+    from wagtail.core.models import Page
 
 from tests.factories.page import ContentPageFactory
 from tests.factories.segment import SegmentFactory
@@ -10,7 +15,7 @@ from wagtail_personalisation import adapters, wagtail_hooks
 @pytest.mark.django_db
 def test_serve_variant_no_variant(site, rf):
     page = site.root_page
-    request = rf.get('/')
+    request = rf.get("/")
     args = tuple()
     kwargs = {}
 
@@ -20,7 +25,7 @@ def test_serve_variant_no_variant(site, rf):
 
 @pytest.mark.django_db
 def test_variant_accessed_directly_returns_404(segmented_page, rf):
-    request = rf.get('/')
+    request = rf.get("/")
     args = tuple()
     kwargs = {}
     with pytest.raises(Http404):
@@ -29,7 +34,7 @@ def test_variant_accessed_directly_returns_404(segmented_page, rf):
 
 @pytest.mark.django_db
 def test_serve_variant_with_variant_no_segment(site, rf, segmented_page):
-    request = rf.get('/')
+    request = rf.get("/")
     args = tuple()
     kwargs = {}
 
@@ -40,7 +45,7 @@ def test_serve_variant_with_variant_no_segment(site, rf, segmented_page):
 
 @pytest.mark.django_db
 def test_serve_variant_with_variant_segmented(site, rf, segmented_page):
-    request = rf.get('/')
+    request = rf.get("/")
     args = tuple()
     kwargs = {}
 
@@ -58,7 +63,7 @@ def test_serve_variant_with_variant_segmented(site, rf, segmented_page):
 def test_page_listing_variant_buttons(site, rf, segmented_page):
     page = segmented_page.personalisation_metadata.canonical_page
 
-    SegmentFactory(name='something')
+    SegmentFactory(name="something")
     result = wagtail_hooks.page_listing_variant_buttons(page, [])
     items = list(result)
     assert len(items) == 1
@@ -68,47 +73,42 @@ def test_page_listing_variant_buttons(site, rf, segmented_page):
 def test_page_listing_more_buttons(site, rf, segmented_page):
     page = segmented_page.personalisation_metadata.canonical_page
 
-    SegmentFactory(name='something')
+    SegmentFactory(name="something")
     result = wagtail_hooks.page_listing_more_buttons(page, [])
     items = list(result)
     assert len(items) == 3
 
 
 @pytest.mark.django_db
-def test_custom_delete_page_view_does_not_trigger_for_variants(
-    rf,
-    segmented_page
-):
-    assert (
-        wagtail_hooks.delete_related_variants(rf.get('/'), segmented_page)
-    ) is None
+def test_custom_delete_page_view_does_not_trigger_for_variants(rf, segmented_page):
+    assert (wagtail_hooks.delete_related_variants(rf.get("/"), segmented_page)) is None
 
 
 @pytest.mark.django_db
-def test_custom_delete_page_view_triggers_for_canonical_pages(
-    rf,
-    segmented_page
-):
+def test_custom_delete_page_view_triggers_for_canonical_pages(rf, segmented_page):
     assert (
         wagtail_hooks.delete_related_variants(
-            rf.get('/'),
-            segmented_page.personalisation_metadata.canonical_page
+            rf.get("/"), segmented_page.personalisation_metadata.canonical_page
         )
     ) is not None
 
 
 @pytest.mark.django_db
 def test_custom_delete_page_view_deletes_variants(rf, segmented_page, user):
-    post_request = rf.post('/')
+    post_request = rf.post("/")
     user.is_superuser = True
     rf.user = user
     canonical_page = segmented_page.personalisation_metadata.canonical_page
     canonical_page_variant = canonical_page.personalisation_metadata
     assert canonical_page_variant
 
-    variants = Page.objects.filter(pk__in=(
-        canonical_page.personalisation_metadata.variants_metadata.values_list('variant_id', flat=True)
-    ))
+    variants = Page.objects.filter(
+        pk__in=(
+            canonical_page.personalisation_metadata.variants_metadata.values_list(
+                "variant_id", flat=True
+            )
+        )
+    )
     variants_metadata = canonical_page.personalisation_metadata.variants_metadata
     # Make sure there are variants that exist in the database.
     assert len(variants.all())
@@ -126,18 +126,20 @@ def test_custom_delete_page_view_deletes_variants(rf, segmented_page, user):
 
 
 @pytest.mark.django_db
-def test_custom_delete_page_view_deletes_variants_of_child_pages(rf, segmented_page, user):
+def test_custom_delete_page_view_deletes_variants_of_child_pages(
+    rf, segmented_page, user
+):
     """
     Regression test for deleting pages that have children with variants
     """
-    post_request = rf.post('/')
+    post_request = rf.post("/")
     user.is_superuser = True
     rf.user = user
     canonical_page = segmented_page.personalisation_metadata.canonical_page
     # Create a child with a variant
-    child_page = ContentPageFactory(parent=canonical_page, slug='personalised-child')
-    child_page.personalisation_metadata.copy_for_segment(segmented_page.personalisation_metadata.segment)
-    # A ProtectedError would be raised if the bug persists
-    wagtail_hooks.delete_related_variants(
-        post_request, canonical_page
+    child_page = ContentPageFactory(parent=canonical_page, slug="personalised-child")
+    child_page.personalisation_metadata.copy_for_segment(
+        segmented_page.personalisation_metadata.segment
     )
+    # A ProtectedError would be raised if the bug persists
+    wagtail_hooks.delete_related_variants(post_request, canonical_page)

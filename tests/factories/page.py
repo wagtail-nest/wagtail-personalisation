@@ -10,17 +10,19 @@ from wagtail_personalisation.models import PersonalisablePageMetadata
 try:
     from wagtail.core.models import Locale
 
-    class LocaleFactory(factory.DjangoModelFactory):
+    class LocaleFactory(factory.django.DjangoModelFactory):
         language_code = "en"
 
         class Meta:
             model = Locale
+
 except ImportError:
     pass
 
+
 class ContentPageFactory(PageFactory):
     parent = None
-    title = 'Test page'
+    title = "Test page"
     slug = factory.LazyAttribute(lambda obj: slugify(obj.title))
 
     class Meta:
@@ -28,14 +30,13 @@ class ContentPageFactory(PageFactory):
 
 
 class RegularPageFactory(PageFactory):
-    title = 'Regular page'
+    title = "Regular page"
     slug = factory.LazyAttribute(lambda obj: slugify(obj.title))
 
     class Meta:
         model = models.RegularPage
 
 
-class PersonalisablePageMetadataFactory(factory.DjangoModelFactory):
-
+class PersonalisablePageMetadataFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = PersonalisablePageMetadata

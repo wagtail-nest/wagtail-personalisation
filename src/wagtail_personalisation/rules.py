@@ -11,11 +11,15 @@ from django.db import models
 from django.template.defaultfilters import slugify
 from django.test.client import RequestFactory
 from django.utils import timezone
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 from modelcluster.fields import ParentalKey
 from user_agents import parse
-from wagtail.admin.edit_handlers import (
-    FieldPanel, FieldRowPanel, PageChooserPanel)
+from wagtail import VERSION as WAGTAIL_VERSION
+
+if WAGTAIL_VERSION >= (3, 0):
+    from wagtail.admin.panels import FieldPanel, FieldRowPanel
+else:
+    from wagtail.admin.edit_handlers import FieldPanel, FieldRowPanel, PageChooserPanel
 
 from wagtail_personalisation.utils import get_client_ip
 
@@ -27,32 +31,35 @@ logger = logging.getLogger(__name__)
 def get_geoip_module():
     try:
         from django.contrib.gis.geoip2 import GeoIP2
+
         return GeoIP2
     except ImportError:
         logger.exception(
-            'GeoIP module is disabled. To use GeoIP for the origin\n'
-            'country personaliastion rule please set it up as per '
-            'documentation:\n'
-            'https://docs.djangoproject.com/en/stable/ref/contrib/gis/'
-            'geoip2/.\n'
-            'Wagtail-personalisation also works with Cloudflare and\n'
-            'CloudFront country detection, so you should not see this\n'
-            'warning if you use one of those.')
+            "GeoIP module is disabled. To use GeoIP for the origin\n"
+            "country personaliastion rule please set it up as per "
+            "documentation:\n"
+            "https://docs.djangoproject.com/en/stable/ref/contrib/gis/"
+            "geoip2/.\n"
+            "Wagtail-personalisation also works with Cloudflare and\n"
+            "CloudFront country detection, so you should not see this\n"
+            "warning if you use one of those."
+        )
 
 
 class AbstractBaseRule(models.Model):
     """Base for creating rules to segment users with."""
-    icon = 'fa-circle-o'
+
+    icon = "fa-circle-o"
     static = False
 
     segment = ParentalKey(
-        'wagtail_personalisation.Segment',
+        "wagtail_personalisation.Segment",
         related_name="%(app_label)s_%(class)ss",
     )
 
     class Meta:
         abstract = True
-        verbose_name = 'Abstract segmentation rule'
+        verbose_name = "Abstract segmentation rule"
 
     def __str__(self):
         return str(self._meta.verbose_name)
@@ -74,16 +81,17 @@ class AbstractBaseRule(models.Model):
 
         """
         description = {
-            'title': _('Abstract segmentation rule'),
-            'value': '',
+            "title": _("Abstract segmentation rule"),
+            "value": "",
         }
 
         return description
 
     @classmethod
     def get_descendant_models(cls):
-        return [model for model in apps.get_models()
-                if issubclass(model, AbstractBaseRule)]
+        return [
+            model for model in apps.get_models() if issubclass(model, AbstractBaseRule)
+        ]
 
 
 class TimeRule(AbstractBaseRule):
@@ -93,30 +101,32 @@ class TimeRule(AbstractBaseRule):
     set start time and end time.
 
     """
-    icon = 'fa-clock-o'
+
+    icon = "fa-clock-o"
 
     start_time = models.TimeField(_("Starting time"))
     end_time = models.TimeField(_("Ending time"))
 
     panels = [
-        FieldRowPanel([
-            FieldPanel('start_time'),
-            FieldPanel('end_time'),
-        ]),
+        FieldRowPanel(
+            [
+                FieldPanel("start_time"),
+                FieldPanel("end_time"),
+            ]
+        ),
     ]
 
     class Meta:
-        verbose_name = _('Time Rule')
+        verbose_name = _("Time Rule")
 
     def test_user(self, request=None):
         return self.start_time <= timezone.now().time() <= self.end_time
 
     def description(self):
         return {
-            'title': _('These users visit between'),
-            'value': _('{} and {}').format(
-                self.start_time.strftime("%H:%M"),
-                self.end_time.strftime("%H:%M")
+            "title": _("These users visit between"),
+            "value": _("{} and {}").format(
+                self.start_time.strftime("%H:%M"), self.end_time.strftime("%H:%M")
             ),
         }
 
@@ -128,7 +138,8 @@ class DayRule(AbstractBaseRule):
     set in the rule.
 
     """
-    icon = 'fa-calendar-check-o'
+
+    icon = "fa-calendar-check-o"
 
     mon = models.BooleanField(_("Monday"), default=False)
     tue = models.BooleanField(_("Tuesday"), default=False)
@@ -139,34 +150,39 @@ class DayRule(AbstractBaseRule):
     sun = models.BooleanField(_("Sunday"), default=False)
 
     panels = [
-        FieldPanel('mon'),
-        FieldPanel('tue'),
-        FieldPanel('wed'),
-        FieldPanel('thu'),
-        FieldPanel('fri'),
-        FieldPanel('sat'),
-        FieldPanel('sun'),
+        FieldPanel("mon"),
+        FieldPanel("tue"),
+        FieldPanel("wed"),
+        FieldPanel("thu"),
+        FieldPanel("fri"),
+        FieldPanel("sat"),
+        FieldPanel("sun"),
     ]
 
     class Meta:
-        verbose_name = _('Day Rule')
+        verbose_name = _("Day Rule")
 
     def test_user(self, request=None):
-        return [self.mon, self.tue, self.wed, self.thu,
-                self.fri, self.sat, self.sun][timezone.now().date().weekday()]
+        return [self.mon, self.tue, self.wed, self.thu, self.fri, self.sat, self.sun][
+            timezone.now().date().weekday()
+        ]
 
     def description(self):
         days = (
-            ('mon', self.mon), ('tue', self.tue), ('wed', self.wed),
-            ('thu', self.thu), ('fri', self.fri), ('sat', self.sat),
-            ('sun', self.sun),
+            ("mon", self.mon),
+            ("tue", self.tue),
+            ("wed", self.wed),
+            ("thu", self.thu),
+            ("fri", self.fri),
+            ("sat", self.sat),
+            ("sun", self.sun),
         )
 
         chosen_days = [day_name for day_name, chosen in days if chosen]
 
         return {
-            'title': _('These users visit on'),
-            'value': ", ".join([day for day in chosen_days]).title(),
+            "title": _("These users visit on"),
+            "value": ", ".join([day for day in chosen_days]).title(),
         }
 
 
@@ -177,32 +193,32 @@ class ReferralRule(AbstractBaseRule):
     the set regex test.
 
     """
-    icon = 'fa-globe'
 
-    regex_string = models.TextField(
-        _("Regular expression to match the referrer"))
+    icon = "fa-globe"
+
+    regex_string = models.TextField(_("Regular expression to match the referrer"))
 
     panels = [
-        FieldPanel('regex_string'),
+        FieldPanel("regex_string"),
     ]
 
     class Meta:
-        verbose_name = _('Referral Rule')
+        verbose_name = _("Referral Rule")
 
     def test_user(self, request):
         pattern = re.compile(self.regex_string)
 
-        if 'HTTP_REFERER' in request.META:
-            referer = request.META['HTTP_REFERER']
+        if "HTTP_REFERER" in request.META:
+            referer = request.META["HTTP_REFERER"]
             if pattern.search(referer):
                 return True
         return False
 
     def description(self):
         return {
-            'title': _('These visits originate from'),
-            'value': self.regex_string,
-            'code': True
+            "title": _("These visits originate from"),
+            "value": self.regex_string,
+            "code": True,
         }
 
 
@@ -214,48 +230,57 @@ class VisitCountRule(AbstractBaseRule):
     when visiting the set page.
 
     """
-    icon = 'fa-calculator'
+
+    icon = "fa-calculator"
     static = True
 
     OPERATOR_CHOICES = (
-        ('more_than', _("More than")),
-        ('less_than', _("Less than")),
-        ('equal_to', _("Equal to")),
+        ("more_than", _("More than")),
+        ("less_than", _("Less than")),
+        ("equal_to", _("Equal to")),
     )
-    operator = models.CharField(max_length=20,
-                                choices=OPERATOR_CHOICES, default="more_than")
+    operator = models.CharField(
+        max_length=20, choices=OPERATOR_CHOICES, default="more_than"
+    )
     count = models.PositiveSmallIntegerField(default=0, null=True)
     counted_page = models.ForeignKey(
-        'wagtailcore.Page',
+        "wagtailcore.Page",
         null=False,
         blank=False,
         on_delete=models.CASCADE,
-        related_name='+',
+        related_name="+",
     )
 
     panels = [
-        PageChooserPanel('counted_page'),
-        FieldRowPanel([
-            FieldPanel('operator'),
-            FieldPanel('count'),
-        ]),
+        FieldPanel("counted_page")
+        if WAGTAIL_VERSION >= (3, 0)
+        else PageChooserPanel("counted_page"),
+        FieldRowPanel(
+            [
+                FieldPanel("operator"),
+                FieldPanel("count"),
+            ]
+        ),
     ]
 
     class Meta:
-        verbose_name = _('Visit count Rule')
+        verbose_name = _("Visit count Rule")
 
     def _get_user_session(self, user):
         sessions = Session.objects.iterator()
         for session in sessions:
             session_data = session.get_decoded()
-            if session_data.get('_auth_user_id') == str(user.id):
+            if session_data.get("_auth_user_id") == str(user.id):
                 return SessionStore(session_key=session.session_key)
         return SessionStore()
 
     def test_user(self, request, user=None):
         # Local import for cyclic import
         from wagtail_personalisation.adapters import (
-            get_segment_adapter, SessionSegmentsAdapter, SEGMENT_ADAPTER_CLASS)
+            SEGMENT_ADAPTER_CLASS,
+            SessionSegmentsAdapter,
+            get_segment_adapter,
+        )
 
         # Django formsets don't honour 'required' fields so check rule is valid
         try:
@@ -265,7 +290,7 @@ class VisitCountRule(AbstractBaseRule):
 
         if user:
             # Create a fake request so we can use the adapter
-            request = RequestFactory().get('/')
+            request = RequestFactory().get("/")
             request.user = user
 
             # If we're using the session adapter check for an active session
@@ -297,13 +322,8 @@ class VisitCountRule(AbstractBaseRule):
 
     def description(self):
         return {
-            'title': _('These users visited {}').format(
-                self.counted_page
-            ),
-            'value': _('{} {} times').format(
-                self.get_operator_display(),
-                self.count
-            ),
+            "title": _("These users visited {}").format(self.counted_page),
+            "value": _("{} {} times").format(self.get_operator_display(), self.count),
         }
 
     def get_column_header(self):
@@ -312,10 +332,13 @@ class VisitCountRule(AbstractBaseRule):
     def get_user_info_string(self, user):
         # Local import for cyclic import
         from wagtail_personalisation.adapters import (
-            get_segment_adapter, SessionSegmentsAdapter, SEGMENT_ADAPTER_CLASS)
+            SEGMENT_ADAPTER_CLASS,
+            SessionSegmentsAdapter,
+            get_segment_adapter,
+        )
 
         # Create a fake request so we can use the adapter
-        request = RequestFactory().get('/')
+        request = RequestFactory().get("/")
         request.user = user
 
         # If we're using the session adapter check for an active session
@@ -336,32 +359,28 @@ class QueryRule(AbstractBaseRule):
     present in the request query.
 
     """
-    icon = 'fa-link'
 
-    parameter = models.SlugField(_("The query parameter to search for"),
-                                 max_length=20)
-    value = models.SlugField(_("The value of the parameter to match"),
-                             max_length=20)
+    icon = "fa-link"
+
+    parameter = models.SlugField(_("The query parameter to search for"), max_length=20)
+    value = models.SlugField(_("The value of the parameter to match"), max_length=20)
 
     panels = [
-        FieldPanel('parameter'),
-        FieldPanel('value'),
+        FieldPanel("parameter"),
+        FieldPanel("value"),
     ]
 
     class Meta:
-        verbose_name = _('Query Rule')
+        verbose_name = _("Query Rule")
 
     def test_user(self, request):
-        return request.GET.get(self.parameter, '') == self.value
+        return request.GET.get(self.parameter, "") == self.value
 
     def description(self):
         return {
-            'title': _('These users used a URL with the query'),
-            'value': _('?{}={}').format(
-                self.parameter,
-                self.value
-            ),
-            'code': True
+            "title": _("These users used a URL with the query"),
+            "value": _("?{}={}").format(self.parameter, self.value),
+            "code": True,
         }
 
 
@@ -372,23 +391,24 @@ class DeviceRule(AbstractBaseRule):
     in the request user agent headers.
 
     """
-    icon = 'fa-tablet'
+
+    icon = "fa-tablet"
 
     mobile = models.BooleanField(_("Mobile phone"), default=False)
     tablet = models.BooleanField(_("Tablet"), default=False)
     desktop = models.BooleanField(_("Desktop"), default=False)
 
     panels = [
-        FieldPanel('mobile'),
-        FieldPanel('tablet'),
-        FieldPanel('desktop'),
+        FieldPanel("mobile"),
+        FieldPanel("tablet"),
+        FieldPanel("desktop"),
     ]
 
     class Meta:
-        verbose_name = _('Device Rule')
+        verbose_name = _("Device Rule")
 
     def test_user(self, request=None):
-        ua_header = request.META['HTTP_USER_AGENT']
+        ua_header = request.META["HTTP_USER_AGENT"]
         user_agent = parse(ua_header)
 
         if user_agent.is_mobile:
@@ -407,29 +427,31 @@ class UserIsLoggedInRule(AbstractBaseRule):
     Matches when the user is authenticated.
 
     """
-    icon = 'fa-user'
+
+    icon = "fa-user"
 
     is_logged_in = models.BooleanField(default=False)
 
     panels = [
-        FieldPanel('is_logged_in'),
+        FieldPanel("is_logged_in"),
     ]
 
     class Meta:
-        verbose_name = _('Logged in Rule')
+        verbose_name = _("Logged in Rule")
 
     def test_user(self, request=None):
         return request.user.is_authenticated == self.is_logged_in
 
     def description(self):
         return {
-            'title': _('These visitors are'),
-            'value': _('Logged in') if self.is_logged_in else _('Not logged in'),
+            "title": _("These visitors are"),
+            "value": _("Logged in") if self.is_logged_in else _("Not logged in"),
         }
 
 
-COUNTRY_CHOICES = [(country.alpha_2.lower(), country.name)
-                   for country in pycountry.countries]
+COUNTRY_CHOICES = [
+    (country.alpha_2.lower(), country.name) for country in pycountry.countries
+]
 
 
 class OriginCountryRule(AbstractBaseRule):
@@ -439,12 +461,16 @@ class OriginCountryRule(AbstractBaseRule):
     Using this rule requires setting up GeoIP2 on Django or using
     CloudFlare or CloudFront geolocation detection.
     """
+
     country = models.CharField(
-        max_length=2, choices=COUNTRY_CHOICES,
-        help_text=_("Select origin country of the request that this rule will "
-                    "match against. This rule will only work if you use "
-                    "Cloudflare or CloudFront IP geolocation or if GeoIP2 "
-                    "module is configured.")
+        max_length=2,
+        choices=COUNTRY_CHOICES,
+        help_text=_(
+            "Select origin country of the request that this rule will "
+            "match against. This rule will only work if you use "
+            "Cloudflare or CloudFront IP geolocation or if GeoIP2 "
+            "module is configured."
+        ),
     )
 
     class Meta:
@@ -458,13 +484,13 @@ class OriginCountryRule(AbstractBaseRule):
         https://support.cloudflare.com/hc/en-us/articles/200168236-What-does-Cloudflare-IP-Geolocation-do-
         """
         try:
-            return request.META['HTTP_CF_IPCOUNTRY'].lower()
+            return request.META["HTTP_CF_IPCOUNTRY"].lower()
         except KeyError:
             pass
 
     def get_cloudfront_country(self, request):
         try:
-            return request.META['HTTP_CLOUDFRONT_VIEWER_COUNTRY'].lower()
+            return request.META["HTTP_CLOUDFRONT_VIEWER_COUNTRY"].lower()
         except KeyError:
             pass
 
@@ -487,4 +513,4 @@ class OriginCountryRule(AbstractBaseRule):
                 return result
 
     def test_user(self, request=None):
-        return (self.get_country(request) or '') == self.country.lower()
+        return (self.get_country(request) or "") == self.country.lower()

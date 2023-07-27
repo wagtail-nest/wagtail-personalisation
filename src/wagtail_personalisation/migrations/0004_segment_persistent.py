@@ -8,13 +8,15 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('wagtail_personalisation', '0003_auto_20161206_1005'),
+        ("wagtail_personalisation", "0003_auto_20161206_1005"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='segment',
-            name='persistent',
-            field=models.BooleanField(default=False, help_text='Should the segment persist between visits?'),
+            model_name="segment",
+            name="persistent",
+            field=models.BooleanField(
+                default=False, help_text="Should the segment persist between visits?"
+            ),
         ),
     ]
