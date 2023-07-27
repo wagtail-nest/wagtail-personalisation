@@ -6,30 +6,37 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('wagtail_personalisation', '0002_auto_20161205_1623'),
+        ("wagtail_personalisation", "0002_auto_20161205_1623"),
     ]
 
     operations = [
         migrations.RemoveField(
-            model_name='queryrule',
-            name='query_parameter',
+            model_name="queryrule",
+            name="query_parameter",
         ),
         migrations.RemoveField(
-            model_name='queryrule',
-            name='query_value',
+            model_name="queryrule",
+            name="query_value",
         ),
         migrations.AddField(
-            model_name='queryrule',
-            name='parameter',
-            field=models.SlugField(default='test', max_length=20, verbose_name='The query parameter to search for'),
+            model_name="queryrule",
+            name="parameter",
+            field=models.SlugField(
+                default="test",
+                max_length=20,
+                verbose_name="The query parameter to search for",
+            ),
             preserve_default=False,
         ),
         migrations.AddField(
-            model_name='queryrule',
-            name='value',
-            field=models.SlugField(default='test', max_length=20, verbose_name='The value of the parameter to match'),
+            model_name="queryrule",
+            name="value",
+            field=models.SlugField(
+                default="test",
+                max_length=20,
+                verbose_name="The value of the parameter to match",
+            ),
             preserve_default=False,
         ),
     ]

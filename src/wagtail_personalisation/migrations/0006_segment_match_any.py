@@ -6,15 +6,17 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('wagtail_personalisation', '0005_userisloggedinrule'),
+        ("wagtail_personalisation", "0005_userisloggedinrule"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='segment',
-            name='match_any',
-            field=models.BooleanField(default=False, help_text='Should the segment match all the rules or just one of them?'),
+            model_name="segment",
+            name="match_any",
+            field=models.BooleanField(
+                default=False,
+                help_text="Should the segment match all the rules or just one of them?",
+            ),
         ),
     ]

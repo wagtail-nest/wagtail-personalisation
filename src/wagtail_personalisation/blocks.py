@@ -1,5 +1,5 @@
-from django.utils.translation import ugettext_lazy as _
-from wagtail.core import blocks
+from django.utils.translation import gettext_lazy as _
+from wagtail import blocks
 
 from wagtail_personalisation.adapters import get_segment_adapter
 from wagtail_personalisation.models import Segment
@@ -7,7 +7,7 @@ from wagtail_personalisation.models import Segment
 
 def list_segment_choices():
     yield -1, ("Show to everyone")
-    for pk, name in Segment.objects.values_list('pk', 'name'):
+    for pk, name in Segment.objects.values_list("pk", "name"):
         yield pk, name
 
 
@@ -16,8 +16,10 @@ class PersonalisedStructBlock(blocks.StructBlock):
 
     segment = blocks.ChoiceBlock(
         choices=list_segment_choices,
-        required=False, label=_("Personalisation segment"),
-        help_text=_("Only show this content block for users in this segment"))
+        required=False,
+        label=_("Personalisation segment"),
+        help_text=_("Only show this content block for users in this segment"),
+    )
 
     def render(self, value, context=None):
         """Only render this content block for users in this segment.
@@ -30,23 +32,21 @@ class PersonalisedStructBlock(blocks.StructBlock):
         :rtype: blocks.StructBlock or empty str
 
         """
-        request = context['request']
+        request = context["request"]
         adapter = get_segment_adapter(request)
         user_segments = adapter.get_segments()
 
         try:
-            segment_id = int(value['segment'])
+            segment_id = int(value["segment"])
         except (ValueError, TypeError):
-            return ''
+            return ""
 
         if segment_id > 0:
             for segment in user_segments:
                 if segment.id == segment_id:
-                    return super(PersonalisedStructBlock, self).render(
-                        value, context)
+                    return super(PersonalisedStructBlock, self).render(value, context)
 
         if segment_id == -1:
-            return super(PersonalisedStructBlock, self).render(
-                value, context)
+            return super(PersonalisedStructBlock, self).render(value, context)
 
-        return ''
+        return ""

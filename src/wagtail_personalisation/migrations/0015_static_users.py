@@ -7,20 +7,19 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
-        ('wagtail_personalisation', '0013_add_dynamic_static_to_segment'),
+        ("wagtail_personalisation", "0013_add_dynamic_static_to_segment"),
     ]
 
     operations = [
         migrations.RemoveField(
-            model_name='segment',
-            name='sessions',
+            model_name="segment",
+            name="sessions",
         ),
         migrations.AddField(
-            model_name='segment',
-            name='static_users',
+            model_name="segment",
+            name="static_users",
             field=models.ManyToManyField(to=settings.AUTH_USER_MODEL),
         ),
     ]

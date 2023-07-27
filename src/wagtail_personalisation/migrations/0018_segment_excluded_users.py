@@ -7,16 +7,19 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
-        ('wagtail_personalisation', '0017_segment_randomisation_percent'),
+        ("wagtail_personalisation", "0017_segment_randomisation_percent"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='segment',
-            name='excluded_users',
-            field=models.ManyToManyField(help_text='Users that matched the rules but were excluded from the segment for some reason e.g. randomisation', related_name='excluded_segments', to=settings.AUTH_USER_MODEL),
+            model_name="segment",
+            name="excluded_users",
+            field=models.ManyToManyField(
+                help_text="Users that matched the rules but were excluded from the segment for some reason e.g. randomisation",
+                related_name="excluded_segments",
+                to=settings.AUTH_USER_MODEL,
+            ),
         ),
     ]
