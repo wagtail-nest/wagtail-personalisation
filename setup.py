@@ -22,7 +22,7 @@ tests_require = [
     "pytest-pythonpath==0.7.4",
     "pytest-sugar==0.9.4",
     "pytest==6.2.5",
-    "wagtail_factories==4.0.0",
+    "wagtail_factories==4.1.0",
     "pytest-mock==3.8.1",
 ]
 
