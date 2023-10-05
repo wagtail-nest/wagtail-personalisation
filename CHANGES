@@ -1,6 +1,6 @@
 Unreleased
 =================
-- Upgrade to Wagtail 5.0, drop support for Wagtail < 4.1
+- Upgrade to Wagtail > 5.0, drop support for Wagtail < 4.1
 - Add Django 4.2 support, drop support for Django 4.0
 - Add Python 3.11 support, drop support for Python 3.7
 
