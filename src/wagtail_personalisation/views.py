@@ -7,9 +7,15 @@ from django.http import HttpResponse, HttpResponseForbidden, HttpResponseRedirec
 from django.shortcuts import get_object_or_404
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
-from wagtail.contrib.modeladmin.options import ModelAdmin, modeladmin_register
-from wagtail.contrib.modeladmin.views import DeleteView, IndexView
+from wagtail import VERSION as WAGTAIL_VERSION
 from wagtail.models import Page
+
+if WAGTAIL_VERSION >= (5, 1):
+    from wagtail_modeladmin.options import ModelAdmin, modeladmin_register
+    from wagtail_modeladmin.views import DeleteView, IndexView
+else:
+    from wagtail.contrib.modeladmin.options import ModelAdmin, modeladmin_register
+    from wagtail.contrib.modeladmin.views import DeleteView, IndexView
 
 from wagtail_personalisation.models import Segment
 from wagtail_personalisation.utils import can_delete_pages

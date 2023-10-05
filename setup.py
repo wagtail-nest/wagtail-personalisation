@@ -7,6 +7,7 @@ install_requires = [
     "user-agents>=1.1.0",
     "wagtailfontawesome>=1.2.1",
     "pycountry",
+    "wagtail_modeladmin>=1.0",
 ]
 
 tests_require = [

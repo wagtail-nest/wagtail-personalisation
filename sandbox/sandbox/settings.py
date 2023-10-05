@@ -15,6 +15,7 @@ from __future__ import absolute_import, unicode_literals
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 import os
 from importlib.util import find_spec
+from wagtail import VERSION as WAGTAIL_VERSION
 
 PROJECT_DIR = os.path.dirname(os.path.abspath(__file__))
 BASE_DIR = os.path.dirname(PROJECT_DIR)
@@ -53,7 +54,7 @@ INSTALLED_APPS = [
     "wagtail.search",
     "wagtail.admin",
     "wagtail",
-    "wagtail.contrib.modeladmin",
+    "wagtail_modeladmin" if WAGTAIL_VERSION >= (5, 1) else "wagtail.contrib.modeladmin",
     "wagtailfontawesome",
     "modelcluster",
     "taggit",

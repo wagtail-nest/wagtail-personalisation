@@ -1,4 +1,5 @@
 import os
+from wagtail import VERSION as WAGTAIL_VERSION
 
 DATABASES = {
     "default": {
@@ -61,7 +62,7 @@ MIDDLEWARE = (
 
 INSTALLED_APPS = (
     "wagtail_personalisation",
-    "wagtail.contrib.modeladmin",
+    "wagtail_modeladmin" if WAGTAIL_VERSION >= (5, 1) else "wagtail.contrib.modeladmin",
     "wagtail.search",
     "wagtail.sites",
     "wagtail.users",
