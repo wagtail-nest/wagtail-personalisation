@@ -53,7 +53,8 @@ and ``wagtailfontawesome`` apps in your project's ``INSTALLED_APPS``:
 
     INSTALLED_APPS = [
         # ...
-        'wagtail_modeladmin' if WAGTAIL_VERSION >= (5, 1) else 'wagtail.contrib.modeladmin',
+        'wagtail_modeladmin',          # if Wagtail >=5.1; Don't repeat if it's there already
+        'wagtail.contrib.modeladmin',  # if Wagtail <5.1;  Don't repeat if it's there already
         'wagtail_personalisation',
         'wagtailfontawesome',
         # ...
