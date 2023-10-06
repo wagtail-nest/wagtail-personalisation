@@ -349,3 +349,10 @@ def delete_related_variants(request, page):
             ),
         },
     )
+
+
+@hooks.register("register_icons")
+def register_icons(icons):
+    return icons + [
+        "wagtailfontawesomesvg/solid/rocket.svg",
+    ]
