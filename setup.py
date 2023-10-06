@@ -71,6 +71,7 @@ setup(
         "Framework :: Django :: 4.1",
         "Framework :: Wagtail",
         "Framework :: Wagtail :: 4",
+        "Framework :: Wagtail :: 5",
         "Topic :: Internet :: WWW/HTTP :: Site Management",
     ],
 )
