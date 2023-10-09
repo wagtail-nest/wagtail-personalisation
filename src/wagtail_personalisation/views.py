@@ -85,7 +85,7 @@ class SegmentModelAdmin(ModelAdmin):
     index_view_class = SegmentModelIndexView
     dashboard_view_class = SegmentModelDashboardView
     delete_view_class = SegmentModelDeleteView
-    menu_icon = "fa-snowflake-o"
+    menu_icon = "snowflake"
     add_to_settings_menu = False
     list_display = (
         "name",
