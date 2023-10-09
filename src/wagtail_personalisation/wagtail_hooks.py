@@ -163,7 +163,7 @@ def page_listing_more_buttons(page, page_perms, is_parent=False, *args):
             "%s variant" % (vm.segment.name),
             reverse("wagtailadmin_pages:edit", args=[vm.variant_id]),
             attrs={"title": _("Edit this variant")},
-            classes=("icon", "icon-fa-pencil"),
+            classes=("icon", "icon-edit"),
             priority=0,
         )
 
@@ -172,7 +172,7 @@ def page_listing_more_buttons(page, page_perms, is_parent=False, *args):
             "%s variant" % (segment.name),
             reverse("segment:copy_page", args=[page.pk, segment.pk]),
             attrs={"title": _("Create this variant")},
-            classes=("icon", "icon-fa-plus"),
+            classes=("icon", "icon-plus"),
             priority=100,
         )
 
@@ -180,7 +180,7 @@ def page_listing_more_buttons(page, page_perms, is_parent=False, *args):
         _("Create a new segment"),
         reverse("wagtail_personalisation_segment_modeladmin_create"),
         attrs={"title": _("Create a new segment")},
-        classes=("icon", "icon-fa-snowflake-o"),
+        classes=("icon", "icon-snowflake"),
         priority=200,
     )
 
@@ -354,5 +354,11 @@ def delete_related_variants(request, page):
 @hooks.register("register_icons")
 def register_icons(icons):
     return icons + [
+        "wagtailfontawesomesvg/regular/bookmark.svg",
+        "wagtailfontawesomesvg/regular/clock.svg",
+        "wagtailfontawesomesvg/solid/calculator.svg",
+        "wagtailfontawesomesvg/solid/cube.svg",
+        "wagtailfontawesomesvg/solid/cubes.svg",
         "wagtailfontawesomesvg/solid/rocket.svg",
+        "wagtailfontawesomesvg/solid/snowflake.svg",
     ]
