@@ -85,7 +85,9 @@
                                                         {% if rule.description.code %}
                                                             <pre>{{ rule.description.value }}</pre>
                                                         {% else %}
-                                                            <span class="icon icon-{{ rule.icon }}">{{ rule.description.value }}</span>
+                                                            {% with icon=rule.icon %}
+                                                                <span>{% icon name=icon classname="w-w-4 w-h-4" %} {{ rule.description.value }}</span>
+                                                            {% endwith %}
                                                         {% endif %}
                                                     </li>
                                                 {% endfor %}
