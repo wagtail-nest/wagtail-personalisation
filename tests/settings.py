@@ -70,6 +70,7 @@ INSTALLED_APPS = (
     "wagtail.documents",
     "wagtail.admin",
     "wagtail",
+    "wagtailfontawesomesvg",
     "taggit",
     "django.contrib.admin",
     "django.contrib.auth",
