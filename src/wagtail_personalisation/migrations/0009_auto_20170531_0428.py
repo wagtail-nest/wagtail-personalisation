@@ -6,25 +6,24 @@ from django.db import migrations
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('wagtail_personalisation', '0008_devicerule'),
+        ("wagtail_personalisation", "0008_devicerule"),
     ]
 
     operations = [
         migrations.RemoveField(
-            model_name='personalisablepage',
-            name='canonical_page',
+            model_name="personalisablepage",
+            name="canonical_page",
         ),
         migrations.RemoveField(
-            model_name='personalisablepage',
-            name='page_ptr',
+            model_name="personalisablepage",
+            name="page_ptr",
         ),
         migrations.RemoveField(
-            model_name='personalisablepage',
-            name='segment',
+            model_name="personalisablepage",
+            name="segment",
         ),
         migrations.DeleteModel(
-            name='PersonalisablePage',
+            name="PersonalisablePage",
         ),
     ]

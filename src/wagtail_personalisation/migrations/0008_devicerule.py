@@ -8,23 +8,41 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('wagtail_personalisation', '0007_dayrule'),
+        ("wagtail_personalisation", "0007_dayrule"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='DeviceRule',
+            name="DeviceRule",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('mobile', models.BooleanField(default=False, verbose_name='Mobile phone')),
-                ('tablet', models.BooleanField(default=False, verbose_name='Tablet')),
-                ('desktop', models.BooleanField(default=False, verbose_name='Desktop')),
-                ('segment', modelcluster.fields.ParentalKey(on_delete=django.db.models.deletion.CASCADE, related_name='wagtail_personalisation_devicerule_related', related_query_name='wagtail_personalisation_devicerules', to='wagtail_personalisation.Segment')),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "mobile",
+                    models.BooleanField(default=False, verbose_name="Mobile phone"),
+                ),
+                ("tablet", models.BooleanField(default=False, verbose_name="Tablet")),
+                ("desktop", models.BooleanField(default=False, verbose_name="Desktop")),
+                (
+                    "segment",
+                    modelcluster.fields.ParentalKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="wagtail_personalisation_devicerule_related",
+                        related_query_name="wagtail_personalisation_devicerules",
+                        to="wagtail_personalisation.Segment",
+                    ),
+                ),
             ],
             options={
-                'abstract': False,
+                "abstract": False,
             },
         ),
     ]
