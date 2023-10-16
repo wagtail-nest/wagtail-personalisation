@@ -1,9 +1,13 @@
-Unreleased
+0.16.1
 =================
-- Upgrade to Wagtail > 5.0, drop support for Wagtail < 4.1
+- Upgrade to Wagtail 5.1
+- Replace wagtailfontawesome with wagtail-font-awesome-svg
+
+0.16.0
+=================
+- Upgrade to Wagtail 5.0, drop support for Wagtail < 4.1
 - Add Django 4.2 support, drop support for Django 4.0
 - Add Python 3.11 support, drop support for Python 3.7
-- Replace wagtailfontawesome with wagtail-font-awesome-svg
 
 0.15.3
 =================
