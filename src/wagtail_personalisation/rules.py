@@ -44,7 +44,7 @@ def get_geoip_module():
 class AbstractBaseRule(models.Model):
     """Base for creating rules to segment users with."""
 
-    icon = "fa-circle-o"
+    icon = "radio-empty"
     static = False
 
     segment = ParentalKey(
@@ -97,7 +97,7 @@ class TimeRule(AbstractBaseRule):
 
     """
 
-    icon = "fa-clock-o"
+    icon = "clock"
 
     start_time = models.TimeField(_("Starting time"))
     end_time = models.TimeField(_("Ending time"))
@@ -134,7 +134,7 @@ class DayRule(AbstractBaseRule):
 
     """
 
-    icon = "fa-calendar-check-o"
+    icon = "calendar-check"
 
     mon = models.BooleanField(_("Monday"), default=False)
     tue = models.BooleanField(_("Tuesday"), default=False)
@@ -189,7 +189,7 @@ class ReferralRule(AbstractBaseRule):
 
     """
 
-    icon = "fa-globe"
+    icon = "globe"
 
     regex_string = models.TextField(_("Regular expression to match the referrer"))
 
@@ -226,7 +226,7 @@ class VisitCountRule(AbstractBaseRule):
 
     """
 
-    icon = "fa-calculator"
+    icon = "calculator"
     static = True
 
     OPERATOR_CHOICES = (
@@ -353,7 +353,7 @@ class QueryRule(AbstractBaseRule):
 
     """
 
-    icon = "fa-link"
+    icon = "link"
 
     parameter = models.SlugField(_("The query parameter to search for"), max_length=20)
     value = models.SlugField(_("The value of the parameter to match"), max_length=20)
@@ -385,7 +385,7 @@ class DeviceRule(AbstractBaseRule):
 
     """
 
-    icon = "fa-tablet"
+    icon = "tablet-alt"
 
     mobile = models.BooleanField(_("Mobile phone"), default=False)
     tablet = models.BooleanField(_("Tablet"), default=False)
@@ -421,7 +421,7 @@ class UserIsLoggedInRule(AbstractBaseRule):
 
     """
 
-    icon = "fa-user"
+    icon = "user"
 
     is_logged_in = models.BooleanField(default=False)
 

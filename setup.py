@@ -5,7 +5,7 @@ from setuptools import find_packages, setup
 install_requires = [
     "wagtail>=4.1",
     "user-agents>=1.1.0",
-    "wagtailfontawesome>=1.2.1",
+    "wagtail-font-awesome-svg>=1.0.1",
     "pycountry",
 ]
 
@@ -21,8 +21,9 @@ tests_require = [
     "pytest-pythonpath==0.7.4",
     "pytest-sugar==0.9.4",
     "pytest==6.2.5",
-    "wagtail_factories==4.0.0",
+    "wagtail_factories==4.1.0",
     "pytest-mock==3.8.1",
+    "wagtail_modeladmin>=1.0",
 ]
 
 docs_require = [
@@ -60,7 +61,6 @@ setup(
         "License :: OSI Approved :: BSD License",
         "Operating System :: OS Independent",
         "Programming Language :: Python :: 3",
-        "Programming Language :: Python :: 3.7",
         "Programming Language :: Python :: 3.8",
         "Programming Language :: Python :: 3.9",
         "Programming Language :: Python :: 3.10",
@@ -71,6 +71,7 @@ setup(
         "Framework :: Django :: 4.1",
         "Framework :: Wagtail",
         "Framework :: Wagtail :: 4",
+        "Framework :: Wagtail :: 5",
         "Topic :: Internet :: WWW/HTTP :: Site Management",
     ],
 )
