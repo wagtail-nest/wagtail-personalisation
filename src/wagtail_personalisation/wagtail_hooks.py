@@ -8,6 +8,7 @@ from django.template.defaultfilters import pluralize
 from django.urls import include, re_path, reverse
 from django.utils.safestring import mark_safe
 from django.utils.translation import gettext_lazy as _
+from wagtail import VERSION as WAGTAIL_VERSION
 from wagtail import hooks
 from wagtail.admin import messages
 from wagtail.admin.site_summary import PagesSummaryItem, SummaryItem
@@ -125,64 +126,130 @@ def dont_show_variant(parent_page, pages, request):
     return utils.exclude_variants(pages)
 
 
-@hooks.register("register_page_listing_buttons")
-def page_listing_variant_buttons(page, page_perms, *args, **is_parent):
-    """Adds page listing buttons to personalisable pages. Shows variants for
-    the page (if any) and a 'Create a new variant' button.
+if WAGTAIL_VERSION >= (5, 2):
 
-    """
-    if not isinstance(page, models.PersonalisablePageMixin):
-        return
+    @hooks.register("register_page_listing_buttons")
+    def page_listing_variant_buttons(page, user, *args, **is_parent):
+        """Adds page listing buttons to personalisable pages. Shows variants for
+        the page (if any) and a 'Create a new variant' button.
 
-    metadata = page.personalisation_metadata
+        """
+        if not isinstance(page, models.PersonalisablePageMixin):
+            return
 
-    if metadata.is_canonical:
-        yield ButtonWithDropdownFromHook(
-            _("Variants"),
-            hook_name="register_page_listing_variant_buttons",
-            page=page,
-            page_perms=page_perms,
-            attrs={"target": "_blank", "title": _("Create or edit a variant")},
-            priority=100,
-        )
+        metadata = page.personalisation_metadata
+
+        if metadata.is_canonical:
+            yield ButtonWithDropdownFromHook(
+                _("Variants"),
+                hook_name="register_page_listing_variant_buttons",
+                page=page,
+                user=user,
+                attrs={"target": "_blank", "title": _("Create or edit a variant")},
+                priority=100,
+            )
+
+else:
+
+    @hooks.register("register_page_listing_buttons")
+    def page_listing_variant_buttons(page, page_perms, *args, **is_parent):
+        """Adds page listing buttons to personalisable pages. Shows variants for
+        the page (if any) and a 'Create a new variant' button.
+
+        """
+        if not isinstance(page, models.PersonalisablePageMixin):
+            return
+
+        metadata = page.personalisation_metadata
+
+        if metadata.is_canonical:
+            yield ButtonWithDropdownFromHook(
+                _("Variants"),
+                hook_name="register_page_listing_variant_buttons",
+                page=page,
+                page_perms=page_perms,
+                attrs={"target": "_blank", "title": _("Create or edit a variant")},
+                priority=100,
+            )
 
 
-@hooks.register("register_page_listing_variant_buttons")
-def page_listing_more_buttons(page, page_perms, is_parent=False, *args):
-    """Adds a 'more' button to personalisable pages allowing users to quickly
-    create a new variant for the selected segment.
+if WAGTAIL_VERSION >= (5, 2):
 
-    """
-    if not isinstance(page, models.PersonalisablePageMixin):
-        return
+    @hooks.register("register_page_listing_variant_buttons")
+    def page_listing_more_buttons(page, user, is_parent=False, *args):
+        """Adds a 'more' button to personalisable pages allowing users to quickly
+        create a new variant for the selected segment.
 
-    metadata = page.personalisation_metadata
+        """
+        if not isinstance(page, models.PersonalisablePageMixin):
+            return
 
-    for vm in metadata.variants_metadata:
+        metadata = page.personalisation_metadata
+
+        for vm in metadata.variants_metadata:
+            yield Button(
+                "%s variant" % (vm.segment.name),
+                reverse("wagtailadmin_pages:edit", args=[vm.variant_id]),
+                attrs={"title": _("Edit this variant")},
+                classname=("icon", "icon-edit"),
+                priority=0,
+            )
+
+        for segment in metadata.get_unused_segments():
+            yield Button(
+                "%s variant" % (segment.name),
+                reverse("segment:copy_page", args=[page.pk, segment.pk]),
+                attrs={"title": _("Create this variant")},
+                classname=("icon", "icon-plus"),
+                priority=100,
+            )
+
         yield Button(
-            "%s variant" % (vm.segment.name),
-            reverse("wagtailadmin_pages:edit", args=[vm.variant_id]),
-            attrs={"title": _("Edit this variant")},
-            classes=("icon", "icon-edit"),
-            priority=0,
+            _("Create a new segment"),
+            reverse("wagtail_personalisation_segment_modeladmin_create"),
+            attrs={"title": _("Create a new segment")},
+            classname=("icon", "icon-snowflake"),
+            priority=200,
         )
 
-    for segment in metadata.get_unused_segments():
+else:
+
+    @hooks.register("register_page_listing_variant_buttons")
+    def page_listing_more_buttons(page, page_perms, is_parent=False, *args):
+        """Adds a 'more' button to personalisable pages allowing users to quickly
+        create a new variant for the selected segment.
+
+        """
+        if not isinstance(page, models.PersonalisablePageMixin):
+            return
+
+        metadata = page.personalisation_metadata
+
+        for vm in metadata.variants_metadata:
+            yield Button(
+                "%s variant" % (vm.segment.name),
+                reverse("wagtailadmin_pages:edit", args=[vm.variant_id]),
+                attrs={"title": _("Edit this variant")},
+                classes=("icon", "icon-edit"),
+                priority=0,
+            )
+
+        for segment in metadata.get_unused_segments():
+            yield Button(
+                "%s variant" % (segment.name),
+                reverse("segment:copy_page", args=[page.pk, segment.pk]),
+                attrs={"title": _("Create this variant")},
+                classes=("icon", "icon-plus"),
+                priority=100,
+            )
+
         yield Button(
-            "%s variant" % (segment.name),
-            reverse("segment:copy_page", args=[page.pk, segment.pk]),
-            attrs={"title": _("Create this variant")},
-            classes=("icon", "icon-plus"),
-            priority=100,
+            _("Create a new segment"),
+            reverse("wagtail_personalisation_segment_modeladmin_create"),
+            attrs={"title": _("Create a new segment")},
+            classes=("icon", "icon-snowflake"),
+            priority=200,
         )
-
-    yield Button(
-        _("Create a new segment"),
-        reverse("wagtail_personalisation_segment_modeladmin_create"),
-        attrs={"title": _("Create a new segment")},
-        classes=("icon", "icon-snowflake"),
-        priority=200,
-    )
 
 
 class CorrectedPagesSummaryItem(PagesSummaryItem):
