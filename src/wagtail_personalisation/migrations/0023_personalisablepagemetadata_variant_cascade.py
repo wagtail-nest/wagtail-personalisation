@@ -5,15 +5,22 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('wagtail_personalisation', '0022_personalisablepagemetadata_canonical_protect'),
+        (
+            "wagtail_personalisation",
+            "0022_personalisablepagemetadata_canonical_protect",
+        ),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='personalisablepagemetadata',
-            name='variant',
-            field=models.OneToOneField(null=True, on_delete=django.db.models.deletion.CASCADE, related_name='_personalisable_page_metadata', to='wagtailcore.Page'),
+            model_name="personalisablepagemetadata",
+            name="variant",
+            field=models.OneToOneField(
+                null=True,
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="_personalisable_page_metadata",
+                to="wagtailcore.Page",
+            ),
         ),
     ]

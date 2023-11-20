@@ -3,31 +3,43 @@
 from __future__ import unicode_literals
 
 import django.db.models.deletion
-import wagtail.core.fields
 from django.db import migrations, models
+from wagtail import fields
 
 import wagtail_personalisation.models
 
 
 class Migration(migrations.Migration):
-
     initial = True
 
     dependencies = [
-        ('wagtailcore', '0001_initial'),
+        ("wagtailcore", "0001_initial"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='ContentPage',
+            name="ContentPage",
             fields=[
-                ('page_ptr', models.OneToOneField(auto_created=True, on_delete=django.db.models.deletion.CASCADE, parent_link=True, primary_key=True, serialize=False, to='wagtailcore.Page')),  # noqa: E501
-                ('subtitle', models.CharField(blank=True, default='', max_length=255)),
-                ('body', wagtail.core.fields.RichTextField(blank=True, default='')),
+                (
+                    "page_ptr",
+                    models.OneToOneField(
+                        auto_created=True,
+                        on_delete=django.db.models.deletion.CASCADE,
+                        parent_link=True,
+                        primary_key=True,
+                        serialize=False,
+                        to="wagtailcore.Page",
+                    ),
+                ),  # noqa: E501
+                ("subtitle", models.CharField(blank=True, default="", max_length=255)),
+                ("body", fields.RichTextField(blank=True, default="")),
             ],
             options={
-                'abstract': False,
+                "abstract": False,
             },
-            bases=(wagtail_personalisation.models.PersonalisablePageMixin, 'wagtailcore.page'),
+            bases=(
+                wagtail_personalisation.models.PersonalisablePageMixin,
+                "wagtailcore.page",
+            ),
         ),
     ]

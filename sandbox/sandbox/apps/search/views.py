@@ -3,13 +3,13 @@ from __future__ import absolute_import, unicode_literals
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 from django.shortcuts import render
 
-from wagtail.core.models import Page
-from wagtail.search.models import Query
+from wagtail.models import Page
+from wagtail.contrib.search_promotions.models import Query
 
 
 def search(request):
-    search_query = request.GET.get('query', None)
-    page = request.GET.get('page', 1)
+    search_query = request.GET.get("query", None)
+    page = request.GET.get("page", 1)
 
     # Search
     if search_query:
@@ -30,7 +30,11 @@ def search(request):
     except EmptyPage:
         search_results = paginator.page(paginator.num_pages)
 
-    return render(request, 'search/search.html', {
-        'search_query': search_query,
-        'search_results': search_results,
-    })
+    return render(
+        request,
+        "search/search.html",
+        {
+            "search_query": search_query,
+            "search_results": search_results,
+        },
+    )

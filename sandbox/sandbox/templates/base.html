@@ -20,6 +20,10 @@
         </title>
         <meta name="description" content="" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
+        {% comment %} Required in Wagtail v4+ for page previews {% endcomment %}
+        {% if request.in_preview_panel %}
+            <base target="_blank">
+        {% endif %}
 
         {# Global stylesheets #}
         <link rel="stylesheet" type="text/css" href="{% static 'css/sandbox.css' %}">

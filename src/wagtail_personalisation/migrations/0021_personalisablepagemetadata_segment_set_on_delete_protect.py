@@ -5,15 +5,19 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('wagtail_personalisation', '0020_rules_delete_relatedqueryname'),
+        ("wagtail_personalisation", "0020_rules_delete_relatedqueryname"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='personalisablepagemetadata',
-            name='segment',
-            field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.PROTECT, related_name='page_metadata', to='wagtail_personalisation.Segment'),
+            model_name="personalisablepagemetadata",
+            name="segment",
+            field=models.ForeignKey(
+                null=True,
+                on_delete=django.db.models.deletion.PROTECT,
+                related_name="page_metadata",
+                to="wagtail_personalisation.Segment",
+            ),
         ),
     ]

@@ -36,7 +36,7 @@ def create_segment_dictionary(segment):
         "encoded_name": segment.encoded_name(),
         "id": segment.pk,
         "timestamp": int(time.time()),
-        "persistent": segment.persistent
+        "persistent": segment.persistent,
     }
 
 
@@ -107,9 +107,10 @@ def exclude_variants(pages):
     :rtype: QuerySet
     """
     from wagtail_personalisation.models import PersonalisablePageMetadata
+
     excluded_variant_pages = PersonalisablePageMetadata.objects.exclude(
-        canonical_page_id=F('variant_id')
-    ).values_list('variant_id')
+        canonical_page_id=F("variant_id")
+    ).values_list("variant_id")
     return pages.exclude(pk__in=excluded_variant_pages)
 
 
@@ -128,7 +129,7 @@ def get_client_ip(request):
     else:
         return func(request)
     try:
-        x_forwarded_for = request.META['HTTP_X_FORWARDED_FOR']
-        return x_forwarded_for.split(',')[-1].strip()
+        x_forwarded_for = request.META["HTTP_X_FORWARDED_FOR"]
+        return x_forwarded_for.split(",")[-1].strip()
     except KeyError:
-        return request.META['REMOTE_ADDR']
+        return request.META["REMOTE_ADDR"]
