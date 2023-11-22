@@ -21,6 +21,13 @@
    :alt: Wagxperience
    :align: center
 
+Why this Fork Exists
+====================
+
+This fork exists to make PersonalisedStructBlock backward-compatible with newer versions of wagtail,
+and to add general compatibility support for wagtail 4.1 and greater,
+copied from the torchbox fork: https://github.com/torchbox-forks/wagtail-personalisation
+
 Wagtail Personalisation
 =======================
 
