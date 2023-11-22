@@ -7,32 +7,29 @@ import factory
 from wagtail_personalisation import rules
 
 
-class DayRuleFactory(factory.DjangoModelFactory):
-
+class DayRuleFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = rules.DayRule
 
 
-class DeviceRuleFactory(factory.DjangoModelFactory):
-
+class DeviceRuleFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = rules.DeviceRule
 
 
-class QueryRuleFactory(factory.DjangoModelFactory):
-
+class QueryRuleFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = rules.QueryRule
 
 
-class ReferralRuleFactory(factory.DjangoModelFactory):
+class ReferralRuleFactory(factory.django.DjangoModelFactory):
     regex_string = "test.test"
 
     class Meta:
         model = rules.ReferralRule
 
 
-class TimeRuleFactory(factory.DjangoModelFactory):
+class TimeRuleFactory(factory.django.DjangoModelFactory):
     start_time = datetime.time(8, 0, 0)
     end_time = datetime.time(23, 0, 0)
 
@@ -40,7 +37,7 @@ class TimeRuleFactory(factory.DjangoModelFactory):
         model = rules.TimeRule
 
 
-class VisitCountRuleFactory(factory.DjangoModelFactory):
+class VisitCountRuleFactory(factory.django.DjangoModelFactory):
     operator = "more_than"
     count = 0
 
@@ -48,6 +45,6 @@ class VisitCountRuleFactory(factory.DjangoModelFactory):
         model = rules.VisitCountRule
 
 
-class OriginCountryRuleFactory(factory.DjangoModelFactory):
+class OriginCountryRuleFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = rules.OriginCountryRule

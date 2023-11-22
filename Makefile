@@ -17,13 +17,13 @@ install: develop
 develop: clean requirements
 
 test:
-	py.test --nomigrations --reuse-db tests/
+	py.test --reuse-db tests/
 
 retest:
-	py.test --nomigrations --reuse-db tests/ -vvv
+	py.test --reuse-db tests/ -vvv
 
 coverage:
-	py.test --nomigrations --reuse-db tests/ --cov=wagtail_personalisation --cov-report=term-missing --cov-report=html
+	py.test --reuse-db tests/ --cov=wagtail_personalisation --cov-report=term-missing --cov-report=html
 
 docs:
 	$(MAKE) -C docs html
@@ -35,7 +35,7 @@ flake8:
 
 isort:
 	pip install isort
-	isort --recursive src tests
+	isort src tests
 
 dist:
 	pip install wheel

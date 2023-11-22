@@ -8,27 +8,42 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('wagtail_personalisation', '0006_segment_match_any'),
+        ("wagtail_personalisation", "0006_segment_match_any"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='DayRule',
+            name="DayRule",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('mon', models.BooleanField(default=False, verbose_name='Monday')),
-                ('tue', models.BooleanField(default=False, verbose_name='Tuesday')),
-                ('wed', models.BooleanField(default=False, verbose_name='Wednesday')),
-                ('thu', models.BooleanField(default=False, verbose_name='Thursday')),
-                ('fri', models.BooleanField(default=False, verbose_name='Friday')),
-                ('sat', models.BooleanField(default=False, verbose_name='Saturday')),
-                ('sun', models.BooleanField(default=False, verbose_name='Sunday')),
-                ('segment', modelcluster.fields.ParentalKey(on_delete=django.db.models.deletion.CASCADE, related_name='wagtail_personalisation_dayrule_related', related_query_name='wagtail_personalisation_dayrules', to='wagtail_personalisation.Segment')),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("mon", models.BooleanField(default=False, verbose_name="Monday")),
+                ("tue", models.BooleanField(default=False, verbose_name="Tuesday")),
+                ("wed", models.BooleanField(default=False, verbose_name="Wednesday")),
+                ("thu", models.BooleanField(default=False, verbose_name="Thursday")),
+                ("fri", models.BooleanField(default=False, verbose_name="Friday")),
+                ("sat", models.BooleanField(default=False, verbose_name="Saturday")),
+                ("sun", models.BooleanField(default=False, verbose_name="Sunday")),
+                (
+                    "segment",
+                    modelcluster.fields.ParentalKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="wagtail_personalisation_dayrule_related",
+                        related_query_name="wagtail_personalisation_dayrules",
+                        to="wagtail_personalisation.Segment",
+                    ),
+                ),
             ],
             options={
-                'abstract': False,
+                "abstract": False,
             },
         ),
     ]

@@ -1,24 +1,20 @@
 import logging
 
-from django.conf.urls import include, url
 from django.db import transaction
 from django.db.models import F
 from django.http import Http404
 from django.shortcuts import redirect, render
 from django.template.defaultfilters import pluralize
-from django.urls import reverse
+from django.urls import include, re_path, reverse
 from django.utils.safestring import mark_safe
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 from wagtail import VERSION as WAGTAIL_VERSION
+from wagtail import hooks
 from wagtail.admin import messages
 from wagtail.admin.site_summary import PagesSummaryItem, SummaryItem
-try:
-    from wagtail.admin.views.pages.utils import get_valid_next_url_from_request
-except ModuleNotFoundError:
-    from wagtail.admin.views.pages import get_valid_next_url_from_request  # noqa
+from wagtail.admin.views.pages.utils import get_valid_next_url_from_request
 from wagtail.admin.widgets import Button, ButtonWithDropdownFromHook
-from wagtail.core import hooks
-from wagtail.core.models import Page
+from wagtail.models import Page
 
 from wagtail_personalisation import admin_urls, models, utils
 from wagtail_personalisation.adapters import get_segment_adapter
@@ -31,7 +27,7 @@ logger = logging.getLogger(__name__)
 def register_admin_urls():
     """Adds the administration urls for the personalisation apps."""
     return [
-        url(
+        re_path(
             r"^personalisation/",
             include(admin_urls, namespace="wagtail_personalisation"),
         )
@@ -44,7 +40,7 @@ def set_visit_count(page, request, serve_args, serve_kwargs):
     to a segment.
 
     :param page: The page being served
-    :type page: wagtail.core.models.Page
+    :type page: wagtail.models.Page
     :param request: The http request
     :type request: django.http.HttpRequest
 
@@ -58,7 +54,7 @@ def segment_user(page, request, serve_args, serve_kwargs):
     """Apply a segment to a visitor before serving the page.
 
     :param page: The page being served
-    :type page: wagtail.core.models.Page
+    :type page: wagtail.models.Page
     :param request: The http request
     :type request: django.http.HttpRequest
 
@@ -96,12 +92,12 @@ def serve_variant(page, request, serve_args, serve_kwargs):
     """Apply a segment to a visitor before serving the page.
 
     :param page: The page being served
-    :type page: wagtail.core.models.Page
+    :type page: wagtail.models.Page
     :param request: The http request
     :type request: django.http.HttpRequest
     :returns: A variant if one is available for the visitor's segment,
               otherwise the original page
-    :rtype: wagtail.core.models.Page
+    :rtype: wagtail.models.Page
 
     """
     user_segments = []
@@ -130,64 +126,130 @@ def dont_show_variant(parent_page, pages, request):
     return utils.exclude_variants(pages)
 
 
-@hooks.register('register_page_listing_buttons')
-def page_listing_variant_buttons(page, page_perms, is_parent=False, next_url=None):
-    """Adds page listing buttons to personalisable pages. Shows variants for
-    the page (if any) and a 'Create a new variant' button.
+if WAGTAIL_VERSION >= (5, 2):
 
-    """
-    if not isinstance(page, models.PersonalisablePageMixin):
-        return
+    @hooks.register("register_page_listing_buttons")
+    def page_listing_variant_buttons(page, user, *args, **is_parent):
+        """Adds page listing buttons to personalisable pages. Shows variants for
+        the page (if any) and a 'Create a new variant' button.
 
-    metadata = page.personalisation_metadata
-    if metadata.is_canonical:
-        yield ButtonWithDropdownFromHook(
-            _("Variants"),
-            hook_name="register_page_listing_variant_buttons",
-            page=page,
-            page_perms=page_perms,
-            is_parent=is_parent,
-            attrs={"target": "_blank", "title": _("Create or edit a variant")},
-            priority=100,
-        )
+        """
+        if not isinstance(page, models.PersonalisablePageMixin):
+            return
+
+        metadata = page.personalisation_metadata
+
+        if metadata.is_canonical:
+            yield ButtonWithDropdownFromHook(
+                _("Variants"),
+                hook_name="register_page_listing_variant_buttons",
+                page=page,
+                user=user,
+                attrs={"target": "_blank", "title": _("Create or edit a variant")},
+                priority=100,
+            )
+
+else:
+
+    @hooks.register("register_page_listing_buttons")
+    def page_listing_variant_buttons(page, page_perms, *args, **is_parent):
+        """Adds page listing buttons to personalisable pages. Shows variants for
+        the page (if any) and a 'Create a new variant' button.
+
+        """
+        if not isinstance(page, models.PersonalisablePageMixin):
+            return
+
+        metadata = page.personalisation_metadata
+
+        if metadata.is_canonical:
+            yield ButtonWithDropdownFromHook(
+                _("Variants"),
+                hook_name="register_page_listing_variant_buttons",
+                page=page,
+                page_perms=page_perms,
+                attrs={"target": "_blank", "title": _("Create or edit a variant")},
+                priority=100,
+            )
 
 
-@hooks.register("register_page_listing_variant_buttons")
-def page_listing_more_buttons(page, page_perms, is_parent=False, *args):
-    """Adds a 'more' button to personalisable pages allowing users to quickly
-    create a new variant for the selected segment.
+if WAGTAIL_VERSION >= (5, 2):
 
-    """
-    if not isinstance(page, models.PersonalisablePageMixin):
-        return
+    @hooks.register("register_page_listing_variant_buttons")
+    def page_listing_more_buttons(page, user, is_parent=False, *args):
+        """Adds a 'more' button to personalisable pages allowing users to quickly
+        create a new variant for the selected segment.
 
-    metadata = page.personalisation_metadata
+        """
+        if not isinstance(page, models.PersonalisablePageMixin):
+            return
 
-    for vm in metadata.variants_metadata:
+        metadata = page.personalisation_metadata
+
+        for vm in metadata.variants_metadata:
+            yield Button(
+                "%s variant" % (vm.segment.name),
+                reverse("wagtailadmin_pages:edit", args=[vm.variant_id]),
+                attrs={"title": _("Edit this variant")},
+                classname=("icon", "icon-edit"),
+                priority=0,
+            )
+
+        for segment in metadata.get_unused_segments():
+            yield Button(
+                "%s variant" % (segment.name),
+                reverse("segment:copy_page", args=[page.pk, segment.pk]),
+                attrs={"title": _("Create this variant")},
+                classname=("icon", "icon-plus"),
+                priority=100,
+            )
+
         yield Button(
-            "%s variant" % (vm.segment.name),
-            reverse("wagtailadmin_pages:edit", args=[vm.variant_id]),
-            attrs={"title": _("Edit this variant")},
-            classes=("icon", "icon-fa-pencil"),
-            priority=0,
+            _("Create a new segment"),
+            reverse("wagtail_personalisation_segment_modeladmin_create"),
+            attrs={"title": _("Create a new segment")},
+            classname=("icon", "icon-snowflake"),
+            priority=200,
         )
 
-    for segment in metadata.get_unused_segments():
+else:
+
+    @hooks.register("register_page_listing_variant_buttons")
+    def page_listing_more_buttons(page, page_perms, is_parent=False, *args):
+        """Adds a 'more' button to personalisable pages allowing users to quickly
+        create a new variant for the selected segment.
+
+        """
+        if not isinstance(page, models.PersonalisablePageMixin):
+            return
+
+        metadata = page.personalisation_metadata
+
+        for vm in metadata.variants_metadata:
+            yield Button(
+                "%s variant" % (vm.segment.name),
+                reverse("wagtailadmin_pages:edit", args=[vm.variant_id]),
+                attrs={"title": _("Edit this variant")},
+                classes=("icon", "icon-edit"),
+                priority=0,
+            )
+
+        for segment in metadata.get_unused_segments():
+            yield Button(
+                "%s variant" % (segment.name),
+                reverse("segment:copy_page", args=[page.pk, segment.pk]),
+                attrs={"title": _("Create this variant")},
+                classes=("icon", "icon-plus"),
+                priority=100,
+            )
+
         yield Button(
-            "%s variant" % (segment.name),
-            reverse("segment:copy_page", args=[page.pk, segment.pk]),
-            attrs={"title": _("Create this variant")},
-            classes=("icon", "icon-fa-plus"),
-            priority=100,
+            _("Create a new segment"),
+            reverse("wagtail_personalisation_segment_modeladmin_create"),
+            attrs={"title": _("Create a new segment")},
+            classes=("icon", "icon-snowflake"),
+            priority=200,
         )
-
-    yield Button(
-        _("Create a new segment"),
-        reverse("wagtail_personalisation_segment_modeladmin_create"),
-        attrs={"title": _("Create a new segment")},
-        classes=("icon", "icon-fa-snowflake-o"),
-        priority=200,
-    )
 
 
 class CorrectedPagesSummaryItem(PagesSummaryItem):
@@ -208,16 +270,10 @@ class CorrectedPagesSummaryItem(PagesSummaryItem):
 
             return page_count
 
-    if WAGTAIL_VERSION >= (2, 15):
-        def get_context_data(self, parent_context):
-            context = super().get_context_data(parent_context)
-            context["total_pages"] = self.get_total_pages(context)
-            return context
-    else:
-        def get_context(self):
-            context = super().get_context()
-            context["total_pages"] = self.get_total_pages(context)
-            return context
+    def get_context_data(self, parent_context):
+        context = super().get_context_data(parent_context)
+        context["total_pages"] = self.get_total_pages(context)
+        return context
 
 
 @hooks.register("construct_homepage_summary_items")
@@ -236,13 +292,14 @@ class SegmentSummaryPanel(SummaryItem):
 
     order = 2000
 
-    def render(self):
+    def render_html(self, parent_context):
         segment_count = models.Segment.objects.count()
         target_url = reverse("wagtail_personalisation_segment_modeladmin_index")
         title = _("Segments")
         return mark_safe(
             """
-            <li class="icon icon-fa-snowflake-o">
+            <li>
+                <svg class="icon icon-tag icon" aria-hidden="true"><use href="#icon-tag"></use></svg>
                 <a href="{}"><span>{}</span>{}</a>
             </li>""".format(
                 target_url, segment_count, title
@@ -253,15 +310,16 @@ class SegmentSummaryPanel(SummaryItem):
 class PersonalisedPagesSummaryPanel(PagesSummaryItem):
     order = 2100
 
-    def render(self):
+    def render_html(self, parent_context):
         page_count = models.PersonalisablePageMetadata.objects.filter(
             segment__isnull=True
         ).count()
         title = _("Personalised Page")
         return mark_safe(
             """
-            <li class="icon icon-fa-file-o">
-                <span>{}</span>{}{}
+            <li>
+                <svg class="icon icon-doc-empty icon" aria-hidden="true"><use href="#icon-doc-empty"></use></svg>
+                <a><span>{}</span>{}{}</a>
             </li>""".format(
                 page_count, title, pluralize(page_count)
             )
@@ -271,15 +329,17 @@ class PersonalisedPagesSummaryPanel(PagesSummaryItem):
 class VariantPagesSummaryPanel(PagesSummaryItem):
     order = 2200
 
-    def render(self):
+    def render_html(self, parent_context):
         page_count = models.PersonalisablePageMetadata.objects.filter(
             segment__isnull=False
         ).count()
         title = _("Variant")
         return mark_safe(
             """
-                <li class="icon icon-fa-files-o">
-                    <span>{}</span>{}{}
+                <li>
+                    <svg class="icon icon-doc-empty icon" aria-hidden="true">\n
+                    <use href="#icon-doc-empty"></use></svg>
+                    <a><span>{}</span>{}{}</a>
                 </li>""".format(
                 page_count, title, pluralize(page_count)
             )
@@ -356,3 +416,16 @@ def delete_related_variants(request, page):
             ),
         },
     )
+
+
+@hooks.register("register_icons")
+def register_icons(icons):
+    return icons + [
+        "wagtailfontawesomesvg/regular/bookmark.svg",
+        "wagtailfontawesomesvg/regular/clock.svg",
+        "wagtailfontawesomesvg/solid/calculator.svg",
+        "wagtailfontawesomesvg/solid/cube.svg",
+        "wagtailfontawesomesvg/solid/cubes.svg",
+        "wagtailfontawesomesvg/solid/rocket.svg",
+        "wagtailfontawesomesvg/solid/snowflake.svg",
+    ]
