@@ -24,7 +24,7 @@
     "style-loader": "^0.18.0",
     "uglify-js": "^3.0.10",
     "uglifyjs-webpack-plugin": "^0.4.3",
-    "webpack": "^2.6.0"
+    "webpack": "^5.94.0"
   },
   "name": "wagtail-personalisation",
   "description": "Wagxperience personalisation module for Wagtail.",
