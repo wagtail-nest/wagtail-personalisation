@@ -32,7 +32,7 @@ class Migration(migrations.Migration):
             field=models.CharField(
                 choices=[("dynamic", "Dynamic"), ("static", "Static")],
                 default="dynamic",
-                help_text="\n            </br></br><strong>Dynamic:</strong> Users in this segment will change\n            as more or less meet the rules specified in the segment.\n            </br><strong>Static:</strong> If the segment contains only static\n            compatible rules the segment will contain the members that pass\n            those rules when the segment is created. Mixed static segments or\n            those containing entirely non static compatible rules will be\n            populated using the count variable.\n        ",
+                help_text="\n            </br></br><strong>Dynamic:</strong> Automatically update the segment with new users that match the rules.\n            </br><strong>Static:</strong> Limit to users that pass segment rules when the segment is created.\n        ",
                 max_length=20,
             ),
         ),

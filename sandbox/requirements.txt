@@ -1,4 +1,4 @@
 Django>=6.0
 wagtail>=7.3
-django-debug-toolbar==6.3.0
+django-debug-toolbar>=4.0
 -e .[docs,test]
