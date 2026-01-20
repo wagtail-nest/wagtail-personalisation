@@ -7,7 +7,7 @@ from tests.factories.page import ContentPageFactory
 from tests.factories.segment import SegmentFactory
 from tests.site.pages import models
 from wagtail_personalisation.models import PersonalisablePageMetadata, Segment
-from wagtail_personalisation.rules import TimeRule
+from wagtail_personalisation.rules import AbstractBaseRule, TimeRule
 
 
 @pytest.mark.django_db
@@ -84,8 +84,6 @@ def test_segment_edit_view(site, client, django_user_model):
 @pytest.mark.django_db
 def test_segment_panels_include_all_rules_by_default():
     """Test that all rules are included when WAGTAIL_PERSONALISATION_RULES is not set."""
-    from wagtail_personalisation.rules import AbstractBaseRule
-
     segment = SegmentFactory()
     # Get the rules MultiFieldPanel (second panel)
     rules_panel = segment.panels[1]
