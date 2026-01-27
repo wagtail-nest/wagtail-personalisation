@@ -296,15 +296,11 @@ class SegmentSummaryPanel(SummaryItem):
         segment_count = models.Segment.objects.count()
         target_url = reverse("wagtail_personalisation_segment_modeladmin_index")
         title = _("Segments")
-        return mark_safe(
-            """
+        return mark_safe("""
             <li>
                 <svg class="icon icon-tag icon" aria-hidden="true"><use href="#icon-tag"></use></svg>
                 <a href="{}"><span>{}</span> {}</a>
-            </li>""".format(
-                target_url, segment_count, title
-            )
-        )
+            </li>""".format(target_url, segment_count, title))
 
 
 class PersonalisedPagesSummaryPanel(PagesSummaryItem):
@@ -315,15 +311,11 @@ class PersonalisedPagesSummaryPanel(PagesSummaryItem):
             segment__isnull=True
         ).count()
         title = _("Personalised Page")
-        return mark_safe(
-            """
+        return mark_safe("""
             <li>
                 <svg class="icon icon-doc-empty icon" aria-hidden="true"><use href="#icon-doc-empty"></use></svg>
                 <a><span>{}</span> {}{}</a>
-            </li>""".format(
-                page_count, title, pluralize(page_count)
-            )
-        )
+            </li>""".format(page_count, title, pluralize(page_count)))
 
 
 class VariantPagesSummaryPanel(PagesSummaryItem):
@@ -334,16 +326,12 @@ class VariantPagesSummaryPanel(PagesSummaryItem):
             segment__isnull=False
         ).count()
         title = _("Variant")
-        return mark_safe(
-            """
+        return mark_safe("""
                 <li>
                     <svg class="icon icon-doc-empty icon" aria-hidden="true">\n
                     <use href="#icon-doc-empty"></use></svg>
                     <a><span>{}</span> {}{}</a>
-                </li>""".format(
-                page_count, title, pluralize(page_count)
-            )
-        )
+                </li>""".format(page_count, title, pluralize(page_count)))
 
 
 @hooks.register("construct_homepage_summary_items")

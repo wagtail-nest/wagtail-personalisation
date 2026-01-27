@@ -71,9 +71,7 @@ class Segment(ClusterableModel):
         max_length=20,
         choices=TYPE_CHOICES,
         default=TYPE_DYNAMIC,
-        help_text=mark_safe(
-            _(
-                """
+        help_text=mark_safe(_("""
             </br></br><strong>Dynamic:</strong> Users in this segment will change
             as more or less meet the rules specified in the segment.
             </br><strong>Static:</strong> If the segment contains only static
@@ -81,9 +79,7 @@ class Segment(ClusterableModel):
             those rules when the segment is created. Mixed static segments or
             those containing entirely non static compatible rules will be
             populated using the count variable.
-        """
-            )
-        ),
+        """)),
     )
     count = models.PositiveSmallIntegerField(
         default=0,
@@ -146,9 +142,11 @@ class Segment(ClusterableModel):
                         "{}_related".format(rule_model._meta.db_table),
                         label="{}{}".format(
                             rule_model._meta.verbose_name,
-                            " ({})".format(_("Static compatible"))
-                            if rule_model.static
-                            else "",
+                            (
+                                " ({})".format(_("Static compatible"))
+                                if rule_model.static
+                                else ""
+                            ),
                         ),
                     )
                     for rule_model in AbstractBaseRule.__subclasses__()
