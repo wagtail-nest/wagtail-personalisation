@@ -1,20 +1,4 @@
-.. start-no-pypi
-
-.. image:: https://readthedocs.org/projects/wagtail-personalisation/badge/?version=latest
-     :target: http://wagtail-personalisation.readthedocs.io/en/latest/?badge=latest
-
-.. image:: https://travis-ci.org/wagtail/wagtail-personalisation.svg?branch=master
-    :target: https://travis-ci.org/wagtail/wagtail-personalisation
-
-.. image:: http://codecov.io/github/wagtail/wagtail-personalisation/coverage.svg?branch=master
-    :target: http://codecov.io/github/wagtail/wagtail-personalisation?branch=master
-
-.. image:: https://img.shields.io/pypi/v/wagtail-personalisation.svg
-    :target: https://pypi.python.org/pypi/wagtail-personalisation/
-
-.. end-no-pypi
-
-.. image:: logo.png
+.. image:: https://raw.githubusercontent.com/wagtail-nest/wagtail-personalisation/refs/heads/main/logo.png
    :height: 261
    :width: 300
    :scale: 50
@@ -32,13 +16,13 @@ in the admin interface.
 .. _Wagtail CMS: https://wagtail.org/
 
 
-.. image:: docs/_static/images/segment_dashboard_view.png
+.. image:: https://raw.githubusercontent.com/wagtail-nest/wagtail-personalisation/refs/heads/main/docs/_static/images/segment_dashboard_view.png
     :alt: The segment dashboard view
 
 
 Instructions
 ------------
-Wagtail Personalisation requires Wagtail 4.1+ and Django 3.2+
+Wagtail Personalisation requires Wagtail 6.3+ and Django 4.2+
 
 To install the package with pip:
 
@@ -47,7 +31,6 @@ To install the package with pip:
     pip install wagtail-personalisation
 
 Next, include the ``wagtail_personalisation``, ``'wagtail_modeladmin'``
-(if the Wagtail version is 5.1 and above, otherwise ``'wagtail.contrib.modeladmin'``)
 and ``wagtailfontawesomesvg`` apps in your project's ``INSTALLED_APPS``:
 
 .. code-block:: python
