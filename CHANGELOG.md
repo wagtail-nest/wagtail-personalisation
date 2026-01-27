@@ -1,126 +1,126 @@
-0.16.1
-=================
+# CHANGELOG
+
+## 0.16.1
+
 - Upgrade to Wagtail 5.1
 - Replace wagtailfontawesome with wagtail-font-awesome-svg
 
-0.16.0
-=================
+## 0.16.0
+
 - Upgrade to Wagtail 5.0, drop support for Wagtail < 4.1
 - Add Django 4.2 support, drop support for Django 4.0
 - Add Python 3.11 support, drop support for Python 3.7
 
-0.15.3
-=================
+## 0.15.3
+
 - Add wagtail >= 2.15 support with get_context_data override instead of get_context
 
-0.15.2
-=================
+## 0.15.2
+
 - Replace staticfiles tag with static
 
-0.15.1
-=================
+## 0.15.1
+
 - Remove old versions from test matrix
 - Fix button support in wagtail admin for newer wagtail versions
 
-0.15.0
-=================
- - Fix is_authenticated 'bool' object is not callable error
- - Add wagtail <=2.11 support
- - Use Github Actions to test package instead of Travis CI
+## 0.15.0
 
-0.14.0
-=================
- - Fix 'bool' object is not callable error
- - Fix deleting descendants with variants when deleting a page
- - Add wagtail 2.6 support
+- Fix is_authenticated 'bool' object is not callable error
+- Add wagtail <=2.11 support
+- Use Github Actions to test package instead of Travis CI
 
-0.13.0
-=================
- - Merged Praekelt fork
- - Add custom javascript to segment forms
- - bugfix:exclude variant returns queryset when params is queryset
- - Added RulePanel, a subclass of InlinePanel, for Rules
- - Upgrade to Wagtail > 2.0, drop support for Wagtail < 2
+## 0.14.0
 
-0.12.0
-==================
- - Fix Django version classifier in setup.py
+- Fix 'bool' object is not callable error
+- Fix deleting descendants with variants when deleting a page
+- Add wagtail 2.6 support
 
-0.12.0
-==================
- - Merged forks of Torchbox and Praekelt
- - Wagtail 2 compatibility
- - Makefile adjustments for portability
- - Adds simple segment forcing for superusers
- - Fix excluding pages without variant
- - Fix bug on visiting a segment page in the admin
- - Use Wagtail's logic in the page count in the dash
- - Prevent corrected summary item from counting the root page
- - Delete variants of a page that is being deleted
- - Add end user and developer documentation
- - Add an option to show a personalised block to everyone
- - Add origin country rule (#190)
- - Return 404 if variant page is accessed directly (#188)
- - Do not generate sitemap entries for variants (#187)
- - Remove restrictive wagtail dependency version constraint (#192)
+## 0.13.0
 
-0.11.3
-==================
- - Bugfix: Handle errors when testing an invalid visit count rule
+- Merged Praekelt fork
+- Add custom javascript to segment forms
+- bugfix:exclude variant returns queryset when params is queryset
+- Added RulePanel, a subclass of InlinePanel, for Rules
+- Upgrade to Wagtail > 2.0, drop support for Wagtail < 2
 
-0.11.2
-==================
- - Bugfix: Stop populating static segments when the count is reached
+## 0.12.0
 
-0.11.1
-==================
- - Populate entirely static segments from registered Users not active Sessions
+- Fix Django version classifier in setup.py
 
-0.11.0
-==================
- - Bug Fix: Query rule should not be static
- - Enable retrieval of user data for static rules through csv download
+## 0.12.0
 
-0.10.9
-==================
- - Bug Fix: Display the number of users in a static segment on dashboard
+- Merged forks of Torchbox and Praekelt
+- Wagtail 2 compatibility
+- Makefile adjustments for portability
+- Adds simple segment forcing for superusers
+- Fix excluding pages without variant
+- Fix bug on visiting a segment page in the admin
+- Use Wagtail's logic in the page count in the dash
+- Prevent corrected summary item from counting the root page
+- Delete variants of a page that is being deleted
+- Add end user and developer documentation
+- Add an option to show a personalised block to everyone
+- Add origin country rule (#190)
+- Return 404 if variant page is accessed directly (#188)
+- Do not generate sitemap entries for variants (#187)
+- Remove restrictive wagtail dependency version constraint (#192)
 
-0.10.8
-==================
- - Don't add users to exclude list for dynamic segments
- - Store segments a user is excluded from in the session
+## 0.11.3
 
-0.10.7
-==================
- - Bug Fix: Ensure static segment members are show the survey immediately
- - Records users excluded by randomisation on the segment
- - Don't re-check excluded users
+- Bugfix: Handle errors when testing an invalid visit count rule
 
-0.10.6
-==================
- - Accepts and stores randomisation percentage for segment
- - Adds users to segment based on random number relative to percentage
+## 0.11.2
 
-0.10.5
-==================
- - Count how many users match a segments rules before saving the segment
- - Stores count on the segment and displays in the dashboard
- - Enables testing users against rules if there isn't an active request
+- Bugfix: Stop populating static segments when the count is reached
 
-0.10.0
-==================
- - Adds static and dynamic segments
+## 0.11.1
 
-0.9.1 (tbd)
-==================
+- Populate entirely static segments from registered Users not active Sessions
 
- - Fixes import for reverse resolver for older Django versions (<1.10)
- - Bases migrations off of older wagtail dependencies
- - Adds more dashboard panels and fixes exclude variants function
+## 0.11.0
+
+- Bug Fix: Query rule should not be static
+- Enable retrieval of user data for static rules through csv download
+
+## 0.10.9
+
+- Bug Fix: Display the number of users in a static segment on dashboard
+
+## 0.10.8
+
+- Don't add users to exclude list for dynamic segments
+- Store segments a user is excluded from in the session
+
+## 0.10.7
+
+- Bug Fix: Ensure static segment members are show the survey immediately
+- Records users excluded by randomisation on the segment
+- Don't re-check excluded users
+
+## 0.10.6
+
+- Accepts and stores randomisation percentage for segment
+- Adds users to segment based on random number relative to percentage
+
+## 0.10.5
+
+- Count how many users match a segments rules before saving the segment
+- Stores count on the segment and displays in the dashboard
+- Enables testing users against rules if there isn't an active request
+
+## 0.10.0
+
+- Adds static and dynamic segments
+
+## 0.9.1 (tbd)
+
+- Fixes import for reverse resolver for older Django versions (<1.10)
+- Bases migrations off of older wagtail dependencies
+- Adds more dashboard panels and fixes exclude variants function
 
 
-0.9.0 (2017-06-02)
-==================
+## 0.9.0 (2017-06-02)
 
 Initial release of wagtail-personalisation. This Wagtail module provides basic
 personalisation based on pre-defined rules in the backend.
