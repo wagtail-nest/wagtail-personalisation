@@ -43,6 +43,7 @@ dist:
 
 sandbox:
 	pip install -r sandbox/requirements.txt
+	sandbox/manage.py makemigrations
 	sandbox/manage.py migrate
 	sandbox/manage.py loaddata sandbox/exampledata/users.json
 	sandbox/manage.py loaddata sandbox/exampledata/personalisation.json

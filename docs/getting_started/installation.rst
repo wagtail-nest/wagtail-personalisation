@@ -37,3 +37,36 @@ been added in first, this is a prerequisite for this project.
         'django.contrib.sessions.middleware.SessionMiddleware',
         # ...
     ]
+
+
+Configuring Available Rules (Optional)
+---------------------------------------
+
+By default, all built-in rules and any custom rules that inherit from
+``AbstractBaseRule`` will be available in the Segment admin interface. If you
+want to control which rules are available, you can specify them using the
+``WAGTAIL_PERSONALISATION_RULES`` setting in your Django settings:
+
+.. code-block:: python
+
+    WAGTAIL_PERSONALISATION_RULES = [
+        'wagtail_personalisation.TimeRule',
+        'wagtail_personalisation.DayRule',
+        'wagtail_personalisation.DeviceRule',
+        'wagtail_personalisation.UserIsLoggedInRule',
+        'wagtail_personalisation.QueryRule',
+        'wagtail_personalisation.ReferralRule',
+        'wagtail_personalisation.VisitCountRule',
+        'wagtail_personalisation.OriginCountryRule',
+        # Add your custom rules here
+        'myapp.CustomRule',
+    ]
+
+If this setting is not specified, all rules will be available (default behavior).
+
+The format for rule names is ``'app_label.ModelName'``. This is particularly useful
+when:
+
+- You want to exclude certain built-in rules that aren't relevant to your project
+- You've created custom rules and want to ensure only specific rules are available
+- You want to prevent unexpected custom rules from appearing automatically

@@ -119,6 +119,23 @@ class Segment(ClusterableModel):
     base_form_class = SegmentAdminForm
 
     def __init__(self, *args, **kwargs):
+        # Get all rule models
+        rule_models = AbstractBaseRule.__subclasses__()
+
+        # Filter based on WAGTAIL_PERSONALISATION_RULES setting if provided
+        enabled_rules = getattr(settings, 'WAGTAIL_PERSONALISATION_RULES', None)
+        if enabled_rules is not None:
+            rule_map = {
+                f"{rule._meta.app_label}.{rule.__name__}": rule
+                for rule in rule_models
+            }
+            # Make sure to preserve order of how the rules are added in the settings
+            rule_models = [
+                rule_map[rule_id]
+                for rule_id in enabled_rules
+                if rule_id in rule_map
+            ]
+
         Segment.panels = [
             MultiFieldPanel(
                 [
@@ -149,7 +166,7 @@ class Segment(ClusterableModel):
                             ),
                         ),
                     )
-                    for rule_model in AbstractBaseRule.__subclasses__()
+                    for rule_model in rule_models
                 ],
                 heading=_("Rules"),
             ),
