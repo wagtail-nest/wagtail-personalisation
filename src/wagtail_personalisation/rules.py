@@ -14,7 +14,7 @@ from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 from modelcluster.fields import ParentalKey
 from user_agents import parse
-from wagtail.admin.panels import FieldPanel, FieldRowPanel
+from wagtail.admin.panels import FieldPanel, FieldRowPanel, HelpPanel
 
 from wagtail_personalisation.utils import get_client_ip
 
@@ -103,6 +103,7 @@ class TimeRule(AbstractBaseRule):
     end_time = models.TimeField(_("Ending time"))
 
     panels = [
+        HelpPanel("Times of day that the segment will be active."),
         FieldRowPanel(
             [
                 FieldPanel("start_time"),
@@ -145,6 +146,7 @@ class DayRule(AbstractBaseRule):
     sun = models.BooleanField(_("Sunday"), default=False)
 
     panels = [
+        HelpPanel("Days of the week that the segment will be active."),
         FieldPanel("mon"),
         FieldPanel("tue"),
         FieldPanel("wed"),
@@ -392,6 +394,7 @@ class DeviceRule(AbstractBaseRule):
     desktop = models.BooleanField(_("Desktop"), default=False)
 
     panels = [
+        HelpPanel("User devices included in the segment."),
         FieldPanel("mobile"),
         FieldPanel("tablet"),
         FieldPanel("desktop"),
@@ -442,9 +445,10 @@ class UserIsLoggedInRule(AbstractBaseRule):
         }
 
 
-COUNTRY_CHOICES = [
-    (country.alpha_2.lower(), country.name) for country in pycountry.countries
-]
+COUNTRY_CHOICES = sorted(
+    ((country.alpha_2.lower(), country.name) for country in pycountry.countries),
+    key=lambda c: c[1],
+)
 
 
 class OriginCountryRule(AbstractBaseRule):
@@ -467,7 +471,7 @@ class OriginCountryRule(AbstractBaseRule):
     )
 
     class Meta:
-        verbose_name = _("origin country rule")
+        verbose_name = _("Origin country Rule")
 
     def get_cloudflare_country(self, request):
         """
