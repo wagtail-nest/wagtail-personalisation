@@ -3,27 +3,27 @@ import re
 from setuptools import find_packages, setup
 
 install_requires = [
-    "wagtail>=4.1",
+    "wagtail>=6.3",
+    "wagtail-modeladmin>=1.0",
     "user-agents>=1.1.0",
     "wagtail-font-awesome-svg>=1.0.1",
     "pycountry",
 ]
 
 tests_require = [
-    "factory_boy==3.2.1",
+    "factory_boy>=3.3.0",
     "flake8-blind-except",
     "flake8-debugger",
     "flake8-isort",
     "flake8",
-    "freezegun==1.2.1",
-    "pytest-cov==3.0.0",
-    "pytest-django==4.5.2",
+    "freezegun>=1.5.0",
+    "pytest-cov>=4.0.0",
+    "pytest-django>=4.8.0",
     "pytest-pythonpath==0.7.4",
-    "pytest-sugar==0.9.4",
-    "pytest==6.2.5",
-    "wagtail_factories==4.1.0",
-    "pytest-mock==3.8.1",
-    "wagtail_modeladmin>=1.0",
+    "pytest-sugar>=0.9.4",
+    "pytest>=7.4.0",
+    "wagtail_factories>=4.2.0",
+    "pytest-mock>=3.10.0",
 ]
 
 docs_require = [
@@ -65,8 +65,10 @@ setup(
         "Programming Language :: Python :: 3.11",
         "Programming Language :: Python :: 3.12",
         "Programming Language :: Python :: 3.13",
+        "Programming Language :: Python :: 3.14",
         "Framework :: Django",
         "Framework :: Django :: 4.2",
+        "Framework :: Django :: 5.1",
         "Framework :: Django :: 5.2",
         "Framework :: Wagtail",
         "Framework :: Wagtail :: 6",
