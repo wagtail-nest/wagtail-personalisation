@@ -1,6 +1,5 @@
 import random
 
-import wagtail
 from django import forms
 from django.conf import settings
 from django.core.validators import MaxValueValidator, MinValueValidator
@@ -337,10 +336,4 @@ class PersonalisablePageMixin:
         # Do not generate sitemap entries for variants.
         if not self.personalisation_metadata.is_canonical:
             return []
-        if wagtail.VERSION >= (2, 2):
-            # Since Wagtail 2.2 you can pass request to the get_sitemap_urls
-            # method.
-            return super(PersonalisablePageMixin, self).get_sitemap_urls(
-                request=request
-            )
-        return super(PersonalisablePageMixin, self).get_sitemap_urls()
+        return super(PersonalisablePageMixin, self).get_sitemap_urls(request=request)
