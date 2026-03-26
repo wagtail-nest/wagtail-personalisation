@@ -19,7 +19,6 @@ tests_require = [
     "freezegun>=1.5.0",
     "pytest-cov>=4.0.0",
     "pytest-django>=4.8.0",
-    "pytest-pythonpath==0.7.4",
     "pytest-sugar>=0.9.4",
     "pytest>=7.4.0",
     "wagtail_factories>=4.2.0",
