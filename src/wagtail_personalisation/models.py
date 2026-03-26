@@ -194,6 +194,8 @@ class Segment(ClusterableModel):
 
     def get_rules(self):
         """Retrieve all rules in the segment."""
+        if self.pk is None:
+            return []
         segment_rules = []
         for rule_model in AbstractBaseRule.get_descendant_models():
             segment_rules.extend(rule_model._default_manager.filter(segment=self))
