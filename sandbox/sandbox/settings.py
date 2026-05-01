@@ -77,8 +77,6 @@ MIDDLEWARE = [
     "wagtail.contrib.redirects.middleware.RedirectMiddleware",
 ]
 
-MIDDLEWARE += ("wagtail.middleware.SiteMiddleware",)
-
 ROOT_URLCONF = "sandbox.urls"
 
 TEMPLATES = [
