@@ -73,3 +73,39 @@ virtualenv and then run ``make sandbox``. This will start a fresh Wagtail
 install, with the personalisation module enabled, on http://localhost:8000
 and http://localhost:8000/cms/. The superuser credentials are
 ``superuser@example.com`` with the password ``testing``.
+
+
+Contributing
+------------
+
+Install
+~~~~~~~
+
+To make changes to this project, first clone this repository:
+
+.. code-block:: sh
+
+    git clone https://github.com/wagtail-nest/wagtail-personalisation.git
+    cd wagtail-personalisation
+
+With your preferred virtualenv activated, install testing dependencies:
+
+Using pip
+^^^^^^^^^
+
+.. code-block:: sh
+
+    python -m pip install --upgrade pip>=21.3
+    python -m pip install -e .[test] -U
+
+How to run tests
+~~~~~~~~~~~~~~~~
+
+Now you can run tests as shown below:
+
+.. code-block:: sh
+
+    tox
+
+or, you can run them for a specific environment ``tox -e py314-dj60-wt74`` or specific test
+``tox -e py314-dj60-wt74 -- tests/unit/test_foo.py::test_bar``.
