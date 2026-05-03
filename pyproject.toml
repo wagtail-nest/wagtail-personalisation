@@ -44,11 +44,8 @@ optional-dependencies.docs = [
 ]
 optional-dependencies.test = [
   "factory-boy>=3.3",
-  "flake8",
-  "flake8-blind-except",
-  "flake8-debugger",
-  "flake8-isort",
   "freezegun>=1.5",
+  "pre-commit>=4",
   "pytest>=7.4",
   "pytest-cov>=4",
   "pytest-django>=4.8",
@@ -69,6 +66,31 @@ package-data.wagtail_personalisation = [
   "templates/**/*",
 ]
 
+[tool.ruff]
+target-version = "py310"
+lint.extend-select = [
+  "B",      # flake8-bugbear
+  "BLE",    # flake8-blind-except
+  "C4",     # flake8-comprehensions
+  "DJ",     # flake8-django
+  "E",      # pycodestyle errors
+  "F",      # pyflakes
+  "I",      # isort
+  "PGH",    # pygrep-hooks
+  "PIE",    # flake8-pie
+  "RUF100", # unused noqa
+  "SIM",    # flake8-simplify
+  "T20",    # flake8-print
+  "UP",     # pyupgrade
+  "W",      # pycodestyle warnings
+  "YTT",    # flake8-2020
+]
+lint.extend-ignore = [
+  "E501", # no line length errors
+]
+lint.fixable = [ "C4", "E", "F", "I", "UP" ]
+lint.isort.known-first-party = [ "wagtail_personalisation" ]
+
 [tool.pytest]
 ini_options.DJANGO_SETTINGS_MODULE = "tests.settings"
 ini_options.minversion = "7.4"
@@ -79,6 +101,3 @@ ini_options.pythonpath = [ "." ]
 [tool.coverage]
 run.omit = [ "src/**/migrations/*.py" ]
 run.source = [ "src/wagtail_personalisation" ]
-
-[tool.isort]
-profile = "black"

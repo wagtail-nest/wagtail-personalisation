@@ -1,4 +1,4 @@
-.PHONY: clean requirements develop test lint flake8 isort sandbox docs
+.PHONY: clean requirements develop test lint sandbox docs
 
 default: develop
 
@@ -26,14 +26,8 @@ coverage:
 docs:
 	$(MAKE) -C docs html
 
-lint: flake8 isort
-
-flake8:
-	flake8 src/ tests/
-
-isort:
-	pip install isort
-	isort src tests
+lint:
+	pre-commit run --all-files
 
 sandbox:
 	pip install -r sandbox/requirements.txt

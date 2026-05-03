@@ -4,17 +4,20 @@ name: Python Tests
 on: [push, pull_request]
 
 jobs:
-  format:
+  pre-commit:
+    name: Pre-commit
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
+        with:
+          persist-credentials: false
       - uses: actions/setup-python@v6
         with:
-          python-version: "3.12"
-      - name: Install dependencies
-        run: pip install tox
-      - name: Validate formatting
-        run: tox -e format
+          python-version: "3.14"
+      - name: Run pre-commit
+        run: |
+          python -m pip install pre-commit
+          pre-commit run --all-files --show-diff-on-failure
 
   test:
     runs-on: ubuntu-latest
