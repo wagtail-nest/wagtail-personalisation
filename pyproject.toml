@@ -1,0 +1,84 @@
+[build-system]
+build-backend = "setuptools.build_meta"
+requires = [ "setuptools>=77", "wheel" ]
+
+[project]
+name = "wagtail-personalisation"
+version = "0.16.0"
+description = "A Wagtail add-on for showing personalized content"
+readme = "README.rst"
+license = "MIT"
+authors = [
+  { name = "Lab Digital BV and others", email = "opensource@labdigital.nl" },
+]
+requires-python = ">=3.10"
+classifiers = [
+  "Development Status :: 5 - Production/Stable",
+  "Environment :: Web Environment",
+  "Framework :: Django",
+  "Framework :: Django :: 5.2",
+  "Framework :: Django :: 6.0",
+  "Framework :: Wagtail",
+  "Framework :: Wagtail :: 7",
+  "Intended Audience :: Developers",
+  "Operating System :: OS Independent",
+  "Programming Language :: Python",
+  "Programming Language :: Python :: 3 :: Only",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "Programming Language :: Python :: 3.14",
+  "Topic :: Internet :: WWW/HTTP :: Site Management",
+]
+dependencies = [
+  "pycountry",
+  "user-agents>=1.1",
+  "wagtail>=7",
+  "wagtail-font-awesome-svg>=1.0.1",
+  "wagtail-modeladmin>=1",
+]
+optional-dependencies.docs = [
+  "sphinx>=1.7.6",
+  "sphinx-rtd-theme>=0.4",
+]
+optional-dependencies.test = [
+  "factory-boy>=3.3",
+  "flake8",
+  "flake8-blind-except",
+  "flake8-debugger",
+  "flake8-isort",
+  "freezegun>=1.5",
+  "pytest>=7.4",
+  "pytest-cov>=4",
+  "pytest-django>=4.8",
+  "pytest-mock>=3.10",
+  "pytest-sugar>=0.9.4",
+  "wagtail-factories>=4.2",
+]
+urls.Changelog = "https://github.com/wagtail-nest/wagtail-personalisation/blob/main/CHANGELOG.md"
+urls.Source = "https://github.com/wagtail-nest/wagtail-personalisation"
+
+[tool.setuptools]
+include-package-data = true
+packages.find.where = [ "src" ]
+package-data.wagtail_personalisation = [
+  "locale/**/*.mo",
+  "locale/**/*.po",
+  "static/**/*",
+  "templates/**/*",
+]
+
+[tool.pytest]
+ini_options.DJANGO_SETTINGS_MODULE = "tests.settings"
+ini_options.minversion = "7.4"
+ini_options.django_find_project = false
+ini_options.testpaths = [ "tests" ]
+ini_options.pythonpath = [ "." ]
+
+[tool.coverage]
+run.omit = [ "src/**/migrations/*.py" ]
+run.source = [ "src/wagtail_personalisation" ]
+
+[tool.isort]
+profile = "black"

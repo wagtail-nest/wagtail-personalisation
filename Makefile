@@ -1,8 +1,6 @@
-.PHONY: all clean requirements develop test lint flake8 isort dist sandbox docs
+.PHONY: clean requirements develop test lint flake8 isort sandbox docs
 
 default: develop
-
-all: clean requirements dist
 
 clean:
 	find src -name '*.pyc' -delete
@@ -37,19 +35,9 @@ isort:
 	pip install isort
 	isort src tests
 
-dist:
-	pip install wheel
-	python ./setup.py sdist bdist_wheel
-
 sandbox:
 	pip install -r sandbox/requirements.txt
 	sandbox/manage.py migrate
 	sandbox/manage.py loaddata sandbox/exampledata/users.json
 	sandbox/manage.py loaddata sandbox/exampledata/personalisation.json
 	sandbox/manage.py runserver
-
-release:
-	pip install twine wheel
-	rm -rf dist/*
-	python setup.py sdist bdist_wheel
-	twine upload -s dist/*
