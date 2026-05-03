@@ -5,7 +5,7 @@ from django.db.models import F
 from django.http import Http404
 from django.shortcuts import redirect, render
 from django.template.defaultfilters import pluralize
-from django.urls import include, re_path, reverse
+from django.urls import include, path, reverse
 from django.utils.safestring import mark_safe
 from django.utils.translation import gettext_lazy as _
 from wagtail import hooks
@@ -26,8 +26,8 @@ logger = logging.getLogger(__name__)
 def register_admin_urls():
     """Adds the administration urls for the personalisation apps."""
     return [
-        re_path(
-            r"^personalisation/",
+        path(
+            "personalisation/",
             include(admin_urls, namespace="wagtail_personalisation"),
         )
     ]
@@ -160,7 +160,7 @@ def page_listing_more_buttons(page, user, *args, **kwargs):
 
     for vm in metadata.variants_metadata:
         yield Button(
-            "%s variant" % (vm.segment.name),
+            "%s variant" % (vm.segment.name),  # noqa: UP031
             reverse("wagtailadmin_pages:edit", args=[vm.variant_id]),
             attrs={"title": _("Edit this variant")},
             icon_name="edit",
@@ -169,7 +169,7 @@ def page_listing_more_buttons(page, user, *args, **kwargs):
 
     for segment in metadata.get_unused_segments():
         yield Button(
-            "%s variant" % (segment.name),
+            "%s variant" % (segment.name),  # noqa: UP031
             reverse("segment:copy_page", args=[page.pk, segment.pk]),
             attrs={"title": _("Create this variant")},
             icon_name="plus",
@@ -229,11 +229,11 @@ class SegmentSummaryPanel(SummaryItem):
         segment_count = models.Segment.objects.count()
         target_url = reverse("wagtail_personalisation_segment_modeladmin_index")
         title = _("Segments")
-        return mark_safe("""
+        return mark_safe(f"""
             <li>
                 <svg class="icon icon-tag icon" aria-hidden="true"><use href="#icon-tag"></use></svg>
-                <a href="{}"><span>{}</span> {}</a>
-            </li>""".format(target_url, segment_count, title))
+                <a href="{target_url}"><span>{segment_count}</span> {title}</a>
+            </li>""")
 
 
 class PersonalisedPagesSummaryPanel(PagesSummaryItem):
@@ -244,11 +244,11 @@ class PersonalisedPagesSummaryPanel(PagesSummaryItem):
             segment__isnull=True
         ).count()
         title = _("Personalised Page")
-        return mark_safe("""
+        return mark_safe(f"""
             <li>
                 <svg class="icon icon-doc-empty icon" aria-hidden="true"><use href="#icon-doc-empty"></use></svg>
-                <a><span>{}</span> {}{}</a>
-            </li>""".format(page_count, title, pluralize(page_count)))
+                <a><span>{page_count}</span> {title}{pluralize(page_count)}</a>
+            </li>""")
 
 
 class VariantPagesSummaryPanel(PagesSummaryItem):
@@ -259,12 +259,12 @@ class VariantPagesSummaryPanel(PagesSummaryItem):
             segment__isnull=False
         ).count()
         title = _("Variant")
-        return mark_safe("""
+        return mark_safe(f"""
                 <li>
                     <svg class="icon icon-doc-empty icon" aria-hidden="true">\n
                     <use href="#icon-doc-empty"></use></svg>
-                    <a><span>{}</span> {}{}</a>
-                </li>""".format(page_count, title, pluralize(page_count)))
+                    <a><span>{page_count}</span> {title}{pluralize(page_count)}</a>
+                </li>""")
 
 
 @hooks.register("construct_homepage_summary_items")

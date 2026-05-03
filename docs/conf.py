@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 #
 # wagtail-personalisation documentation build configuration file, created by
 # sphinx-quickstart on Mon Dec 19 15:12:32 2016.

@@ -11,7 +11,7 @@ from wagtail_personalisation import adapters, wagtail_hooks
 def test_serve_variant_no_variant(site, rf):
     page = site.root_page
     request = rf.get("/")
-    args = tuple()
+    args = tuple()  # noqa: C408
     kwargs = {}
 
     result = wagtail_hooks.serve_variant(page, request, args, kwargs)
@@ -21,7 +21,7 @@ def test_serve_variant_no_variant(site, rf):
 @pytest.mark.django_db
 def test_variant_accessed_directly_returns_404(segmented_page, rf):
     request = rf.get("/")
-    args = tuple()
+    args = tuple()  # noqa: C408
     kwargs = {}
     with pytest.raises(Http404):
         wagtail_hooks.serve_variant(segmented_page, request, args, kwargs)
@@ -30,7 +30,7 @@ def test_variant_accessed_directly_returns_404(segmented_page, rf):
 @pytest.mark.django_db
 def test_serve_variant_with_variant_no_segment(site, rf, segmented_page):
     request = rf.get("/")
-    args = tuple()
+    args = tuple()  # noqa: C408
     kwargs = {}
 
     page = segmented_page.personalisation_metadata.canonical_page
@@ -41,7 +41,7 @@ def test_serve_variant_with_variant_no_segment(site, rf, segmented_page):
 @pytest.mark.django_db
 def test_serve_variant_with_variant_segmented(site, rf, segmented_page):
     request = rf.get("/")
-    args = tuple()
+    args = tuple()  # noqa: C408
     kwargs = {}
 
     page = segmented_page.personalisation_metadata.canonical_page

@@ -1,5 +1,3 @@
-from __future__ import absolute_import, unicode_literals
-
 import datetime
 
 import pytest
@@ -21,7 +19,7 @@ def test_referral_segment(client, site):
     referral_segment = SegmentFactory(name="Referral")
     ReferralRuleFactory(regex_string="test.test", segment=referral_segment)
 
-    response = client.get("/", **{"HTTP_REFERER": "test.test"})
+    response = client.get("/", **{"HTTP_REFERER": "test.test"})  # noqa: PIE804
     assert response.status_code == 200
 
     assert client.session["segments"][0]["encoded_name"] == "referral"
@@ -38,7 +36,7 @@ def test_time_and_referral_segment(client, site):
     )
     ReferralRuleFactory(regex_string="test.test", segment=segment)
 
-    response = client.get("/", **{"HTTP_REFERER": "test.test"})
+    response = client.get("/", **{"HTTP_REFERER": "test.test"})  # noqa: PIE804
     assert response.status_code == 200
 
     assert client.session["segments"][0]["encoded_name"] == "both"
@@ -55,7 +53,7 @@ def test_no_time_but_referral_segment(client, site):
     )
     ReferralRuleFactory(regex_string="test.test", segment=segment)
 
-    response = client.get("/", **{"HTTP_REFERER": "test.test"})
+    response = client.get("/", **{"HTTP_REFERER": "test.test"})  # noqa: PIE804
     assert response.status_code == 200
 
     assert len(client.session["segments"]) == 0

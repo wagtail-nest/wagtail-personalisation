@@ -70,7 +70,8 @@ class Segment(ClusterableModel):
         max_length=20,
         choices=TYPE_CHOICES,
         default=TYPE_DYNAMIC,
-        help_text=mark_safe(_("""
+        help_text=mark_safe(
+            _("""
             </br></br><strong>Dynamic:</strong> Users in this segment will change
             as more or less meet the rules specified in the segment.
             </br><strong>Static:</strong> If the segment contains only static
@@ -78,7 +79,8 @@ class Segment(ClusterableModel):
             those rules when the segment is created. Mixed static segments or
             those containing entirely non static compatible rules will be
             populated using the count variable.
-        """)),
+        """)
+        ),
     )
     count = models.PositiveSmallIntegerField(
         default=0,
@@ -138,7 +140,7 @@ class Segment(ClusterableModel):
             MultiFieldPanel(
                 [
                     RulePanel(
-                        "{}_related".format(rule_model._meta.db_table),
+                        f"{rule_model._meta.db_table}_related",
                         label="{}{}".format(
                             rule_model._meta.verbose_name,
                             (
@@ -154,7 +156,7 @@ class Segment(ClusterableModel):
             ),
         ]
 
-        super(Segment, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
 
     def __str__(self):
         return self.name
@@ -220,7 +222,7 @@ class Segment(ClusterableModel):
         if self.randomisation_percent is None:
             return True
 
-        if random.randint(1, 100) <= self.randomisation_percent:
+        if random.randint(1, 100) <= self.randomisation_percent:  # noqa: SIM103
             return True
         return False
 
@@ -287,8 +289,8 @@ class PersonalisablePageMetadata(ClusterableModel):
     def copy_for_segment(self, segment):
         page = self.canonical_page
 
-        slug = "{}-{}".format(page.slug, segment.encoded_name())
-        title = "{} ({})".format(page.title, segment.name)
+        slug = f"{page.slug}-{segment.encoded_name()}"
+        title = f"{page.title} ({segment.name})"
         update_attrs = {
             "title": title,
             "slug": slug,
@@ -338,4 +340,4 @@ class PersonalisablePageMixin:
         # Do not generate sitemap entries for variants.
         if not self.personalisation_metadata.is_canonical:
             return []
-        return super(PersonalisablePageMixin, self).get_sitemap_urls(request=request)
+        return super().get_sitemap_urls(request=request)

@@ -180,7 +180,7 @@ class DayRule(AbstractBaseRule):
 
         return {
             "title": _("These users visit on"),
-            "value": ", ".join([day for day in chosen_days]).title(),
+            "value": ", ".join([day for day in chosen_days]).title(),  # noqa: C416
         }
 
 
@@ -206,8 +206,8 @@ class ReferralRule(AbstractBaseRule):
     def test_user(self, request):
         pattern = re.compile(self.regex_string)
 
-        if "HTTP_REFERER" in request.META:
-            referer = request.META["HTTP_REFERER"]
+        if "referer" in request.headers:
+            referer = request.headers["referer"]
             if pattern.search(referer):
                 return True
         return False
@@ -280,7 +280,7 @@ class VisitCountRule(AbstractBaseRule):
 
         # Django formsets don't honour 'required' fields so check rule is valid
         try:
-            self.counted_page
+            self.counted_page  # noqa: B018
         except ObjectDoesNotExist:
             return False
 
@@ -290,7 +290,7 @@ class VisitCountRule(AbstractBaseRule):
             request.user = user
 
             # If we're using the session adapter check for an active session
-            if SEGMENT_ADAPTER_CLASS == SessionSegmentsAdapter:
+            if SEGMENT_ADAPTER_CLASS == SessionSegmentsAdapter:  # noqa: SIM300
                 request.session = self._get_user_session(user)
             else:
                 request.session = SessionStore()
@@ -311,7 +311,7 @@ class VisitCountRule(AbstractBaseRule):
         elif visit_count and operator == "less_than":
             if visit_count < segment_count:
                 return True
-        elif visit_count and operator == "equal_to":
+        elif visit_count and operator == "equal_to":  # noqa: SIM102
             if visit_count == segment_count:
                 return True
         return False
@@ -323,7 +323,7 @@ class VisitCountRule(AbstractBaseRule):
         }
 
     def get_column_header(self):
-        return "Visit count - %s" % self.counted_page
+        return "Visit count - %s" % self.counted_page  # noqa: UP031
 
     def get_user_info_string(self, user):
         # Local import for cyclic import
@@ -338,7 +338,7 @@ class VisitCountRule(AbstractBaseRule):
         request.user = user
 
         # If we're using the session adapter check for an active session
-        if SEGMENT_ADAPTER_CLASS == SessionSegmentsAdapter:
+        if SEGMENT_ADAPTER_CLASS == SessionSegmentsAdapter:  # noqa: SIM300
             request.session = self._get_user_session(user)
         else:
             request.session = SessionStore()
@@ -404,7 +404,7 @@ class DeviceRule(AbstractBaseRule):
         verbose_name = _("Device Rule")
 
     def test_user(self, request=None):
-        ua_header = request.META["HTTP_USER_AGENT"]
+        ua_header = request.headers["user-agent"]
         user_agent = parse(ua_header)
 
         if user_agent.is_mobile:
@@ -480,13 +480,13 @@ class OriginCountryRule(AbstractBaseRule):
         https://support.cloudflare.com/hc/en-us/articles/200168236-What-does-Cloudflare-IP-Geolocation-do-
         """
         try:
-            return request.META["HTTP_CF_IPCOUNTRY"].lower()
+            return request.headers["cf-ipcountry"].lower()
         except KeyError:
             pass
 
     def get_cloudfront_country(self, request):
         try:
-            return request.META["HTTP_CLOUDFRONT_VIEWER_COUNTRY"].lower()
+            return request.headers["cloudfront-viewer-country"].lower()
         except KeyError:
             pass
 

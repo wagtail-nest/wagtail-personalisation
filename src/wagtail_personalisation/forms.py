@@ -45,7 +45,7 @@ class SegmentAdminForm(WagtailAdminModelForm):
         return count
 
     def clean(self):
-        cleaned_data = super(SegmentAdminForm, self).clean()
+        cleaned_data = super().clean()
         Segment = self._meta.model
 
         rules = [
@@ -80,7 +80,7 @@ class SegmentAdminForm(WagtailAdminModelForm):
 
         return cleaned_data
 
-    def add_error_to_fields(self, form, excluded=list()):
+    def add_error_to_fields(self, form, excluded=list()):  # noqa: B006, C408
         for field in form.changed_data:
             if field not in excluded:
                 form.add_error(field, _("Cannot update a static segment"))
@@ -103,7 +103,7 @@ class SegmentAdminForm(WagtailAdminModelForm):
             )
             self.instance.matched_count_updated_at = datetime.now()
 
-        instance = super(SegmentAdminForm, self).save(*args, **kwargs)
+        instance = super().save(*args, **kwargs)
 
         if is_new and instance.is_static and instance.all_rules_static:
             from .adapters import get_segment_adapter
@@ -141,6 +141,6 @@ class SegmentAdminForm(WagtailAdminModelForm):
 
     @property
     def media(self):
-        media = super(SegmentAdminForm, self).media
+        media = super().media
         media.add_js([static("js/segment_form_control.js")])
         return media

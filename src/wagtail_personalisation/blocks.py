@@ -7,7 +7,7 @@ from wagtail_personalisation.models import Segment
 
 def list_segment_choices():
     yield -1, ("Show to everyone")
-    for pk, name in Segment.objects.values_list("pk", "name"):
+    for pk, name in Segment.objects.values_list("pk", "name"):  # noqa: UP028
         yield pk, name
 
 
@@ -44,9 +44,9 @@ class PersonalisedStructBlock(blocks.StructBlock):
         if segment_id > 0:
             for segment in user_segments:
                 if segment.id == segment_id:
-                    return super(PersonalisedStructBlock, self).render(value, context)
+                    return super().render(value, context)
 
         if segment_id == -1:
-            return super(PersonalisedStructBlock, self).render(value, context)
+            return super().render(value, context)
 
         return ""

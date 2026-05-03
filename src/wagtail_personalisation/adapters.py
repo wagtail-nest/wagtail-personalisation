@@ -60,7 +60,7 @@ class SessionSegmentsAdapter(BaseSegmentsAdapter):
     """Segment adapter that uses Django's session backend."""
 
     def __init__(self, request):
-        super(SessionSegmentsAdapter, self).__init__(request)
+        super().__init__(request)
         self.request.session.setdefault("segments", [])
         self._segment_cache = None
 
@@ -210,7 +210,7 @@ class SessionSegmentsAdapter(BaseSegmentsAdapter):
                 )
 
                 if result and segment.randomise_into_segment():
-                    if segment.is_static and not segment.is_full:
+                    if segment.is_static and not segment.is_full:  # noqa: SIM102
                         if self.request.user.is_authenticated:
                             segment.static_users.add(self.request.user)
                     additional_segments.append(segment)

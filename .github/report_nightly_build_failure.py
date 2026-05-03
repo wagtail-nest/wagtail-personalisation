@@ -8,7 +8,6 @@ import os
 
 import requests
 
-
 if "SLACK_WEBHOOK_URL" in os.environ:
     # https://docs.github.com/en/free-pro-team@latest/actions/reference/environment-variables#default-environment-variables
     repository = os.environ["GITHUB_REPOSITORY"]
@@ -16,7 +15,7 @@ if "SLACK_WEBHOOK_URL" in os.environ:
     url = f"https://github.com/{repository}/actions/runs/{run_id}"
 
     print("Reporting to #nightly-build-failures slack channel")  # noqa: T201
-    response = requests.post(  # noqa: S113
+    response = requests.post(
         os.environ["SLACK_WEBHOOK_URL"],
         json={
             "text": f"A Nightly build failed. See {url}",
