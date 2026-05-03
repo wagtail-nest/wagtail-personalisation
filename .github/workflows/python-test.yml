@@ -1,7 +1,12 @@
 ---
 name: Python Tests
 
-on: [push, pull_request]
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+  workflow_call: # Allow for the publish workflows to run the tests by calling this workflow
 
 jobs:
   pre-commit:
@@ -28,6 +33,8 @@ jobs:
 
     steps:
       - uses: actions/checkout@v6
+        with:
+          persist-credentials: false
       - name: Setup Python
         uses: actions/setup-python@v6
         with:
