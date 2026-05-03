@@ -1,7 +1,5 @@
 import os
 
-from wagtail import VERSION as WAGTAIL_VERSION
-
 DATABASES = {
     "default": {
         "ENGINE": os.environ.get("DATABASE_ENGINE", "django.db.backends.sqlite3"),
@@ -63,7 +61,7 @@ MIDDLEWARE = (
 
 INSTALLED_APPS = (
     "wagtail_personalisation",
-    "wagtail_modeladmin" if WAGTAIL_VERSION >= (5, 1) else "wagtail.contrib.modeladmin",
+    "wagtail_modeladmin",
     "wagtail.search",
     "wagtail.sites",
     "wagtail.users",

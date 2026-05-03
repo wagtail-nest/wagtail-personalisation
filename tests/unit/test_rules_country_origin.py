@@ -191,8 +191,6 @@ def test_test_user_does_not_use_geoip_module_if_disabled(rf):
 
 @skip_if_geoip2_installed
 def test_get_geoip_module_disabled():
-    with pytest.raises(ImportError):
-        from django.contrib.gis.geoip2 import GeoIP2  # noqa
     assert get_geoip_module() is None
 
 

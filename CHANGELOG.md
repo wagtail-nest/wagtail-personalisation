@@ -1,5 +1,13 @@
 # CHANGELOG
 
+## 0.17.0 - [UNRELEASED]
+
+- Add Wagtail 7.0, 7.3, and 7.4 support, drop support for Wagtail < 7.0
+- Add Django 5.2 and 6.0 support, drop support for Django < 5.2
+- Add Python 3.14 support
+- Fix Django 5.2 regression in GeoIP module detection (no longer relies on `ImportError` at import time)
+- Fix Django 5.2 regression in `get_rules()` when filtering by an unsaved `Segment` instance
+
 ## 0.16.0
 
 - Upgrade to Wagtail 7.3, drop support for Wagtail < 4.1

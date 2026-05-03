@@ -1,6 +1,7 @@
 import logging
 import re
 from importlib import import_module
+from importlib.util import find_spec
 
 import pycountry
 from django.apps import apps
@@ -24,6 +25,8 @@ logger = logging.getLogger(__name__)
 
 
 def get_geoip_module():
+    if not find_spec("geoip2"):
+        return None
     try:
         from django.contrib.gis.geoip2 import GeoIP2
 
