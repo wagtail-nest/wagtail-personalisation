@@ -12,6 +12,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Add Python 3.14 support
 - Fix Django 5.2 regression in GeoIP module detection (no longer relies on `ImportError` at import time)
 - Fix Django 5.2 regression in `get_rules()` when filtering by an unsaved `Segment` instance
+- Maintenance: switch from `setup.py` to `pyproject.toml` for package configuration and metadata
+- Maintenance: modernize codebase and codestyle
 
 ## [0.16.0] - 2026-01-27
 
@@ -22,7 +24,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [0.15.3] - 2022-02-04
 
-- Add wagtail >= 2.15 support with get_context_data override instead of get_context
+- Add wagtail >= 2.15 support with `get_context_data` override instead of `get_context`
 
 ## [0.15.2] - 2021-09-24
 
