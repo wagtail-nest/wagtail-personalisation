@@ -1,10 +1,7 @@
-from __future__ import absolute_import, unicode_literals
-
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 from django.shortcuts import render
-
-from wagtail.models import Page
 from wagtail.contrib.search_promotions.models import Query
+from wagtail.models import Page
 
 
 def search(request):

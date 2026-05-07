@@ -21,7 +21,7 @@ def test_request_device_segment(client, site):
 
     client.get(
         "/",
-        **{"HTTP_USER_AGENT": "Mozilla/5.0(iPad; U; CPU iPhone OS 3_2 like Mac OS X)"}
+        **{"HTTP_USER_AGENT": "Mozilla/5.0(iPad; U; CPU iPhone OS 3_2 like Mac OS X)"},  # noqa: PIE804
     )
 
     assert client.session["segments"][0]["encoded_name"] == "device-only"
@@ -34,7 +34,7 @@ def test_request_device_segment_no_match(client, site):
 
     client.get(
         "/",
-        **{"HTTP_USER_AGENT": "Mozilla/5.0(iPad; U; CPU iPhone OS 3_2 like Mac OS X)"}
+        **{"HTTP_USER_AGENT": "Mozilla/5.0(iPad; U; CPU iPhone OS 3_2 like Mac OS X)"},  # noqa: PIE804
     )
 
     assert not client.session["segments"]

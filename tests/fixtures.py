@@ -38,7 +38,7 @@ def rf():
 
 class RequestFactory(BaseRequestFactory):
     def request(self, user=None, **request):
-        request = super(RequestFactory, self).request(**request)
+        request = super().request(**request)
         request.user = AnonymousUser()
         request.session = SessionStore()
         request._messages = FallbackStorage(request)

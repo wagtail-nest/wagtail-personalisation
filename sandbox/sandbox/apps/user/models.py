@@ -49,7 +49,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     is_staff = models.BooleanField(
         _("staff status"),
         default=False,
-        help_text=_("Designates whether the user can log into this admin " "site."),
+        help_text=_("Designates whether the user can log into this admin site."),
     )
     is_active = models.BooleanField(
         _("active"),
@@ -74,7 +74,7 @@ class User(AbstractBaseUser, PermissionsMixin):
         """
         Returns the first_name plus the last_name, with a space in between.
         """
-        full_name = "%s %s" % (self.first_name, self.last_name)
+        full_name = "%s %s" % (self.first_name, self.last_name)  # noqa: UP031
         return full_name.strip()
 
     def get_short_name(self):

@@ -1,6 +1,3 @@
-# -*- coding: utf-8 -*-
-from __future__ import unicode_literals
-
 import django.db.models.deletion
 from django.db import migrations, models
 from wagtail import fields
@@ -26,7 +23,7 @@ class Migration(migrations.Migration):
                         serialize=False,
                         to="wagtailcore.Page",
                     ),
-                ),  # noqa: E501
+                ),
                 ("subtitle", models.CharField(blank=True, default="", max_length=255)),
                 ("body", fields.RichTextField(blank=True, default="")),
             ],

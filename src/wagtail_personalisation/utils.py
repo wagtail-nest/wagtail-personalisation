@@ -115,7 +115,7 @@ def exclude_variants(pages):
 
 
 def can_delete_pages(pages, user):
-    for variant in pages:
+    for variant in pages:  # noqa: SIM110
         if not variant.permissions_for_user(user).can_delete():
             return False
     return True
@@ -129,7 +129,7 @@ def get_client_ip(request):
     else:
         return func(request)
     try:
-        x_forwarded_for = request.META["HTTP_X_FORWARDED_FOR"]
+        x_forwarded_for = request.headers["x-forwarded-for"]
         return x_forwarded_for.split(",")[-1].strip()
     except KeyError:
         return request.META["REMOTE_ADDR"]

@@ -1,5 +1,3 @@
-from __future__ import absolute_import, unicode_literals
-
 import factory
 from django.utils.text import slugify
 from wagtail.models import Locale

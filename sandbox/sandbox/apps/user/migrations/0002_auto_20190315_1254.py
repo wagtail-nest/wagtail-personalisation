@@ -6,7 +6,6 @@ import sandbox.apps.user.models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("user", "0001_initial"),
     ]

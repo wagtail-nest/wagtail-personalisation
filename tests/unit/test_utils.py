@@ -13,7 +13,7 @@ from wagtail_personalisation.utils import (
 locale_factory = False
 
 try:
-    from tests.factories.page import LocaleFactory  # noqa
+    from tests.factories.page import LocaleFactory  # noqa: F401
 
     locale_factory = True
 except ImportError:
@@ -88,7 +88,7 @@ def test_exclude_variants_with_pages_querysets():
     pages = WagtailPage.objects.all().specific().order_by("id")
 
     result = exclude_variants(pages)
-    assert type(result) == type(pages)
+    assert type(result) == type(pages)  # noqa: E721
     assert set(result.values_list("pk", flat=True)) == set(
         pages.values_list("pk", flat=True)
     )
@@ -107,7 +107,7 @@ def test_exclude_variants_with_pages_querysets_not_canonical():
     pages = WagtailPage.objects.all().specific().order_by("id")
     # add variants
     for page in pages:
-        variant = ContentPageFactory(title="variant %d" % page.pk)
+        variant = ContentPageFactory(title="variant %d" % page.pk)  # noqa: UP031
         page.personalisation_metadata = PersonalisablePageMetadataFactory(
             canonical_page=page, variant=variant
         )
@@ -115,7 +115,7 @@ def test_exclude_variants_with_pages_querysets_not_canonical():
 
     pages = WagtailPage.objects.all().specific()
     result = exclude_variants(pages)
-    assert type(result) == type(pages)
+    assert type(result) == type(pages)  # noqa: E721
     assert result.count() < pages.count()
 
 
@@ -138,7 +138,7 @@ def test_exclude_variants_with_pages_querysets_meta_none():
 
     pages = WagtailPage.objects.all().specific()
     result = exclude_variants(pages)
-    assert type(result) == type(pages)
+    assert type(result) == type(pages)  # noqa: E721
     assert set(result.values_list("pk", flat=True)) == set(
         pages.values_list("pk", flat=True)
     )

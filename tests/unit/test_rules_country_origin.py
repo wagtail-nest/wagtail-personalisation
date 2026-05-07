@@ -29,7 +29,7 @@ def test_get_cloudflare_country_with_no_header(rf):
     segment = SegmentFactory(name="Test segment")
     rule = OriginCountryRuleFactory(segment=segment, country="GB")
     request = rf.get("/")
-    assert "HTTP_CF_IPCOUNTRY" not in request.META
+    assert "cf-ipcountry" not in request.headers
     assert rule.get_cloudflare_country(request) is None
 
 
@@ -46,7 +46,7 @@ def test_get_cloudfront_country_with_no_header(rf):
     segment = SegmentFactory(name="Test segment")
     rule = OriginCountryRuleFactory(segment=segment, country="GB")
     request = rf.get("/")
-    assert "HTTP_CLOUDFRONT_VIEWER_COUNTRY" not in request.META
+    assert "cloudfront-viewer-country" not in request.headers
     assert rule.get_cloudfront_country(request) is None
 
 

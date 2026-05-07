@@ -1,5 +1,3 @@
-from __future__ import absolute_import, unicode_literals
-
 from wagtail import blocks
 from wagtail.admin.panels import FieldPanel
 from wagtail.fields import RichTextField, StreamField

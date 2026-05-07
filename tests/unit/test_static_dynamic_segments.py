@@ -1,5 +1,3 @@
-from __future__ import absolute_import, unicode_literals
-
 import datetime
 
 import pytest
@@ -45,10 +43,10 @@ def form_with_data(segment, *rules):
             if isinstance(rule, formset.model):
                 rule_data = model_to_dict(rule)
                 for key, value in rule_data.items():
-                    data["{}-{}-{}".format(formset.prefix, count, key)] = value
+                    data[f"{formset.prefix}-{count}-{key}"] = value
                 count += 1
-        data["{}-INITIAL_FORMS".format(formset.prefix)] = 0
-        data["{}-TOTAL_FORMS".format(formset.prefix)] = count
+        data[f"{formset.prefix}-INITIAL_FORMS"] = 0
+        data[f"{formset.prefix}-TOTAL_FORMS"] = count
     return TestSegmentAdminForm(data)
 
 
@@ -476,7 +474,7 @@ def test_rules_check_skipped_if_user_in_excluded(site, client, mocker, user):
     form = form_with_data(segment, rule)
     instance = form.save()
     instance.excluded_users.add(user)
-    instance.save
+    instance.save  # noqa: B018
 
     mock_test_rule = mocker.patch(
         "wagtail_personalisation.adapters.SessionSegmentsAdapter._test_rules"
@@ -626,7 +624,7 @@ def test_count_matching_users_handles_match_any(
     )
 
     assert form.count_matching_users([first_rule, second_rule], True) == 2
-    mock_test_user.call_count == 4
+    mock_test_user.call_count == 4  # noqa: B015
 
 
 @pytest.mark.django_db
@@ -648,4 +646,4 @@ def test_count_matching_users_handles_match_all(
     )
 
     assert form.count_matching_users([first_rule, second_rule], False) == 1
-    mock_test_user.call_count == 4
+    mock_test_user.call_count == 4  # noqa: B015

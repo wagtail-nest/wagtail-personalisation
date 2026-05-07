@@ -18,7 +18,7 @@ from wagtail_personalisation.utils import can_delete_pages
 class SegmentModelIndexView(IndexView):
     """Placeholder for additional list functionality."""
 
-    pass
+    pass  # noqa: PIE790
 
 
 class SegmentModelDashboardView(IndexView):
@@ -139,7 +139,7 @@ def toggle_segment_view(request):
         elif request.session["segment_view"] != "dashboard":
             request.session["segment_view"] = "dashboard"
 
-        return HttpResponseRedirect(request.META.get("HTTP_REFERER", "/"))
+        return HttpResponseRedirect(request.headers.get("referer", "/"))
 
     return HttpResponseForbidden()
 
@@ -160,7 +160,7 @@ def toggle(request, segment_id):
 
         segment.toggle()
 
-        return HttpResponseRedirect(request.META.get("HTTP_REFERER", "/"))
+        return HttpResponseRedirect(request.headers.get("referer", "/"))
 
     return HttpResponseForbidden()
 
@@ -203,7 +203,7 @@ def segment_user_data(request, segment_id):
 
         response = HttpResponse(content_type="text/csv; charset=utf-8")
         response["Content-Disposition"] = (
-            "attachment;filename=segment-%s-users.csv" % str(segment_id)
+            "attachment;filename=segment-%s-users.csv" % str(segment_id)  # noqa: UP031
         )
 
         headers = ["Username"]

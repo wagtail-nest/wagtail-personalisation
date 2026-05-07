@@ -20,7 +20,7 @@ def test_segment_user_data_view_requires_admin_access(site, client, django_user_
     response = client.get(url)
 
     assert response.status_code == 302
-    assert response.url == "/admin/login/?next=%s" % url
+    assert response.url == "/admin/login/?next=%s" % url  # noqa: UP031
 
 
 @pytest.mark.django_db
@@ -76,7 +76,7 @@ def test_segment_delete_view_delete_instance(rf, segmented_page, user):
     assert variants_metadata
 
     # Delete the segment via the method on the view.
-    request = rf.get("/".format(segment.pk))  # noqa: F523
+    request = rf.get("/")
     request.user = user
     view = SegmentModelDeleteView(
         instance_pk=str(segment.pk), model_admin=SegmentModelAdmin()
@@ -99,7 +99,7 @@ def test_segment_delete_view_delete_instance(rf, segmented_page, user):
 @pytest.mark.django_db
 def test_segment_delete_view_raises_permission_denied(rf, segmented_page, user):
     segment = segmented_page.personalisation_metadata.segment
-    request = rf.get("/".format(segment.pk))  # noqa: F523
+    request = rf.get("/")
     request.user = user
     view = SegmentModelDeleteView(
         instance_pk=str(segment.pk), model_admin=SegmentModelAdmin()
