@@ -108,3 +108,11 @@ Now you can run tests as shown below:
 
 or, you can run them for a specific environment ``tox -e py314-dj60-wt74`` or specific test
 ``tox -e py314-dj60-wt74 -- tests/unit/test_foo.py::test_bar``.
+
+Acknowledgements
+----------------
+
+This project is currently maintained by the Wagtail Nest team.
+
+It was originally developed by Boris Besemer (@blurrah) and Jasper Berghoef
+(@jberghoef) for Lab Digital (https://labdigital.nl)
