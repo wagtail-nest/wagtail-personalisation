@@ -22,7 +22,7 @@ in the admin interface.
 
 Instructions
 ------------
-Wagtail Personalisation requires Wagtail 6.3+ and Django 4.2+
+Wagtail Personalisation requires Wagtail 7.0+ and Django 5.2+
 
 To install the package with pip:
 
@@ -37,8 +37,7 @@ and ``wagtailfontawesomesvg`` apps in your project's ``INSTALLED_APPS``:
 
     INSTALLED_APPS = [
         # ...
-        'wagtail_modeladmin',          # if Wagtail >=5.1; Don't repeat if it's there already
-        'wagtail.contrib.modeladmin',  # if Wagtail <5.1;  Don't repeat if it's there already
+        'wagtail.contrib.modeladmin',  # Don't repeat if it's there already
         'wagtail_personalisation',
         'wagtailfontawesomesvg',
         # ...
