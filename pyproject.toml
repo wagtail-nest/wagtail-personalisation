@@ -43,6 +43,7 @@ optional-dependencies.docs = [
   "sphinx-rtd-theme>=0.4",
 ]
 optional-dependencies.test = [
+  "django-debug-toolbar>=6",
   "factory-boy>=3.3",
   "freezegun>=1.5",
   "pre-commit>=4",
