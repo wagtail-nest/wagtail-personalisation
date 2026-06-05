@@ -7,9 +7,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-- Maintenance: raise lower bounds on dev/test/docs extras (`pytest>=8`, `pytest-cov>=5`, `pytest-sugar>=1`, `sphinx>=7`, `sphinx-rtd-theme>=2`) and bump `pytest` `minversion` to `8.0`
-- Maintenance: refresh pre-commit hooks (`pyproject-fmt` to v2.21.2, `ruff-pre-commit` to v0.15.13)
-- Maintenance: align `actions/upload-artifact` to v7 in the publish workflow
 
 ## [0.17.0] - 2026-05-07
 
