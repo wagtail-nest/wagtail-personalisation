@@ -4,7 +4,7 @@ requires = [ "setuptools>=77", "wheel" ]
 
 [project]
 name = "wagtail-personalisation"
-version = "0.17.0"
+version = "1.0.0"
 description = "A Wagtail add-on for showing personalized content"
 readme = "README.md"
 license = "MIT"
@@ -18,8 +18,10 @@ classifiers = [
   "Framework :: Django",
   "Framework :: Django :: 5.2",
   "Framework :: Django :: 6.0",
+  "Framework :: Django :: 6.1",
   "Framework :: Wagtail",
   "Framework :: Wagtail :: 7",
+  "Framework :: Wagtail :: 8",
   "Intended Audience :: Developers",
   "Operating System :: OS Independent",
   "Programming Language :: Python",

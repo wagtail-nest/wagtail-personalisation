@@ -5,6 +5,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.0.0] - 2026-07-23
+
+- Add a new documentation website
+- Add support for custom rules configurable via settings
+- Fix userbar markup to match latest Wagtail
+
 ## [0.17.0] - 2026-05-07
 
 - Add Wagtail 7.0, 7.3, and 7.4 support, drop support for Wagtail < 7.0
@@ -129,7 +135,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fixes import for reverse resolver for older Django versions (<1.10)
 - Bases migrations off of older wagtail dependencies
 - Adds more dashboard panels and fixes exclude variants function
-
 
 ## [0.9.0] - 2017-06-02
 
