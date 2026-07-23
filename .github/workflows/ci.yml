@@ -1,12 +1,15 @@
----
-name: Python Tests
-
+name: CI
+permissions:
+  contents: read
+concurrency:
+  group: ${{ github.ref }}
+  cancel-in-progress: true
 on:
+  workflow_call:
   push:
     branches:
       - main
   pull_request:
-  workflow_call: # Allow for the publish workflows to run the tests by calling this workflow
 
 jobs:
   pre-commit:
@@ -30,7 +33,6 @@ jobs:
       max-parallel: 5
       matrix:
         python: ["3.10", "3.11", "3.12", "3.13", "3.14"]
-
     steps:
       - uses: actions/checkout@v6
         with:
@@ -52,3 +54,38 @@ jobs:
         with:
           name: coverage-data-${{ matrix.python }}
           path: .coverage-data/
+
+  docs:
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.14"
+      - name: Install docs dependencies
+        run: |
+          python -m pip install mkdocs>=1.6.0 mkdocs-material>=9.5.0
+          python -m pip install mkdocstrings[python]>=0.27.0
+          python -m pip install mkdocs-simple-hooks>=0.1.5
+      - name: Build docs
+        run: mkdocs build --strict
+      - uses: actions/upload-pages-artifact@v5
+        with:
+          path: site
+
+  deploy_site:
+    needs: docs
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    steps:
+      - uses: actions/deploy-pages@v5
+        id: deployment

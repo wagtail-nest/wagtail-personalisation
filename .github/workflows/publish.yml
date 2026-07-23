@@ -6,7 +6,7 @@ on:
 
 jobs:
   test:
-    uses: ./.github/workflows/python-test.yml
+    uses: ./.github/workflows/ci.yml
 
   build:
     needs: ["test"]

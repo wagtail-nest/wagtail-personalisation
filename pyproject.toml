@@ -6,7 +6,7 @@ requires = [ "setuptools>=77", "wheel" ]
 name = "wagtail-personalisation"
 version = "0.17.0"
 description = "A Wagtail add-on for showing personalized content"
-readme = "README.rst"
+readme = "README.md"
 license = "MIT"
 authors = [
   { name = "Lab Digital BV and others", email = "opensource@labdigital.nl" },
@@ -39,8 +39,10 @@ dependencies = [
   "wagtail-modeladmin>=1",
 ]
 optional-dependencies.docs = [
-  "sphinx>=1.7.6",
-  "sphinx-rtd-theme>=0.4",
+  "mkdocs>=1.6",
+  "mkdocs-material>=9.5",
+  "mkdocs-simple-hooks>=0.1.5",
+  "mkdocstrings[python]>=0.27",
 ]
 optional-dependencies.test = [
   "django-debug-toolbar>=6",
@@ -55,6 +57,7 @@ optional-dependencies.test = [
   "wagtail-factories>=4.2",
 ]
 urls.Changelog = "https://github.com/wagtail-nest/wagtail-personalisation/blob/main/CHANGELOG.md"
+urls.Documentation = "https://wagtail-nest.github.io/wagtail-personalisation/"
 urls.Source = "https://github.com/wagtail-nest/wagtail-personalisation"
 
 [tool.setuptools]

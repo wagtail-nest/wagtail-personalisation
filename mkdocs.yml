@@ -1,0 +1,63 @@
+site_name: wagtail-personalisation
+repo_url: https://github.com/wagtail-nest/wagtail-personalisation
+site_url: https://wagtail-nest.github.io/wagtail-personalisation/
+edit_uri: edit/main/docs/
+
+site_description: A Wagtail add-on for showing personalized content.
+repo_name: wagtail-personalisation
+dev_addr: localhost:8002
+
+theme:
+  name: material
+  font: false
+  palette:
+    scheme: default
+    primary: white
+  features:
+    - content.code.copy
+  custom_dir: docs/theme
+
+markdown_extensions:
+  - admonition
+  - sane_lists
+  - toc:
+      permalink: true
+  - pymdownx.details
+  - pymdownx.highlight:
+      anchor_linenums: true
+      line_spans: __span
+      pygments_lang_class: true
+  - pymdownx.inlinehilite
+  - pymdownx.magiclink
+  - pymdownx.superfences
+  - pymdownx.tasklist:
+      custom_checkbox: true
+  - pymdownx.tilde
+
+plugins:
+  - search
+  - mkdocstrings:
+      handlers:
+        python:
+          options:
+            show_source: true
+            show_root_heading: false
+            heading_level: 4
+  - mkdocs-simple-hooks:
+      hooks:
+        on_post_build: "docs.hooks:on_post_build"
+
+nav:
+  - Home: index.md
+  - Getting started: getting-started.md
+  - Usage guide:
+      - Implementation: usage-guide/implementation.md
+      - Custom rules: usage-guide/custom-rules.md
+  - Editor guide:
+      - Introduction: editor-guide/introduction.md
+      - Segments dashboard: editor-guide/segments-dashboard.md
+      - Creating segments: editor-guide/creating-segments.md
+      - Creating personalised content: editor-guide/creating-personalised-content.md
+  - Default rules: default-rules.md
+  - Contributing: CONTRIBUTING.md
+  - Support: SUPPORT.md
