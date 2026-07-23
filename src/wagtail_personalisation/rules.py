@@ -445,9 +445,10 @@ class UserIsLoggedInRule(AbstractBaseRule):
         }
 
 
-COUNTRY_CHOICES = [
-    (country.alpha_2.lower(), country.name) for country in pycountry.countries
-]
+COUNTRY_CHOICES = sorted(
+    ((country.alpha_2.lower(), country.name) for country in pycountry.countries),
+    key=lambda c: c[1],
+)
 
 
 class OriginCountryRule(AbstractBaseRule):
