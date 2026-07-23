@@ -62,7 +62,6 @@ optional-dependencies.test = [
 urls.Changelog = "https://github.com/wagtail-nest/wagtail-personalisation/blob/main/CHANGELOG.md"
 urls.Documentation = "https://wagtail-nest.github.io/wagtail-personalisation/"
 urls.Source = "https://github.com/wagtail-nest/wagtail-personalisation"
-"llms.txt" = "https://wagtail-nest.github.io/wagtail-personalisation/llms.txt"
 
 [tool.setuptools]
 include-package-data = true
