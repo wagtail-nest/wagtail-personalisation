@@ -27,8 +27,8 @@
     "webpack": "^2.6.0"
   },
   "name": "wagtail-personalisation",
-  "description": "Wagxperience personalisation module for Wagtail.",
-  "version": "1.0.0",
+  "description": "Wagtail Personalisation personalisation module for Wagtail.",
+  "version": "0.0.0-dev",
   "main": "webpack.config.js",
   "directories": {
     "doc": "docs",

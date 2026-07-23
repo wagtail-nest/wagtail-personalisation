@@ -3,7 +3,7 @@ Implementation
 
 Extending a page to be personalisable
 -------------------------------------
-Wagxperience offers a ``PersonalisablePage`` base class to extend from.
+Wagtail Personalisation offers a ``PersonalisablePage`` base class to extend from.
 This is a standard ``Page`` class with personalisation options added.
 
 

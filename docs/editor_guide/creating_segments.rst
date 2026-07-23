@@ -69,11 +69,11 @@ Defining rules
 
 5. Choose the rules you want to use.
 
-    Wagxperience comes with a basic set of :doc:`../default_rules` that allow
+    Wagtail Personalisation comes with a basic set of :doc:`../default_rules` that allow
     you to get started quickly. The rules you define will be evaluated once a
     visitor makes a request to your application.
 
-    The rules that come with Wagxperience are as follows:
+    The rules that come with Wagtail Personalisation are as follows:
 
     .. toctree::
        :maxdepth: 2

@@ -1,7 +1,7 @@
 Editor Guide
 ============
 
-The editor guide is meant for content editors and marketers using Wagxperience
+The editor guide is meant for content editors and marketers using Wagtail Personalisation
 to offer a personalised experience to their visitors.
 
 .. toctree::

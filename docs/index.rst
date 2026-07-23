@@ -3,23 +3,10 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Welcome to the Wagxperience documentation
-=========================================
+Welcome to the Wagtail Personalisation documentation
+===================================================
 
-.. image:: https://readthedocs.org/projects/wagtail-personalisation/badge/?version=latest
-     :target: http://wagtail-personalisation.readthedocs.io/en/latest/?badge=latest
-
-.. image:: https://travis-ci.org/wagtail/wagtail-personalisation.svg?branch=master
-    :target: https://travis-ci.org/wagtail/wagtail-personalisation
-
-.. image:: http://codecov.io/github/wagtail/wagtail-personalisation/coverage.svg?branch=master
-    :target: http://codecov.io/github/wagtail/wagtail-personalisation?branch=master
-
-.. image:: https://img.shields.io/pypi/v/wagtail-personalisation.svg
-    :target: https://pypi.python.org/pypi/wagtail-personalisation/
-
-
-Wagxperience is a fully-featured personalisation module for Wagtail.
+Wagtail Personalisation is a fully-featured personalisation module for Wagtail.
 It enables editors to create customised pages - or parts of pages - based on
 segments whose rules are configured directly in the admin interface.
 

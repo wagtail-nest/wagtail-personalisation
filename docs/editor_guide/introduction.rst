@@ -1,11 +1,11 @@
 Introduction
 ============
 
-Wagxperience_ is an open source module developed by `Lab Digital`_ for the
+Wagtail Personalisation_ is an open source module for the
 Wagtail_ content management system. It allows editors and marketeers to create
 personalised experiences by harnessing the power of segmentation and rules.
 
-.. _Wagxperience: http://wagxperience.io
+.. _Wagtail Personalisation: https://github.com/wagtail-nest/wagtail-personalisation
 .. _Wagtail: https://wagtail.org/
 .. _Lab Digital: http://labdigital.nl
 

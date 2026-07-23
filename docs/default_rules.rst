@@ -1,7 +1,7 @@
 Included rules
 ==============
 
-Wagxperience comes with a base set of rules that allow you to start segmenting
+Wagtail Personalisation comes with a base set of rules that allow you to start segmenting
 your visitors quickly.
 
 

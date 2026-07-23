@@ -17,7 +17,7 @@ class Migration(migrations.Migration):
             model_name="homepage",
             name="intro",
             field=wagtail_fields.RichTextField(
-                default='<p>Thank you for trying <a href="http://wagxperience.io" target="_blank">Wagxperience</a>!</p>'
+                default='<p>Thank you for trying <a href="https://github.com/wagtail-nest/wagtail-personalisation" target="_blank">Wagtail Personalisation</a>!</p>'
             ),
             preserve_default=False,
         ),

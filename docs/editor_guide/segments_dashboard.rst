@@ -1,7 +1,7 @@
 The segments dashboard
 ======================
 
-Wagxperience comes with two different views for it's segment dashboard. A "list
+Wagtail Personalisation comes with two different views for it's segment dashboard. A "list
 view" and a "dashboard view". Where the dashboard view attempts to show all
 relevant information and statistics in a visually pleasing manner, the list view
 is more fitted for sites using large amounts of segments, as it may be
@@ -11,7 +11,7 @@ considered more clear in these cases.
 Switching between views
 -----------------------
 
-By default, Wagxperience's "dashboard view" is active on the segment dashboard.
+By default, Wagtail Personalisation's "dashboard view" is active on the segment dashboard.
 If you would like to switch between the dashboard view and list view, open the
 segment dashboard and click the "Switch view" button in the green header at the
 top of the page.
