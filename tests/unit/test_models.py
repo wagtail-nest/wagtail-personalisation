@@ -102,8 +102,8 @@ def test_segment_panels_filtered_by_setting(settings):
     """Test that only specified rules are included when WAGTAIL_PERSONALISATION_RULES is set."""
     # Set the filter to only include TimeRule and DayRule
     settings.WAGTAIL_PERSONALISATION_RULES = [
-        'wagtail_personalisation.TimeRule',
-        'wagtail_personalisation.DayRule',
+        "wagtail_personalisation.TimeRule",
+        "wagtail_personalisation.DayRule",
     ]
 
     # Create a new segment instance to trigger __init__ with the new setting
@@ -120,5 +120,5 @@ def test_segment_panels_filtered_by_setting(settings):
 
     # Verify the rule names
     rule_names = [child.relation_name for child in rules_panel.children]
-    assert 'wagtail_personalisation_timerule_related' in rule_names
-    assert 'wagtail_personalisation_dayrule_related' in rule_names
+    assert "wagtail_personalisation_timerule_related" in rule_names
+    assert "wagtail_personalisation_dayrule_related" in rule_names
