@@ -14,7 +14,7 @@ repos:
       - id: check-yaml
       - id: debug-statements
   - repo: https://github.com/tox-dev/pyproject-fmt
-    rev: "v2.21.1"
+    rev: "v2.21.2"
     hooks:
       - id: pyproject-fmt
         args: ["--max-supported-python=3.14"]
@@ -24,7 +24,7 @@ repos:
       - id: django-upgrade
         args: [--target-version, "5.2"]
   - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: "v0.15.12"
+    rev: "v0.15.13"
     hooks:
       - id: ruff-check
         args: [--fix, --exit-non-zero-on-fix]
