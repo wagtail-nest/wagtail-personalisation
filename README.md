@@ -39,7 +39,7 @@ MIDDLEWARE = [
 
 ## Documentation
 
-The full documentation is available at [wagtail-nest.github.io/wagtail-personalisation](https://wagtail-nest.github.io/wagtail-personalisation/).
+The full documentation is available at [wagtail-nest.github.io/wagtail-personalisation](https://wagtail-nest.github.io/wagtail-personalisation/). For LLM-assisted tooling, there is also a concise [`llms.txt`](https://wagtail-nest.github.io/wagtail-personalisation/llms.txt) and a complete [`llms-full.txt`](https://wagtail-nest.github.io/wagtail-personalisation/llms-full.txt).
 
 ## Sandbox
 

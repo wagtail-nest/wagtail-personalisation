@@ -10,6 +10,8 @@ dev_addr: localhost:8002
 theme:
   name: material
   font: false
+  logo: theme/favicon.png
+  favicon: theme/favicon.png
   palette:
     scheme: default
     primary: white
@@ -36,6 +38,21 @@ markdown_extensions:
 
 plugins:
   - search
+  - llmstxt:
+      full_output: llms-full.txt
+      sections:
+        Usage documentation:
+          - index.md
+          - getting-started.md
+          - default-rules.md
+        Usage guide:
+          - usage-guide/implementation.md
+          - usage-guide/custom-rules.md
+        Editor guide:
+          - editor-guide/introduction.md
+          - editor-guide/segments-dashboard.md
+          - editor-guide/creating-segments.md
+          - editor-guide/creating-personalised-content.md
   - mkdocstrings:
       handlers:
         python:
