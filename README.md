@@ -1,4 +1,4 @@
-# Wagtail Personalisation
+# [Wagtail Personalisation](https://wagtail-nest.github.io/wagtail-personalisation/)
 
 > A Wagtail add-on for showing personalized content.
 
