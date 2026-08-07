@@ -6,6 +6,25 @@ Wagtail Personalisation is a fully-featured personalisation module for [Wagtail 
 
 ![The segment dashboard view](docs/images/segment_dashboard_view.png)
 
+## Why this fork exists
+
+This is Truth Initiative's fork of [wagtail-nest/wagtail-personalisation](https://github.com/wagtail-nest/wagtail-personalisation). It originally carried Wagtail 4.1–5.2 compatibility work, all of which is now upstream.
+
+What remains is two changes to `PersonalisedStructBlock` in `src/wagtail_personalisation/blocks.py`:
+
+- **`segment` defaults to `-1` ("Show to everyone").** Upstream leaves the choice blank, so a block added to a StreamField renders nothing until an editor picks a segment. Here a new block is visible to everyone until someone narrows it.
+- **`render()` tolerates a missing request.** Upstream reads `context["request"]` unconditionally, which raises when a block is rendered outside a request/response cycle — unit tests, management commands, or any `render()` call made without a request in the context. This fork falls back to plain `StructBlock.render()` in that case.
+
+Those four lines are the entire code delta. To pull in upstream changes:
+
+```console
+git remote add upstream https://github.com/wagtail-nest/wagtail-personalisation.git  # first time only
+git fetch upstream
+git rebase upstream/main
+```
+
+After rebasing, `git diff upstream/main HEAD` should touch `blocks.py` and this README section, and nothing else. Anything more is drift worth dropping rather than carrying forward.
+
 ## Instructions
 
 Wagtail Personalisation requires Wagtail 7.0+ and Django 5.2+
